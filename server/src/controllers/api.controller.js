@@ -791,6 +791,7 @@ serverCtrl.Egew_cuentas_wesi = async (req, res) =>{
 
   if (hashn===hash && igual) {
     const DB = require(`../models/egew_cuenta_wesi`);
+    console.log('buscar cuenta wesi')
     let datos = await Buscar_data(DB,User)
     
     if (datos.length===0){
@@ -812,6 +813,7 @@ serverCtrl.Egew_cuentas_banco = async (req, res) =>{
 
   if (hashn===hash && igual) {
     const DB = require(`../models/egew_cuenta_banco`);
+    console.log('buscar cuenta banco')
     let datos = await Buscar_data(DB,User)
     res.json({Respuesta:'Ok', datos});
   }else{
@@ -828,6 +830,7 @@ serverCtrl.Egew_cuentas_sistema = async (req, res) =>{
   if (hashn===hash && igual) {
     const DB = require(`../models/egew_cuenta_banco`);
     const nameAdmin = NameAdmin(Api)
+    console.log('buscar cuenta banco admin')
     let datos = await Buscar_data(DB,{username:nameAdmin})
     res.json({Respuesta:'Ok', datos});
   }else{
@@ -942,6 +945,7 @@ serverCtrl.Egew_pagarWesi = async (req, res) =>{
 
       // Movimientos para la cuenta administradora
       const nameAdmin = NameAdmin(Api);
+      console.log('buscar cuenta monedero')
       let monederos_admin= await Buscar_data(Monedero,{username:nameAdmin});
       monederos_admin=monederos_admin.filter(f=> f.valores.tipo===monedero_origen.valores.tipo && f.valores.divisa===monedero_origen.valores.divisa);
       if (monederos_admin.length===0){
@@ -1052,6 +1056,7 @@ serverCtrl.Egew_cambiar_status_compra = async (req, res) =>{
       await DB.updateOne({_id: datos._id},{ valores: datos, hash_chs, actualizado:User.username},{ upsert: true });
       
       //Guardar movimiento
+      console.log('buscar Movimiento')
       let movimiento = await Buscar_data(Movimiento,{username:datos.username})
       const pos = movimiento.findIndex(f=>f.valores.cod_referencia===datos.cod_referencia);
       movimiento= movimiento[pos]
