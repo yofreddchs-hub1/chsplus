@@ -262,6 +262,7 @@ serverCtrl.Ver_datos_C = async (tablas, condicion) =>{
   let datos={};
   try{
     return Promise.all(tablas.map(async(data)=>{
+      await Tablas(data)
       const DB = require(`../models/${data}`);
       let dbs;
       if (['Ultimo', 'ultimo'].indexOf(condicion[data])!==-1 ){

@@ -35,7 +35,7 @@ global.io.on('connection', (socket) =>{
     socket.on('conectar', async(data)=>{
         let db
         let tipo
-        if (data.api && data.api.api!=='wesi_chs_server'){
+        if (data.api && data.api.api!==undefined && data.api.api!=='wesi_chs_server'){
             db = require(`./models/${data.api.api}_User_api`)
             tipo = 1
         }else{
