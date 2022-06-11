@@ -757,18 +757,27 @@ serverCtrl.Posicion_geo = async (req, res) =>{
 
 // para egew
 // Cuentas de wesipay
+Buscar_completo= async(DB,User)=>{
+  try{
+    let datos = await DB.find();
+    datos=  datos.filter(f=> f.valores.username===User.username);
+    return datos
+  }catch(error) {
+    console.log('Error buscar data completa',error)
+    return []
+  }
+}
 Buscar_data = async(DB, User) =>{
   try{
     let datos = await DB.find(
                               {$text: {$search: User.username , 
                               $caseSensitive: false}}
                             );
-    console.log('Buscar data >>>>>', datos)
     datos=  datos.filter(f=> f.valores.username===User.username);
     return datos
   }catch(error) {
-    console.log('Error buscar data', error)
-    return []
+    console.log('Error buscar data')//,error)
+    return await Buscar_completo(DB,User)
   }
 }
 
@@ -795,13 +804,12 @@ serverCtrl.Egew_cuentas_wesi = async (req, res) =>{
 
   if (hashn===hash && igual) {
     const DB = require(`../models/egew_cuenta_wesi`);
-    console.log('buscar cuenta wesi')
+    
     let datos = await Buscar_data(DB,User)
     
     if (datos.length===0){
       await Crear_cuenta_principal(DB,User);
-      datos= await Buscar_data(DB,User);
-      
+      datos= await Buscar_data(DB,User);  
     }
     res.json({Respuesta:'Ok', datos});
   }else{
@@ -849,14 +857,22 @@ serverCtrl.Egew_movimientos = async (req, res) =>{
   const igual= await serverCtrl.Verifica_api(Api, true);
 
   if (hashn===hash && igual) {
+    await Tablas('egew_movimiento')
     const DB = require(`../models/egew_movimiento`);
+    console.log('movimientos>>>>', cod_cuenta)
     if (cod_cuenta===undefined){
       res.json({Respuesta:'Ok', datos:[]});
       return 
     }
-    let datos = await DB.find(
-        {$text: {$search: cod_cuenta , 
-        $caseSensitive: false}});
+    let datos
+    try{
+      datos = await DB.find(
+          {$text: {$search: cod_cuenta , 
+          $caseSensitive: false}});
+    }catch(error) {
+      console.log('Error en movimientos>>>>>')//,error)
+      datos= await DB.find();
+    }
     datos=  datos.filter(f=> f.valores.monederos===cod_cuenta)
     res.json({Respuesta:'Ok', datos});
   }else{
