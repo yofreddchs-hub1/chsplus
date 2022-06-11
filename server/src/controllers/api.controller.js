@@ -47,6 +47,7 @@ serverCtrl.Verifica_api = async (api, comparar=false) =>{
 //Verifica si el api existe en el sistema, si no lo crea
 serverCtrl.Ver_api = async (req, res) =>{
   const {api, hash} = req.body;
+  console.log('Por aqui', api)
   const hashn = await Hash_texto(JSON.stringify({api}));
   
   if (hash===hashn) {
@@ -92,6 +93,7 @@ serverCtrl.Verificar_autenticidad = async ( datos, hash, token=false, inicia=fal
    //  Ver si existe usuario administrador
    // si cambias datos en nameAdmin, debes cambiarlo en userAdmin
    const nameAdmin = NameAdmin(Api);//`admin-${Api.api}-wesichs`
+   console.log('Por aqui por login>>>')
    let useradmin= await User.find({$text: {$search: nameAdmin, $caseSensitive: true}});//await User.findOne({username});
    if (Api.api!==dapi){
     useradmin = useradmin.filter(f=> f.valores.username===nameAdmin);
