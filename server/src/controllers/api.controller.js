@@ -758,14 +758,18 @@ serverCtrl.Posicion_geo = async (req, res) =>{
 // para egew
 // Cuentas de wesipay
 Buscar_data = async(DB, User) =>{
-  
-  let datos = await DB.find(
-                            {$text: {$search: User.username , 
-                            $caseSensitive: false}}
-                          );
-  console.log('Buscar data >>>>>', datos)
-  datos=  datos.filter(f=> f.valores.username===User.username);
-  return datos
+  try{
+    let datos = await DB.find(
+                              {$text: {$search: User.username , 
+                              $caseSensitive: false}}
+                            );
+    console.log('Buscar data >>>>>', datos)
+    datos=  datos.filter(f=> f.valores.username===User.username);
+    return datos
+  }catch(error) {
+    console.log('Error buscar data', error)
+    return []
+  }
 }
 
 Crear_cuenta_principal = async(DB, User)=>{
