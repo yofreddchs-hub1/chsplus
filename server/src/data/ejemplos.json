@@ -1,0 +1,44 @@
+{
+    "Form_ejemplo": [
+        {
+            "key": "aunto general codigo y no permitir editar",
+            "name": "codigo",
+            "label": "Codigo",
+            "tipo": "auto-codigo",
+            "disabled":true 
+        },
+        {
+            "key": "Listado con seleccion y mostrado en lista",
+            "name": "cliente",
+            "label": "cliente",
+            "activar":true,
+            "tipo":"lista_representados",
+            "lista":"Cliente, aqui se coloca el nombre de la base de datos",
+            "getOptionLabel":["nombres","apellidos", "aqui los valores a mostrar en la lista"]
+        },
+        {
+            "key": "lista con lectura de base de datos, o lista fija",
+            "name": "lista_multiuso",
+            "label": "Lista para le uso multiple",
+            "tipo":"lista_multiuso",
+            "lista":"Cliente; nombre de la base de datos o lista, lista_ para listas en datos",
+            "multiple":"false; si es multiple seleccion o no",
+            "getOptionLabel":["nombres","apellidos", "valores de mostrar"],
+            "agregar":"true, para poder agregar mas elementos a la lista",
+            "form":"Form_cliente_s, el nombre del formulario en el caso de agregar"
+        },
+        {
+            "key": "descripcion, para un input multilinea",
+            "name": "descripcion",
+            "placeholder": "Descripción",
+            "multiline": true,
+            "numberOfLines": 4
+        },
+        {
+            "key": "estatus",
+            "name": "estatus",
+            "label": "Estatus",
+            "tipo": "listado-multiuso"
+        }
+    ]
+}

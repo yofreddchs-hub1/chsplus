@@ -1,0 +1,185 @@
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import { styled, ThemeProvider, createTheme } from '@mui/material/styles';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Paper from '@mui/material/Paper';
+// import People from '@mui/icons-material/People';
+// import PermMedia from '@mui/icons-material/PermMedia';
+// import Dns from '@mui/icons-material/Dns';
+// import Public from '@mui/icons-material/Public';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Collapse from '@mui/material/Collapse';
+import Icon from '@mui/material/Icon';
+import { Permiso} from '../../procesos/servicios';
+
+// const data = [
+//   { icon: <People />, label: 'Authentication' },
+//   { icon: <Dns />, label: 'Database' },
+//   { icon: <PermMedia />, label: 'Storage' },
+//   { icon: <Public />, label: 'Hosting' },
+// ];
+
+const FireNav = styled(List)({
+  '& .MuiListItemButton-root': {
+    paddingLeft: 24,
+    paddingRight: 24,
+    minWidth:256
+  },
+  '& .MuiListItemIcon-root': {
+    minWidth: 0,
+    marginRight: 16,
+  },
+  '& .MuiSvgIcon-root': {
+    fontSize: 20,
+  },
+});
+
+export default function CustomizedList(props) {
+  const {Config, User}=props;
+  const [Listado, setListado] = React.useState(null)
+  const [open, setOpen] = React.useState({});
+  const [selectedIndex, setSelectedIndex] = React.useState(props.selected);
+
+  const Inicio_listado =async()=>{
+    if (Config.Menu.length===1 ){
+        setListado(Config.Menu)
+    }else{
+        // let listado=Config.Menu.map(async f=> {
+        let nuevo=[];
+        for (var i=0; i<Config.Menu.length;i++){
+            let f=Config.Menu[i];
+            const permiso=await Permiso(f.value);
+            if (f.libre || permiso){
+                nuevo=[...nuevo,f];
+                // if (Listado===null){
+                //     console.log('_______________')
+                //     setListado([f])     
+                // }else{
+                //     setListado([...Listado,f]) 
+                // }
+                
+            }
+            // return f.libre || permiso
+            // return f
+        }//)
+        setListado(nuevo) 
+        if (selectedIndex===undefined) setSelectedIndex(nuevo[0].value)
+        // setListado([])
+    } 
+  }
+  // if (Listado===null){
+  //   Inicio_listado()
+  // }
+  
+  React.useEffect(()=>{
+    
+    Inicio_listado()
+  },[User])
+  const handleListItemClick = (event, index,) => {
+    let nopen={...open,[index.value]:!open[index.value]};
+    setOpen(nopen);
+    setSelectedIndex(index.value);
+    if (props.Seleccion_pantalla){
+        props.Seleccion_pantalla(index)
+    }
+  };
+
+  const render = (lista) =>{
+    return (
+        lista===undefined || lista===null || lista.length===0
+        ?
+            <FireNav component="nav" disablePadding >
+                <ListItem
+                    button
+                    component="div" disablePadding
+                    selected={true}
+                >
+                    <ListItemButton sx={{ height: 56 }}>
+                        <ListItemIcon>
+                            <Icon color={'primary'}>settings</Icon>
+                        </ListItemIcon>
+                        <ListItemText   primary="Configuración"
+                                        primaryTypographyProps={ {
+                                            color: 'primary',
+                                            fontWeight: 'medium',
+                                            variant: 'body2',
+                                        }}
+                        />
+                        
+                    </ListItemButton>
+                </ListItem>
+                
+            </FireNav>
+        :
+        lista.map((valor,index)=>
+            <FireNav component="nav" disablePadding key={'div-'+index}>
+                <ListItem
+                    key={valor.primary+index}
+                    button
+                    component="div" disablePadding
+                    selected={selectedIndex === valor.value}
+                    onClick={(event) => handleListItemClick(event, valor)}
+                >
+                    <ListItemButton sx={{ height: 56 }}>
+                        <ListItemIcon>
+                            <Icon color={'primary'}>{valor.icon}</Icon>
+                        </ListItemIcon>
+                        <ListItemText  {...valor} 
+                                        primaryTypographyProps={selectedIndex === valor.value ? {
+                                            color: 'primary',
+                                            fontWeight: 'medium',
+                                            variant: 'body2',
+                                        }:{}}
+                        />
+                        {valor.childen ?  (open[valor.value] ? <ExpandLessIcon style={{color:'#ffffff'}}/> : <ExpandMoreIcon style={{color:'#ffffff'}}/>) : null}
+                    </ListItemButton>
+                </ListItem>
+                {valor.childen ?(
+                    <Collapse key={'collapse-'+index+valor.primary} in={open[valor.value]} timeout="auto" unmountOnExit>
+                        <List component="div" style={{paddingLeft:10}}>
+                            {render(valor.childen)}
+                        </List>
+                    </Collapse>
+                ): null}
+            </FireNav>
+        )
+    )
+  }
+  
+  return (
+    <Box sx={{ display: 'flex', bgcolor:'#7ABC32', padding:0.2, height:'100%',
+               overflowX:'hidden', 
+               ...Config.Estilos.Lista_menu_fondo ? Config.Estilos.Lista_menu_fondo : {}
+            }}
+    >
+      <ThemeProvider
+        theme={createTheme({
+          components: {
+            MuiListItemButton: {
+              defaultProps: {
+                disableTouchRipple: true,
+              },
+            },
+          },
+          palette: {
+            mode: 'dark',
+            primary: { main: 'rgb(102, 157, 246)' }, //Color de letra
+            background: { paper: 'rgb(5, 30, 52)' }, //Color de fondo de la barra
+            ...Config.Estilos.Lista_menu_cuerpo ? Config.Estilos.Lista_menu_cuerpo : {}
+          },
+        })}
+      >
+        <Paper elevation={0} sx={{ width:'100%', height:'100%',  }}>
+    
+            {render(Listado)}
+          
+        </Paper>
+      </ThemeProvider>
+    </Box>
+  );
+}
