@@ -93,7 +93,6 @@ serverCtrl.Verificar_autenticidad = async ( datos, hash, token=false, inicia=fal
    //  Ver si existe usuario administrador
    // si cambias datos en nameAdmin, debes cambiarlo en userAdmin
    const nameAdmin = NameAdmin(Api);//`admin-${Api.api}-wesichs`
-   console.log('Por aqui por login>>>')
    let useradmin= await User.find({$text: {$search: nameAdmin, $caseSensitive: true}});//await User.findOne({username});
    if (Api.api!==dapi){
     useradmin = useradmin.filter(f=> f.valores.username===nameAdmin);
@@ -759,6 +758,7 @@ serverCtrl.Posicion_geo = async (req, res) =>{
 // para egew
 // Cuentas de wesipay
 Buscar_data = async(DB, User) =>{
+  console.log('Buscar data', User)
     let datos = await DB.find(
                               {$text: {$search: User.username , 
                               $caseSensitive: false}}
