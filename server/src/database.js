@@ -16,4 +16,5 @@ const connection = mongoose.connection;
 
 connection.once('open', () => {
     console.log('Base de datos conectada : ' ,URI);
+    require('./server_socket');
 });

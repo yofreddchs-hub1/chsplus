@@ -146,6 +146,7 @@ class InicioPrincipal extends Component {
         
         resultado=[...resultado,{...val}]
       }
+      return val
     })
     console.log(resultado)
     return resultado

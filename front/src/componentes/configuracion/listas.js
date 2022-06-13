@@ -7,8 +7,8 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import Divider from '@mui/material/Divider';
-import Cuerpo from '../herramientas/cuerpo';
+// import Divider from '@mui/material/Divider';
+// import Cuerpo from '../herramientas/cuerpo';
 import Tabla from '../herramientas/tabla';
 import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/AddCircle';
@@ -106,12 +106,22 @@ export default class Listas extends Component {
     let Config = Ver_Valores().config;
     const{seleccion}=this.state;
     const pos= Config.Listas[seleccion].findIndex(f=>f._id===datos._id);
+    
+    let permitir = Object.keys(datos).filter(f=> f.indexOf('Error-')===-1)
+    console.log(permitir)
+    let nuevod={}
+    permitir.map(value=>{
+      nuevod[value]=datos[value]
+      return value
+    })
+
     if (pos!==-1){
         Config.Listas[seleccion][pos]={            
-            _id: datos._id,
-            titulo: datos.titulo,
-            value: datos.value,
-            permisos: datos.permisos,
+            ...nuevod
+            // _id: datos._id,
+            // titulo: datos.titulo,
+            // value: datos.value,
+            // permisos: datos.permisos,
         }
     }else{
         Config.Listas[seleccion].push({            
@@ -199,7 +209,7 @@ export default class Listas extends Component {
     Config.Listas={...Config.Listas, [nueva]:[]}
     let nuevo=Config;
     nuevo=JSON.stringify(nuevo, null, 4)
-    const resul= await conexiones.Guardar_data(`data/datos${'.js'}`,nuevo)
+    await conexiones.Guardar_data(`data/datos${'.js'}`,nuevo)
     this.Refrescar(Config, this.state.seleccion)
     this.setState({dialogo:{...this.state.dialogo, open: false}})
   }
@@ -243,7 +253,7 @@ export default class Listas extends Component {
   Eliminar_lista_e = async(datos)=>{
     console.log('Elimniar',datos)
     let Config = Ver_Valores().config;
-    const{seleccion}=this.state;
+    
     let lista= {};
     Object.keys(Config.Listas).filter(f=>f!==datos.select_a.titulo).map(v=>{
       lista={...lista, [v]:Config.Listas[v]}

@@ -693,8 +693,10 @@ serverCtrl.Valor_Dolar = async (req, res) =>{
   const hashn = await Hash_texto(JSON.stringify({User}));
   
   if (hash===hashn) {
+    const {valor_dolar} = require('../servicios/leerHTML');
+    if(global.global_tiempo_dolar) clearTimeout(global.global_tiempo_dolar)
     valor_dolar();
-    res.json({Respuesta:'Ok'});
+    res.json({Respuesta:'Ok', valor: global.global_cambio});
   }else{
     res.json({Respuesta:'Error', mensaje:'hash invalido'});
   }
@@ -1027,6 +1029,125 @@ serverCtrl.Egew_pagarWesi = async (req, res) =>{
         descripcion:`Pago recibido por ${datos.origen.username}, por un monto de ${datos.destino.monto}`
       }
       
+      await Monedero.updateOne({_id: monedero_origen._id},{ valores: monedero_origen.valores, hash_chs, actualizado:User.username},{ upsert: true });
+      hash_chs= await Hash_chs({cod_chs:monedero_destino.cod_chs, valores:monedero_destino.valores, actualizado:User.username})
+      await Monedero.updateOne({_id: monedero_destino._id},{ valores: monedero_destino.valores, hash_chs, actualizado:User.username},{ upsert: true });
+      
+      let cod_chs= await Codigo_chs({...movimiento_origen});
+      hash_chs= await Hash_chs({cod_chs, valores:movimiento_origen, actualizado:User.username})
+      let nuevom = new Movimiento({cod_chs, valores:movimiento_origen, hash_chs});
+      await nuevom.save();
+      cod_chs= await Codigo_chs({...movimiento_destino});
+      hash_chs= await Hash_chs({cod_chs, valores:movimiento_destino, actualizado:User.username})
+      nuevom = new Movimiento({cod_chs, valores:movimiento_destino, hash_chs});
+      await nuevom.save();
+      cod_chs= await Codigo_chs({...movimiento_admin});
+      hash_chs= await Hash_chs({cod_chs, valores:movimiento_admin, actualizado:User.username})
+      nuevom = new Movimiento({cod_chs, valores:movimiento_admin, hash_chs});
+      await nuevom.save();
+      global.io.emit(`Actualizar_${Api.api}_compra`); //datos:resultado})
+      res.json({Respuesta:'Ok'});
+    }catch(error) {
+      console.log('Error-PagarWesi', error.keyValue);
+      res.json({Respuesta:'Error', code: error.code});
+    }
+
+  }else{
+    res.json({Respuesta:'Error', mensaje:'hash invalido'});
+  }
+}
+
+serverCtrl.Egew_transferirWesi = async (req, res) =>{
+  let {User, Api, datos, hash} = req.body;
+  User= typeof User==='string' ? JSON.parse(User) : User;
+  const hashn = await Hash_texto(JSON.stringify({User, Api, datos}));
+  const igual= await serverCtrl.Verifica_api(Api, true);
+
+  if (hashn===hash && igual) {
+    await Tablas('egew_cuenta_wesi');
+    await Tablas('egew_movimiento');
+
+    const  Movimiento= require(`../models/egew_movimiento`);
+    const Monedero = require(`../models/egew_cuenta_wesi`);
+    try{
+      const DB = require(`../models/${Api.master ? '' : Api.api+'_'}User_api`);
+      
+      const cod_referencia = General_referencia();
+      const comision = 0.01;
+      let monto= Number(datos.monto) * comision /100;
+      
+      // Monedero origen
+      let monedero_origen= await Monedero.findOne({_id:datos.origen})
+      monedero_origen.valores.disponible -= (Number(datos.monto)+ monto);
+      let hash_chs= await Hash_chs({cod_chs:monedero_origen.cod_chs, valores:monedero_origen.valores, actualizado:User.username})
+
+      // Movimientos para la cuenta administradora
+      const nameAdmin = NameAdmin(Api);
+      console.log('buscar cuenta monedero')
+      let monederos_admin= await Buscar_data(Monedero,{username:nameAdmin});
+      monederos_admin=monederos_admin.filter(f=> f.valores.tipo===monedero_origen.valores.tipo && f.valores.divisa===monedero_origen.valores.divisa);
+      
+      if (monederos_admin.length===0){
+        let cod_cuenta= monedero_origen.valores.cod_cuenta.split('-');
+        cod_cuenta = `${nameAdmin}-${cod_cuenta[1]}-${cod_cuenta[2]}-${cod_cuenta[3]}`
+        let valores ={
+          tipo:monedero_origen.valores.tipo, 
+          divisa: monedero_origen.valores.divisa,
+          referencia: "Principal",
+          cod_cuenta: cod_cuenta,
+          disponible:monto,
+          diferidos: 0,
+          username:nameAdmin
+        }
+        let cod_chs = await Codigo_chs({...valores});
+        const hash_chs1 = await Hash_chs({...valores, cod_chs})
+        const Nuevo = new Monedero({valores, cod_chs, hash_chs: hash_chs1, actualizado:'Sistema'});
+        await Nuevo.save();
+        monederos_admin= await Buscar_data(Monedero,{username:nameAdmin});
+        monederos_admin=monederos_admin.filter(f=> f.valores.tipo===monedero_origen.valores.tipo && f.valores.divisa===monedero_origen.valores.divisa)[0];
+      }else{
+        monederos_admin= monederos_admin[0];
+        monederos_admin.valores.disponible += monto;
+        const hash_chs1= await Hash_chs({cod_chs:monederos_admin.cod_chs, valores:monederos_admin.valores, actualizado:User.username}) 
+        await Monedero.updateOne({_id: monederos_admin._id},{ valores: monederos_admin.valores, hash_chs:hash_chs1, actualizado:User.username},{ upsert: true });
+      }
+      
+      //Movimientos administrativo
+      let movimiento_admin = {
+        api:Api.api,
+        cod_referencia: cod_referencia,
+        monederos: String(monederos_admin._id),
+        monto: `${monto}`,
+        username: User.username,
+        descripcion:`Comision por transferencia de ${User.username} a ${User.username}, monto ${monto}`
+      }
+      
+      // Monedero destino
+      let monedero_destino= await Monedero.findOne({_id:datos.destino})
+      monedero_destino.valores.disponible += Number(datos.monto_destino);
+      
+      //Movimientos origen
+      let movimiento_origen = {
+        api:Api.api,
+        cod_referencia: cod_referencia,
+        monederos: datos.origen,
+        monto: `-${Number(datos.monto) + monto}`,
+        username: User.username,
+        descripcion:`Monto transferido a ${User.username}, por un monto de -${datos.monto}, comision ${monto}`
+      }
+      
+      //Movimientos origen
+      let movimiento_destino = {
+        api:Api.api,
+        cod_referencia: cod_referencia,
+        monederos: datos.destino,
+        monto: `${datos.monto_destino}`,
+        username: User.username,
+        descripcion:`Transferencia recibida de ${User.username}, por un monto de ${datos.monto_destino}`
+      }
+      // console.log('Despues de movimiento destino')
+      // console.log('Monederos>>>>',monederos_admin, monedero_origen, monedero_destino)
+      // console.log('Movimientos>>>>',movimiento_admin, movimiento_origen, movimiento_destino)
       await Monedero.updateOne({_id: monedero_origen._id},{ valores: monedero_origen.valores, hash_chs, actualizado:User.username},{ upsert: true });
       hash_chs= await Hash_chs({cod_chs:monedero_destino.cod_chs, valores:monedero_destino.valores, actualizado:User.username})
       await Monedero.updateOne({_id: monedero_destino._id},{ valores: monedero_destino.valores, hash_chs, actualizado:User.username},{ upsert: true });

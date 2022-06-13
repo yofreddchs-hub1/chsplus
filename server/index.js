@@ -10,7 +10,7 @@ const {Verificar_bonos_mes, Enviar} = require('./src/servicios/conexiones')
 global.global_http= http;
 global.actualizar_mes=false
 require('./src/database');
-require('./src/server_socket');
+// require('./src/server_socket');
 
 const {valor_dolar} = require('./src/servicios/leerHTML');
 
@@ -45,5 +45,8 @@ app.get('*',(req,res) =>{
 http.listen(port, ()=>{
 // http.listen(port, ()=>{
   console.log('Servidor iniciado', port, host);
-  valor_dolar()
+  // setTimeout(()=>{
+    valor_dolar()
+  // }, 1 * 60000)
+
 })

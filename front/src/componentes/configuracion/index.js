@@ -1,10 +1,13 @@
 import React, {Component} from 'react';
 // import MailIcon from '@material-ui/icons/Mail';
 // import NotificationsIcon from '@material-ui/icons/Notifications';
+import moment from "moment";
+import { confirmAlert } from 'react-confirm-alert';
 import Formulario from '../herramientas/formulario';
 //Icono
 import CheckIcon from '@mui/icons-material/Check';
-
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
+import ImportExportIcon from '@mui/icons-material/ImportExport';
 import Cuerpo from '../herramientas/cuerpo';
 import {conexiones}from '../../procesos/servicios'
 
@@ -21,7 +24,6 @@ export default class Configuracion extends Component {
           Guardar_datos:this.Guardar
       }
   }
-
 
   Editores = (campo)=>{
     const {Config} = this.state;
@@ -53,7 +55,7 @@ export default class Configuracion extends Component {
               variant:"contained", color:"primary",
               icono:<CheckIcon />, mesperar:'Guardando...',
               onClick:(datos)=>this.Guardar_parte(datos, campo)
-            },
+            }
         ]
     };
     return <Formulario {...formulario} config={Config}/>
@@ -85,6 +87,20 @@ export default class Configuracion extends Component {
               icono:<CheckIcon />, mesperar:'Guardando...',
               onClick:this.Guardar
             },
+            {
+              name:'descargar', label:'Descargar', title:'Descargar DAtos',
+              variant:"contained", color:"primary",
+              icono:<CloudDownloadIcon />, mesperar:'Guardando...',
+              onClick:(datos)=>this.Descargar(datos)
+            },
+            {
+              name:'actualizar', 
+              label:'Actualizar', 
+              title:'Actualizar datos',
+              variant:"contained", color:"secondary",
+              icono:<ImportExportIcon />,
+              onClick:this.Actualizar
+            },
         ]
     };
     let Bloques={
@@ -111,6 +127,74 @@ export default class Configuracion extends Component {
     return null;
   }
 
+  Actualizar = async()=>{
+    
+    // creas un enlace y lo añades al documento
+    var a = document.createElement("input");
+    document.body.appendChild(a);
+    a.Accept='*.json';
+    a.type='file';
+    a.onchange=(e)=>{
+      
+      const { files} = e.target;
+      const nombre = files[0].name;
+      var archivo = e.target.files[0];
+      if (!archivo) {
+        return;
+      }
+      var lector = new FileReader();
+      lector.onload = (e)=> {
+        console.log(e)
+        var contenido = JSON.parse(e.target.result);
+        console.log(contenido)
+        
+        confirmAlert({
+          title: 'Actualizar',
+          message: `Desea actualizar el archivo Datos con ${nombre}?`,
+          buttons: [
+            {
+              label: 'SI',
+              onClick: async () => {
+                let nuevo = {archivo:'datos', path:'data/',tipo:'.json', data:JSON.stringify(contenido, null, 4)}
+                return await conexiones.Guardar_data(`${nuevo.path}${nuevo.archivo}${'.js'}`,nuevo.data)
+                
+              }
+            },
+            {
+              label: 'NO',
+    
+            }
+          ]
+        });
+        
+        
+      };
+      lector.readAsText(archivo);
+    }
+    a.click();
+  }
+  Descargar = async(datos)=>{
+    const hoy = new Date();
+    const fecha=moment(hoy).format('DD-MM-YYYY HH:mm');
+    var file = new File(
+      [JSON.stringify(datos.data, null, 2)],
+      datos.archivo+'-'+fecha+".json",
+      {type:"text/plain;charset=utf-8"}
+    );
+
+    // obtienes una URL para el fichero que acabas de crear
+    var url  = window.URL.createObjectURL(file);
+
+    // creas un enlace y lo añades al documento
+    var a = document.createElement("a");
+    document.body.appendChild(a);
+
+    // actualizas los parámetros del enlace para descargar el fichero creado
+    a.href = url;
+    a.download = file.name;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
   Guardar_parte = async(datos, campo)=>{
     
     if (campo!=='Logo'){

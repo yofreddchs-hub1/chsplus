@@ -30,6 +30,7 @@ const { Ver_api, Login,Verificar, Getall, Getall_C, Setall, Delall, Leer_data, G
         Egew_cuentas_wesi, Egew_cuentas_banco, Egew_movimientos, Egew_userAdmin, Egew_cuentas_sistema, 
         Egew_comprarWesi, Egew_statusComprarWesi, Egew_cambiar_status_compra, Egew_cambiar_password,
         Egew_pagarWesi,
+        Egew_transferirWesi,
       } = require('../controllers/api.controller');
 
 router.post('/ver_api', Ver_api);
@@ -59,6 +60,7 @@ router.post('/movimientos',Egew_movimientos);
 router.post('/useradmin',Egew_userAdmin);
 router.post('/comprawesi',Egew_comprarWesi);
 router.post('/pagarwesi',Egew_pagarWesi);
+router.post('/transferirwesi',Egew_transferirWesi);
 router.post('/statuscomprawesi',Egew_statusComprarWesi);
 router.post('/cambiarpassword',Egew_cambiar_password);
 router.post('/cambiarstatuscompra',Egew_cambiar_status_compra);

@@ -419,52 +419,82 @@
             {
                 "_id": "0175",
                 "titulo": "BANCO BICENTENARIO",
-                "value": "0175"
+                "value": "0175",
+                "permisos": "",
+                "id": 1,
+                "otro": "VED"
             },
             {
                 "_id": "0128",
                 "titulo": "BANCO CARONI, C.A. BANCO UNIVERSAL",
-                "value": "0128"
+                "value": "0128",
+                "permisos": "",
+                "id": 2,
+                "otro": "VED"
             },
             {
                 "_id": "0102",
                 "titulo": "BANCO DE VENEZUELA",
-                "value": "0102"
+                "value": "0102",
+                "id": 3,
+                "permisos": "",
+                "otro": "VED"
             },
             {
                 "_id": "0114",
                 "titulo": "BANCO DEL CARIBE",
-                "value": "0114"
+                "value": "0114",
+                "id": 4,
+                "permisos": "",
+                "otro": "VED"
             },
             {
                 "_id": "0163",
                 "titulo": "BANCO DEL TESORO",
-                "value": "0163"
+                "value": "0163",
+                "id": 5,
+                "permisos": "",
+                "otro": "VED"
             },
             {
                 "_id": "0105",
                 "titulo": "BANCO MERCANTIL",
-                "value": "0105"
+                "value": "0105",
+                "id": 6,
+                "permisos": "",
+                "otro": "VED"
             },
             {
                 "_id": "0191",
                 "titulo": "BANCO NACIONAL DE CREDITO",
-                "value": "0191"
+                "value": "0191",
+                "id": 7,
+                "permisos": "",
+                "otro": "VED"
             },
             {
                 "_id": "0116",
                 "titulo": "BANCO OCCIDENTAL DE DESCUENTO.",
-                "value": "0116"
+                "value": "0116",
+                "id": 8,
+                "permisos": "",
+                "otro": "VED"
             },
             {
                 "_id": "0108",
                 "titulo": "BANCO PROVINCIAL BBVA",
-                "value": "0108"
+                "value": "0108",
+                "id": 9,
+                "permisos": "",
+                "otro": "VED"
             },
             {
                 "_id": "0134",
                 "titulo": "BANESCO BANCO UNIVERSAL",
-                "value": "0134"
+                "value": "0134",
+                "id": 10,
+                "permisos": "",
+                "otro": "VED"
             },
             {
                 "_id": "0177",
@@ -474,22 +504,42 @@
             {
                 "_id": "0190",
                 "titulo": "CITIBANK.",
-                "value": "0190"
+                "value": "0190",
+                "id": 12,
+                "permisos": "",
+                "otro": "VED"
             },
             {
                 "_id": "0121",
                 "titulo": "CORP BANCA.",
-                "value": "0121"
+                "value": "0121",
+                "id": 13,
+                "permisos": "",
+                "otro": "VED"
             },
             {
                 "_id": "0157",
                 "titulo": "DELSUR BANCO UNIVERSAL",
-                "value": "0157"
+                "value": "0157",
+                "id": 14,
+                "permisos": "",
+                "otro": "VED"
             },
             {
                 "_id": "0151",
                 "titulo": "FONDO COMUN",
-                "value": "0151"
+                "value": "0151",
+                "id": 15,
+                "permisos": "",
+                "otro": "VED"
+            },
+            {
+                "_id": "BOA",
+                "titulo": "BANK OF AMERICA",
+                "value": "BOA",
+                "permisos": "",
+                "id": 16,
+                "otro": "USD"
             }
         ],
         "lista_egew_status_compra": [
@@ -816,26 +866,47 @@
             "columna": 2,
             "value": [
                 {
-                    "key": "titulo",
                     "name": "titulo",
                     "label": "Titulo",
                     "placeholder": "Titulo",
                     "required": true,
-                    "mensaje_error": "Debe indicar el titulo a mostra"
+                    "mensaje_error": "Debe indicar el titulo a mostra",
+                    "tipo": "",
+                    "disabled": false
                 },
                 {
-                    "key": "value",
                     "name": "value",
                     "label": "Valor",
                     "placeholder": "Valor",
-                    "title": "Valor que representa este inten en la lista"
+                    "title": "Valor que representa este inten en la lista",
+                    "tipo": "",
+                    "disabled": false
                 },
                 {
-                    "key": "permisos",
                     "name": "permisos",
                     "label": "Permisos",
                     "placeholder": "Permisos",
-                    "title": "Permisos (solo para categoria)"
+                    "title": "Permisos (solo para categoria)",
+                    "tipo": "",
+                    "disabled": false
+                },
+                {
+                    "nombre": "otro",
+                    "tipo": "input",
+                    "label": "Otro",
+                    "placeholder": "Otro",
+                    "title": "Otro valor ",
+                    "required": "false",
+                    "disabled": false,
+                    "lista": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": "false",
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "otro"
                 }
             ]
         },
@@ -2069,6 +2140,7 @@
                     "placeholder": "Seleccione monedero",
                     "title": "",
                     "required": true,
+                    "mensaje_error": "Debe seleccionar monedero",
                     "disabled": false,
                     "lista": [],
                     "agregar": false,
@@ -2085,13 +2157,14 @@
                     "label": "Referencia",
                     "placeholder": "Referencia",
                     "title": "",
-                    "required": "false",
+                    "required": true,
+                    "mensaje_error": "Debe colocar referencia de pago",
                     "disabled": false,
                     "lista": "",
                     "getOptionLabel": [
                         "titulo"
                     ],
-                    "agregar": "false",
+                    "agregar": false,
                     "form": "",
                     "titulos": "",
                     "Subtotal": "",
@@ -2411,6 +2484,67 @@
                     "titulos": "",
                     "Subtotal": "",
                     "name": "password",
+                    "multiline": false
+                }
+            ]
+        },
+        "Form_egew_exchage": {
+            "columna": 1,
+            "value": [
+                {
+                    "nombre": "origen",
+                    "tipo": "Lista",
+                    "label": "Monedero origen",
+                    "placeholder": "Monedero origen",
+                    "title": "Monedero origen",
+                    "required": true,
+                    "mensaje_error": "Selecciones monedero",
+                    "disabled": false,
+                    "lista": [],
+                    "agregar": false,
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "origen",
+                    "multiline": false,
+                    "table": []
+                },
+                {
+                    "nombre": "destino",
+                    "tipo": "Lista",
+                    "label": "Monedero destino",
+                    "placeholder": "Monedero destino",
+                    "title": "Monedero destino",
+                    "required": true,
+                    "mensaje_error": "Seleccione monedero",
+                    "disabled": false,
+                    "lista": [],
+                    "agregar": false,
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "destino",
+                    "multiline": false,
+                    "table": []
+                },
+                {
+                    "nombre": "monto",
+                    "tipo": "number",
+                    "label": "Monto a transferir",
+                    "placeholder": "Monto a transferir",
+                    "title": "Monto a transferir",
+                    "required": true,
+                    "mensaje_error": "Indique monto",
+                    "disabled": false,
+                    "lista": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": "false",
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "monto",
                     "multiline": false
                 }
             ]
@@ -3457,6 +3591,7 @@
                         "placeholder": "Seleccione monedero",
                         "title": "",
                         "required": true,
+                        "mensaje_error": "Debe seleccionar monedero",
                         "disabled": false,
                         "lista": [],
                         "agregar": false,
@@ -3473,13 +3608,14 @@
                         "label": "Referencia",
                         "placeholder": "Referencia",
                         "title": "",
-                        "required": "false",
+                        "required": true,
+                        "mensaje_error": "Debe colocar referencia de pago",
                         "disabled": false,
                         "lista": "",
                         "getOptionLabel": [
                             "titulo"
                         ],
-                        "agregar": "false",
+                        "agregar": false,
                         "form": "",
                         "titulos": "",
                         "Subtotal": "",
@@ -3763,6 +3899,67 @@
                         "multiline": false
                     }
                 ]
+            },
+            "Form_egew_exchage": {
+                "columna": 1,
+                "value": [
+                    {
+                        "nombre": "origen",
+                        "tipo": "Lista",
+                        "label": "Monedero origen",
+                        "placeholder": "Monedero origen",
+                        "title": "Monedero origen",
+                        "required": true,
+                        "mensaje_error": "Selecciones monedero",
+                        "disabled": false,
+                        "lista": [],
+                        "agregar": false,
+                        "form": "",
+                        "titulos": "",
+                        "Subtotal": "",
+                        "name": "origen",
+                        "multiline": false,
+                        "table": []
+                    },
+                    {
+                        "nombre": "destino",
+                        "tipo": "Lista",
+                        "label": "Monedero destino",
+                        "placeholder": "Monedero destino",
+                        "title": "Monedero destino",
+                        "required": true,
+                        "mensaje_error": "Seleccione monedero",
+                        "disabled": false,
+                        "lista": [],
+                        "agregar": false,
+                        "form": "",
+                        "titulos": "",
+                        "Subtotal": "",
+                        "name": "destino",
+                        "multiline": false,
+                        "table": []
+                    },
+                    {
+                        "nombre": "monto",
+                        "tipo": "number",
+                        "label": "Monto a transferir",
+                        "placeholder": "Monto a transferir",
+                        "title": "Monto a transferir",
+                        "required": true,
+                        "mensaje_error": "Indique monto",
+                        "disabled": false,
+                        "lista": "",
+                        "getOptionLabel": [
+                            "titulo"
+                        ],
+                        "agregar": "false",
+                        "form": "",
+                        "titulos": "",
+                        "Subtotal": "",
+                        "name": "monto",
+                        "multiline": false
+                    }
+                ]
             }
         },
         "Listas": {
@@ -3916,52 +4113,82 @@
                 {
                     "_id": "0175",
                     "titulo": "BANCO BICENTENARIO",
-                    "value": "0175"
+                    "value": "0175",
+                    "permisos": "",
+                    "id": 1,
+                    "otro": "VED"
                 },
                 {
                     "_id": "0128",
                     "titulo": "BANCO CARONI, C.A. BANCO UNIVERSAL",
-                    "value": "0128"
+                    "value": "0128",
+                    "permisos": "",
+                    "id": 2,
+                    "otro": "VED"
                 },
                 {
                     "_id": "0102",
                     "titulo": "BANCO DE VENEZUELA",
-                    "value": "0102"
+                    "value": "0102",
+                    "id": 3,
+                    "permisos": "",
+                    "otro": "VED"
                 },
                 {
                     "_id": "0114",
                     "titulo": "BANCO DEL CARIBE",
-                    "value": "0114"
+                    "value": "0114",
+                    "id": 4,
+                    "permisos": "",
+                    "otro": "VED"
                 },
                 {
                     "_id": "0163",
                     "titulo": "BANCO DEL TESORO",
-                    "value": "0163"
+                    "value": "0163",
+                    "id": 5,
+                    "permisos": "",
+                    "otro": "VED"
                 },
                 {
                     "_id": "0105",
                     "titulo": "BANCO MERCANTIL",
-                    "value": "0105"
+                    "value": "0105",
+                    "id": 6,
+                    "permisos": "",
+                    "otro": "VED"
                 },
                 {
                     "_id": "0191",
                     "titulo": "BANCO NACIONAL DE CREDITO",
-                    "value": "0191"
+                    "value": "0191",
+                    "id": 7,
+                    "permisos": "",
+                    "otro": "VED"
                 },
                 {
                     "_id": "0116",
                     "titulo": "BANCO OCCIDENTAL DE DESCUENTO.",
-                    "value": "0116"
+                    "value": "0116",
+                    "id": 8,
+                    "permisos": "",
+                    "otro": "VED"
                 },
                 {
                     "_id": "0108",
                     "titulo": "BANCO PROVINCIAL BBVA",
-                    "value": "0108"
+                    "value": "0108",
+                    "id": 9,
+                    "permisos": "",
+                    "otro": "VED"
                 },
                 {
                     "_id": "0134",
                     "titulo": "BANESCO BANCO UNIVERSAL",
-                    "value": "0134"
+                    "value": "0134",
+                    "id": 10,
+                    "permisos": "",
+                    "otro": "VED"
                 },
                 {
                     "_id": "0177",
@@ -3971,22 +4198,42 @@
                 {
                     "_id": "0190",
                     "titulo": "CITIBANK.",
-                    "value": "0190"
+                    "value": "0190",
+                    "id": 12,
+                    "permisos": "",
+                    "otro": "VED"
                 },
                 {
                     "_id": "0121",
                     "titulo": "CORP BANCA.",
-                    "value": "0121"
+                    "value": "0121",
+                    "id": 13,
+                    "permisos": "",
+                    "otro": "VED"
                 },
                 {
                     "_id": "0157",
                     "titulo": "DELSUR BANCO UNIVERSAL",
-                    "value": "0157"
+                    "value": "0157",
+                    "id": 14,
+                    "permisos": "",
+                    "otro": "VED"
                 },
                 {
                     "_id": "0151",
                     "titulo": "FONDO COMUN",
-                    "value": "0151"
+                    "value": "0151",
+                    "id": 15,
+                    "permisos": "",
+                    "otro": "VED"
+                },
+                {
+                    "_id": "BOA",
+                    "titulo": "BANK OF AMERICA",
+                    "value": "BOA",
+                    "permisos": "",
+                    "id": 16,
+                    "otro": "USD"
                 }
             ],
             "lista_egew_status_compra": [
