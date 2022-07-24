@@ -97,7 +97,7 @@ Verificar_horas = async (datos, i, j, hor, nuevo, columna, limpiar, user,codigo_
         hor=hor.valores;
         let guardar = true
         // if (!limpiar)
-        // console.log(codigo_titulo, i,j, hor.horario[i][j].valor === columna.valor, limpiar)
+        
         if (hor.horario[i][j].valor==='' && !limpiar){
             let espacio=columna.espacio===0 ? 0 : 1;
             if (columna.espacio>espacio){
@@ -119,11 +119,11 @@ Verificar_horas = async (datos, i, j, hor, nuevo, columna, limpiar, user,codigo_
                 },
                 tipo:codigo_tipo
             }
-            // console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>Agregar', i, j, columna.valor)
+            
         }else if (hor.horario[i][j].valor!=='' && hor.horario[i][j].valor === columna.valor && hor.horario[i][j].seccion.titulo === titulo && limpiar){
             hor.horario[i][j]={dia:nuevo[i][j].dia, hora:nuevo[i][j].hora, espacio: 1, valor:'', mensaje:''};
             if (hor.horario[i+1][j].espacio===0) hor.horario[i+1][j].espacio=1;
-            // console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>Remover', i, j, columna.valor)
+            
         }else if(hor.horario[i][j].valor==='' && limpiar){
             guardar=false;
         }else if(!limpiar){
@@ -134,7 +134,6 @@ Verificar_horas = async (datos, i, j, hor, nuevo, columna, limpiar, user,codigo_
                 columna.mensaje+=` y con ${codigo_tipo} "${codigo_titulo}", entre "${titulo} y ${hor.horario[i][j].seccion.titulo}"`
             }
         }else{
-            console.log('Verificar igualdad en limpiar',i,j, codigo_titulo, limpiar, hor.horario[i][j].valor,'valor columna', columna.valor);
             hor.horario[i][j].mensaje='';
             let cont=1;
             while(hor.horario[i+cont][j].mensaje!=='' && hor.horario[i+cont][j].valor === columna.valor && hor.horario[i+cont][j].seccion.titulo){
