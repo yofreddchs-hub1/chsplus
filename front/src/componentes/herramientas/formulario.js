@@ -43,7 +43,8 @@ class Formulario extends Component {
             open:false,  
           },
           Mensaje:{},
-          Mas:this.Mas
+          Mas:this.Mas,
+          config: props.config ? props.config : Ver_Valores().config
       }
   }
   
@@ -71,7 +72,7 @@ class Formulario extends Component {
   Mas = async(valor)=>{
     // esta hecho solo para valores y campos
     let {form}=this.state;
-    const Config= Ver_Valores().config
+    const Config= this.state.config ? this.state.config : Ver_Valores().config
     
     const objeto= this.Buscar_objeto_p(valor.name,form);
 
@@ -420,7 +421,8 @@ class Formulario extends Component {
         botones,
         estilospage,
         resultados,
-        Agregar
+        Agregar,
+        config: props.config
       };
     }
     // No state update necessary
@@ -461,7 +463,7 @@ class Formulario extends Component {
   }
 
   seleccion_tipo = async(nuevos,dato)=>{
-    const Config= Ver_Valores().config
+    const Config= this.state.config ? this.state.config : Ver_Valores().config
     nuevos.datos=dato.resultados;
     nuevos.titulos.tipo.value=nuevos.datos.tipo;
     // nuevos.titulos.tipo.disabled= true;
@@ -506,7 +508,7 @@ class Formulario extends Component {
   }
 
   Agregar_formulario =async()=>{
-    const Config= Ver_Valores().config
+    const Config= this.state.config ? this.state.config : Ver_Valores().config
     const Form_origen = await Form_todos('Form_agregaritem');
     let nuevos = await genera_fromulario({valores:{}, campos: Form_origen }, 1)
     nuevos.titulos.tipo.onChange= (dato)=>this.seleccion_tipo(nuevos,dato)
@@ -581,7 +583,7 @@ class Formulario extends Component {
   
   Remover_formulario = ()=>{
     // console.log('Remover')
-    const Config= Ver_Valores().config
+    const Config= this.state.config ? this.state.config : Ver_Valores().config
     const {form}=this.state;
     let lista = Object.keys(form).map((v,i)=>{
       return {_id:i, titulo:form[v].placeholder, value:v} 
@@ -634,11 +636,11 @@ class Formulario extends Component {
     return (
       <div>
         <Page
-            config= {this.state.props.config}
+            config= {this.state.config}
             datos={{...this.state}}
             http_server={this.props.http_server}
         />
-        <Dialogo  {...this.state.dialogo} config={Ver_Valores().config ? Ver_Valores().config : {Estilos:{}}}/>
+        <Dialogo  {...this.state.dialogo} config={this.state.config ? this.state.config : Ver_Valores().config ? Ver_Valores().config : {Estilos:{}}}/>
       </div>
     )
   }

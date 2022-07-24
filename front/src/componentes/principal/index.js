@@ -17,6 +17,9 @@ import logo from '../../imagenes/logo.png';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 
+// import Noexiste from '../herramientas/pantallas/noexiste';
+import Enconstruccion from '../herramientas/pantallas/enconstruccion';
+
 const drawerWidth = 260;
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -25,6 +28,8 @@ const Item = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(1),
   textAlign: 'center',
   color: theme.palette.text.secondary,
+  height: window.innerHeight * 0.9,
+  overflow: 'auto'
 }));
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
@@ -76,7 +81,13 @@ export default function PersistentDrawerLeft(props) {
   const theme = useTheme();
   const {Config}=props;
   const [open, setOpen] = React.useState(true);
-
+  const [state,setState] = React.useState(()=>{
+    const Inicio= props.pantallas ? props.pantallas.Inicio : undefined
+    return {
+      Pantalla: props.Pantalla ? props.Pantalla : Inicio ? <Inicio {...props}/> : undefined ,
+      Seleccion: props.Seleccion ? props.Seleccion : props.pantallas ? 'Inicio' : undefined
+    }
+  });
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -84,6 +95,38 @@ export default function PersistentDrawerLeft(props) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  const Buscar_pantalla = async (listas, seleccion) =>{
+    let Pantallas={}
+    // Object.keys(listas).map(async v=>{
+    for (var i=0 ; i<Object.keys(listas).length; i++ ){ 
+      let v=Object.keys(listas)[i];
+      if (typeof listas[v]==='object'){
+        let nuevo= await Buscar_pantalla(listas[v], seleccion)
+        Pantallas={...Pantallas, ...nuevo}
+      }else if(v===seleccion){
+        const P = listas[v]
+        Pantallas[v]=<P {...props}/>
+      }  
+      // return v
+    }//)
+    
+    return Pantallas
+  }
+
+  const Seleccion_pantalla = async(value, padre)=>{
+    // let {Config}= props;
+    // this.Sacar(Config.Menu)
+    let seleccion= value.pantalla ? value.pantalla : value.value;
+    let pantalla= value.primary;
+    
+    let Pantallas= await Buscar_pantalla(props.pantallas, seleccion)
+    
+    seleccion = Pantallas[seleccion] ? Pantallas[seleccion] :  <Enconstruccion />
+    
+    setState({...state, Pantalla:seleccion, Seleccion:pantalla})
+
+  }
 
   return (
     <Box sx={{ display: 'flex'}}>
@@ -128,7 +171,10 @@ export default function PersistentDrawerLeft(props) {
         </DrawerHeader>
         <Divider />
         
-        <ListaMenu {...props}/>
+        <ListaMenu {...props} 
+                    {...state}
+                    Seleccion_pantalla= {Seleccion_pantalla}
+        />
          
       </Drawer>
       <Main open={open}>
@@ -136,7 +182,7 @@ export default function PersistentDrawerLeft(props) {
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Item>
-              {props.Pantalla ? props.Pantalla : null}
+              {state.Pantalla ? state.Pantalla : null}
             </Item>
           </Grid>
         </Grid>

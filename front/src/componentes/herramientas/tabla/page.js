@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { styled, alpha } from '@mui/material/styles';
+import AppBar from '@mui/material/AppBar';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -17,8 +18,10 @@ import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import {Form_todos} from '../../../constantes';
-import {genera_fromulario} from '../../../procesos/servicios';
+import {genera_fromulario, Generar_id} from '../../../procesos/servicios';
 import Formulario from '../formulario';
+import Sindatos from '../pantallas/sindatos';
+import moment from 'moment';
 
 function LinearProgressWithLabel(props) {
   return (
@@ -160,12 +163,12 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 // }));
 export default function Tabla(props) {
   
-  const {titulos, datos, Config, Titulo, acciones, actualizando, progreso, Accion} = props;
+  const {titulos, datos, Config, Titulo, acciones, acciones1, actualizando, progreso, Accion} = props;
   
-  const alto=window.innerHeight* 0.70;
+  const alto= props.sinpaginacion ? window.innerHeight* 0.77 : window.innerHeight* 0.70;
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-
+  
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -192,58 +195,62 @@ export default function Tabla(props) {
   if (props.enformulario && Seleccion===null){
     seleccion()
   }
-
+  
   return (
     <Paper sx={{ width: '100%',  }}>
+      <AppBar position="static" style={{padding:10, ...Config.Estilos.Tabla_cabezera ? Config.Estilos.Tabla_cabezera : {} }}>
+        <Grid container spacing={0.5} justifyContent="center" alignItems="center">
+          <Grid item xs={3}>
+            <Typography variant="h5" gutterBottom component="div" align={'left'} 
+                        style={{...Config.Estilos.Tabla_titulo ? Config.Estilos.Tabla_titulo : {}}}
+            >
+              {Titulo}
+            </Typography>
+          </Grid>
+          <Grid item xs={6} align={'left'}>
+            {acciones? acciones : props.enformulario ? Seleccion  :null}
+          </Grid>
+          <Grid item xs={3}>
+            <Search style={{...Config.Estilos.Tabla_buscar_fondo ? Config.Estilos.Tabla_buscar_fondo : {}}}>
+              <SearchIconWrapper>
+                <SearchIcon sx={{...Config.Estilos.Tabla_buscar_icono ? Config.Estilos.Tabla_buscar_icono : {}}}/>
+              </SearchIconWrapper>
+              <StyledInputBase
+                placeholder="Búsqueda…"
+                inputprops={{ 'aria-label': 'search' }}
+                onChange={props.Buscar ? props.Buscar : (value)=>console.log('Buscar =>',value.target.value)}
+                style={{...Config.Estilos.Tabla_buscar_input ? Config.Estilos.Tabla_buscar_input : {}}}
+              />
+            </Search>
+          </Grid>
+          {acciones1 
+            ? <Grid item xs={12}>
+                {acciones1}
+              </Grid>
+            : null
+        
+          }
+          <Grid item xs={12}>
+            {
+              // datos.length===0
+              //   ? <Typography variant="h6" gutterBottom component="div" align={'center'} 
+              //           style={{...Config.Estilos.Tabla_titulo ? Config.Estilos.Tabla_titulo : {}}}
+              //     >
+              //       Sin datos encontrados
+              //     </Typography>
+              //   : 
+              actualizando 
+                ? <Box sx={{ width: '100%' }}>
+                    <LinearProgressWithLabel value={progreso!==undefined ? progreso : 0} />
+                  </Box>
+                : null
+            }
+          </Grid>
+        </Grid>
+      </AppBar>
       <TableContainer sx={{ height: alto}}>
         <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow>
-              <TableCell align="center" colSpan={titulos ? titulos.length : 1} 
-                         style={{padding:-40, ...Config.Estilos.Tabla_cabezera ? Config.Estilos.Tabla_cabezera : {}}}
-              >
-              <Grid container spacing={0.5}>
-                <Grid item xs={3}>
-                  <Typography variant="h5" gutterBottom component="div" align={'left'} 
-                              style={{...Config.Estilos.Tabla_titulo ? Config.Estilos.Tabla_titulo : {}}}
-                  >
-                    {Titulo}
-                  </Typography>
-                </Grid>
-                <Grid item xs={6} align={'left'}>
-                  {acciones? acciones : props.enformulario ? Seleccion  :null}
-                </Grid>
-                <Grid item xs={3}>
-                  <Search style={{...Config.Estilos.Tabla_buscar_fondo ? Config.Estilos.Tabla_buscar_fondo : {}}}>
-                    <SearchIconWrapper>
-                      <SearchIcon sx={{...Config.Estilos.Tabla_buscar_icono ? Config.Estilos.Tabla_buscar_icono : {}}}/>
-                    </SearchIconWrapper>
-                    <StyledInputBase
-                      placeholder="Búsqueda…"
-                      inputProps={{ 'aria-label': 'search' }}
-                      onChange={props.Buscar ? props.Buscar : (value)=>console.log('Buscar =>',value.target.value)}
-                      style={{...Config.Estilos.Tabla_buscar_input ? Config.Estilos.Tabla_buscar_input : {}}}
-                    />
-                  </Search>
-                </Grid>
-                <Grid item xs={12}>
-                  {
-                    datos.length===0
-                      ? <Typography variant="h6" gutterBottom component="div" align={'center'} 
-                              style={{...Config.Estilos.Tabla_titulo ? Config.Estilos.Tabla_titulo : {}}}
-                        >
-                          Sin datos encontrados
-                        </Typography>
-                      : actualizando 
-                      ? <Box sx={{ width: '100%' }}>
-                          <LinearProgressWithLabel value={progreso!==undefined ? progreso : 0} />
-                        </Box>
-                      : null
-                  }
-                </Grid>
-              </Grid>
-              </TableCell>
-            </TableRow>
+          <TableHead>       
             <TableRow>
               {titulos 
                 ? titulos.map((column) => {
@@ -259,7 +266,7 @@ export default function Tabla(props) {
                       {...ncolumn}
                       key={column.title}
                       align={column.align ? column.align : "center"}
-                      style={{ top: 57, minWidth: column.minWidth, fontSize:16, fontWeight:'bold',
+                      style={{ minWidth: column.minWidth, fontSize:16, fontWeight:'bold',
                                 ...Config.Estilos.Tabla_titulos ? Config.Estilos.Tabla_titulos : {} 
                             }}
                     >
@@ -271,51 +278,75 @@ export default function Tabla(props) {
               
             </TableRow>
           </TableHead>
-          <TableBody>
-            {datos
-              .map((row, j) => {
-                return (
-                  <StyledTableRow 
-                        hover role="checkbox" 
-                        tabIndex={-1} 
-                        key={row._id} 
-                        onClick={()=>Accion(row)}
-                  >
-                    {titulos.map((column,i) => {
-                      const value = row[column.field];
-                      return (
-                        <StyledTableCell key={column.field+i+j} align={column.align}>
-                          {column.format && typeof value === 'number'
-                            ? column.format(value)
-                            : column.tipo && column.tipo==='foto'
-                            ? <div style={{display:'flex', justifyContent:'center', justifyItems:'center',alignItems:'center',}}>
-                                <Avatar
-                                  alt={column.field}
-                                  src={column.formato ? column.formato(row) : value}
-                                  sx={{ width: 56, height: 56 }}
-                                />
-                              </div>
-                            : column.tipo && column.tipo==='imagen'
-                            ? <div style={{display:'flex', justifyContent:'center', justifyItems:'center',alignItems:'center',}}>
-                                <img
-                                  alt={column.field}
-                                  src={column.formato ? `${column.formato(row)}?w=248&fit=crop&auto=format` : `${value}?w=48&fit=crop&auto=format`}
-                                  srcSet={column.formato ? `${column.formato(row)}?w=248&fit=crop&auto=format` : `${value}?w=48&fit=crop&auto=format&dpr=1 1x`}
-                                  loading="lazy"
-                                  style={{ width: 66 }}
-                                />
-                              </div>
-                            : column.formato
-                            ? column.formato(row)
-                            : value}
-                        </StyledTableCell>
-                      );
-                    })}
-                  </StyledTableRow>
-                );
-              })}
-          </TableBody>
+          {datos.length===0
+            ? null
+            :  <TableBody>
+                {datos
+                  .map((row, j) => {
+                    return (
+                      <StyledTableRow 
+                            hover role="checkbox" 
+                            tabIndex={-1} 
+                            key={row._id ? row._id : Generar_id(j)} 
+                            onClick={()=>Accion(row)}
+                      >
+                        {titulos.map((column,i) => {
+                          const value = row[column.field];
+                          return (
+                            <StyledTableCell key={column.field+i+j} align={column.align}>
+                              {column.format && typeof value === 'number'
+                                ? column.format(value)
+                                : column.tipo && column.tipo==='foto'
+                                ? <div style={{display:'flex', justifyContent:'center', justifyItems:'center',alignItems:'center',}}>
+                                    <Avatar
+                                      alt={column.field}
+                                      src={column.formato ? column.formato(row) : value}
+                                      sx={{ width: 56, height: 56 }}
+                                    />
+                                  </div>
+                                : column.tipo && column.tipo==='imagen'
+                                ? <div style={{display:'flex', justifyContent:'center', justifyItems:'center',alignItems:'center',}}>
+                                    <img
+                                      alt={column.field}
+                                      src={column.formato ? `${column.formato(row)}?w=248&fit=crop&auto=format` : `${value}?w=48&fit=crop&auto=format`}
+                                      srcSet={column.formato ? `${column.formato(row)}?w=248&fit=crop&auto=format` : `${value}?w=48&fit=crop&auto=format&dpr=1 1x`}
+                                      loading="lazy"
+                                      style={{ width: 66 }}
+                                    />
+                                  </div>
+                                : column.tipo && column.tipo==='representados' && typeof column.formato(row) ==='object'
+                                ? <div style={{ }}>
+                                    {column.formato(row).map(val=>
+                                      <Typography key={val.cedula} variant="body1" gutterBottom>
+                                      {val.cedula + ' ' + val.nombres + ' ' + val.apellidos}
+                                      </Typography>  
+                                      
+                                    )}
+                                  </div>
+                                : column.tipo && column.tipo==='fecha' && column.formato
+                                ? moment(column.formato(row)).format('DD/MM/YYYY')
+                                : column.formato
+                                ? typeof column.formato(row)==='object'
+                                ? String(column.formato(row))
+                                : column.formato(row)
+                                : value}
+                            </StyledTableCell>
+                          );
+                        })}
+                      </StyledTableRow>
+                    );
+                  })}
+               </TableBody>
+          }
         </Table>
+        {actualizando 
+          ? <Box sx={{ width: '100%' }}>
+              <LinearProgress color="inherit"/>
+            </Box>
+          : datos.length===0
+          ? <Sindatos />
+          : null
+        }
       </TableContainer>
       {props.sinpaginacion
         ? null 

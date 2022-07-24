@@ -33,6 +33,9 @@ const { Ver_api, Login,Verificar, Getall, Getall_C, Setall, Delall, Leer_data, G
         Egew_transferirWesi,
       } = require('../controllers/api.controller');
 
+const {Mensualidades, EnviarPago, Solvencias, Resumen} = require('../controllers/colegio.controller');
+const { LeerHorario, GuardarHorario, DisponibilidadHorario, MisDatos } = require('../controllers/unefa.controller');
+
 router.post('/ver_api', Ver_api);
 router.post('/login/verificar', Verificar);
 router.post('/login', Login);
@@ -65,8 +68,18 @@ router.post('/statuscomprawesi',Egew_statusComprarWesi);
 router.post('/cambiarpassword',Egew_cambiar_password);
 router.post('/cambiarstatuscompra',Egew_cambiar_status_compra);
 
-
+// Para colegio
+router.post('/colegio/mensualidades',Mensualidades);
+router.post('/colegio/solvencias',Solvencias);
+router.post('/colegio/enviarpago',EnviarPago);
+router.post('/colegio/resumen',Resumen);
 // router.get('/imagen/:filename',Ver_Imagen);
+
+//Para Unefa
+router.post('/unefa/leerhorario',LeerHorario);
+router.post('/unefa/guardarhorario',GuardarHorario);
+router.post('/unefa/disponibilidadhorario',DisponibilidadHorario);
+router.post('/unefa/misdatos',MisDatos);
 
 
 module.exports = router;

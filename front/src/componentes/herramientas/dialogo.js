@@ -31,7 +31,7 @@ const BootstrapDialogTitle = (props) => {
       sx={{ m: 0, p: 2, display:'flex', height:70, alignItems: 'center',...config.Estilos.Barra_menu ? config.Estilos.Barra_menu :{} }} 
       {...other}
     >
-      <img src={config.logo ? config. logo : logo}  alt="logo" 
+      <img src={config.Logo ? config.Logo : logo}  alt="logo" 
             style={{height:60, width:60, ...config.Estilos.Logo ? config.Estilos.Logo : {} }}
       />
       <div style={{width:20, backgroundColor:'#f0f'}} />

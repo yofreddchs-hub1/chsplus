@@ -61,12 +61,15 @@ export default class CrearFormulario extends Component {
 
   Guardar = async(valores, campos)=>{
     let Config = Ver_Valores().config;
-    const nuevo = await this.Ordenar(campos)
+    const nuevo = this.state.formulario_seleccionado//this.state.nueva_entrada.value //await this.Ordenar(campos)
     Config.Formularios[this.state.seleccionado]={columna:Number(this.state.columnas), value:nuevo}
     let nuevoc=Config;
+    
     nuevoc=JSON.stringify(nuevoc, null, 4)
+    
     const resul= await conexiones.Guardar_data(`data/datos${'.js'}`,nuevoc)
     return resul
+    
     // const nuevo = desgenera_formulario(campos)
   }
 
@@ -101,20 +104,21 @@ export default class CrearFormulario extends Component {
       if(typeof valores.getOptionLabel==='string'){
         valores.getOptionLabel=valores.getOptionLabel.split(',')
       }
-      if(typeof valores.form!=='string'){
+      if(typeof valores.form!=='string' && valores.form!==undefined){
         nuevo.form=valores.form.titulo
       }
-      if(typeof valores.titulos!=='string'){
+      if(typeof valores.titulos!=='string' && valores.form!==undefined){
         nuevo.titulos=valores.titulos.titulo
       }
-      nuevo.lista=lista;
-      nuevo.required=true;
+      nuevo.lista= nuevo.lista.titulo//lista;
+      // nuevo.required=true;
       nuevo.getOptionLabel=valores.getOptionLabel;
       // nuevo.form=valores.form;
       
     }
     
     nuevo={columna:1, value:[nuevo]}
+    
     let muestra_entrada = await genera_fromulario({valores:{}, campos:nuevo });
     muestra_entrada.botones=[
       {
@@ -133,8 +137,8 @@ export default class CrearFormulario extends Component {
         disabled: !Permiso('eliminar'),
       },
     ];
-    // console.log(nuevo, muestra_entrada)
-    this.setState({muestra_entrada})
+    
+    this.setState({muestra_entrada, nueva_entrada:nuevo})
   }
 
   Mas_menos = (campo, valor, agregar=true)=>{
@@ -178,6 +182,18 @@ export default class CrearFormulario extends Component {
     
     const campo= Object.keys(campos)[0];
     this.Mas_menos(campo,campos[campo])
+    if (this.state.nueva_entrada){
+      let formulario_final = this.state.formulario_seleccionado;
+      let nuevo = this.state.nueva_entrada.value;
+      const pos = formulario_final.findIndex(f=> f.name===nuevo[0].name)
+      
+      if (pos===-1){
+        formulario_final=[...formulario_final, ...nuevo];
+      }else{
+        formulario_final[pos]=nuevo[0];
+      }
+      this.setState({formulario_seleccionado:formulario_final})
+    }
   }
 
   Eliminar_campo = async(valores, campos) =>{
@@ -186,6 +202,17 @@ export default class CrearFormulario extends Component {
     // delete formulario_muestra.titulos[campo]
     // this.setState({formulario_muestra})
     this.Mas_menos(campo,{},false)
+    if (this.state.nueva_entrada){
+      let formulario_final = this.state.formulario_seleccionado;
+      let nuevo = this.state.nueva_entrada.value;
+      const pos = formulario_final.findIndex(f=> f.name===nuevo[0].name)
+      
+      if (pos!==-1){
+        // delete formulario_final[pos]
+        formulario_final=formulario_final.filter((f,i)=>i!==pos)
+      }
+      this.setState({formulario_seleccionado:formulario_final})
+    }
   }
 
   Seleccion_tipo = async (valores, campos)=>{
@@ -222,7 +249,7 @@ export default class CrearFormulario extends Component {
         campos.getOptionLabel.disabled=true;
       }
 
-      // console.log(tipo)
+      
     }else if(valores.name==='agregar' && valores.resultados.tipo.value==='lista_multiuso'){
       
       campos.agregar.value=valores.resultados.agregar;
@@ -238,10 +265,12 @@ export default class CrearFormulario extends Component {
     
     const Config = Ver_Valores().config;
     const entrada=valores.resultados[valores.name]
+    
     if (entrada.titulo!=='Agregar'){
       let muestra = {...Form_todos(`${this.state.seleccionado}`)}
       muestra.columna=1;
       muestra.value= muestra.value.filter(f=> f.name===entrada.titulo)
+      
       let muestra_entrada = await genera_fromulario({valores:{}, campos: muestra })
       
       let tipo = muestra.value[0].tipo;
@@ -348,7 +377,7 @@ export default class CrearFormulario extends Component {
       ];
       
 
-      this.setState({muestra_entrada, input_campos})
+      this.setState({muestra_entrada, input_campos, nueva_entrada:muestra})
     }else{
       
       let input_campos = await genera_fromulario({
@@ -458,7 +487,9 @@ export default class CrearFormulario extends Component {
 
       let muestra_entrada=undefined;
       let input_campos=undefined;
-      this.setState({columnas, formularios, formulario_muestra, muestra_entrada, input_campos, seleccionado:formulario.titulo})
+      let formulario_seleccionado = Form_todos(`${formulario.titulo}`).value;
+
+      this.setState({columnas, formularios, formulario_muestra, formulario_seleccionado, muestra_entrada, input_campos, seleccionado:formulario.titulo})
     }else{
       
       let nuevos = await genera_fromulario({valores:{}, campos: Form_todos('Form_Listas_n') });
@@ -541,7 +572,7 @@ export default class CrearFormulario extends Component {
     let muestra_entrada=undefined;
     let input_campos=undefined;
     let formulario_muestra=undefined;
-    this.setState({formularios, database, lista_form, lista_cabezera, Config, muestra_entrada, input_campos, formulario_muestra,})
+    this.setState({formularios, database, lista_form, lista_cabezera, Config, muestra_entrada, input_campos, formulario_muestra, })
   }
 
   async componentDidMount(){

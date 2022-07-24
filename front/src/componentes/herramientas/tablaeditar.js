@@ -163,8 +163,7 @@ function CustomPagination() {
 // ];
 
 export default function AntDesignGrid(props) {
-  const {Titulo, titulos, datos, Subtotalvalor}= props
-  
+  const {Titulo, titulos, datos, Subtotalvalor, nopaginar, noeliminar, style, poderseleccionar}= props
   const { data } = useDemoData({
     dataSet: 'Commodity',
     rowLength: 10,
@@ -175,6 +174,14 @@ export default function AntDesignGrid(props) {
   const [rows, setRows] = React.useState([]);
   const [columns, setColumns] = React.useState([]);
   const seleccion = async()=>{
+    if (props.enformulario.Form===undefined && props.enformulario.form===undefined){
+      setSeleccion(
+        <div style={{marginTop:-45, marginBottom:-50}}>
+        
+        </div>
+      )
+      return
+    }
     let nuevos = await genera_fromulario({valores:{}, campos: Form_todos(`${props.enformulario.Form ? props.enformulario.Form : props.enformulario.form}`) })
     if(nuevos.titulos.select_a)
       nuevos.titulos.select_a.onChange=props.enformulario.onChange;
@@ -199,39 +206,41 @@ export default function AntDesignGrid(props) {
   const InicarColumnas=(rows)=>{
     let width= titulos ? window.innerWidth * 0.50 / titulos.length : window.innerWidth;
     const columnas= titulos 
-    ? titulos.map(titulo=>{
-      
-      return {
-        headerAlign: 'center', 
-        headerName:titulo.title,
-        minWidth:153.0,
-        width,
-        ...titulo,
-        valueGetter:(dato)=>{
-          // console.log(dato)
-          let valor =titulo.formato ? titulo.formato(dato) : dato.value  
-          if (!valor || valor==='NaN')
-            valor=titulo.formato ? titulo.formato(dato.row) : dato.row[titulo.field] 
-          if (!valor || valor==='NaN')
-            valor=titulo.formato ? titulo.formato(rows[dato.id]) : null
-          // if (dato.field==='total')
-          // console.log(valor, typeof valor, rows[dato.id]) 
-          return titulo.type==='number' ? Number(['NaN',NaN].indexOf(String(valor))===-1 ? valor : 0).toLocaleString() : valor
-        }//titulo.formato ? titulo.formato : null
-      }
-    })
-    : []
+      ? titulos.map(titulo=>{
+        return {
+          headerAlign: 'center', 
+          headerName:titulo.title,
+          minWidth:titulo.width ? titulo.width : 153.0,
+          flex: titulo.flex ? titulo.flex : 1,
+          width,
+          ...titulo,
+          valueGetter:(dato)=>{
+            // console.log(dato)
+            let valor =titulo.formato ? titulo.formato(dato) : dato.value  
+            if (!valor || valor==='NaN')
+              valor=titulo.formato ? titulo.formato(dato.row) : dato.row[titulo.field] 
+            if (!valor || valor==='NaN')
+              valor=titulo.formato ? titulo.formato(rows[dato.id]) : null
+            // if (dato.field==='total')
+            // console.log(valor, typeof valor, rows[dato.id]) 
+            return titulo.type==='number' ? Number(['NaN',NaN].indexOf(String(valor))===-1 ? valor : 0).toLocaleString() : valor
+          }//titulo.formato ? titulo.formato : null
+        }
+      })
+      : []
     setColumns([
-      {
-        field: 'actions',
-        type: 'actions',
-        headerAlign: 'center', 
-        
-        width: 50,
-        getActions: (data) => [
-          <GridActionsCellItem icon={<DeleteIcon />} label="Delete" onClick={()=>Eliminar(data, rows)}/>,
-        ],
-      },
+      ... !noeliminar
+        ? [{
+            field: 'actions',
+            type: 'actions',
+            headerAlign: 'center', 
+            
+            width: 50,
+            getActions: (data) => [
+              <GridActionsCellItem icon={<DeleteIcon />} label="Delete" onClick={()=>Eliminar(data, rows)}/>,
+            ],
+          }]
+        :[],
       ...columnas,
     ])
   }
@@ -250,7 +259,7 @@ export default function AntDesignGrid(props) {
       
       let nuevo = datos 
         ? datos.map((data,i)=>{
-          let resultado={...data, id:i}
+          let resultado={...data, id: data.id ? data.id : i}
           if (titulos){
             titulos.map(titulo=>{
               let valor =titulo.formato ? titulo.formato(resultado) : null
@@ -395,7 +404,7 @@ export default function AntDesignGrid(props) {
         // checkboxSelection
         // hideFooter
         components={{
-          Pagination: CustomPagination,
+          Pagination: !nopaginar ? CustomPagination : null,
           NoRowsOverlay: CustomNoRowsOverlay,
           Footer: props.Subtotal 
                     ? () =>SubTotales({name:props.name, Subtotal:props.Subtotal, Cambio:props.Cambio, Subtotalvalor ,rows}) 
@@ -406,6 +415,7 @@ export default function AntDesignGrid(props) {
         rows={rows}
         editRowsModel={editRowsModel}
         onEditRowsModelChange={handleEditRowsModelChange}
+        disableSelectionOnClick={!poderseleccionar}
         sx={{
           boxShadow: 2,
           border: 2,
@@ -413,6 +423,7 @@ export default function AntDesignGrid(props) {
           '& .MuiDataGrid-cell:hover': {
             color: 'primary.main',
           },
+          ...style ? style : {}
         }}
       />
     </div>
@@ -427,7 +438,6 @@ const SubTotales= (props) =>{
   const {rows}=props;
   const height=40;
   const width=150;
-
   const igual =(primero, segundo)=>{
     let ig=true;
     Object.keys(primero).map(val=>{
@@ -469,18 +479,26 @@ const SubTotales= (props) =>{
   }, [rows]);
   
   return(
-    <Stack sx={{padding:1}} spacing={0.2} >
+    <Stack sx={{padding:1, backgroundColor:'#1D1D1D',
+                  border: 2,
+                  borderColor: 'primary.light',
+                  '& .MuiDataGrid-cell:hover': {
+                    color: 'primary.main',
+                  },
+              }} 
+      spacing={0.1} 
+    >
       {props.Subtotal.map((val, i)=>
         
         <Stack  key={i+'-fila'} 
             direction="row" 
-            spacing={1}
+            spacing={4}
             justifyContent="flex-end"
             alignItems="center"
             sx={{padding:0}}
       >
         {val.map((col,j)=>
-          <Stack key={i+'-'+j} direction="row" justifyContent="flex-end" sx={{width}}>
+          <Stack key={i+'-'+j} direction="row" justifyContent="flex-end" sx={{}}>
             {col.tipo==='input'
               ? <Stack direction="row">
                   <TextField
@@ -504,10 +522,12 @@ const SubTotales= (props) =>{
                   <Typography variant="h6" gutterBottom component="div">%</Typography>
                 </Stack>
               : <Typography variant="h6" gutterBottom component="div">
-                  {col.title 
+                  {col.title && !col.field
                     ? col.title 
+                    : col.field && col.title
+                    ? `${col.title} ${Number(resultado[col.field]).toLocaleString()}`
                     : col.field
-                    ? Number(resultado[col.field]).toLocaleString()
+                    ? `${Number(resultado[col.field]).toLocaleString()}`
                     : 'nada' 
                   }
                 </Typography>

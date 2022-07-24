@@ -22,9 +22,18 @@ export const conexiones = {
   Guardar_data,
   Eliminar_data,
   DataBase,
-  Amolatina,
   Verificar,
-  Guardar_excel
+  Guardar_excel,
+  ValorCambio,
+  Mensualidades,
+  Solvencias,
+  Resumen,
+  Enviar_pago,
+  //unefa
+  MisDatos,
+  LeerHorario,
+  GuardarHorario,
+  DisponibilidadHorario
 }
 
 //Ver codigo de api
@@ -35,24 +44,28 @@ async function Ver_api(api){
     method:'POST',
   });
   
-  if (resultados.Respuesta==='Ok'){
+  if (resultados.Respuesta==='Ok' && api==='wesi_chs_server'){
     Api= resultados.api;
+    return Api
+  }else if (resultados.Respuesta==='Ok'){
+    return resultados.api;
   }
-  return resultados
+  
+  return {}
 }
 //Login
-  async function Login(datos){
-    const resultados= await Enviar({
-      datos:{...datos, Api, mantener:true, crear: false},
-      http_destino:'/api/login',
-    });
-    return resultados
-  }
+async function Login(datos, api){
+  const resultados= await Enviar({
+    datos:{...datos, Api: api ? api : Api, mantener:true, crear: false},
+    http_destino:'/api/login',
+  });
+  return resultados
+}
 //Leer datos de archivo
-async function Leer_data(archivo, valord=Valord){
+async function Leer_data(archivo, api, valord=Valord){
   
   const resultados= await Enviar({
-                            datos:{User, Api, archivo, valord},
+                            datos:{User, Api: api ? api : Api, archivo, valord},
                             http_destino:'/api/leer_data',
                             method:'POST',
                           });
@@ -109,8 +122,8 @@ async function Leer_C(tablas, condicion, timeout=50000,mensaje='Solicitando dato
   return resultados
 }
 //Guardar Datos
-async function Guardar(dato, tabla, mensaje='Guardando datos...', acciones=null){
-  dato.actualizado=User ? User.username : 'Sin usuario';
+async function Guardar(dato, tabla, user=undefined, mensaje='Guardando datos...', acciones=null){
+  dato.actualizado=user ? user : User ? User.username : 'Sin usuario';
   let files=undefined;
   let imagenes= ['foto','avatar','image-cedula', 'video', 'logo', 'Logo'];
   if (dato.files && Object.keys(dato.files).length!==0){
@@ -119,7 +132,6 @@ async function Guardar(dato, tabla, mensaje='Guardando datos...', acciones=null)
     files={'file_0':dato.file[0]};
     // dato.file=null;
   } else if (dato.multiples_valores){
-    console.log('>>>>>>><<<<<<<<<>>>>',dato)
     if (dato.valores._id) dato['_id']=dato.valores._id
     Object.keys(dato.valores).map(val=>{
       const nombre=val.split('_url')[0];
@@ -144,9 +156,8 @@ async function Guardar(dato, tabla, mensaje='Guardando datos...', acciones=null)
       return val
     })
   }
-  console.log('>>>>>>><<<<<<<<<>>>>',dato)
   const resultados= await Enviar({
-                            datos:{User, datos:JSON.stringify(dato), tabla},
+                            datos:{User: user ? user : User , Api, datos:JSON.stringify(dato), tabla},
                             http_destino:'/api/setall',
                             method:'POST',
                             destino:'imagenes',
@@ -157,37 +168,13 @@ async function Guardar(dato, tabla, mensaje='Guardando datos...', acciones=null)
                           });
   return resultados
 }
-
-//Guardar Pago
-async function Guardar_Pago(dato, mensaje='Guardando datos...'){
-  dato.actualizado=User.username;
-  
-  const resultados= await Enviar({
-                            datos:{User, datos:JSON.stringify(dato)},
-                            http_destino:'/api/procesarpago',
-                            method:'POST',
-                            destino:'archivos/imagenes',
-                            mensaje_esperar:mensaje,
-                          });
-  return resultados
-}
 //eliminar
 async function Eliminar(dato, tablas, mensaje='Eliminar datos...'){
   const resultados= await Enviar({
-                            datos:{dato, tablas},
+                            datos:{dato, Api, tablas},
                             http_destino:'/api/delall',
                             method:'DELETE',
                             mensaje_esperar:mensaje
-                          });
-  return resultados
-}
-//Cargar datos de amolatina
-async function Amolatina(datos){
-
-  const resultados= await Enviar({
-                            http_destino:'/amolatina/login',
-                            method:'POST',
-                            datos
                           });
   return resultados
 }
@@ -211,7 +198,121 @@ async function Guardar_excel(valores){
                           });
   return resultados
 }
-
+//Colegio
+//Ver tasa de cambio
+async function ValorCambio(){
+  const resultados= await Enviar({
+                            datos:{User},
+                            http_destino:'/api/valor_dolar',
+                            method:'POST',
+                          });
+  return resultados
+}
+//Solicitar Mensualidades
+async function Mensualidades(dato, mensaje='Guardando datos...'){
+  const resultados= await Enviar({
+                            datos:{User, Api, datos:JSON.stringify(dato)},
+                            http_destino:'/api/colegio/mensualidades',
+                            method:'POST',
+                            destino:'archivos/imagenes',
+                            mensaje_esperar:mensaje,
+                          });
+  return resultados
+}
+//Solicitar Solvencias
+async function Solvencias(dato, mensaje='Guardando datos...'){
+  
+  const resultados= await Enviar({
+                            datos:{User, Api, datos:JSON.stringify(dato)},
+                            http_destino:'/api/colegio/solvencias',
+                            method:'POST',
+                            destino:'archivos/imagenes',
+                            mensaje_esperar:mensaje,
+                          });
+  return resultados
+}
+//Resumen
+async function Resumen(dato, mensaje='Guardando datos...'){
+  
+  const resultados= await Enviar({
+                            datos:{User, Api, datos:JSON.stringify(dato)},
+                            http_destino:'/api/colegio/resumen',
+                            method:'POST',
+                            destino:'archivos/imagenes',
+                            mensaje_esperar:mensaje,
+                          });
+  return resultados
+}
+//Enviar Pago
+async function Enviar_pago(dato, mensaje='Guardando datos...'){
+  
+  const resultados= await Enviar({
+                            datos:{User, Api, datos:JSON.stringify(dato)},
+                            http_destino:'/api/colegio/enviarpago',
+                            method:'POST',
+                            destino:'archivos/imagenes',
+                            mensaje_esperar:mensaje,
+                          });
+  return resultados
+}
+//Guardar Pago
+async function Guardar_Pago(dato, mensaje='Guardando datos...'){
+  
+  const resultados= await Enviar({
+                            datos:{User, datos:JSON.stringify(dato)},
+                            http_destino:'/api/procesarpago',
+                            method:'POST',
+                            destino:'archivos/imagenes',
+                            mensaje_esperar:mensaje,
+                          });
+  return resultados
+}
+//Unefa
+//Leer Horario
+async function MisDatos(user, api, mensaje='Guardando datos...'){
+  
+  const resultados= await Enviar({
+                            datos:{user, api},
+                            http_destino:'/api/unefa/misdatos',
+                            method:'POST',
+                            destino:'archivos/imagenes',
+                            mensaje_esperar:mensaje,
+                          });
+  return resultados
+}
+async function LeerHorario(dato, user, api, table='unefa_horario', mensaje='Guardando datos...'){
+  
+  const resultados= await Enviar({
+                            datos:{user, api, table, datos:JSON.stringify(dato)},
+                            http_destino:'/api/unefa/leerhorario',
+                            method:'POST',
+                            destino:'archivos/imagenes',
+                            mensaje_esperar:mensaje,
+                          });
+  return resultados
+}
+async function GuardarHorario(dato, user, api, table='unefa_horario', mensaje='Guardando datos...'){
+  
+  const resultados= await Enviar({
+                            datos:{user, api, table, datos:JSON.stringify(dato)},
+                            http_destino:'/api/unefa/guardarhorario',
+                            method:'POST',
+                            destino:'archivos/imagenes',
+                            mensaje_esperar:mensaje,
+                          });
+  return resultados
+}
+async function DisponibilidadHorario(dato, user, api, table='unefa_horario', mensaje='Guardando datos...'){
+  
+  const resultados= await Enviar({
+                            datos:{user, api, table, datos:JSON.stringify(dato)},
+                            http_destino:'/api/unefa/disponibilidadhorario',
+                            method:'POST',
+                            destino:'archivos/imagenes',
+                            mensaje_esperar:mensaje,
+                          });
+  return resultados
+}
 async function Enviar(props){
   // console.log('Enviar ====>',props);
   //Datos de props necesarios
@@ -220,7 +321,7 @@ async function Enviar(props){
   // tipo: solo si es Archivo, de lo contrario se deja en blanco
   // method: metodo de envio POST, GET, DELETE, PUT
   let {datos, http_destino, destino, tipo, method, files, acciones}= props;
-  const timeout=props.timeout ? props.timeout : 90000;
+  const timeout=props.timeout ? props.timeout : 40000;
   const hash= await encriptado.Hash_texto(JSON.stringify(datos));
   datos= {...datos, hash};
   var data=datos;
@@ -233,7 +334,7 @@ async function Enviar(props){
     })
     
     await Object.keys(datos).map(async value =>{
-      if (['User'].indexOf(value)!==-1){
+      if (['User','Api'].indexOf(value)!==-1){
         data.append(value, JSON.stringify(datos[value]));
       }else{
         data.append(value, datos[value]);

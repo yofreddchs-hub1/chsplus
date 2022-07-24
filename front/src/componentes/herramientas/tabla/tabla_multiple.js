@@ -7,7 +7,7 @@ import Dialogo from '../dialogo';
 import Formulario from '../formulario';
 import {Permiso, conexiones, genera_fromulario, crear_campos} from '../../../procesos/servicios';
 
-import Esperar from '../../esperar';
+import Esperar from '../../esperar/cargar';
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css';
 //Iconos
@@ -37,7 +37,8 @@ function Estilos(Estilos){
     const useStyles = makeStyles((theme) => ({
         root: {
             height:window.innerHeight* 0.78,
-            padding:10,
+            
+            position: "relative",
             ...Estilos.root
         },
         tabs: {
@@ -61,7 +62,7 @@ function Tabla_multiple (props) {
     
     const {Form_origen,Table,Titulo_dialogo,Titulo_tabla,Titulos_tabla, Agregar_mas, Columnas, 
             Acciones1, Seleccion, Nuevo, cargaporparte,Config, multiples_valores,
-            Condiciones
+            Condiciones, Acciones, sinpaginacion
           }=props
     const estilos=Ver_Valores().config.Estilos.Usuarios ? Ver_Valores().config.Estilos.Usuarios : {} //props.config.Estilos.Usuarios ? props.config.Estilos.Usurios : {}
     const classes= Estilos(estilos);
@@ -75,7 +76,6 @@ function Tabla_multiple (props) {
         setState({...state, ...nuevostate, cambio:true})
     }
     const Actualizar_data = (valores)=>{
-        
         cambiarState({cantidad:valores.cantidad, datos:valores.nuevodatos})
     }
     
@@ -91,7 +91,15 @@ function Tabla_multiple (props) {
         let nuevos;
         if (multiples_valores){
             campos = await crear_campos(campos, Form_origen)
-            nuevos= await conexiones.Guardar({campos, valores, multiples_valores:true},state.table);
+            if (Condiciones){
+                valores = await Condiciones(state.table, {campos, valores})    
+            }
+            if (!valores.finalizado_condicion){
+                
+                nuevos= await conexiones.Guardar({campos, valores, multiples_valores:true},state.table);
+            }else{
+                nuevos=valores
+            }
         }else{
             const datos= await Condiciones(state.table, valores)
             nuevos= await conexiones.Guardar(datos,state.table);
@@ -100,10 +108,9 @@ function Tabla_multiple (props) {
         
         if (nuevos.Respuesta==='Ok'){
             cambiarState({datos:nuevos.resultado})
+            setDialogo({...dialogo,open:false})
         }
         
-        
-
         return nuevos
     }
 
@@ -122,20 +129,47 @@ function Tabla_multiple (props) {
                 });
         }
         setDialogo({...dialogo,open:false})
-        return
+        return nuevos
         
     }
 
+    const Combinar = (campos, campos1) =>{
+        
+        let resultado = campos;
+        resultado.columna= campos1.columna;
+        resultado.value= resultado.value.map(val=>{
+            const pos= campos1.value.findIndex(f=> f.name===val.name);
+            if (pos!==-1){
+                return campos1.value[pos]
+            }else{
+                return val
+            }
+        })
+
+        campos1.value.map(val=>{
+            const pos= resultado.value.findIndex(f=> f.name===val.name);
+            if (pos===-1){
+                resultado.value=[...resultado.value, val]
+            }
+            return val
+        })
+
+        return resultado
+    }
+
     const Abrir = async(valores) =>{
+        // let campos = valores.campos ? Combinar(valores.campos, Form_origen) : Form_origen;
+        // const nuevos = valores.valores && valores.campos 
+        //                 ? await genera_fromulario({...valores, campos},Columnas) 
+        //                 : valores._id!==undefined
+        //                 ? await genera_fromulario({valores, campos },Columnas)
+        //                 : await genera_fromulario({valores:{}, campos },Columnas)
         
-        const nuevos = valores.valores && valores.campos 
-                        ? await genera_fromulario(valores,Columnas) 
-                        : valores._id!==undefined
-                        ? await genera_fromulario({valores, campos: Form_origen },Columnas)
-                        : await genera_fromulario({valores:{}, campos: Form_origen },Columnas)
-        
+        // Verfificar con clama el caso anterio verifica los campos guardados para mostrar esos campos ahora solo se muestra lo indicado en Form_origen
+        const nuevos = valores._id!==undefined
+                                    ? await genera_fromulario({...valores, campos: Form_origen })
+                                    : await genera_fromulario({valores:{},  campos: Form_origen})
         let dato=nuevos.datos;
-        
         const pguardar=await Permiso('guardar');
         const peliminar= await Permiso('eliminar')
         const formulario ={
@@ -157,7 +191,7 @@ function Tabla_multiple (props) {
                         name:'eliminar', label:'Eliminar', title:'Eliminar ',
                         variant:"contained", color:"secondary", icono:<DeleteIcon/>,
                         sx:{...Config.Estilos.Botones ? Config.Estilos.Botones.Eliminar : {}},
-                        confirmar:'true', confirmar_mensaje:'Desea eliminar',confirmar_campo:'_id',
+                        confirmar:'true', confirmar_mensaje:'Desea eliminar',confirmar_campo:props.Eliminar ? props.Eliminar : '_id',
                         onClick: Eliminar,
                         }]
                     :[],
@@ -173,13 +207,13 @@ function Tabla_multiple (props) {
             ...dialogo, 
             open: !dialogo.open,
             Titulo:Titulo_dialogo(dato),
-            Cuerpo:<Formulario {...formulario} Agregar={Agregar_mas}/>,
+            Cuerpo:<Formulario {...formulario} Agregar={Agregar_mas} config={props.Config}/>,
             Cerrar: ()=>setDialogo({...dialogo,open:false}),
         })
     }
     
-    
-    return state.esperar ? <Esperar {...state}/>:(
+    const color =  props.Config.Estilos.Input_icono ? props.Config.Estilos.Input_icono : {};
+    return (
         <div className={classes.root}>
             <Tabla  Titulo={Titulo_tabla}
                     Config={props.Config}
@@ -190,22 +224,26 @@ function Tabla_multiple (props) {
                     datos={state.datos}
                     Accion={Seleccion ? Seleccion : Abrir}
                     cargaporparte={cargaporparte ? cargaporparte : null }
+                    sinpaginacion= {sinpaginacion}
                     acciones={
-                        <div>
-                        <IconButton color={'primary'} title={'Refrescar valores de Usuarios'} onClick={Refrescar}>
-                            <AutorenewIcon />
-                        </IconButton>
-                        {!Nuevo 
-                        ? <IconButton color={'primary'} title={'Agregrar nuevo Usuario'} onClick={Agregar}>
-                            <AddIcon />
-                        </IconButton> 
-                        : null
-                        }
-                        </div>
+                        !Acciones
+                        ? <div>
+                            <IconButton color={'primary'} title={'Refrescar valores de Usuarios'} onClick={Refrescar}>
+                                <AutorenewIcon style={color}/>
+                            </IconButton>
+                            {!Nuevo 
+                            ? <IconButton color={'primary'} title={'Agregrar nuevo Usuario'} onClick={Agregar}>
+                                <AddIcon style={color}/>
+                              </IconButton> 
+                            : null
+                            }
+                          </div>
+                        : Acciones
                     }
                     acciones1={Acciones1 ? Acciones1 : null}
             />
             <Dialogo  {...dialogo} config={props.Config}/>
+            <Esperar open={state.esperar}/>
         </div>
       
     )

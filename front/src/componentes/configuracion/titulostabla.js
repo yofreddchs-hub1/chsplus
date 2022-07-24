@@ -7,8 +7,6 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import Divider from '@mui/material/Divider';
-import Cuerpo from '../herramientas/cuerpo';
 import Tabla from '../herramientas/tabla';
 import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/AddCircle';
@@ -312,7 +310,7 @@ export default class Titulos_tablas extends Component {
     const Config = Ver_Valores().config;
     let formularios = await genera_fromulario({valores:{}, campos: Form_todos(`Form_api`) }, 2)
     let listaA= Object.keys(Config).filter(f=> f.indexOf('Api_')!==-1).map((val,i)=>{
-      return {_id:i, titulo:val}
+      return {_id:i, titulo:val, api:val}
     })
     formularios.titulos.apis.lista=listaA
     // formularios.titulos.apis.onChange= this.SeleccionA

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import Avatar from '@mui/material/Avatar';
 import TextField from '@mui/material/TextField';
 import Skeleton from '@mui/material/Skeleton';
@@ -37,7 +37,7 @@ import MobileDatePicker from '@mui/lab/MobileDatePicker';
 import Lista from './lista';
 import ListaRepresentados from './lista_representados';
 import TipoJson from './tipojson';
-import moment from "moment";
+// import moment from "moment";
 import Video from './video';
 import { Ver_Valores, Titulos_todos } from '../../constantes';
 import Tabla from './tablaeditar';
@@ -221,9 +221,9 @@ const useStyles = makeStyles({
 });
 
 const Entrada = (props)=>{
-    const Config= Ver_Valores().config;
-    
-    const estos = Object.keys(props).filter(f=> ['helperText', 'margin', 'no_modificar','no_mostrar'].indexOf(f)===-1)
+    const Config= props.config ? props.config : Ver_Valores().config;
+    const estos = Object.keys(props).filter(f=> 
+      ['helperText', 'margin', 'no_modificar','no_mostrar', 'Subtotal', 'getOptionLabel', 'getOptionSelected', 'agregar'].indexOf(f)===-1)
     let permitidos={}
     
     estos.map(v=>{
@@ -323,16 +323,12 @@ const mas ={
                     }
 }
 export default function Page(props) {
-  const Config= Ver_Valores().config;
+  const Config= props.config ? props.config : Ver_Valores().config;
   const classes = useStyles();
-
   let values = {
   };
-
+  let form =[]
   let {datos, http_server} = props;
-  
-  values = datos ? {...values,...datos}: values;
-
   const [showPassword,setShowPassword]= React.useState(false);
 
   const handleClickShowPassword = () => {
@@ -359,18 +355,16 @@ export default function Page(props) {
           label: lista[valor].label,
           type: lista[valor].type,
           lista:lista[valor].lista,
+          required:Boolean(lista[valor].required),
           onChange: values.Cambio,
           error:values.resultados['Error-'+valor] !== '' ? true : false,
           helperText:values.resultados['Error-'+valor],
-          
           // rowsMax: lista[valor].row,
         }
 
       })
     return listado;
   }
-
-  const form = values.form ? Form(values.form): [];
 
   const Imagen = (valor, values) =>{
     let imagen=true;
@@ -413,6 +407,7 @@ export default function Page(props) {
     }catch (e){
       valorEstilo = classes.textField;
     }
+    
     return valor.multiples ? (
       <Grid container spacing={1} key={valor.lista[0]+'G'}>
         {valor.lista.map((lis,it) =>
@@ -499,16 +494,16 @@ export default function Page(props) {
                   
                 },
                 '.MuiAutocomplete-input':{
-                    bgcolor:'#000',
-                    color:'#fff',
+                    bgcolor: Config.Estilos.Input_fondo ? Config.Estilos.Input_fondo.backgroundColor : '#000',
+                    color: Config.Estilos.Input_input ? Config.Estilos.Input_input.color : '#fff',
                 },
                 '.MuiAutocomplete-popupIndicator':{
-                    color:'#fff'
+                    color:Config.Estilos.Icon_lista ? Config.Estilos.Icon_lista.color : '#fff'
                 },
                 '.Mui-focused':{
                 },
                 '.MuiAutocomplete-clearIndicator':{
-                    color:'#fff'
+                    color: Config.Estilos.Icon_lista ? Config.Estilos.Icon_lista.color :  '#fff'
                 },
                 '.MuiAutocomplete-listbox':{
                     bgcolor:'#0f0'
@@ -520,7 +515,8 @@ export default function Page(props) {
             }}
             disabled={valor.disabled}
             options= {valor.lista ? valor.lista : []}
-            getOptionSelected={valor.getOptionSelected ? valor.getOptionSelected : (option) => option.titulo}
+            getOptionDisabled= {(option)=> option.disabled}
+            // getoptionselected={valor.getOptionSelected ? valor.getOptionSelected : (option) => option.titulo}
             getOptionLabel= {valor.getOptionLabel ? valor.getOptionLabel :(option) => option.titulo}
             id={'select-'+valor.name}
             autoComplete
@@ -539,10 +535,11 @@ export default function Page(props) {
 
             noOptionsText='No hay opciones'
             onChange={(event, newValue) => {
-              if (newValue!==null){
+              // console.log(newValue)
+              // if (newValue!==null){
                 // console.log(newValue)
                 values.Cambio({target:{name:valor.name, value:newValue}})
-              }
+              // }
             }}
             label={valor.label ? valor.label : valor.placeholder}
             renderInput={(params) =>
@@ -576,7 +573,7 @@ export default function Page(props) {
         }
       </div>
     ): valor.tipo==='lista' ? (
-      <Lista key={'Listados-'+valor.name} valor={valor} cambio={values.Cambio}/>
+      <Lista key={'Listados-'+valor.name} valor={valor} cambio={values.Cambio} config={Config}/>
 
     ): valor.tipo==='lista_representados' ? (
       <ListaRepresentados key={'Listados-'+valor.name} valor={valor} cambio={values.Cambio}/>
@@ -584,6 +581,7 @@ export default function Page(props) {
     ): valor.tipo==='password' ? (
       <Entrada
        {...valor}
+       config={Config}
        name={valor.name}
        type={showPassword ? 'text' : 'password'}
        onKeyPress={
@@ -600,34 +598,19 @@ export default function Page(props) {
        fullWidth
        className={valorEstilo}
        color={'primary'}
-    //    inputProps={{
-    //      endAdornment: (
-    //        <InputAdornment position="end">
-    //          <IconButton
-    //            aria-label="toggle password visibility"
-    //            onClick={handleClickShowPassword}
-    //            onMouseDown={handleMouseDownPassword}
-    //            edge="end"
-    //            variant='filled'
-    //          >
-    //            {showPassword ? <Visibility style={valor.iconoStyle ? valor.iconoStyle :{}}/> : <VisibilityOff style={valor.iconoStyle ? valor.iconoStyle :{}}/>}
-    //          </IconButton>
-    //        </InputAdornment>
-    //      ),
-    //    }}
     
-    endAdornment={
-            <IconButton
-               onClick={handleClickShowPassword}
-               onMouseDown={handleMouseDownPassword}
-               edge="end"
-               sx={{ marginRight:-3}}
-            >
-               {showPassword 
-                ? <Visibility sx={{...Config.Estilos.Input_icono ? Config.Estilos.Input_icono : {}}}/> 
-                : <VisibilityOff sx={{...Config.Estilos.Input_icono ? Config.Estilos.Input_icono : {}}}/>}
-            </IconButton>
-    }
+      endAdornment={
+              <IconButton
+                onClick={handleClickShowPassword}
+                onMouseDown={handleMouseDownPassword}
+                edge="end"
+                sx={{ marginRight:-3}}
+              >
+                {showPassword 
+                  ? <Visibility sx={{...Config.Estilos.Input_icono ? Config.Estilos.Input_icono : {}}}/> 
+                  : <VisibilityOff sx={{...Config.Estilos.Input_icono ? Config.Estilos.Input_icono : {}}}/>}
+              </IconButton>
+      }
     />
     ): valor.tipo==='time' ? (
       <DatePicker
@@ -649,9 +632,9 @@ export default function Page(props) {
         sx={{color:'#fff', '.MuiFormControlLabel-label':{color:'#fff'}}}
         control={
           <Checkbox
-            checked={['true',true].indexOf(valor.value)!==-1}
+            checked={['true',true].indexOf(valor.value)!==-1 ? true : false}
             onChange={(event) => values.Cambio({target:{name:valor.name, value:event.target.checked}})}
-            inputProps={{ 'aria-label': 'primary checkbox' }}
+            inputprops={{ 'aria-label': 'primary checkbox' }}
             name={valor.name}
             sx={{
               color: '#fff',
@@ -660,14 +643,17 @@ export default function Page(props) {
               },
             }}
           />}
-        label={valor.value ? valor.label.split('/')[0] : valor.label.split('/')[1]}
+        label={['true',true].indexOf(valor.value)!==-1 ? valor.label.split('/')[0] : valor.label.split('/')[1]}
       />
       
     ):valor.tipo==='Json'? (
-      <TipoJson {...{valor,values, config:props.config}}/>
+      <TipoJson {...{valor,values, config:Config }}/>
     ):valor.tipo==='Tabla'? (
       <Tabla  Titulo={valor.label}
               Config={Config}
+              nopaginar={valor.nopaginar}
+              noeliminar={valor.noeliminar}
+              style={valor.style}
               titulos={Titulos_todos(valor.titulos)}
               table={valor.tabla}
               cantidad={ valor.value ? valor.value.length : 0 }
@@ -680,7 +666,7 @@ export default function Page(props) {
               sinpaginacion={true}
               name={valor.name}
               Cambio={values.Cambio}
-              Subtotalvalor={values.resultados[valor.name+'-subtotal']}
+              Subtotalvalor={valor.Subtotalvalor ? valor.Subtotalvalor : values.resultados[valor.name+'-subtotal']}
               Subtotal={valor.Subtotal}
               enformulario={{
                 ...valor,
@@ -705,7 +691,7 @@ export default function Page(props) {
           onChange={(newValue) => {
             values.Cambio({target:{name:valor.name, value:newValue}});
           }}
-          renderInput={(params) => <Entrada {...params} tipo={valor.value ? '' : 'Fecha'}/>}
+          renderInput={(params) => <Entrada {...params} tipo={valor.value ? '' : 'Fecha'} config={Config}/>}
         />
       </LocalizationProvider>
       
@@ -730,7 +716,7 @@ export default function Page(props) {
 
         // ):null}
         // </TextField>
-        <Entrada {...valor}/>
+        <Entrada {...valor} config={Config}/>
     )
 
   }
@@ -747,6 +733,16 @@ export default function Page(props) {
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
+
+  const Inicio = ()=>{
+    values = datos ? {...values,...datos}: values;
+
+    form = values.form ? Form(values.form): [];
+  }
+  // useEffect(()=>{
+  //   Inicio();
+  // },[datos])
+  Inicio()
 
   return form.length===0 && !values.botones ? (
     <div className={[classes.root]}>
@@ -785,7 +781,7 @@ export default function Page(props) {
       }
       {props.datos.Mensaje.tipo && props.datos.Mensaje
         ? props.datos.Mensaje.tipo==='Error' 
-        ? <Alert severity="error" >{props.datos.Mensaje.Mensaje}</Alert>
+        ? <Alert severity="error" >{props.datos.Mensaje.mensaje ? props.datos.Mensaje.mensaje : props.datos.Mensaje.Mensaje}</Alert>
         : <Alert severity="success">Proceso realizado con exito</Alert>
         : null
       }

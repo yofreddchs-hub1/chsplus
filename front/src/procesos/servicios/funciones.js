@@ -12,7 +12,7 @@ let categoria_usuario;
 
 export const formatoBolivar = new Intl.NumberFormat('es-VE', {
   style: 'currency',
-  currency: 'VES',
+  currency: 'VED',
   minimumFractionDigits: 2
 })
 
@@ -22,7 +22,15 @@ export const formatoDolar = new Intl.NumberFormat('en-US', {
   minimumFractionDigits: 2
 })
 
+export const Inicio_api=async(nombre)=>{
+  const api= await conexiones.Ver_api(nombre);
+  // let archivo='data/datos.js';
+  // const respuesta = await conexiones.Leer_data(archivo, api);
+  nuevo_Valores({[nombre]:{api}})
+  return {api}
+}
 export const Inicio=async()=>{
+  //si se cambia wesi_chs_server hay que cambiarlo en conexiones
   const api= await conexiones.Ver_api('wesi_chs_server');
   let archivo='data/datos.js';
   
@@ -36,12 +44,18 @@ export const Inicio=async()=>{
   }
   categoria_usuario= config.Listas.lista_categoria;
   // console.log(config, categoria_usuario)
-  nuevo_Valores({config, categoria_usuario})
+  nuevo_Valores({config, categoria_usuario, api})
   return config
 }
 
 export const MaysPrimera=(string)=>{
-  return string.charAt(0).toUpperCase() + string.slice(1);
+  let lista = string.split(' ');
+  let resulta = '';
+  for (var i=0; i<lista.length; i++){
+    resulta+= lista[i].charAt(0).toUpperCase()+ lista[i].slice(1) + ' ';
+  }
+  return resulta;
+  // return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 export const ArrayMaysPrimera=(datos)=>{
@@ -64,10 +78,13 @@ export const Titulo_default=(datos)=>{
   })
 }
 
-export const Usuario = async(status='Leer', dato=null)=>{
+export const Usuario = async(props)=>{
+  let {status,dato, api} = props ? props : {}
+  status = status===undefined ? 'Leer' : status;
+  api = api===undefined ? '' : `_${api}`;
   if (status==='Leer'){
     try{
-      let User = await localStorage.getItem(const_procesos.dir_user);
+      let User = await localStorage.getItem(const_procesos.dir_user+api);
       if (User!==null) 
         User = await encriptado.desencriptado(User);
         
@@ -80,17 +97,21 @@ export const Usuario = async(status='Leer', dato=null)=>{
   }else if (status==='Guardar'){
     conexiones.Inicio(dato)
     let User= await encriptado.Encriptado(JSON.stringify(dato));
-    localStorage.setItem(const_procesos.dir_user, User);
+    localStorage.setItem(const_procesos.dir_user+api, User);
   }else{
-    localStorage.setItem(const_procesos.dir_user,null);
+    localStorage.setItem(const_procesos.dir_user+api,null);
     conexiones.Inicio(null)
   }  
   
 }
-export const Permiso =  async(accion, superadmin=false) =>{
-  let User = await Usuario()//JSON.parse(localStorage.getItem(const_procesos.dir_user));
+export const Permiso =  async(accion, api, superadmin=false) =>{
+  let User = api ? await Usuario({api}) : await Usuario()//JSON.parse(localStorage.getItem(const_procesos.dir_user));
   if (User===null) return false
-  let resultado=categoria_usuario.filter(lis => String(lis._id)===String(User.categoria));
+  let categoria = api ? Ver_Valores()['config']['Listas'][`lista_${api}_categoria`] : categoria_usuario;
+  categoria = categoria.map(val=>{
+    return {...val, permisos: typeof val.permisos==='string' ? val.permisos.split(',') : val.permisos}
+  })
+  let resultado=categoria.filter(lis => String(lis._id)===String(User.categoria));
   if (!superadmin) {
     if (resultado.length!==0 && resultado[0].permisos!==undefined &&
           (resultado[0].permisos.indexOf(accion)!==-1 || resultado[0].permisos.indexOf('*')===0)
@@ -301,13 +322,12 @@ export const Excell = async(archivo)=>{
 }
 
 const item_form = async(val, valores, _id)=>{
-  
   let resultado={
     ...val,
     tipo: val.tipo ? val.tipo : '',
     placeholder: val.placeholder ? val.placeholder : val.label ? val.label : '',
     label: val.label ? val.label : val.placeholder ? val.placeholder : '',
-    value: val.value ? val.value : valores[val.name] && val.no_mostrar!==true ? valores[val.name]: '', 
+    value: valores[val.name] && val.no_mostrar!==true ? valores[val.name] : val.value ? val.value : '', 
     required: val.required,
     mensaje_error: val.mensaje_error ? val.mensaje_error : val.error,
     disabled: val.disabled
@@ -317,11 +337,11 @@ const item_form = async(val, valores, _id)=>{
               : false
   }
   if (val.tipo==='Lista'){
-    // console.log('En lista',val, valores[val.name])
+    // console.log('En lista',val, valores[val.name], typeof valores[val.name], val.lista[valores[val.name]])
 
     resultado={
       ...resultado,
-      value: val.lista[valores[val.name]],
+      value: typeof valores[val.name]==='object' ? valores[val.name]._id : val.lista[valores[val.name]],
       getOptionLabel: val.tipo==='Lista' ? (option)=> `${option.title ? option.title : option.titulo ? option.titulo : option.label}` : null,
       getOptionSelected: val.tipo==='Lista' ? (option)=> `${option.value ? option.value : option.titulo}` : null
 
@@ -345,7 +365,7 @@ const item_form = async(val, valores, _id)=>{
     if (typeof val.lista==='string' && val.lista.indexOf('lista_')===-1) {  
       const listado = await conexiones.Leer_C([val.lista],{[val.lista]:{}})
       lista= listado.datos[val.lista].map( v=>{
-        return {...v.valores}
+        return {...v.valores ? {_id:v._id, ...v.valores} : v}
       })
     }else if (val.lista.indexOf('lista_')!==-1){
       lista = Ver_Valores()['config']['Listas'][val.lista]
@@ -356,13 +376,15 @@ const item_form = async(val, valores, _id)=>{
     
     resultado={
       ...resultado,
-      lista, 
+      lista,
+      value: typeof valores[val.name]==='object' ? valores[val.name] : lista[valores[val.name]], 
       tipo:'Lista',
       table,
       getOptionLabel:(option) => {
         let mostrar=''
         val.getOptionLabel.map(vl=>{ 
-          mostrar = mostrar + option[vl] + ' ';
+          const datan= vl.indexOf('.')!==-1 ? option[vl.split('.')[0]][vl.split('.')[1]] : option[vl];
+          mostrar = mostrar + datan + ' ';
           return vl
         })
         
@@ -380,15 +402,20 @@ const item_form = async(val, valores, _id)=>{
     }
     
   }else if (val.tipo==='lista_representados'){
-    const listado = await conexiones.Leer_C([val.lista],{[val.lista]:{}})
+    let listado = await conexiones.Leer_C([val.lista],{[val.lista]:{}})
     const table=val.lista;
     const lista = listado.datos[val.lista].map( v=>{
       return {...v.valores}
     })
+    let result=lista;
     
+    if (val.filtro){
+      const filtrado =eval(val.filtro)
+      result=filtrado(lista) 
+    }
     resultado={
       ...resultado,
-      lista, 
+      lista:result, 
       table,
       getOptionLabel:(option) => {
         let mostrar=''
@@ -401,11 +428,19 @@ const item_form = async(val, valores, _id)=>{
       },
     }
     
+    
   }else if (val.tipo==='Checkbox'){
+    let result={}
+    Object.keys(resultado).map(v =>{
+      if (['getOptionLabel','agregar','Subtotal'].indexOf(v)===-1){
+        result[v]=resultado[v]
+      }
+      return v
+    })
     resultado={
-      ...resultado,
+      ...result,
       label:val.label.indexOf('/')!==-1 ? val.label :'Seleccionado/No Seleccionado',
-      value:'false'
+      value:valores[val.name]
 
     }
   }else if (val.tipo==='Fecha'){
@@ -538,3 +573,196 @@ export const crear_campos = async(campos, Form_origen)=>{
 export const Generar_id =(id)=>{
   return `${id ? id+'-' :''}${moment().format('x')}` 
 }
+
+export var numeroALetras = (function() {
+  // Código basado en el comentario de @sapienman
+  // Código basado en https://gist.github.com/alfchee/e563340276f89b22042a
+  function Unidades(num) {
+
+      switch (num) {
+          case 1:
+              return 'UN';
+          case 2:
+              return 'DOS';
+          case 3:
+              return 'TRES';
+          case 4:
+              return 'CUATRO';
+          case 5:
+              return 'CINCO';
+          case 6:
+              return 'SEIS';
+          case 7:
+              return 'SIETE';
+          case 8:
+              return 'OCHO';
+          case 9:
+              return 'NUEVE';
+      }
+
+      return '';
+  } //Unidades()
+
+  function Decenas(num) {
+
+      let decena = Math.floor(num / 10);
+      let unidad = num - (decena * 10);
+
+      switch (decena) {
+          case 1:
+              switch (unidad) {
+                  case 0:
+                      return 'DIEZ';
+                  case 1:
+                      return 'ONCE';
+                  case 2:
+                      return 'DOCE';
+                  case 3:
+                      return 'TRECE';
+                  case 4:
+                      return 'CATORCE';
+                  case 5:
+                      return 'QUINCE';
+                  default:
+                      return 'DIECI' + Unidades(unidad);
+              }
+          case 2:
+              switch (unidad) {
+                  case 0:
+                      return 'VEINTE';
+                  default:
+                      return 'VEINTI' + Unidades(unidad);
+              }
+          case 3:
+              return DecenasY('TREINTA', unidad);
+          case 4:
+              return DecenasY('CUARENTA', unidad);
+          case 5:
+              return DecenasY('CINCUENTA', unidad);
+          case 6:
+              return DecenasY('SESENTA', unidad);
+          case 7:
+              return DecenasY('SETENTA', unidad);
+          case 8:
+              return DecenasY('OCHENTA', unidad);
+          case 9:
+              return DecenasY('NOVENTA', unidad);
+          case 0:
+              return Unidades(unidad);
+      }
+  } //Unidades()
+
+  function DecenasY(strSin, numUnidades) {
+      if (numUnidades > 0)
+          return strSin + ' Y ' + Unidades(numUnidades)
+
+      return strSin;
+  } //DecenasY()
+
+  function Centenas(num) {
+      let centenas = Math.floor(num / 100);
+      let decenas = num - (centenas * 100);
+
+      switch (centenas) {
+          case 1:
+              if (decenas > 0)
+                  return 'CIENTO ' + Decenas(decenas);
+              return 'CIEN';
+          case 2:
+              return 'DOSCIENTOS ' + Decenas(decenas);
+          case 3:
+              return 'TRESCIENTOS ' + Decenas(decenas);
+          case 4:
+              return 'CUATROCIENTOS ' + Decenas(decenas);
+          case 5:
+              return 'QUINIENTOS ' + Decenas(decenas);
+          case 6:
+              return 'SEISCIENTOS ' + Decenas(decenas);
+          case 7:
+              return 'SETECIENTOS ' + Decenas(decenas);
+          case 8:
+              return 'OCHOCIENTOS ' + Decenas(decenas);
+          case 9:
+              return 'NOVECIENTOS ' + Decenas(decenas);
+      }
+
+      return Decenas(decenas);
+  } //Centenas()
+
+  function Seccion(num, divisor, strSingular, strPlural) {
+      let cientos = Math.floor(num / divisor)
+      let resto = num - (cientos * divisor)
+
+      let letras = '';
+
+      if (cientos > 0)
+          if (cientos > 1)
+              letras = Centenas(cientos) + ' ' + strPlural;
+          else
+              letras = strSingular;
+
+      if (resto > 0)
+          letras += '';
+
+      return letras;
+  } //Seccion()
+
+  function Miles(num) {
+      let divisor = 1000;
+      let cientos = Math.floor(num / divisor)
+      let resto = num - (cientos * divisor)
+
+      let strMiles = Seccion(num, divisor, 'UN MIL', 'MIL');
+      let strCentenas = Centenas(resto);
+
+      if (strMiles === '')
+          return strCentenas;
+
+      return strMiles + ' ' + strCentenas;
+  } //Miles()
+
+  function Millones(num) {
+      let divisor = 1000000;
+      let cientos = Math.floor(num / divisor)
+      let resto = num - (cientos * divisor)
+
+      let strMillones = Seccion(num, divisor, 'UN MILLON DE', 'MILLONES DE');
+      let strMiles = Miles(resto);
+
+      if (strMillones === '')
+          return strMiles;
+
+      return strMillones + ' ' + strMiles;
+  } //Millones()
+
+  return function NumeroALetras(num, currency) {
+      currency = currency || {};
+      let data = {
+          numero: num,
+          enteros: Math.floor(num),
+          centavos: (((Math.round(num * 100)) - (Math.floor(num) * 100))),
+          letrasCentavos: '',
+          letrasMonedaPlural: currency.plural || 'PESOS CHILENOS', //'PESOS', 'Dólares', 'Bolívares', 'etcs'
+          letrasMonedaSingular: currency.singular || 'PESO CHILENO', //'PESO', 'Dólar', 'Bolivar', 'etc'
+          letrasMonedaCentavoPlural: currency.centPlural || 'CHIQUI PESOS CHILENOS',
+          letrasMonedaCentavoSingular: currency.centSingular || 'CHIQUI PESO CHILENO'
+      };
+
+      if (data.centavos > 0) {
+          data.letrasCentavos = 'CON ' + (function() {
+              if (data.centavos === 1)
+                  return Millones(data.centavos) + ' ' + data.letrasMonedaCentavoSingular;
+              else
+                  return Millones(data.centavos) + ' ' + data.letrasMonedaCentavoPlural;
+          })();
+      };
+
+      if (data.enteros === 0)
+          return 'CERO ' + data.letrasMonedaPlural + ' ' + data.letrasCentavos;
+      if (data.enteros === 1)
+          return Millones(data.enteros) + ' ' + data.letrasMonedaSingular + ' ' + data.letrasCentavos;
+      else
+          return Millones(data.enteros) + ' ' + data.letrasMonedaPlural + ' ' + data.letrasCentavos;
+  };
+
+})();

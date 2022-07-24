@@ -18,6 +18,16 @@
                     "value": "Pagar",
                     "primary": "Pagar",
                     "icon": "account_balance"
+                },
+                {
+                    "value": "Horario",
+                    "primary": "Horario",
+                    "icon": "account_balance"
+                },
+                {
+                    "value": "Registros",
+                    "primary": "Registos",
+                    "icon": "dataset"
                 }
             ]
         },
@@ -30,6 +40,11 @@
                     "value": "Datos",
                     "primary": "Datos",
                     "icon": "settingsbrightness"
+                },
+                {
+                    "value": "Estilos",
+                    "primary": "Estilos",
+                    "icon": "settings_applications"
                 },
                 {
                     "value": "Tablas",
@@ -301,10 +316,345 @@
                 "titulo": "Personal indirecto",
                 "permisos": []
             }
+        ],
+        "lista_egew_cuentas_wesi": [
+            {
+                "_id": 0,
+                "titulo": "WesiPay",
+                "value": "wesi",
+                "permisos": ""
+            },
+            {
+                "_id": 1,
+                "titulo": "Divisas",
+                "value": "divisas",
+                "permisos": ""
+            },
+            {
+                "_id": 2,
+                "titulo": "Criptocurrency",
+                "value": "cripto",
+                "permisos": ""
+            }
+        ],
+        "lista_egew_cuentas_divisas": [
+            {
+                "_id": 0,
+                "titulo": "USD - Dolar",
+                "value": "USD",
+                "permisos": ""
+            },
+            {
+                "_id": 1,
+                "titulo": "EUR - Euro",
+                "value": "EUR",
+                "permisos": ""
+            },
+            {
+                "_id": 2,
+                "titulo": "GBP - Libra esterlina",
+                "value": "GBP",
+                "permisos": ""
+            },
+            {
+                "_id": 3,
+                "titulo": "INR - Rupia india",
+                "value": "INR",
+                "permisos": ""
+            },
+            {
+                "_id": 4,
+                "titulo": "CNY - Yuan",
+                "value": "CNY",
+                "permisos": ""
+            },
+            {
+                "_id": 5,
+                "titulo": "JPY - Yen",
+                "value": "JPY",
+                "permisos": ""
+            },
+            {
+                "_id": 6,
+                "titulo": "RUB - Rubio",
+                "value": "RUB",
+                "permisos": ""
+            },
+            {
+                "_id": 7,
+                "titulo": "VED - Bolivar",
+                "value": "VED",
+                "permisos": ""
+            }
+        ],
+        "lista_egew_cuentas_cripto": [
+            {
+                "_id": 0,
+                "titulo": "ETH - Ethereum",
+                "value": "ETH",
+                "permisos": ""
+            },
+            {
+                "_id": 1,
+                "titulo": "BTC - Bitcoin",
+                "value": "BTC",
+                "permisos": ""
+            },
+            {
+                "_id": 2,
+                "titulo": "XRP - Ripple XRP",
+                "value": "XRP",
+                "permisos": ""
+            },
+            {
+                "_id": 3,
+                "titulo": "LTC - Litecoin",
+                "value": "LTC",
+                "permisos": ""
+            },
+            {
+                "_id": 4,
+                "titulo": "NEO - NEO",
+                "value": "NEO",
+                "permisos": ""
+            },
+            {
+                "_id": 5,
+                "titulo": "MIOTA - IOTA",
+                "value": "MIOTA",
+                "permisos": ""
+            }
+        ],
+        "lista_egew_cuentas_banco": [
+            {
+                "_id": "0175",
+                "titulo": "BANCO BICENTENARIO",
+                "value": "0175",
+                "permisos": "",
+                "id": 1,
+                "otro": "VED"
+            },
+            {
+                "_id": "0128",
+                "titulo": "BANCO CARONI, C.A. BANCO UNIVERSAL",
+                "value": "0128",
+                "permisos": "",
+                "id": 2,
+                "otro": "VED"
+            },
+            {
+                "_id": "0102",
+                "titulo": "BANCO DE VENEZUELA",
+                "value": "0102",
+                "id": 3,
+                "permisos": "",
+                "otro": "VED"
+            },
+            {
+                "_id": "0114",
+                "titulo": "BANCO DEL CARIBE",
+                "value": "0114",
+                "id": 4,
+                "permisos": "",
+                "otro": "VED"
+            },
+            {
+                "_id": "0163",
+                "titulo": "BANCO DEL TESORO",
+                "value": "0163",
+                "id": 5,
+                "permisos": "",
+                "otro": "VED"
+            },
+            {
+                "_id": "0105",
+                "titulo": "BANCO MERCANTIL",
+                "value": "0105",
+                "id": 6,
+                "permisos": "",
+                "otro": "VED"
+            },
+            {
+                "_id": "0191",
+                "titulo": "BANCO NACIONAL DE CREDITO",
+                "value": "0191",
+                "id": 7,
+                "permisos": "",
+                "otro": "VED"
+            },
+            {
+                "_id": "0116",
+                "titulo": "BANCO OCCIDENTAL DE DESCUENTO.",
+                "value": "0116",
+                "id": 8,
+                "permisos": "",
+                "otro": "VED"
+            },
+            {
+                "_id": "0108",
+                "titulo": "BANCO PROVINCIAL BBVA",
+                "value": "0108",
+                "id": 9,
+                "permisos": "",
+                "otro": "VED"
+            },
+            {
+                "_id": "0134",
+                "titulo": "BANESCO BANCO UNIVERSAL",
+                "value": "0134",
+                "id": 10,
+                "permisos": "",
+                "otro": "VED"
+            },
+            {
+                "_id": "0177",
+                "titulo": "BANFANB",
+                "value": "0177"
+            },
+            {
+                "_id": "0190",
+                "titulo": "CITIBANK.",
+                "value": "0190",
+                "id": 12,
+                "permisos": "",
+                "otro": "VED"
+            },
+            {
+                "_id": "0121",
+                "titulo": "CORP BANCA.",
+                "value": "0121",
+                "id": 13,
+                "permisos": "",
+                "otro": "VED"
+            },
+            {
+                "_id": "0157",
+                "titulo": "DELSUR BANCO UNIVERSAL",
+                "value": "0157",
+                "id": 14,
+                "permisos": "",
+                "otro": "VED"
+            },
+            {
+                "_id": "0151",
+                "titulo": "FONDO COMUN",
+                "value": "0151",
+                "id": 15,
+                "permisos": "",
+                "otro": "VED"
+            },
+            {
+                "_id": "BOA",
+                "titulo": "BANK OF AMERICA",
+                "value": "BOA",
+                "permisos": "",
+                "id": 16,
+                "otro": "USD"
+            }
+        ],
+        "lista_egew_status_compra": [
+            {
+                "_id": 0,
+                "titulo": "Por confirmar",
+                "value": "Por confirmar",
+                "permisos": ""
+            },
+            {
+                "_id": 1,
+                "titulo": "Aprobado",
+                "value": "Aprobado",
+                "permisos": ""
+            },
+            {
+                "_id": 2,
+                "titulo": "Rechazado ",
+                "value": "Rechazado",
+                "permisos": ""
+            }
+        ],
+        "lista_Meses": [
+            {
+                "_id": 0,
+                "titulo": "Inscripción",
+                "value": "inscripcion",
+                "permisos": ""
+            },
+            {
+                "_id": 1,
+                "titulo": "Septiembre",
+                "value": "septiembre",
+                "permisos": ""
+            },
+            {
+                "_id": 2,
+                "titulo": "Octubre",
+                "value": "octubre",
+                "permisos": ""
+            },
+            {
+                "_id": 3,
+                "titulo": "Noviembre",
+                "value": "noviembre",
+                "permisos": ""
+            },
+            {
+                "_id": 4,
+                "titulo": "Diciembre",
+                "value": "diciembre",
+                "permisos": ""
+            },
+            {
+                "_id": 5,
+                "titulo": "Enero",
+                "value": "enero",
+                "permisos": ""
+            },
+            {
+                "_id": 6,
+                "titulo": "Febrero",
+                "value": "febrero",
+                "permisos": ""
+            },
+            {
+                "_id": 7,
+                "titulo": "Marzo",
+                "value": "marzo",
+                "permisos": ""
+            },
+            {
+                "_id": 8,
+                "titulo": "Abril",
+                "value": "abril",
+                "permisos": ""
+            },
+            {
+                "_id": 9,
+                "titulo": "Mayo",
+                "value": "mayo",
+                "permisos": ""
+            },
+            {
+                "_id": 10,
+                "titulo": "Junio",
+                "value": "junio",
+                "permisos": ""
+            },
+            {
+                "_id": 11,
+                "titulo": "Julio",
+                "value": "julio",
+                "permisos": ""
+            },
+            {
+                "_id": 12,
+                "titulo": "Agosto",
+                "value": "agosto",
+                "permisos": ""
+            }
         ]
     },
     "Formularios": {
-        "Form_pagar_cobrar": {
+        "Form_egew_pagar_cobrar": {
             "columna": 1,
             "value": [
                 {
@@ -364,7 +714,7 @@
                 }
             ]
         },
-        "Form_registro": {
+        "Form_egew_registro": {
             "columna": 1,
             "value": [
                 {
@@ -486,25 +836,6 @@
                     "multiline": false,
                     "comparar": true,
                     "con": "password"
-                },
-                {
-                    "nombre": "foto",
-                    "tipo": "Avatar",
-                    "label": "Foto",
-                    "placeholder": "Foto",
-                    "title": "Foto del usuario",
-                    "required": "false",
-                    "disabled": false,
-                    "lista": "",
-                    "getOptionLabel": [
-                        "titulo"
-                    ],
-                    "agregar": "false",
-                    "form": "",
-                    "titulos": "",
-                    "Subtotal": "",
-                    "name": "foto",
-                    "multiline": false
                 }
             ]
         },
@@ -543,52 +874,11 @@
                     "table": "lista_ejemplo"
                 },
                 {
-                    "name": "codigo",
-                    "label": "Codigo",
-                    "tipo": "",
-                    "disabled": true,
-                    "placeholder": "Codigo"
-                },
-                {
-                    "name": "password",
-                    "label": "Password",
-                    "tipo": "password",
-                    "placeholder": "Password",
-                    "disabled": false
-                },
-                {
-                    "nombre": "normal1",
-                    "tipo": "Barcode",
-                    "label": "Input normal1",
-                    "placeholder": "Input normal1",
-                    "title": "",
-                    "disabled": false,
-                    "lista": "",
-                    "getOptionLabel": [
-                        "titulo"
-                    ],
-                    "agregar": false,
-                    "form": "",
-                    "titulos": "",
-                    "Subtotal": "",
-                    "name": "normal1",
-                    "multiline": false
-                },
-                {
                     "name": "foto",
                     "label": "Foto",
                     "tipo": "Camara",
                     "placeholder": "Foto",
                     "disabled": false
-                },
-                {
-                    "name": "descripcion",
-                    "placeholder": "Descripción",
-                    "multiline": true,
-                    "tipo": "",
-                    "label": "Descripción",
-                    "disabled": false,
-                    "maxRows": 4
                 }
             ]
         },
@@ -625,26 +915,47 @@
             "columna": 2,
             "value": [
                 {
-                    "key": "titulo",
                     "name": "titulo",
                     "label": "Titulo",
                     "placeholder": "Titulo",
                     "required": true,
-                    "mensaje_error": "Debe indicar el titulo a mostra"
+                    "mensaje_error": "Debe indicar el titulo a mostra",
+                    "tipo": "",
+                    "disabled": false
                 },
                 {
-                    "key": "value",
                     "name": "value",
                     "label": "Valor",
                     "placeholder": "Valor",
-                    "title": "Valor que representa este inten en la lista"
+                    "title": "Valor que representa este inten en la lista",
+                    "tipo": "",
+                    "disabled": false
                 },
                 {
-                    "key": "permisos",
                     "name": "permisos",
                     "label": "Permisos",
                     "placeholder": "Permisos",
-                    "title": "Permisos (solo para categoria)"
+                    "title": "Permisos (solo para categoria)",
+                    "tipo": "",
+                    "disabled": false
+                },
+                {
+                    "nombre": "otro",
+                    "tipo": "input",
+                    "label": "Otro",
+                    "placeholder": "Otro",
+                    "title": "Otro valor ",
+                    "required": "false",
+                    "disabled": false,
+                    "lista": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": "false",
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "otro"
                 }
             ]
         },
@@ -1339,7 +1650,54 @@
                 }
             ]
         },
-        "Form_monedero": {
+        "Form_egew_monedero": {
+            "columna": 1,
+            "value": [
+                {
+                    "nombre": "monedero",
+                    "tipo": "Tabla",
+                    "label": "",
+                    "placeholder": "",
+                    "title": "",
+                    "required": true,
+                    "disabled": false,
+                    "lista": [],
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": "false",
+                    "form": "Form_egew_select_monederos",
+                    "titulos": "Titulos_egew_monedero",
+                    "Subtotal": "",
+                    "name": "monedero"
+                }
+            ]
+        },
+        "Form_api": {
+            "columna": 1,
+            "value": [
+                {
+                    "nombre": "apis",
+                    "tipo": "lista_multiuso",
+                    "label": "Apis",
+                    "placeholder": "Seleccione api",
+                    "title": "Seleccione api",
+                    "required": true,
+                    "disabled": false,
+                    "lista": "Api",
+                    "agregar": false,
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "apis",
+                    "multiline": false,
+                    "getOptionLabel": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "Form_egew_select_monederos": {
             "columna": 1,
             "value": [
                 {
@@ -1347,7 +1705,7 @@
                     "tipo": "Lista",
                     "label": "Monederos",
                     "placeholder": "Por favor, seleccione monedero",
-                    "title": "Seleccione el monedero con el que desea ver",
+                    "title": "Seleccione monedero a ver",
                     "required": true,
                     "disabled": false,
                     "lista": [],
@@ -1361,15 +1719,70 @@
                 }
             ]
         },
-        "Form_api": {
+        "Form_egew_cuentas_wesi": {
             "columna": 1,
             "value": [
                 {
-                    "nombre": "apis",
+                    "nombre": "tipo",
                     "tipo": "Lista",
-                    "label": "Apis",
-                    "placeholder": "Seleccione api",
-                    "title": "Seleccione api",
+                    "label": "Cuenta",
+                    "placeholder": "Seleccione cuenta",
+                    "title": "Tipo de cuenta en wesi",
+                    "required": true,
+                    "disabled": false,
+                    "lista": [
+                        {
+                            "_id": 0,
+                            "titulo": "WesiPay",
+                            "value": "wesipay",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 1,
+                            "titulo": "Divisas",
+                            "value": "divisas",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 2,
+                            "titulo": "Criptocurrency",
+                            "value": "criptocurrency",
+                            "permisos": ""
+                        }
+                    ],
+                    "agregar": false,
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "tipo",
+                    "multiline": false,
+                    "table": [
+                        {
+                            "_id": 0,
+                            "titulo": "WesiPay",
+                            "value": "wesipay",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 1,
+                            "titulo": "Divisas",
+                            "value": "divisas",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 2,
+                            "titulo": "Criptocurrency",
+                            "value": "criptocurrency",
+                            "permisos": ""
+                        }
+                    ]
+                },
+                {
+                    "nombre": "divisa",
+                    "tipo": "Lista",
+                    "label": "Tipo de divisa",
+                    "placeholder": "Tipo de divisa",
+                    "title": "",
                     "required": true,
                     "disabled": false,
                     "lista": [],
@@ -1377,9 +1790,2028 @@
                     "form": "",
                     "titulos": "",
                     "Subtotal": "",
-                    "name": "apis",
+                    "name": "divisa",
                     "multiline": false,
                     "table": []
+                },
+                {
+                    "nombre": "referencia",
+                    "tipo": "input",
+                    "label": "Referencia",
+                    "placeholder": "Referencia de la cuenta",
+                    "title": "Nombre de referencia de la cuenta",
+                    "required": true,
+                    "mensaje_error": "Debe indicar el nombre de referencia de la cuenta a registrar",
+                    "disabled": false,
+                    "lista": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": false,
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "referencia",
+                    "multiline": false
+                }
+            ]
+        },
+        "Form_egew_cuentas_banco": {
+            "columna": 1,
+            "value": [
+                {
+                    "nombre": "divisa",
+                    "tipo": "Lista",
+                    "label": "Divisa",
+                    "placeholder": "Divisa",
+                    "title": "",
+                    "required": true,
+                    "disabled": false,
+                    "lista": [
+                        {
+                            "_id": 0,
+                            "titulo": "USD - Dolar",
+                            "value": "USD",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 1,
+                            "titulo": "EUR - Euro",
+                            "value": "EUR",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 2,
+                            "titulo": "GBP - Libra esterlina",
+                            "value": "GBP",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 3,
+                            "titulo": "INR - Rupia india",
+                            "value": "INR",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 4,
+                            "titulo": "CNY - Yuan",
+                            "value": "CNY",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 5,
+                            "titulo": "JPY - Yen",
+                            "value": "JPY",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 6,
+                            "titulo": "RUB - Rubio",
+                            "value": "RUB",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 7,
+                            "titulo": "VED - Bolivar",
+                            "value": "VED",
+                            "permisos": ""
+                        }
+                    ],
+                    "agregar": false,
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "divisa",
+                    "multiline": false,
+                    "table": [
+                        {
+                            "_id": 0,
+                            "titulo": "USD - Dolar",
+                            "value": "USD",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 1,
+                            "titulo": "EUR - Euro",
+                            "value": "EUR",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 2,
+                            "titulo": "GBP - Libra esterlina",
+                            "value": "GBP",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 3,
+                            "titulo": "INR - Rupia india",
+                            "value": "INR",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 4,
+                            "titulo": "CNY - Yuan",
+                            "value": "CNY",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 5,
+                            "titulo": "JPY - Yen",
+                            "value": "JPY",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 6,
+                            "titulo": "RUB - Rubio",
+                            "value": "RUB",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 7,
+                            "titulo": "VED - Bolivar",
+                            "value": "VED",
+                            "permisos": ""
+                        }
+                    ]
+                },
+                {
+                    "nombre": "bancos",
+                    "tipo": "Lista",
+                    "label": "Seleccione banco",
+                    "placeholder": "Seleccione banco",
+                    "title": "Seleccione banco",
+                    "required": true,
+                    "mensaje_error": "Debe seleccionar banco",
+                    "disabled": false,
+                    "lista": [
+                        {
+                            "_id": "0175",
+                            "titulo": "BANCO BICENTENARIO",
+                            "value": "0175"
+                        },
+                        {
+                            "_id": "0128",
+                            "titulo": "BANCO CARONI, C.A. BANCO UNIVERSAL",
+                            "value": "0128"
+                        },
+                        {
+                            "_id": "0102",
+                            "titulo": "BANCO DE VENEZUELA",
+                            "value": "0102"
+                        },
+                        {
+                            "_id": "0114",
+                            "titulo": "BANCO DEL CARIBE",
+                            "value": "0114"
+                        },
+                        {
+                            "_id": "0163",
+                            "titulo": "BANCO DEL TESORO",
+                            "value": "0163"
+                        },
+                        {
+                            "_id": "0105",
+                            "titulo": "BANCO MERCANTIL",
+                            "value": "0105"
+                        },
+                        {
+                            "_id": "0191",
+                            "titulo": "BANCO NACIONAL DE CREDITO",
+                            "value": "0191"
+                        },
+                        {
+                            "_id": "0116",
+                            "titulo": "BANCO OCCIDENTAL DE DESCUENTO.",
+                            "value": "0116"
+                        },
+                        {
+                            "_id": "0108",
+                            "titulo": "BANCO PROVINCIAL BBVA",
+                            "value": "0108"
+                        },
+                        {
+                            "_id": "0134",
+                            "titulo": "BANESCO BANCO UNIVERSAL",
+                            "value": "0134"
+                        },
+                        {
+                            "_id": "0177",
+                            "titulo": "BANFANB",
+                            "value": "0177"
+                        },
+                        {
+                            "_id": "0190",
+                            "titulo": "CITIBANK.",
+                            "value": "0190"
+                        },
+                        {
+                            "_id": "0121",
+                            "titulo": "CORP BANCA.",
+                            "value": "0121"
+                        },
+                        {
+                            "_id": "0157",
+                            "titulo": "DELSUR BANCO UNIVERSAL",
+                            "value": "0157"
+                        },
+                        {
+                            "_id": "0151",
+                            "titulo": "FONDO COMUN",
+                            "value": "0151"
+                        }
+                    ],
+                    "agregar": false,
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "bancos",
+                    "multiline": false,
+                    "table": [
+                        {
+                            "_id": "0175",
+                            "titulo": "BANCO BICENTENARIO",
+                            "value": "0175"
+                        },
+                        {
+                            "_id": "0128",
+                            "titulo": "BANCO CARONI, C.A. BANCO UNIVERSAL",
+                            "value": "0128"
+                        },
+                        {
+                            "_id": "0102",
+                            "titulo": "BANCO DE VENEZUELA",
+                            "value": "0102"
+                        },
+                        {
+                            "_id": "0114",
+                            "titulo": "BANCO DEL CARIBE",
+                            "value": "0114"
+                        },
+                        {
+                            "_id": "0163",
+                            "titulo": "BANCO DEL TESORO",
+                            "value": "0163"
+                        },
+                        {
+                            "_id": "0105",
+                            "titulo": "BANCO MERCANTIL",
+                            "value": "0105"
+                        },
+                        {
+                            "_id": "0191",
+                            "titulo": "BANCO NACIONAL DE CREDITO",
+                            "value": "0191"
+                        },
+                        {
+                            "_id": "0116",
+                            "titulo": "BANCO OCCIDENTAL DE DESCUENTO.",
+                            "value": "0116"
+                        },
+                        {
+                            "_id": "0108",
+                            "titulo": "BANCO PROVINCIAL BBVA",
+                            "value": "0108"
+                        },
+                        {
+                            "_id": "0134",
+                            "titulo": "BANESCO BANCO UNIVERSAL",
+                            "value": "0134"
+                        },
+                        {
+                            "_id": "0177",
+                            "titulo": "BANFANB",
+                            "value": "0177"
+                        },
+                        {
+                            "_id": "0190",
+                            "titulo": "CITIBANK.",
+                            "value": "0190"
+                        },
+                        {
+                            "_id": "0121",
+                            "titulo": "CORP BANCA.",
+                            "value": "0121"
+                        },
+                        {
+                            "_id": "0157",
+                            "titulo": "DELSUR BANCO UNIVERSAL",
+                            "value": "0157"
+                        },
+                        {
+                            "_id": "0151",
+                            "titulo": "FONDO COMUN",
+                            "value": "0151"
+                        }
+                    ]
+                },
+                {
+                    "nombre": "ncuenta",
+                    "tipo": "input",
+                    "label": "Numero de cuenta",
+                    "placeholder": "Numero de cuenta",
+                    "title": "Numero de cuenta",
+                    "required": true,
+                    "mensaje_error": "Debe indicar numero de cuenta",
+                    "disabled": false,
+                    "lista": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": false,
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "ncuenta"
+                },
+                {
+                    "nombre": "nidentidad",
+                    "tipo": "input",
+                    "label": "Numero de identidad",
+                    "placeholder": "Numero de identidad",
+                    "title": "Numero de identidad",
+                    "required": true,
+                    "mensaje_error": "Debe indicar numero de identidad del titular",
+                    "disabled": false,
+                    "lista": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": false,
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "nidentidad"
+                },
+                {
+                    "nombre": "nombres",
+                    "tipo": "input",
+                    "label": "Nombres del titular",
+                    "placeholder": "Nombres del titular",
+                    "title": "Nombres del titular",
+                    "required": true,
+                    "mensaje_error": "Debe indicar nombres del titular",
+                    "disabled": false,
+                    "lista": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": false,
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "nombres"
+                }
+            ]
+        },
+        "Form_egew_compra_wesicoin": {
+            "columna": 1,
+            "value": [
+                {
+                    "nombre": "cuenta",
+                    "tipo": "Lista",
+                    "label": "Cuenta",
+                    "placeholder": "Seleccione cuenta destino",
+                    "title": "",
+                    "required": true,
+                    "mensaje_error": "Selecciones cuenta ",
+                    "disabled": false,
+                    "lista": [],
+                    "agregar": false,
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "cuenta",
+                    "multiline": false,
+                    "table": []
+                },
+                {
+                    "nombre": "monederos",
+                    "tipo": "Lista",
+                    "label": "Monederos",
+                    "placeholder": "Seleccione monedero",
+                    "title": "",
+                    "required": true,
+                    "mensaje_error": "Debe seleccionar monedero",
+                    "disabled": false,
+                    "lista": [],
+                    "agregar": false,
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "monederos",
+                    "multiline": false,
+                    "table": []
+                },
+                {
+                    "nombre": "referencia",
+                    "tipo": "input",
+                    "label": "Referencia",
+                    "placeholder": "Referencia",
+                    "title": "",
+                    "required": true,
+                    "mensaje_error": "Debe colocar referencia de pago",
+                    "disabled": false,
+                    "lista": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": false,
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "referencia"
+                },
+                {
+                    "nombre": "monto",
+                    "tipo": "number",
+                    "label": "Monto",
+                    "placeholder": "Monto cancelado",
+                    "title": "",
+                    "required": true,
+                    "disabled": false,
+                    "lista": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": "false",
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "monto",
+                    "multiline": false
+                }
+            ]
+        },
+        "Form_egew_status_compra": {
+            "columna": 1,
+            "value": [
+                {
+                    "nombre": "referencia",
+                    "tipo": "input",
+                    "label": "Referencia Bancaria",
+                    "placeholder": "Referencia Bancaria",
+                    "title": "",
+                    "required": "false",
+                    "disabled": true,
+                    "lista": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": "false",
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "referencia"
+                },
+                {
+                    "nombre": "banco",
+                    "tipo": "input",
+                    "label": "Banco Destino",
+                    "placeholder": "Banco Destino",
+                    "title": "",
+                    "required": "false",
+                    "disabled": true,
+                    "lista": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": "false",
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "banco"
+                },
+                {
+                    "nombre": "usuario",
+                    "tipo": "input",
+                    "label": "Usuario",
+                    "placeholder": "Usuario",
+                    "title": "",
+                    "required": "false",
+                    "disabled": true,
+                    "lista": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": "false",
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "usuario"
+                },
+                {
+                    "nombre": "monto",
+                    "tipo": "input",
+                    "label": "Monto Cancelado",
+                    "placeholder": "Monto Cancelado",
+                    "title": "",
+                    "required": "false",
+                    "disabled": true,
+                    "lista": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": "false",
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "monto"
+                },
+                {
+                    "nombre": "status",
+                    "tipo": "Lista",
+                    "label": "Estado de compra",
+                    "placeholder": "Estado de compra",
+                    "title": "",
+                    "required": true,
+                    "disabled": false,
+                    "lista": [
+                        {
+                            "_id": 0,
+                            "titulo": "Por confirmar",
+                            "value": "Por confirmar",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 1,
+                            "titulo": "Aprobado",
+                            "value": "Aprobado",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 2,
+                            "titulo": "Rechazado ",
+                            "value": "Rechazado",
+                            "permisos": ""
+                        }
+                    ],
+                    "agregar": false,
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "status",
+                    "multiline": false,
+                    "table": [
+                        {
+                            "_id": 0,
+                            "titulo": "Por confirmar",
+                            "value": "Por confirmar",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 1,
+                            "titulo": "Aprobado",
+                            "value": "Aprobado",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 2,
+                            "titulo": "Rechazado ",
+                            "value": "Rechazado",
+                            "permisos": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        "Form_horarios": {
+            "columna": 2,
+            "value": [
+                {
+                    "nombre": "asignatura",
+                    "tipo": "Lista",
+                    "label": "Asignatura",
+                    "placeholder": "Asignatura",
+                    "title": "Asignatura que desea Asignar",
+                    "required": true,
+                    "disabled": false,
+                    "lista": [],
+                    "agregar": false,
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "asignatura",
+                    "multiline": false,
+                    "table": []
+                },
+                {
+                    "nombre": "horas",
+                    "tipo": "Lista",
+                    "label": "Horas a asignar",
+                    "placeholder": "Horas a asignar",
+                    "title": "Cantidad de horas que desea colocar",
+                    "required": true,
+                    "disabled": false,
+                    "lista": [],
+                    "agregar": false,
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "horas",
+                    "multiline": false,
+                    "table": []
+                }
+            ]
+        },
+        "Form_egew_password_pago": {
+            "columna": 1,
+            "value": [
+                {
+                    "nombre": "passworda",
+                    "tipo": "password",
+                    "label": "Contraseña Actual",
+                    "placeholder": "Contraseña Actual",
+                    "title": "Contraseña Actual",
+                    "required": true,
+                    "disabled": false,
+                    "lista": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": "false",
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "passworda",
+                    "multiline": false
+                },
+                {
+                    "nombre": "passwordn",
+                    "tipo": "password",
+                    "label": "Nueva Contraseña",
+                    "placeholder": "Nueva Contraseña",
+                    "title": "Nueva Contraseña",
+                    "required": "false",
+                    "mensaje_error": "Nueva contraseña y la confirmación son diferentes",
+                    "disabled": false,
+                    "lista": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": false,
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "passwordn",
+                    "comparar": true,
+                    "con": "passwordc"
+                },
+                {
+                    "nombre": "passwordc",
+                    "tipo": "password",
+                    "label": "Confirmar Contraseña",
+                    "placeholder": "Confirmar Contraseña",
+                    "title": "Confirmar Contraseña",
+                    "required": false,
+                    "mensaje_error": "Nueva contraseña y la confirmación son diferentes",
+                    "disabled": false,
+                    "lista": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": false,
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "passwordc",
+                    "comparar": true,
+                    "con": "passwordn"
+                }
+            ]
+        },
+        "Form_egew_cobro": {
+            "columna": 1,
+            "value": [
+                {
+                    "nombre": "monto",
+                    "tipo": "number",
+                    "label": "Monto",
+                    "placeholder": "Monto",
+                    "title": "",
+                    "required": "false",
+                    "disabled": false,
+                    "lista": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": "false",
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "monto",
+                    "multiline": false
+                },
+                {
+                    "nombre": "monedero",
+                    "tipo": "Lista",
+                    "label": "Monedero",
+                    "placeholder": "Monedero",
+                    "title": "Monedero",
+                    "required": true,
+                    "disabled": false,
+                    "lista": [],
+                    "agregar": false,
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "monedero",
+                    "multiline": false,
+                    "table": []
+                },
+                {
+                    "nombre": "password",
+                    "tipo": "password",
+                    "label": "Contraseña",
+                    "placeholder": "Contraseña",
+                    "title": "Contraseña",
+                    "required": "false",
+                    "disabled": false,
+                    "lista": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": "false",
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "password",
+                    "multiline": false
+                }
+            ]
+        },
+        "Form_egew_exchage": {
+            "columna": 1,
+            "value": [
+                {
+                    "nombre": "origen",
+                    "tipo": "Lista",
+                    "label": "Monedero origen",
+                    "placeholder": "Monedero origen",
+                    "title": "Monedero origen",
+                    "required": true,
+                    "mensaje_error": "Selecciones monedero",
+                    "disabled": false,
+                    "lista": [],
+                    "agregar": false,
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "origen",
+                    "multiline": false,
+                    "table": []
+                },
+                {
+                    "nombre": "destino",
+                    "tipo": "Lista",
+                    "label": "Monedero destino",
+                    "placeholder": "Monedero destino",
+                    "title": "Monedero destino",
+                    "required": true,
+                    "mensaje_error": "Seleccione monedero",
+                    "disabled": false,
+                    "lista": [],
+                    "agregar": false,
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "destino",
+                    "multiline": false,
+                    "table": []
+                },
+                {
+                    "nombre": "monto",
+                    "tipo": "number",
+                    "label": "Monto a transferir",
+                    "placeholder": "Monto a transferir",
+                    "title": "Monto a transferir",
+                    "required": true,
+                    "mensaje_error": "Indique monto",
+                    "disabled": false,
+                    "lista": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": "false",
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "monto",
+                    "multiline": false
+                }
+            ]
+        },
+        "Form_Inscripcion": {
+            "columna": 3,
+            "value": [
+                {
+                    "nombre": "periodo",
+                    "tipo": "input",
+                    "label": "Periodo",
+                    "placeholder": "Periodo Académico",
+                    "title": "Periodo Academico",
+                    "required": true,
+                    "mensaje_error": "Debe indicar el periodo académico",
+                    "disabled": false,
+                    "lista": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": false,
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "periodo"
+                },
+                {
+                    "nombre": "titulo",
+                    "tipo": "input",
+                    "label": "Titulo de inscripción",
+                    "placeholder": "Titulo de inscripción",
+                    "title": "Titulo de inscripción",
+                    "required": true,
+                    "mensaje_error": "Debe indicar titulo de la inscripción",
+                    "disabled": false,
+                    "lista": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": false,
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "titulo"
+                },
+                {
+                    "nombre": "estatus",
+                    "tipo": "Checkbox",
+                    "label": "Activo/No activo",
+                    "placeholder": "Activo/No activo",
+                    "title": "",
+                    "required": "false",
+                    "disabled": false,
+                    "lista": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": "false",
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "estatus",
+                    "multiline": false
+                }
+            ]
+        },
+        "Form_Arancel": {
+            "columna": 4,
+            "value": [
+                {
+                    "nombre": "periodo",
+                    "name": "periodo",
+                    "label": "Periodo",
+                    "placeholder": "Periodo Académico",
+                    "title": "Periodo Académico",
+                    "required": "false",
+                    "disabled": false,
+                    "tipo": "lista_multiuso",
+                    "lista": "colegio_inscripcion",
+                    "multiple": false,
+                    "agregar": true,
+                    "getOptionLabel": [
+                        "periodo"
+                    ],
+                    "form": "Form_Inscripcion",
+                    "table": "colegio_inscripcion"
+                },
+                {
+                    "nombre": "mes_inicio",
+                    "tipo": "Lista",
+                    "label": "Mes de inicio",
+                    "placeholder": "Mes de inicio",
+                    "title": "",
+                    "required": true,
+                    "disabled": false,
+                    "lista": [
+                        {
+                            "_id": 0,
+                            "titulo": "Inscripción",
+                            "value": "inscripcion",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 1,
+                            "titulo": "Septiembre",
+                            "value": "septiembre",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 2,
+                            "titulo": "Octubre",
+                            "value": "octubre",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 3,
+                            "titulo": "Noviembre",
+                            "value": "noviembre",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 4,
+                            "titulo": "Diciembre",
+                            "value": "diciembre",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 5,
+                            "titulo": "Enero",
+                            "value": "enero",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 6,
+                            "titulo": "Febrero",
+                            "value": "febrero",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 7,
+                            "titulo": "Marzo",
+                            "value": "marzo",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 8,
+                            "titulo": "Abril",
+                            "value": "abril",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 9,
+                            "titulo": "Mayo",
+                            "value": "mayo",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 10,
+                            "titulo": "Junio",
+                            "value": "junio",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 11,
+                            "titulo": "Julio",
+                            "value": "julio",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 12,
+                            "titulo": "Agosto",
+                            "value": "agosto",
+                            "permisos": ""
+                        }
+                    ],
+                    "agregar": false,
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "mes_inicio",
+                    "multiline": false,
+                    "table": [
+                        {
+                            "_id": 0,
+                            "titulo": "Inscripción",
+                            "value": "inscripcion",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 1,
+                            "titulo": "Septiembre",
+                            "value": "septiembre",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 2,
+                            "titulo": "Octubre",
+                            "value": "octubre",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 3,
+                            "titulo": "Noviembre",
+                            "value": "noviembre",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 4,
+                            "titulo": "Diciembre",
+                            "value": "diciembre",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 5,
+                            "titulo": "Enero",
+                            "value": "enero",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 6,
+                            "titulo": "Febrero",
+                            "value": "febrero",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 7,
+                            "titulo": "Marzo",
+                            "value": "marzo",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 8,
+                            "titulo": "Abril",
+                            "value": "abril",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 9,
+                            "titulo": "Mayo",
+                            "value": "mayo",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 10,
+                            "titulo": "Junio",
+                            "value": "junio",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 11,
+                            "titulo": "Julio",
+                            "value": "julio",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 12,
+                            "titulo": "Agosto",
+                            "value": "agosto",
+                            "permisos": ""
+                        }
+                    ]
+                },
+                {
+                    "nombre": "mes_final",
+                    "tipo": "Lista",
+                    "label": "Mes de Finaliza",
+                    "placeholder": "Mes de Finaliza",
+                    "title": "Mes de Finaliza",
+                    "required": true,
+                    "disabled": false,
+                    "lista": [
+                        {
+                            "_id": 0,
+                            "titulo": "Inscripción",
+                            "value": "inscripcion",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 1,
+                            "titulo": "Septiembre",
+                            "value": "septiembre",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 2,
+                            "titulo": "Octubre",
+                            "value": "octubre",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 3,
+                            "titulo": "Noviembre",
+                            "value": "noviembre",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 4,
+                            "titulo": "Diciembre",
+                            "value": "diciembre",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 5,
+                            "titulo": "Enero",
+                            "value": "enero",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 6,
+                            "titulo": "Febrero",
+                            "value": "febrero",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 7,
+                            "titulo": "Marzo",
+                            "value": "marzo",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 8,
+                            "titulo": "Abril",
+                            "value": "abril",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 9,
+                            "titulo": "Mayo",
+                            "value": "mayo",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 10,
+                            "titulo": "Junio",
+                            "value": "junio",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 11,
+                            "titulo": "Julio",
+                            "value": "julio",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 12,
+                            "titulo": "Agosto",
+                            "value": "agosto",
+                            "permisos": ""
+                        }
+                    ],
+                    "agregar": false,
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "mes_final",
+                    "multiline": false,
+                    "table": [
+                        {
+                            "_id": 0,
+                            "titulo": "Inscripción",
+                            "value": "inscripcion",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 1,
+                            "titulo": "Septiembre",
+                            "value": "septiembre",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 2,
+                            "titulo": "Octubre",
+                            "value": "octubre",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 3,
+                            "titulo": "Noviembre",
+                            "value": "noviembre",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 4,
+                            "titulo": "Diciembre",
+                            "value": "diciembre",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 5,
+                            "titulo": "Enero",
+                            "value": "enero",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 6,
+                            "titulo": "Febrero",
+                            "value": "febrero",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 7,
+                            "titulo": "Marzo",
+                            "value": "marzo",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 8,
+                            "titulo": "Abril",
+                            "value": "abril",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 9,
+                            "titulo": "Mayo",
+                            "value": "mayo",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 10,
+                            "titulo": "Junio",
+                            "value": "junio",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 11,
+                            "titulo": "Julio",
+                            "value": "julio",
+                            "permisos": ""
+                        },
+                        {
+                            "_id": 12,
+                            "titulo": "Agosto",
+                            "value": "agosto",
+                            "permisos": ""
+                        }
+                    ]
+                },
+                {
+                    "nombre": "monto",
+                    "tipo": "number",
+                    "label": "Monto",
+                    "placeholder": "Monto",
+                    "title": "Monto",
+                    "required": "false",
+                    "disabled": false,
+                    "lista": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": "false",
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "monto",
+                    "multiline": false
+                }
+            ]
+        },
+        "Form_Cuenta": {
+            "columna": 2,
+            "value": [
+                {
+                    "nombre": "titular",
+                    "tipo": "input",
+                    "label": "Titular de cuenta",
+                    "placeholder": "Titular de cuenta",
+                    "title": "Titular de cuenta",
+                    "required": true,
+                    "mensaje_error": "debe colocar titular de cuenta",
+                    "disabled": false,
+                    "lista": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": "false",
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "titular"
+                },
+                {
+                    "nombre": "numero",
+                    "tipo": "input",
+                    "label": "Numero de cuenta",
+                    "placeholder": "Numero de cuenta",
+                    "title": "Numero de cuenta",
+                    "required": true,
+                    "mensaje_error": "Indique el numero de cuenta",
+                    "disabled": false,
+                    "lista": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": "false",
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "numero"
+                },
+                {
+                    "nombre": "banco",
+                    "tipo": "Lista",
+                    "label": "Banco",
+                    "placeholder": "Banco",
+                    "title": "Banco",
+                    "required": true,
+                    "disabled": false,
+                    "lista": [
+                        {
+                            "_id": "0175",
+                            "titulo": "BANCO BICENTENARIO",
+                            "value": "0175",
+                            "permisos": "",
+                            "id": 1,
+                            "otro": "VED"
+                        },
+                        {
+                            "_id": "0128",
+                            "titulo": "BANCO CARONI, C.A. BANCO UNIVERSAL",
+                            "value": "0128",
+                            "permisos": "",
+                            "id": 2,
+                            "otro": "VED"
+                        },
+                        {
+                            "_id": "0102",
+                            "titulo": "BANCO DE VENEZUELA",
+                            "value": "0102",
+                            "id": 3,
+                            "permisos": "",
+                            "otro": "VED"
+                        },
+                        {
+                            "_id": "0114",
+                            "titulo": "BANCO DEL CARIBE",
+                            "value": "0114",
+                            "id": 4,
+                            "permisos": "",
+                            "otro": "VED"
+                        },
+                        {
+                            "_id": "0163",
+                            "titulo": "BANCO DEL TESORO",
+                            "value": "0163",
+                            "id": 5,
+                            "permisos": "",
+                            "otro": "VED"
+                        },
+                        {
+                            "_id": "0105",
+                            "titulo": "BANCO MERCANTIL",
+                            "value": "0105",
+                            "id": 6,
+                            "permisos": "",
+                            "otro": "VED"
+                        },
+                        {
+                            "_id": "0191",
+                            "titulo": "BANCO NACIONAL DE CREDITO",
+                            "value": "0191",
+                            "id": 7,
+                            "permisos": "",
+                            "otro": "VED"
+                        },
+                        {
+                            "_id": "0116",
+                            "titulo": "BANCO OCCIDENTAL DE DESCUENTO.",
+                            "value": "0116",
+                            "id": 8,
+                            "permisos": "",
+                            "otro": "VED"
+                        },
+                        {
+                            "_id": "0108",
+                            "titulo": "BANCO PROVINCIAL BBVA",
+                            "value": "0108",
+                            "id": 9,
+                            "permisos": "",
+                            "otro": "VED"
+                        },
+                        {
+                            "_id": "0134",
+                            "titulo": "BANESCO BANCO UNIVERSAL",
+                            "value": "0134",
+                            "id": 10,
+                            "permisos": "",
+                            "otro": "VED"
+                        },
+                        {
+                            "_id": "0177",
+                            "titulo": "BANFANB",
+                            "value": "0177"
+                        },
+                        {
+                            "_id": "0190",
+                            "titulo": "CITIBANK.",
+                            "value": "0190",
+                            "id": 12,
+                            "permisos": "",
+                            "otro": "VED"
+                        },
+                        {
+                            "_id": "0121",
+                            "titulo": "CORP BANCA.",
+                            "value": "0121",
+                            "id": 13,
+                            "permisos": "",
+                            "otro": "VED"
+                        },
+                        {
+                            "_id": "0157",
+                            "titulo": "DELSUR BANCO UNIVERSAL",
+                            "value": "0157",
+                            "id": 14,
+                            "permisos": "",
+                            "otro": "VED"
+                        },
+                        {
+                            "_id": "0151",
+                            "titulo": "FONDO COMUN",
+                            "value": "0151",
+                            "id": 15,
+                            "permisos": "",
+                            "otro": "VED"
+                        },
+                        {
+                            "_id": "BOA",
+                            "titulo": "BANK OF AMERICA",
+                            "value": "BOA",
+                            "permisos": "",
+                            "id": 16,
+                            "otro": "USD"
+                        }
+                    ],
+                    "agregar": false,
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "banco",
+                    "multiline": false,
+                    "table": [
+                        {
+                            "_id": "0175",
+                            "titulo": "BANCO BICENTENARIO",
+                            "value": "0175",
+                            "permisos": "",
+                            "id": 1,
+                            "otro": "VED"
+                        },
+                        {
+                            "_id": "0128",
+                            "titulo": "BANCO CARONI, C.A. BANCO UNIVERSAL",
+                            "value": "0128",
+                            "permisos": "",
+                            "id": 2,
+                            "otro": "VED"
+                        },
+                        {
+                            "_id": "0102",
+                            "titulo": "BANCO DE VENEZUELA",
+                            "value": "0102",
+                            "id": 3,
+                            "permisos": "",
+                            "otro": "VED"
+                        },
+                        {
+                            "_id": "0114",
+                            "titulo": "BANCO DEL CARIBE",
+                            "value": "0114",
+                            "id": 4,
+                            "permisos": "",
+                            "otro": "VED"
+                        },
+                        {
+                            "_id": "0163",
+                            "titulo": "BANCO DEL TESORO",
+                            "value": "0163",
+                            "id": 5,
+                            "permisos": "",
+                            "otro": "VED"
+                        },
+                        {
+                            "_id": "0105",
+                            "titulo": "BANCO MERCANTIL",
+                            "value": "0105",
+                            "id": 6,
+                            "permisos": "",
+                            "otro": "VED"
+                        },
+                        {
+                            "_id": "0191",
+                            "titulo": "BANCO NACIONAL DE CREDITO",
+                            "value": "0191",
+                            "id": 7,
+                            "permisos": "",
+                            "otro": "VED"
+                        },
+                        {
+                            "_id": "0116",
+                            "titulo": "BANCO OCCIDENTAL DE DESCUENTO.",
+                            "value": "0116",
+                            "id": 8,
+                            "permisos": "",
+                            "otro": "VED"
+                        },
+                        {
+                            "_id": "0108",
+                            "titulo": "BANCO PROVINCIAL BBVA",
+                            "value": "0108",
+                            "id": 9,
+                            "permisos": "",
+                            "otro": "VED"
+                        },
+                        {
+                            "_id": "0134",
+                            "titulo": "BANESCO BANCO UNIVERSAL",
+                            "value": "0134",
+                            "id": 10,
+                            "permisos": "",
+                            "otro": "VED"
+                        },
+                        {
+                            "_id": "0177",
+                            "titulo": "BANFANB",
+                            "value": "0177"
+                        },
+                        {
+                            "_id": "0190",
+                            "titulo": "CITIBANK.",
+                            "value": "0190",
+                            "id": 12,
+                            "permisos": "",
+                            "otro": "VED"
+                        },
+                        {
+                            "_id": "0121",
+                            "titulo": "CORP BANCA.",
+                            "value": "0121",
+                            "id": 13,
+                            "permisos": "",
+                            "otro": "VED"
+                        },
+                        {
+                            "_id": "0157",
+                            "titulo": "DELSUR BANCO UNIVERSAL",
+                            "value": "0157",
+                            "id": 14,
+                            "permisos": "",
+                            "otro": "VED"
+                        },
+                        {
+                            "_id": "0151",
+                            "titulo": "FONDO COMUN",
+                            "value": "0151",
+                            "id": 15,
+                            "permisos": "",
+                            "otro": "VED"
+                        },
+                        {
+                            "_id": "BOA",
+                            "titulo": "BANK OF AMERICA",
+                            "value": "BOA",
+                            "permisos": "",
+                            "id": 16,
+                            "otro": "USD"
+                        }
+                    ]
+                },
+                {
+                    "nombre": "tipo",
+                    "tipo": "input",
+                    "label": "Tipo de cuenta",
+                    "placeholder": "Tipo de cuenta",
+                    "title": "Tipo de cuenta",
+                    "required": true,
+                    "mensaje_error": "Indique el tipo de cuenta",
+                    "disabled": false,
+                    "lista": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": "false",
+                    "form": "",
+                    "titulos": "",
+                    "Subtotal": "",
+                    "name": "tipo"
+                }
+            ]
+        },
+        "Form_Estudiante": {
+            "columna": 4,
+            "value": [
+                {
+                    "nombre": "cedula",
+                    "tipo": "input",
+                    "label": "Cedula",
+                    "placeholder": "Cedula",
+                    "title": "Cedula de identidad",
+                    "required": true,
+                    "mensaje_error": "Indique cedula de identidad",
+                    "disabled": false,
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": false,
+                    "name": "cedula"
+                },
+                {
+                    "nombre": "cedula_estudiantil",
+                    "tipo": "input",
+                    "label": "Cedula Estudiantil",
+                    "placeholder": "Cedula Estudiantil",
+                    "title": "Cedula Estudiantil",
+                    "required": false,
+                    "disabled": false,
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": false,
+                    "name": "cedula_estudiantil"
+                },
+                {
+                    "nombre": "nombres",
+                    "tipo": "input",
+                    "label": "Nombres",
+                    "placeholder": "Nombres",
+                    "title": "Nombres del estudiante",
+                    "required": true,
+                    "mensaje_error": "indique nombre del estudiante",
+                    "disabled": false,
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": false,
+                    "name": "nombres"
+                },
+                {
+                    "nombre": "apellidos",
+                    "tipo": "input",
+                    "label": "Apellidos",
+                    "placeholder": "Apellidos",
+                    "title": "Apellidos del estudiante",
+                    "required": true,
+                    "disabled": false,
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": false,
+                    "name": "apellidos"
+                },
+                {
+                    "nombre": "sexo",
+                    "tipo": "input",
+                    "label": "Sexo",
+                    "placeholder": "Sexo",
+                    "title": "Sexo del estudiante",
+                    "disabled": false,
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": false,
+                    "name": "sexo"
+                },
+                {
+                    "nombre": "lugar_nacimiento",
+                    "tipo": "input",
+                    "label": "Lugar de Nacimiento",
+                    "placeholder": "Lugar de Nacimiento",
+                    "title": "Lugar de Nacimiento",
+                    "disabled": false,
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": false,
+                    "name": "lugar_nacimiento"
+                },
+                {
+                    "nombre": "fecha_nacimiento",
+                    "tipo": "Fecha",
+                    "label": "Fecha de Nacimiento",
+                    "placeholder": "Fecha de Nacimiento",
+                    "title": "Fecha de Nacimiento",
+                    "disabled": false,
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": false,
+                    "name": "fecha_nacimiento",
+                    "type": "date"
+                },
+                {
+                    "nombre": "correo",
+                    "tipo": "input",
+                    "label": "Correo Electrónico",
+                    "placeholder": "Correo Electrónico",
+                    "title": "Correo Electrónico",
+                    "disabled": false,
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": false,
+                    "name": "correo"
+                },
+                {
+                    "nombre": "telefono_movil",
+                    "tipo": "input",
+                    "label": "Teléfono Móvil",
+                    "placeholder": "Teléfono Móvil",
+                    "title": "Teléfono Móvil",
+                    "disabled": false,
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": false,
+                    "name": "telefono_movil"
+                },
+                {
+                    "nombre": "telefono_fijo",
+                    "tipo": "input",
+                    "label": "Teléfono Fijo",
+                    "placeholder": "Teléfono Fijo",
+                    "title": "Teléfono Fijo",
+                    "disabled": false,
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": false,
+                    "name": "telefono_fijo"
+                },
+                {
+                    "nombre": "municipio",
+                    "tipo": "input",
+                    "label": "Municipio",
+                    "placeholder": "Municipio",
+                    "title": "Municipio",
+                    "disabled": false,
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "name": "municipio"
+                },
+                {
+                    "nombre": "parroquia",
+                    "tipo": "input",
+                    "label": "Parroquia",
+                    "placeholder": "Parroquia",
+                    "title": "Parroquia",
+                    "disabled": false,
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "name": "parroquia"
+                },
+                {
+                    "nombre": "direccion",
+                    "tipo": "multiline",
+                    "label": "Dirección",
+                    "placeholder": "Dirección",
+                    "title": "Dirección",
+                    "disabled": false,
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": false,
+                    "name": "direccion",
+                    "multiline": true,
+                    "maxRows": "3"
+                },
+                {
+                    "nombre": "sector",
+                    "tipo": "input",
+                    "label": "Sector",
+                    "placeholder": "Sector",
+                    "title": "Sector",
+                    "disabled": false,
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "name": "sector"
+                },
+                {
+                    "nombre": "tipo_sangre",
+                    "tipo": "input",
+                    "label": "Tipo de Sangre",
+                    "placeholder": "Tipo de Sangre",
+                    "title": "Tipo de Sangre",
+                    "disabled": false,
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "name": "tipo_sangre"
+                },
+                {
+                    "nombre": "estatura",
+                    "tipo": "number",
+                    "label": "Estatura",
+                    "placeholder": "Estatura",
+                    "title": "Estatura",
+                    "disabled": false,
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "name": "estatura",
+                    "multiline": false
+                },
+                {
+                    "nombre": "peso",
+                    "tipo": "number",
+                    "label": "Peso",
+                    "placeholder": "Peso",
+                    "title": "Peso",
+                    "disabled": false,
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "name": "peso",
+                    "multiline": false
+                },
+                {
+                    "nombre": "alergias",
+                    "tipo": "input",
+                    "label": "Alergia(s)",
+                    "placeholder": "Alergia(s)",
+                    "title": "Alergias",
+                    "disabled": false,
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": false,
+                    "name": "alergias"
+                },
+                {
+                    "nombre": "impedimentos",
+                    "tipo": "input",
+                    "label": "Impedimento(s)",
+                    "placeholder": "Impedimento(s)",
+                    "title": "Impedimento(s)",
+                    "disabled": false,
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "name": "impedimentos"
+                },
+                {
+                    "nombre": "medico",
+                    "tipo": "input",
+                    "label": "Medico",
+                    "placeholder": "Medico",
+                    "title": "Medico",
+                    "disabled": false,
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "name": "medico"
+                },
+                {
+                    "nombre": "actividad_extra",
+                    "tipo": "input",
+                    "label": "Actividades Extras",
+                    "placeholder": "Actividades Extras",
+                    "title": "Actividades Extras",
+                    "disabled": false,
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "name": "actividad_extra"
+                },
+                {
+                    "nombre": "traslado",
+                    "tipo": "input",
+                    "label": "Traslado",
+                    "placeholder": "Traslado",
+                    "title": "",
+                    "disabled": false,
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "name": "traslado"
+                },
+                {
+                    "nombre": "persona_autorizada",
+                    "tipo": "input",
+                    "label": "Persona Autorizada",
+                    "placeholder": "Persona Autorizada",
+                    "title": "Persona Autorizada para el traslado",
+                    "disabled": false,
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "name": "persona_autorizada"
+                },
+                {
+                    "nombre": "cedula_persona_autorizada",
+                    "tipo": "input",
+                    "label": "Cedula de Persona Autorizada",
+                    "placeholder": "Cedula de Persona Autorizada",
+                    "title": "Cedula de Persona Autorizada para traslado",
+                    "disabled": false,
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "name": "cedula_persona_autorizada"
+                },
+                {
+                    "nombre": "afinidad_persona_autorizada",
+                    "tipo": "input",
+                    "label": "Afinidad Persona Autorizada",
+                    "placeholder": "Afinidad Persona Autorizada",
+                    "title": "Afinidad Persona Autorizada para el traslado",
+                    "disabled": false,
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "name": "afinidad_persona_autorizada"
+                },
+                {
+                    "nombre": "grado",
+                    "tipo": "input",
+                    "label": "Grado",
+                    "placeholder": "Grado",
+                    "title": "Grado",
+                    "disabled": false,
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "name": "grado"
+                },
+                {
+                    "nombre": "seccion",
+                    "tipo": "input",
+                    "label": "Sección",
+                    "placeholder": "Sección",
+                    "title": "Sección",
+                    "disabled": false,
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "name": "seccion"
+                },
+                {
+                    "nombre": "beca",
+                    "tipo": "number",
+                    "label": "% de Beca",
+                    "placeholder": "% de Beca",
+                    "title": "% de Beca",
+                    "disabled": false,
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "name": "beca",
+                    "multiline": false
+                },
+                {
+                    "nombre": "estatus",
+                    "tipo": "input",
+                    "label": "Estado del Estudiante",
+                    "placeholder": "Estado del Estudiante",
+                    "title": "Estado del Estudiante",
+                    "disabled": false,
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "name": "estatus"
+                },
+                {
+                    "nombre": "cedula_representante",
+                    "tipo": "input",
+                    "label": "Cedula del Representante",
+                    "placeholder": "Cedula del Representante",
+                    "title": "Cedula del Representante",
+                    "disabled": false,
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "name": "cedula_representante"
+                },
+                {
+                    "nombre": "nombres_representante",
+                    "tipo": "input",
+                    "label": "Nombres del Representante",
+                    "placeholder": "Nombres del Representante",
+                    "title": "Nombres del Representante",
+                    "disabled": false,
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "name": "nombres_representante"
+                },
+                {
+                    "nombre": "apellidos_representante",
+                    "tipo": "input",
+                    "label": "Apellidos del Representante",
+                    "placeholder": "Apellidos del Representante",
+                    "title": "Apellidos del Representante",
+                    "disabled": false,
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "name": "apellidos_representante"
+                }
+            ]
+        },
+        "Form_Asignatura": {
+            "columna": 1,
+            "value": [
+                {
+                    "nombre": "nombre",
+                    "tipo": "input",
+                    "label": "Nombre",
+                    "placeholder": "Nombre",
+                    "title": "Nombre",
+                    "disabled": false,
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "name": "nombre"
                 }
             ]
         }
@@ -1611,6 +4043,220 @@
                 "default": "",
                 "type": ""
             }
+        ],
+        "Titulos_egew_monedero": [
+            {
+                "title": "Disponible",
+                "field": "disponible",
+                "tipo": "number",
+                "formato": "",
+                "default": "0",
+                "type": "number"
+            },
+            {
+                "title": "No disponible",
+                "field": "nodisponible",
+                "tipo": "",
+                "formato": "",
+                "default": "0",
+                "type": "number"
+            }
+        ],
+        "Titulos_Api": [
+            {
+                "title": "Api",
+                "field": "api",
+                "tipo": "",
+                "formato": "",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Master",
+                "field": "master",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.master ? \"SI\" : \"NO\"}`",
+                "default": "",
+                "type": ""
+            }
+        ],
+        "Titulos_egew_User_api": [
+            {
+                "title": "Username",
+                "field": "username",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.valores.username}`",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Nombres",
+                "field": "nombres",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.valores.nombre}`",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Apellidos",
+                "field": "apellido",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.valores.apellido}`",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Correo",
+                "field": "correo",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.valores.correo}`",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Correo",
+                "field": "email",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.valores.email}`",
+                "default": "",
+                "type": ""
+            }
+        ],
+        "Titulos_Inscripcion": [
+            {
+                "title": "Periodo",
+                "field": "periodo",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.valores.periodo}`",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Titulo",
+                "field": "titulo",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.valores.titulo}`",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Activo",
+                "field": "activo",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.valores.estatus ? 'SI' : 'NO'}`",
+                "default": "",
+                "type": ""
+            }
+        ],
+        "Titulos_Arancel": [
+            {
+                "title": "Periodo",
+                "field": "periodo",
+                "tipo": "",
+                "formato": "(dato)=> `${typeof  dato.valores.periodo==='object' ? dato.valores.periodo.periodo : dato.valores.periodo}`",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Mes de Inicio",
+                "field": "mes_inicio",
+                "tipo": "",
+                "formato": "(dato)=> `${typeof  dato.valores.mes_inicio==='object' ? dato.valores.mes_inicio.titulo : dato.valores.mes_inicio}`",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Mes que finaliza",
+                "field": "mes_final",
+                "tipo": "",
+                "formato": "(dato)=> `${typeof  dato.valores.mes_final==='object' ? dato.valores.mes_final.titulo : dato.valores.mes_final}`",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Monto",
+                "field": "monto",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.valores.monto}`",
+                "default": "",
+                "type": "number"
+            }
+        ],
+        "Titulos_Cuenta": [
+            {
+                "title": "Numero de Cuenta",
+                "field": "numero",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.valores.numero}`",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Banco",
+                "field": "banco",
+                "tipo": "",
+                "formato": "(dato)=> `${typeof  dato.valores.banco==='object' ? dato.valores.banco.titulo : dato.valores.banco}`",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Tipo",
+                "field": "tipo",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.valores.tipo}`",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Titular",
+                "field": "titular",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.valores.titular}`",
+                "default": "",
+                "type": ""
+            }
+        ],
+        "Titulos_Estudiante": [
+            {
+                "title": "Cedula",
+                "field": "cedula",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.valores.cedula}`",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Nombres",
+                "field": "nombres",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.valores.nombres}`",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Apellidos",
+                "field": "apellidos",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.valores.apellidos}`",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Grado",
+                "field": "grado",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.valores.grado}`",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Sección",
+                "field": "seccion",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.valores.seccion}`",
+                "default": "",
+                "type": ""
+            }
         ]
     },
     "Funciones": {
@@ -1665,7 +4311,7 @@
     "Api_egew": {
         "Titulo": "EGE",
         "Formularios": {
-            "Form_login": {
+            "Form_egew_login": {
                 "columna": 1,
                 "value": [
                     {
@@ -1686,7 +4332,7 @@
                     }
                 ]
             },
-            "Form_registro": {
+            "Form_egew_registro": {
                 "columna": 1,
                 "value": [
                     {
@@ -1830,7 +4476,7 @@
                     }
                 ]
             },
-            "Form_pagar_cobrar": {
+            "Form_egew_pagar_cobrar": {
                 "columna": 1,
                 "value": [
                     {
@@ -1889,6 +4535,893 @@
                         "multiline": false
                     }
                 ]
+            },
+            "Form_egew_select_monederos": {
+                "columna": 1,
+                "value": [
+                    {
+                        "nombre": "monederos",
+                        "tipo": "Lista",
+                        "label": "Monederos",
+                        "placeholder": "Por favor, seleccione monedero",
+                        "title": "Seleccione monedero a ver",
+                        "required": true,
+                        "disabled": false,
+                        "lista": [],
+                        "agregar": false,
+                        "form": "",
+                        "titulos": "",
+                        "Subtotal": "",
+                        "name": "monederos",
+                        "multiline": false,
+                        "table": []
+                    }
+                ]
+            },
+            "Form_egew_monedero": {
+                "columna": 1,
+                "value": [
+                    {
+                        "nombre": "monedero",
+                        "tipo": "Tabla",
+                        "label": "",
+                        "placeholder": "",
+                        "title": "",
+                        "required": true,
+                        "disabled": false,
+                        "lista": [],
+                        "getOptionLabel": [
+                            "titulo"
+                        ],
+                        "agregar": "false",
+                        "form": "Form_egew_select_monederos",
+                        "titulos": "Titulos_egew_monedero",
+                        "Subtotal": "",
+                        "name": "monedero"
+                    }
+                ]
+            },
+            "Form_egew_cuentas_wesi": {
+                "columna": 1,
+                "value": [
+                    {
+                        "nombre": "tipo",
+                        "tipo": "Lista",
+                        "label": "Cuenta",
+                        "placeholder": "Seleccione cuenta",
+                        "title": "Tipo de cuenta en wesi",
+                        "required": true,
+                        "disabled": false,
+                        "lista": [
+                            {
+                                "_id": 0,
+                                "titulo": "WesiPay",
+                                "value": "wesipay",
+                                "permisos": ""
+                            },
+                            {
+                                "_id": 1,
+                                "titulo": "Divisas",
+                                "value": "divisas",
+                                "permisos": ""
+                            },
+                            {
+                                "_id": 2,
+                                "titulo": "Criptocurrency",
+                                "value": "criptocurrency",
+                                "permisos": ""
+                            }
+                        ],
+                        "agregar": false,
+                        "form": "",
+                        "titulos": "",
+                        "Subtotal": "",
+                        "name": "tipo",
+                        "multiline": false,
+                        "table": [
+                            {
+                                "_id": 0,
+                                "titulo": "WesiPay",
+                                "value": "wesipay",
+                                "permisos": ""
+                            },
+                            {
+                                "_id": 1,
+                                "titulo": "Divisas",
+                                "value": "divisas",
+                                "permisos": ""
+                            },
+                            {
+                                "_id": 2,
+                                "titulo": "Criptocurrency",
+                                "value": "criptocurrency",
+                                "permisos": ""
+                            }
+                        ]
+                    },
+                    {
+                        "nombre": "divisa",
+                        "tipo": "Lista",
+                        "label": "Tipo de divisa",
+                        "placeholder": "Tipo de divisa",
+                        "title": "",
+                        "required": true,
+                        "disabled": false,
+                        "lista": [],
+                        "agregar": false,
+                        "form": "",
+                        "titulos": "",
+                        "Subtotal": "",
+                        "name": "divisa",
+                        "multiline": false,
+                        "table": []
+                    },
+                    {
+                        "nombre": "referencia",
+                        "tipo": "input",
+                        "label": "Referencia",
+                        "placeholder": "Referencia de la cuenta",
+                        "title": "Nombre de referencia de la cuenta",
+                        "required": true,
+                        "mensaje_error": "Debe indicar el nombre de referencia de la cuenta a registrar",
+                        "disabled": false,
+                        "lista": "",
+                        "getOptionLabel": [
+                            "titulo"
+                        ],
+                        "agregar": false,
+                        "form": "",
+                        "titulos": "",
+                        "Subtotal": "",
+                        "name": "referencia",
+                        "multiline": false
+                    }
+                ]
+            },
+            "Form_egew_cuentas_banco": {
+                "columna": 1,
+                "value": [
+                    {
+                        "nombre": "divisa",
+                        "tipo": "Lista",
+                        "label": "Divisa",
+                        "placeholder": "Divisa",
+                        "title": "",
+                        "required": true,
+                        "disabled": false,
+                        "lista": [
+                            {
+                                "_id": 0,
+                                "titulo": "USD - Dolar",
+                                "value": "USD",
+                                "permisos": ""
+                            },
+                            {
+                                "_id": 1,
+                                "titulo": "EUR - Euro",
+                                "value": "EUR",
+                                "permisos": ""
+                            },
+                            {
+                                "_id": 2,
+                                "titulo": "GBP - Libra esterlina",
+                                "value": "GBP",
+                                "permisos": ""
+                            },
+                            {
+                                "_id": 3,
+                                "titulo": "INR - Rupia india",
+                                "value": "INR",
+                                "permisos": ""
+                            },
+                            {
+                                "_id": 4,
+                                "titulo": "CNY - Yuan",
+                                "value": "CNY",
+                                "permisos": ""
+                            },
+                            {
+                                "_id": 5,
+                                "titulo": "JPY - Yen",
+                                "value": "JPY",
+                                "permisos": ""
+                            },
+                            {
+                                "_id": 6,
+                                "titulo": "RUB - Rubio",
+                                "value": "RUB",
+                                "permisos": ""
+                            },
+                            {
+                                "_id": 7,
+                                "titulo": "VED - Bolivar",
+                                "value": "VED",
+                                "permisos": ""
+                            }
+                        ],
+                        "agregar": false,
+                        "form": "",
+                        "titulos": "",
+                        "Subtotal": "",
+                        "name": "divisa",
+                        "multiline": false,
+                        "table": [
+                            {
+                                "_id": 0,
+                                "titulo": "USD - Dolar",
+                                "value": "USD",
+                                "permisos": ""
+                            },
+                            {
+                                "_id": 1,
+                                "titulo": "EUR - Euro",
+                                "value": "EUR",
+                                "permisos": ""
+                            },
+                            {
+                                "_id": 2,
+                                "titulo": "GBP - Libra esterlina",
+                                "value": "GBP",
+                                "permisos": ""
+                            },
+                            {
+                                "_id": 3,
+                                "titulo": "INR - Rupia india",
+                                "value": "INR",
+                                "permisos": ""
+                            },
+                            {
+                                "_id": 4,
+                                "titulo": "CNY - Yuan",
+                                "value": "CNY",
+                                "permisos": ""
+                            },
+                            {
+                                "_id": 5,
+                                "titulo": "JPY - Yen",
+                                "value": "JPY",
+                                "permisos": ""
+                            },
+                            {
+                                "_id": 6,
+                                "titulo": "RUB - Rubio",
+                                "value": "RUB",
+                                "permisos": ""
+                            },
+                            {
+                                "_id": 7,
+                                "titulo": "VED - Bolivar",
+                                "value": "VED",
+                                "permisos": ""
+                            }
+                        ]
+                    },
+                    {
+                        "nombre": "bancos",
+                        "tipo": "Lista",
+                        "label": "Seleccione banco",
+                        "placeholder": "Seleccione banco",
+                        "title": "Seleccione banco",
+                        "required": true,
+                        "mensaje_error": "Debe seleccionar banco",
+                        "disabled": false,
+                        "lista": [
+                            {
+                                "_id": "0175",
+                                "titulo": "BANCO BICENTENARIO",
+                                "value": "0175"
+                            },
+                            {
+                                "_id": "0128",
+                                "titulo": "BANCO CARONI, C.A. BANCO UNIVERSAL",
+                                "value": "0128"
+                            },
+                            {
+                                "_id": "0102",
+                                "titulo": "BANCO DE VENEZUELA",
+                                "value": "0102"
+                            },
+                            {
+                                "_id": "0114",
+                                "titulo": "BANCO DEL CARIBE",
+                                "value": "0114"
+                            },
+                            {
+                                "_id": "0163",
+                                "titulo": "BANCO DEL TESORO",
+                                "value": "0163"
+                            },
+                            {
+                                "_id": "0105",
+                                "titulo": "BANCO MERCANTIL",
+                                "value": "0105"
+                            },
+                            {
+                                "_id": "0191",
+                                "titulo": "BANCO NACIONAL DE CREDITO",
+                                "value": "0191"
+                            },
+                            {
+                                "_id": "0116",
+                                "titulo": "BANCO OCCIDENTAL DE DESCUENTO.",
+                                "value": "0116"
+                            },
+                            {
+                                "_id": "0108",
+                                "titulo": "BANCO PROVINCIAL BBVA",
+                                "value": "0108"
+                            },
+                            {
+                                "_id": "0134",
+                                "titulo": "BANESCO BANCO UNIVERSAL",
+                                "value": "0134"
+                            },
+                            {
+                                "_id": "0177",
+                                "titulo": "BANFANB",
+                                "value": "0177"
+                            },
+                            {
+                                "_id": "0190",
+                                "titulo": "CITIBANK.",
+                                "value": "0190"
+                            },
+                            {
+                                "_id": "0121",
+                                "titulo": "CORP BANCA.",
+                                "value": "0121"
+                            },
+                            {
+                                "_id": "0157",
+                                "titulo": "DELSUR BANCO UNIVERSAL",
+                                "value": "0157"
+                            },
+                            {
+                                "_id": "0151",
+                                "titulo": "FONDO COMUN",
+                                "value": "0151"
+                            }
+                        ],
+                        "agregar": false,
+                        "form": "",
+                        "titulos": "",
+                        "Subtotal": "",
+                        "name": "bancos",
+                        "multiline": false,
+                        "table": [
+                            {
+                                "_id": "0175",
+                                "titulo": "BANCO BICENTENARIO",
+                                "value": "0175"
+                            },
+                            {
+                                "_id": "0128",
+                                "titulo": "BANCO CARONI, C.A. BANCO UNIVERSAL",
+                                "value": "0128"
+                            },
+                            {
+                                "_id": "0102",
+                                "titulo": "BANCO DE VENEZUELA",
+                                "value": "0102"
+                            },
+                            {
+                                "_id": "0114",
+                                "titulo": "BANCO DEL CARIBE",
+                                "value": "0114"
+                            },
+                            {
+                                "_id": "0163",
+                                "titulo": "BANCO DEL TESORO",
+                                "value": "0163"
+                            },
+                            {
+                                "_id": "0105",
+                                "titulo": "BANCO MERCANTIL",
+                                "value": "0105"
+                            },
+                            {
+                                "_id": "0191",
+                                "titulo": "BANCO NACIONAL DE CREDITO",
+                                "value": "0191"
+                            },
+                            {
+                                "_id": "0116",
+                                "titulo": "BANCO OCCIDENTAL DE DESCUENTO.",
+                                "value": "0116"
+                            },
+                            {
+                                "_id": "0108",
+                                "titulo": "BANCO PROVINCIAL BBVA",
+                                "value": "0108"
+                            },
+                            {
+                                "_id": "0134",
+                                "titulo": "BANESCO BANCO UNIVERSAL",
+                                "value": "0134"
+                            },
+                            {
+                                "_id": "0177",
+                                "titulo": "BANFANB",
+                                "value": "0177"
+                            },
+                            {
+                                "_id": "0190",
+                                "titulo": "CITIBANK.",
+                                "value": "0190"
+                            },
+                            {
+                                "_id": "0121",
+                                "titulo": "CORP BANCA.",
+                                "value": "0121"
+                            },
+                            {
+                                "_id": "0157",
+                                "titulo": "DELSUR BANCO UNIVERSAL",
+                                "value": "0157"
+                            },
+                            {
+                                "_id": "0151",
+                                "titulo": "FONDO COMUN",
+                                "value": "0151"
+                            }
+                        ]
+                    },
+                    {
+                        "nombre": "ncuenta",
+                        "tipo": "input",
+                        "label": "Numero de cuenta",
+                        "placeholder": "Numero de cuenta",
+                        "title": "Numero de cuenta",
+                        "required": true,
+                        "mensaje_error": "Debe indicar numero de cuenta",
+                        "disabled": false,
+                        "lista": "",
+                        "getOptionLabel": [
+                            "titulo"
+                        ],
+                        "agregar": false,
+                        "form": "",
+                        "titulos": "",
+                        "Subtotal": "",
+                        "name": "ncuenta"
+                    },
+                    {
+                        "nombre": "nidentidad",
+                        "tipo": "input",
+                        "label": "Numero de identidad",
+                        "placeholder": "Numero de identidad",
+                        "title": "Numero de identidad",
+                        "required": true,
+                        "mensaje_error": "Debe indicar numero de identidad del titular",
+                        "disabled": false,
+                        "lista": "",
+                        "getOptionLabel": [
+                            "titulo"
+                        ],
+                        "agregar": false,
+                        "form": "",
+                        "titulos": "",
+                        "Subtotal": "",
+                        "name": "nidentidad"
+                    },
+                    {
+                        "nombre": "nombres",
+                        "tipo": "input",
+                        "label": "Nombres del titular",
+                        "placeholder": "Nombres del titular",
+                        "title": "Nombres del titular",
+                        "required": true,
+                        "mensaje_error": "Debe indicar nombres del titular",
+                        "disabled": false,
+                        "lista": "",
+                        "getOptionLabel": [
+                            "titulo"
+                        ],
+                        "agregar": false,
+                        "form": "",
+                        "titulos": "",
+                        "Subtotal": "",
+                        "name": "nombres"
+                    }
+                ]
+            },
+            "Form_egew_compra_wesicoin": {
+                "columna": 1,
+                "value": [
+                    {
+                        "nombre": "cuenta",
+                        "tipo": "Lista",
+                        "label": "Cuenta",
+                        "placeholder": "Seleccione cuenta destino",
+                        "title": "",
+                        "required": true,
+                        "mensaje_error": "Selecciones cuenta ",
+                        "disabled": false,
+                        "lista": [],
+                        "agregar": false,
+                        "form": "",
+                        "titulos": "",
+                        "Subtotal": "",
+                        "name": "cuenta",
+                        "multiline": false,
+                        "table": []
+                    },
+                    {
+                        "nombre": "monederos",
+                        "tipo": "Lista",
+                        "label": "Monederos",
+                        "placeholder": "Seleccione monedero",
+                        "title": "",
+                        "required": true,
+                        "mensaje_error": "Debe seleccionar monedero",
+                        "disabled": false,
+                        "lista": [],
+                        "agregar": false,
+                        "form": "",
+                        "titulos": "",
+                        "Subtotal": "",
+                        "name": "monederos",
+                        "multiline": false,
+                        "table": []
+                    },
+                    {
+                        "nombre": "referencia",
+                        "tipo": "input",
+                        "label": "Referencia",
+                        "placeholder": "Referencia",
+                        "title": "",
+                        "required": true,
+                        "mensaje_error": "Debe colocar referencia de pago",
+                        "disabled": false,
+                        "lista": "",
+                        "getOptionLabel": [
+                            "titulo"
+                        ],
+                        "agregar": false,
+                        "form": "",
+                        "titulos": "",
+                        "Subtotal": "",
+                        "name": "referencia"
+                    },
+                    {
+                        "nombre": "monto",
+                        "tipo": "number",
+                        "label": "Monto",
+                        "placeholder": "Monto cancelado",
+                        "title": "",
+                        "required": true,
+                        "disabled": false,
+                        "lista": "",
+                        "getOptionLabel": [
+                            "titulo"
+                        ],
+                        "agregar": "false",
+                        "form": "",
+                        "titulos": "",
+                        "Subtotal": "",
+                        "name": "monto",
+                        "multiline": false
+                    }
+                ]
+            },
+            "Form_egew_status_compra": {
+                "columna": 1,
+                "value": [
+                    {
+                        "nombre": "referencia",
+                        "tipo": "input",
+                        "label": "Referencia Bancaria",
+                        "placeholder": "Referencia Bancaria",
+                        "title": "",
+                        "required": "false",
+                        "disabled": true,
+                        "lista": "",
+                        "getOptionLabel": [
+                            "titulo"
+                        ],
+                        "agregar": "false",
+                        "form": "",
+                        "titulos": "",
+                        "Subtotal": "",
+                        "name": "referencia"
+                    },
+                    {
+                        "nombre": "banco",
+                        "tipo": "input",
+                        "label": "Banco Destino",
+                        "placeholder": "Banco Destino",
+                        "title": "",
+                        "required": "false",
+                        "disabled": true,
+                        "lista": "",
+                        "getOptionLabel": [
+                            "titulo"
+                        ],
+                        "agregar": "false",
+                        "form": "",
+                        "titulos": "",
+                        "Subtotal": "",
+                        "name": "banco"
+                    },
+                    {
+                        "nombre": "usuario",
+                        "tipo": "input",
+                        "label": "Usuario",
+                        "placeholder": "Usuario",
+                        "title": "",
+                        "required": "false",
+                        "disabled": true,
+                        "lista": "",
+                        "getOptionLabel": [
+                            "titulo"
+                        ],
+                        "agregar": "false",
+                        "form": "",
+                        "titulos": "",
+                        "Subtotal": "",
+                        "name": "usuario"
+                    },
+                    {
+                        "nombre": "monto",
+                        "tipo": "input",
+                        "label": "Monto Cancelado",
+                        "placeholder": "Monto Cancelado",
+                        "title": "",
+                        "required": "false",
+                        "disabled": true,
+                        "lista": "",
+                        "getOptionLabel": [
+                            "titulo"
+                        ],
+                        "agregar": "false",
+                        "form": "",
+                        "titulos": "",
+                        "Subtotal": "",
+                        "name": "monto"
+                    },
+                    {
+                        "nombre": "status",
+                        "tipo": "Lista",
+                        "label": "Estado de compra",
+                        "placeholder": "Estado de compra",
+                        "title": "",
+                        "required": true,
+                        "disabled": false,
+                        "lista": [
+                            {
+                                "_id": 0,
+                                "titulo": "Por confirmar",
+                                "value": "Por confirmar",
+                                "permisos": ""
+                            },
+                            {
+                                "_id": 1,
+                                "titulo": "Aprobado",
+                                "value": "Aprobado",
+                                "permisos": ""
+                            },
+                            {
+                                "_id": 2,
+                                "titulo": "Rechazado ",
+                                "value": "Rechazado",
+                                "permisos": ""
+                            }
+                        ],
+                        "agregar": false,
+                        "form": "",
+                        "titulos": "",
+                        "Subtotal": "",
+                        "name": "status",
+                        "multiline": false,
+                        "table": [
+                            {
+                                "_id": 0,
+                                "titulo": "Por confirmar",
+                                "value": "Por confirmar",
+                                "permisos": ""
+                            },
+                            {
+                                "_id": 1,
+                                "titulo": "Aprobado",
+                                "value": "Aprobado",
+                                "permisos": ""
+                            },
+                            {
+                                "_id": 2,
+                                "titulo": "Rechazado ",
+                                "value": "Rechazado",
+                                "permisos": ""
+                            }
+                        ]
+                    }
+                ]
+            },
+            "Form_egew_password_pago": {
+                "columna": 1,
+                "value": [
+                    {
+                        "nombre": "passworda",
+                        "tipo": "password",
+                        "label": "Contraseña Actual",
+                        "placeholder": "Contraseña Actual",
+                        "title": "Contraseña Actual",
+                        "required": true,
+                        "disabled": false,
+                        "lista": "",
+                        "getOptionLabel": [
+                            "titulo"
+                        ],
+                        "agregar": "false",
+                        "form": "",
+                        "titulos": "",
+                        "Subtotal": "",
+                        "name": "passworda",
+                        "multiline": false
+                    },
+                    {
+                        "nombre": "passwordn",
+                        "tipo": "password",
+                        "label": "Nueva Contraseña",
+                        "placeholder": "Nueva Contraseña",
+                        "title": "Nueva Contraseña",
+                        "required": "false",
+                        "mensaje_error": "Nueva contraseña y la confirmación son diferentes",
+                        "disabled": false,
+                        "lista": "",
+                        "getOptionLabel": [
+                            "titulo"
+                        ],
+                        "agregar": false,
+                        "form": "",
+                        "titulos": "",
+                        "Subtotal": "",
+                        "name": "passwordn",
+                        "comparar": true,
+                        "con": "passwordc"
+                    },
+                    {
+                        "nombre": "passwordc",
+                        "tipo": "password",
+                        "label": "Confirmar Contraseña",
+                        "placeholder": "Confirmar Contraseña",
+                        "title": "Confirmar Contraseña",
+                        "required": false,
+                        "mensaje_error": "Nueva contraseña y la confirmación son diferentes",
+                        "disabled": false,
+                        "lista": "",
+                        "getOptionLabel": [
+                            "titulo"
+                        ],
+                        "agregar": false,
+                        "form": "",
+                        "titulos": "",
+                        "Subtotal": "",
+                        "name": "passwordc",
+                        "comparar": true,
+                        "con": "passwordn"
+                    }
+                ]
+            },
+            "Form_egew_cobro": {
+                "columna": 1,
+                "value": [
+                    {
+                        "nombre": "monto",
+                        "tipo": "number",
+                        "label": "Monto",
+                        "placeholder": "Monto",
+                        "title": "",
+                        "required": "false",
+                        "disabled": false,
+                        "lista": "",
+                        "getOptionLabel": [
+                            "titulo"
+                        ],
+                        "agregar": "false",
+                        "form": "",
+                        "titulos": "",
+                        "Subtotal": "",
+                        "name": "monto",
+                        "multiline": false
+                    },
+                    {
+                        "nombre": "monedero",
+                        "tipo": "Lista",
+                        "label": "Monedero",
+                        "placeholder": "Monedero",
+                        "title": "Monedero",
+                        "required": true,
+                        "disabled": false,
+                        "lista": [],
+                        "agregar": false,
+                        "form": "",
+                        "titulos": "",
+                        "Subtotal": "",
+                        "name": "monedero",
+                        "multiline": false,
+                        "table": []
+                    },
+                    {
+                        "nombre": "password",
+                        "tipo": "password",
+                        "label": "Contraseña",
+                        "placeholder": "Contraseña",
+                        "title": "Contraseña",
+                        "required": "false",
+                        "disabled": false,
+                        "lista": "",
+                        "getOptionLabel": [
+                            "titulo"
+                        ],
+                        "agregar": "false",
+                        "form": "",
+                        "titulos": "",
+                        "Subtotal": "",
+                        "name": "password",
+                        "multiline": false
+                    }
+                ]
+            },
+            "Form_egew_exchage": {
+                "columna": 1,
+                "value": [
+                    {
+                        "nombre": "origen",
+                        "tipo": "Lista",
+                        "label": "Monedero origen",
+                        "placeholder": "Monedero origen",
+                        "title": "Monedero origen",
+                        "required": true,
+                        "mensaje_error": "Selecciones monedero",
+                        "disabled": false,
+                        "lista": [],
+                        "agregar": false,
+                        "form": "",
+                        "titulos": "",
+                        "Subtotal": "",
+                        "name": "origen",
+                        "multiline": false,
+                        "table": []
+                    },
+                    {
+                        "nombre": "destino",
+                        "tipo": "Lista",
+                        "label": "Monedero destino",
+                        "placeholder": "Monedero destino",
+                        "title": "Monedero destino",
+                        "required": true,
+                        "mensaje_error": "Seleccione monedero",
+                        "disabled": false,
+                        "lista": [],
+                        "agregar": false,
+                        "form": "",
+                        "titulos": "",
+                        "Subtotal": "",
+                        "name": "destino",
+                        "multiline": false,
+                        "table": []
+                    },
+                    {
+                        "nombre": "monto",
+                        "tipo": "number",
+                        "label": "Monto a transferir",
+                        "placeholder": "Monto a transferir",
+                        "title": "Monto a transferir",
+                        "required": true,
+                        "mensaje_error": "Indique monto",
+                        "disabled": false,
+                        "lista": "",
+                        "getOptionLabel": [
+                            "titulo"
+                        ],
+                        "agregar": "false",
+                        "form": "",
+                        "titulos": "",
+                        "Subtotal": "",
+                        "name": "monto",
+                        "multiline": false
+                    }
+                ]
             }
         },
         "Listas": {
@@ -1929,6 +5462,261 @@
                     "titulo": "Personal indirecto",
                     "permisos": []
                 }
+            ],
+            "lista_egew_cuentas_wesi": [
+                {
+                    "_id": 0,
+                    "titulo": "WesiPay",
+                    "value": "wesi",
+                    "permisos": ""
+                },
+                {
+                    "_id": 1,
+                    "titulo": "Divisas",
+                    "value": "divisas",
+                    "permisos": ""
+                },
+                {
+                    "_id": 2,
+                    "titulo": "Criptocurrency",
+                    "value": "cripto",
+                    "permisos": ""
+                }
+            ],
+            "lista_egew_cuentas_divisas": [
+                {
+                    "_id": 0,
+                    "titulo": "USD - Dolar",
+                    "value": "USD",
+                    "permisos": ""
+                },
+                {
+                    "_id": 1,
+                    "titulo": "EUR - Euro",
+                    "value": "EUR",
+                    "permisos": ""
+                },
+                {
+                    "_id": 2,
+                    "titulo": "GBP - Libra esterlina",
+                    "value": "GBP",
+                    "permisos": ""
+                },
+                {
+                    "_id": 3,
+                    "titulo": "INR - Rupia india",
+                    "value": "INR",
+                    "permisos": ""
+                },
+                {
+                    "_id": 4,
+                    "titulo": "CNY - Yuan",
+                    "value": "CNY",
+                    "permisos": ""
+                },
+                {
+                    "_id": 5,
+                    "titulo": "JPY - Yen",
+                    "value": "JPY",
+                    "permisos": ""
+                },
+                {
+                    "_id": 6,
+                    "titulo": "RUB - Rubio",
+                    "value": "RUB",
+                    "permisos": ""
+                },
+                {
+                    "_id": 7,
+                    "titulo": "VED - Bolivar",
+                    "value": "VED",
+                    "permisos": ""
+                }
+            ],
+            "lista_egew_cuentas_cripto": [
+                {
+                    "_id": 0,
+                    "titulo": "ETH - Ethereum",
+                    "value": "ETH",
+                    "permisos": ""
+                },
+                {
+                    "_id": 1,
+                    "titulo": "BTC - Bitcoin",
+                    "value": "BTC",
+                    "permisos": ""
+                },
+                {
+                    "_id": 2,
+                    "titulo": "XRP - Ripple XRP",
+                    "value": "XRP",
+                    "permisos": ""
+                },
+                {
+                    "_id": 3,
+                    "titulo": "LTC - Litecoin",
+                    "value": "LTC",
+                    "permisos": ""
+                },
+                {
+                    "_id": 4,
+                    "titulo": "NEO - NEO",
+                    "value": "NEO",
+                    "permisos": ""
+                },
+                {
+                    "_id": 5,
+                    "titulo": "MIOTA - IOTA",
+                    "value": "MIOTA",
+                    "permisos": ""
+                }
+            ],
+            "lista_egew_cuentas_banco": [
+                {
+                    "_id": "0175",
+                    "titulo": "BANCO BICENTENARIO",
+                    "value": "0175",
+                    "permisos": "",
+                    "id": 1,
+                    "otro": "VED"
+                },
+                {
+                    "_id": "0128",
+                    "titulo": "BANCO CARONI, C.A. BANCO UNIVERSAL",
+                    "value": "0128",
+                    "permisos": "",
+                    "id": 2,
+                    "otro": "VED"
+                },
+                {
+                    "_id": "0102",
+                    "titulo": "BANCO DE VENEZUELA",
+                    "value": "0102",
+                    "id": 3,
+                    "permisos": "",
+                    "otro": "VED"
+                },
+                {
+                    "_id": "0114",
+                    "titulo": "BANCO DEL CARIBE",
+                    "value": "0114",
+                    "id": 4,
+                    "permisos": "",
+                    "otro": "VED"
+                },
+                {
+                    "_id": "0163",
+                    "titulo": "BANCO DEL TESORO",
+                    "value": "0163",
+                    "id": 5,
+                    "permisos": "",
+                    "otro": "VED"
+                },
+                {
+                    "_id": "0105",
+                    "titulo": "BANCO MERCANTIL",
+                    "value": "0105",
+                    "id": 6,
+                    "permisos": "",
+                    "otro": "VED"
+                },
+                {
+                    "_id": "0191",
+                    "titulo": "BANCO NACIONAL DE CREDITO",
+                    "value": "0191",
+                    "id": 7,
+                    "permisos": "",
+                    "otro": "VED"
+                },
+                {
+                    "_id": "0116",
+                    "titulo": "BANCO OCCIDENTAL DE DESCUENTO.",
+                    "value": "0116",
+                    "id": 8,
+                    "permisos": "",
+                    "otro": "VED"
+                },
+                {
+                    "_id": "0108",
+                    "titulo": "BANCO PROVINCIAL BBVA",
+                    "value": "0108",
+                    "id": 9,
+                    "permisos": "",
+                    "otro": "VED"
+                },
+                {
+                    "_id": "0134",
+                    "titulo": "BANESCO BANCO UNIVERSAL",
+                    "value": "0134",
+                    "id": 10,
+                    "permisos": "",
+                    "otro": "VED"
+                },
+                {
+                    "_id": "0177",
+                    "titulo": "BANFANB",
+                    "value": "0177"
+                },
+                {
+                    "_id": "0190",
+                    "titulo": "CITIBANK.",
+                    "value": "0190",
+                    "id": 12,
+                    "permisos": "",
+                    "otro": "VED"
+                },
+                {
+                    "_id": "0121",
+                    "titulo": "CORP BANCA.",
+                    "value": "0121",
+                    "id": 13,
+                    "permisos": "",
+                    "otro": "VED"
+                },
+                {
+                    "_id": "0157",
+                    "titulo": "DELSUR BANCO UNIVERSAL",
+                    "value": "0157",
+                    "id": 14,
+                    "permisos": "",
+                    "otro": "VED"
+                },
+                {
+                    "_id": "0151",
+                    "titulo": "FONDO COMUN",
+                    "value": "0151",
+                    "id": 15,
+                    "permisos": "",
+                    "otro": "VED"
+                },
+                {
+                    "_id": "BOA",
+                    "titulo": "BANK OF AMERICA",
+                    "value": "BOA",
+                    "permisos": "",
+                    "id": 16,
+                    "otro": "USD"
+                }
+            ],
+            "lista_egew_status_compra": [
+                {
+                    "_id": 0,
+                    "titulo": "Por confirmar",
+                    "value": "Por confirmar",
+                    "permisos": ""
+                },
+                {
+                    "_id": 1,
+                    "titulo": "Aprobado",
+                    "value": "Aprobado",
+                    "permisos": ""
+                },
+                {
+                    "_id": 2,
+                    "titulo": "Rechazado ",
+                    "value": "Rechazado",
+                    "permisos": ""
+                }
             ]
         },
         "Estilos": {
@@ -1937,7 +5725,7 @@
                 "width": 60
             },
             "Input_label": {
-                "color": "#fff",
+                "color": "#00f",
                 "textAlign": "left"
             },
             "Input_helper": {
@@ -1945,7 +5733,7 @@
                 "textAlign": "left"
             },
             "Input_fondo": {
-                "backgroundColor": "rgba(0, 0, 0,1)"
+                "backgroundColor": "#1630AC"
             },
             "Input_input": {
                 "color": "#ffffff"
@@ -1974,13 +5762,13 @@
                 }
             },
             "Dialogo_cuerpo": {
-                "backgroundColor": "rgb(5, 30, 52)"
+                "backgroundColor": "#ffffff"
             },
             "Tabla_titulo": {
                 "color": "#ffffff"
             },
             "Tabla_cabezera": {
-                "backgroundImage": "linear-gradient(0deg, #080303 0, #524D4D 90% )"
+                "backgroundImage": "linear-gradient(0deg, #1630AC 0, #1930AC 90% )"
             },
             "Tabla_buscar_fondo": {
                 "backgroundColor": "rgba(0, 0, 0,1)"
@@ -1997,7 +5785,7 @@
             },
             "Botones": {
                 "Aceptar": {
-                    "backgroundImage": "linear-gradient(0deg, #19A203 0, #0E5003 50% )"
+                    "backgroundImage": "linear-gradient(0deg, #19A2FF 0, #0E5003 50% )"
                 },
                 "Cancelar": {
                     "backgroundImage": "linear-gradient(0deg, #524D4D 0, #080303 50% )"
@@ -2009,6 +5797,53 @@
             "barra_menu": {
                 "backgroundColor": "rgba(0, 19, 36)"
             }
+        },
+        "Titulos": {
+            "Titulos_ejemplo": [
+                {
+                    "title": "Normal",
+                    "field": "normal"
+                },
+                {
+                    "title": "Lista",
+                    "field": "ejemplo_lista"
+                },
+                {
+                    "title": "Codigo",
+                    "field": "codigo"
+                },
+                {
+                    "title": "password",
+                    "field": "password"
+                },
+                {
+                    "title": "Foto",
+                    "field": "foto"
+                },
+                {
+                    "title": "Descripcion",
+                    "field": "descripcion",
+                    "formato": "(dato)=> `${dato.username}= ${dato.foto}`"
+                }
+            ],
+            "Titulos_egew_monedero": [
+                {
+                    "title": "Disponible",
+                    "field": "disponible",
+                    "tipo": "number",
+                    "formato": "",
+                    "default": "0",
+                    "type": "number"
+                },
+                {
+                    "title": "No disponible",
+                    "field": "nodisponible",
+                    "tipo": "",
+                    "formato": "",
+                    "default": "0",
+                    "type": "number"
+                }
+            ]
         }
     }
 }

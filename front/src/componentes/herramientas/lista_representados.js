@@ -55,11 +55,15 @@ export default function Lista_Representantes(props) {
   }
 
   const agregarsubClik = () =>{
-    // console.log('datos', nuevo)
     if (nuevo!==null){
+      console.log(nuevo)
       let nuevovalor= value ? value.filter(val => val.cedula===nuevo.cedula && val.nombres===nuevo.nombres && val.apellidos===nuevo.apellidos): [];
       if (nuevovalor.length===0){
-        let nuevovalue=[...value, {cedula:nuevo.cedula, nombres:nuevo.nombres, apellidos:nuevo.apellidos}];
+        //Modificar al modificar condicion de estudiante
+        let nuevovalue=[...value, {
+          _id: nuevo._id, cedula:nuevo.cedula, nombres:nuevo.nombres, apellidos:nuevo.apellidos, 
+          grado:nuevo.grado, seccion:nuevo.seccion, beca: nuevo.beca, estatus: nuevo.estatus
+        }];
         setValue(nuevovalue)
         cambio({target:{name:valor.name,value:nuevovalue}});
       }

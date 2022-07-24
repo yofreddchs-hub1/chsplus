@@ -9,8 +9,9 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import ImportExportIcon from '@mui/icons-material/ImportExport';
 import Cuerpo from '../herramientas/cuerpo';
-import {conexiones}from '../../procesos/servicios'
-
+import {conexiones, genera_fromulario}from '../../procesos/servicios'
+import {Form_todos} from '../../constantes/formularios';
+import Cargando from '../esperar/cargar';
 
 // import Tabla_multiple from '../tabla/tabla_multiple';
 
@@ -19,6 +20,7 @@ export default class Configuracion extends Component {
       super(props);
 
       this.state = {
+          cargando:true,
           props: this.props,
           Config:this.props.Config,
           Guardar_datos:this.Guardar
@@ -53,6 +55,7 @@ export default class Configuracion extends Component {
             {
               name:'guardar', label:'Guardar', title:'Guardar cambios',
               variant:"contained", color:"primary",
+              sx:{...Config.Estilos.Botones ? Config.Estilos.Botones.Aceptar : {}},
               icono:<CheckIcon />, mesperar:'Guardando...',
               onClick:(datos)=>this.Guardar_parte(datos, campo)
             }
@@ -62,56 +65,90 @@ export default class Configuracion extends Component {
     
 
   }
-  componentDidMount(){
-      
-    const {Config} = this.state;
-    let formulario={
-        datos:{archivo:'datos', data:Config, path:'data/',tipo:'.json'},
-        titulos:{
-          data:{
-            label:'Datos Configuración',
-            helperText:'',
-            value:Config,
-            multiline:true,
-            maxRows:23,
-            tipo:'Json',
-            height:window.innerHeight*0.65,
-            // width:window.innerWidth*0.80,
-            // ...estilos.data
-          },
-        },
-        botones:[
-            {
-              name:'guardar', label:'Guardar', title:'Guardar cambios',
-              variant:"contained", color:"primary",
-              icono:<CheckIcon />, mesperar:'Guardando...',
-              onClick:this.Guardar
-            },
-            {
-              name:'descargar', label:'Descargar', title:'Descargar DAtos',
-              variant:"contained", color:"primary",
-              icono:<CloudDownloadIcon />, mesperar:'Guardando...',
-              onClick:(datos)=>this.Descargar(datos)
-            },
-            {
-              name:'actualizar', 
-              label:'Actualizar', 
-              title:'Actualizar datos',
-              variant:"contained", color:"secondary",
-              icono:<ImportExportIcon />,
-              onClick:this.Actualizar
-            },
-        ]
-    };
-    let Bloques={
-        Datos:<Formulario {...formulario} config={Config}/>,
-    }
-    Object.keys(Config).map(m=>{
-        Bloques[m]=this.Editores(m);
-        return m
-    })
 
-    this.setState({Bloques})
+  SeleccionA = (valores)=>{
+    console.log(valores)
+   let Bloques = this.Filtrar(valores.resultados.apis);
+   this.setState({Bloques})
+
+  }
+
+  Filtrar = (seleccionado) =>{
+    const {Config} = this.state;
+    if (seleccionado.master){
+      console.log('Es master')
+      let formulario={
+          datos:{archivo:'datos', data:Config, path:'data/',tipo:'.json'},
+          titulos:{
+            data:{
+              label:'Datos Configuración',
+              helperText:'',
+              value:Config,
+              multiline:true,
+              maxRows:23,
+              tipo:'Json',
+              height:window.innerHeight*0.65,
+              // width:window.innerWidth*0.80,
+              // ...estilos.data
+            },
+          },
+          botones:[
+              {
+                name:'guardar', label:'Guardar', title:'Guardar cambios',
+                variant:"contained", color:"primary",
+                sx:{...Config.Estilos.Botones ? Config.Estilos.Botones.Aceptar : {}},
+                icono:<CheckIcon />, mesperar:'Guardando...',
+                onClick:this.Guardar
+              },
+              {
+                name:'descargar', label:'Descargar', title:'Descargar DAtos',
+                variant:"contained", color:"primary",
+                icono:<CloudDownloadIcon />, mesperar:'Guardando...',
+                onClick:(datos)=>this.Descargar(datos)
+              },
+              {
+                name:'actualizar', 
+                label:'Actualizar', 
+                title:'Actualizar datos',
+                variant:"contained", color:"secondary",
+                icono:<ImportExportIcon />,
+                onClick:this.Actualizar
+              },
+          ]
+      };
+      let Bloques={
+          Datos:<Formulario {...formulario} config={Config}/>,
+      }
+      Object.keys(Config).map(m=>{
+          Bloques[m]=this.Editores(m);
+          return m
+      })
+
+      return Bloques
+    }else{
+      let Bloques={
+      }
+      Object.keys(Config).map(m=>{
+        
+        if (m.indexOf(seleccionado.api)!==-1){
+          Bloques[m]=this.Editores(m);
+        }
+        console.log(m)
+        return m
+      })
+      return Bloques 
+    }
+  }
+
+  async componentDidMount(){
+    let formulario_lista= await genera_fromulario({valores:{}, campos: Form_todos(`Form_api`) }, 2)
+    
+    const seleccionado = formulario_lista.titulos.apis.lista[0]
+    formulario_lista.titulos.apis.value= seleccionado
+    formulario_lista.titulos.apis.onChange= this.SeleccionA
+    
+    let Bloques= this.Filtrar(seleccionado)
+    this.setState({Bloques, formulario_lista, cargando:false})
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -232,9 +269,17 @@ export default class Configuracion extends Component {
     return await conexiones.Guardar_data(`${datos.path}${datos.archivo}${'.js'}`,datos.data)
   }
   render(){
-    const {Bloques}=this.state;
+    const {Bloques, formulario_lista, Config, cargando}=this.state;
     return (
-      <Cuerpo Bloques={Bloques}/>
+      <div style={{width:'100%', position: "relative"}}>
+        <div style={{width:'50vw'}}>
+          <Formulario {...formulario_lista} config={Config}/>
+        </div>
+        
+        <div style={{marginTop:-50}}/>
+        <Cuerpo Bloques={Bloques}/>
+        <Cargando open={cargando}/>
+      </div>
     )
   }
 }

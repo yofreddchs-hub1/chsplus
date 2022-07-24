@@ -86,10 +86,9 @@ class Tabla extends Component {
   }
 
   Iniciar_descarga = async(table,Titulo, ordenar, items, cargacompleta, cargaporparte, condicion)=>{
+    this.setState({actualizando:true})
     let respuesta = await conexiones.Leer([table])
-    
     if (cargaporparte){
-      
       let cantidad= respuesta.datos[table+'_cantidad']
       
       respuesta= await conexiones.Leer_C([table], 
@@ -118,11 +117,12 @@ class Tabla extends Component {
       // if (cantidad>items)
       //   this.Cargar_todo(cantidad, table, datos, items, condicion, cargacompleta, ordenar, cargaporparte);
     }else{
+      
       let datos=[]
       let cantidad=0
       cargacompleta({Titulo, datos, cantidad});
     }
-
+    this.setState({actualizando:false})
   }
 
   componentDidMount(){
@@ -157,7 +157,7 @@ class Tabla extends Component {
   static getDerivedStateFromProps(props, state) {
     // Store prevId in state so we can compare when props change.
     // Clear out previously-loaded data (so we don't render stale stuff).
-    if (props !== state.props ) {
+    if (props !== state.props && !state.actualizando) {
       
       let {Titulo,datos, titulos, items, cantidad, table, condicion, cargacompleta, ordenar, cargaporparte}= props;
       // console.log('>>>>> Segunda', cantidad)
@@ -183,7 +183,8 @@ class Tabla extends Component {
                               });
       paginacion.cantidad=items;
       // paginacion.datos=paginacion.datos;//datos;
-      // console.log('por aqoi', datos)
+      // console.log('por aqoi', datos, cantidad)
+
       return {  
         props,
         datos,
@@ -239,7 +240,6 @@ class Tabla extends Component {
   }
 
   Buscar = async(e)=>{
-    
     let {pagina, datos, total, buscar, items, cargaporparte, table, ordenar, cantidad}= this.state;
     const {name, value}=e.target;
     pagina=1;
@@ -275,13 +275,15 @@ class Tabla extends Component {
       
       this.setState({ datos:nuevodatos, paginacion, pagina})
     }else{
+
       this.setState({[name]:value});
       let resultados= await conexiones.Leer_C([table], 
         {
-          [table]:{pagina:true, cantidad:items, pag:pagina, ...cargaporparte},
+          [table]:{pagina:true, cantidad:items, pag:0, ...cargaporparte},
           
         }
       );
+      
       let nuevodatos=resultados.datos[table];
       let paginacion =Paginas({
         datos:nuevodatos, cantp: items,
@@ -312,7 +314,7 @@ class Tabla extends Component {
             progreso={this.state.progreso}
             Accion={this.Accion}
             buscar={this.state.buscar}
-            cambio_buscar={this.Buscar}
+            Buscar={this.Buscar}
       />
     )
   }

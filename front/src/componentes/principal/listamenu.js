@@ -53,7 +53,8 @@ export default function CustomizedList(props) {
         let nuevo=[];
         for (var i=0; i<Config.Menu.length;i++){
             let f=Config.Menu[i];
-            const permiso=await Permiso(f.value);
+            const permiso=props.Api ? await Permiso(f.value, props.Api) : await Permiso(f.value);
+            f.libre = f.libre===true || f.libre ==='true';
             if (f.libre || permiso){
                 nuevo=[...nuevo,f];
                 // if (Listado===null){
@@ -80,16 +81,17 @@ export default function CustomizedList(props) {
     
     Inicio_listado()
   },[User])
-  const handleListItemClick = (event, index,) => {
+  const handleListItemClick = (event, index, padre) => {
     let nopen={...open,[index.value]:!open[index.value]};
     setOpen(nopen);
     setSelectedIndex(index.value);
     if (props.Seleccion_pantalla){
-        props.Seleccion_pantalla(index)
+      
+        props.Seleccion_pantalla(index, padre)
     }
   };
 
-  const render = (lista) =>{
+  const render = (lista, padre=null) =>{
     return (
         lista===undefined || lista===null || lista.length===0
         ?
@@ -123,11 +125,11 @@ export default function CustomizedList(props) {
                     button
                     component="div" disablePadding
                     selected={selectedIndex === valor.value}
-                    onClick={(event) => handleListItemClick(event, valor)}
+                    onClick={(event) => handleListItemClick(event, valor, padre)}
                 >
                     <ListItemButton sx={{ height: 56 }}>
                         <ListItemIcon>
-                            <Icon color={'primary'}>{valor.icon}</Icon>
+                            <Icon color={'#fff'}>{valor.icon}</Icon>
                         </ListItemIcon>
                         <ListItemText  {...valor} 
                                         primaryTypographyProps={selectedIndex === valor.value ? {
@@ -142,7 +144,7 @@ export default function CustomizedList(props) {
                 {valor.childen ?(
                     <Collapse key={'collapse-'+index+valor.primary} in={open[valor.value]} timeout="auto" unmountOnExit>
                         <List component="div" style={{paddingLeft:10}}>
-                            {render(valor.childen)}
+                            {render(valor.childen, valor)}
                         </List>
                     </Collapse>
                 ): null}
@@ -174,7 +176,7 @@ export default function CustomizedList(props) {
           },
         })}
       >
-        <Paper elevation={0} sx={{ width:'100%', height:'100%',  }}>
+        <Paper elevation={0} sx={{ width:'100%', height:'100%',   overflowX:'hidden', overflowY:'auto' }}>
     
             {render(Listado)}
           

@@ -9,13 +9,14 @@ import Formulario from '../herramientas/formulario';
 import { Ver_Valores, Form_todos, Titulos_todos } from '../../constantes';
 import CheckIcon from '@mui/icons-material/Check';
 import DeleteIcon from '@mui/icons-material/Delete';
-
+import Cargando from '../esperar/cargar';
 
 export default class Configuracion extends Component {
   constructor(props) {
       super(props);
 
       this.state = {
+          cargando:true,
           props: this.props,
           Config:this.props.Config,
           Guardar_datos:this.Guardar
@@ -121,6 +122,24 @@ export default class Configuracion extends Component {
     await conexiones.Eliminar_data(`models/${valores.lista.value}.js`)
     window.location.reload(true);
   }
+
+  SeleccionA = (valores)=>{
+    const api=valores.resultados.apis
+    const {BloquesT} = this.state;
+    let Bloques = {}
+    if (api.master){
+      Bloques= {...BloquesT}
+    }else{
+
+      Object.keys(BloquesT).map(v=>{
+        if(v.indexOf(api.api)!==-1)
+          Bloques[v]= BloquesT[v]
+        return v
+      })
+    }
+    this.setState({Bloques})
+
+  }
   async componentDidMount(){
       
     const Config = Ver_Valores().config;
@@ -162,8 +181,13 @@ export default class Configuracion extends Component {
     // Object.keys(Config).map(m=>{
     //     Bloques[m]=this.Editores(m);
     // })
+    let formulario_lista= await genera_fromulario({valores:{}, campos: Form_todos(`Form_api`) }, 2)
+    
+    const seleccionado = formulario_lista.titulos.apis.lista[0]
+    formulario_lista.titulos.apis.value= seleccionado
+    formulario_lista.titulos.apis.onChange= this.SeleccionA
 
-    this.setState({Bloques})
+    this.setState({Bloques, BloquesT:Bloques, formulario_lista, cargando:false})
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -215,9 +239,17 @@ export default class Configuracion extends Component {
     return await conexiones.Guardar_data(`${datos.path}${datos.archivo}${datos.tipo}`,datos.data)
   }
   render(){
-    const {Bloques}=this.state;
+    const {Bloques, formulario_lista, Config, cargando}=this.state;
     return (
-      <Cuerpo Bloques={Bloques}/>
+      <div style={{width:'100%', position: "relative"}}>
+        <div style={{width:'50%'}}>
+          <Formulario {...formulario_lista} config={Config}/>
+        </div>
+        
+        <div style={{marginTop:-50}}/>
+        <Cuerpo Bloques={Bloques}/>
+        <Cargando open={cargando}/>
+      </div>
     )
   }
 }

@@ -107,11 +107,18 @@ export default function PrimarySearchAppBar(props) {
                     >Salir</MenuItem>
         :<div>
           <MenuItem onClick={()=>{
-                        props.Login()
+                        if (props.Login) props.Login()
                         handleMenuClose()
                       }}
           >Iniciar</MenuItem>
-          <MenuItem onClick={handleMenuClose}>Registrese</MenuItem>
+          <MenuItem onClick={()=>{
+                                  if(props.Registro) props.Registro()
+                                  handleMenuClose()
+                                }
+                              }
+          >
+            Registrarse
+          </MenuItem>
         </div>
       }
       
@@ -156,11 +163,26 @@ export default function PrimarySearchAppBar(props) {
         >
           <AccountCircle />
         </IconButton>
-        <p>Profile</p>
+        <p>Perfil</p>
       </MenuItem>
     </Menu>
   );
-  
+  let persona=''
+  if (props){
+    if (props.User){
+      // persona+=props.User.username;
+      if(props.User.api==='wesi_chs_server'){
+        const lista = props.Config.Listas.lista_categoria;
+        persona=lista[props.User.categoria].titulo;
+      }else{
+        const lista = props.Config.Listas[`lista_${props.User.api}_categoria`];
+        persona=lista[props.User.categoria].titulo;
+      }
+      
+    }
+
+  }
+    
   return (
       <Box>
         <Toolbar>
@@ -178,7 +200,7 @@ export default function PrimarySearchAppBar(props) {
                                 alt="logo" 
                           /> 
                         : null}
-          <Search>
+          {/* <Search>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
@@ -187,7 +209,7 @@ export default function PrimarySearchAppBar(props) {
               inputProps={{ 'aria-label': 'search' }}
               onChange={props.Buscar ? props.Buscar : (value)=>console.log('Buscar =>',value.target.value)}
             />
-          </Search>
+          </Search> */}
           <Typography
             variant="h6"
             noWrap
@@ -195,9 +217,22 @@ export default function PrimarySearchAppBar(props) {
             sx={{ display: { xs: 'none', sm: 'block' } }}
           >
            {Config.Titulo ? Config.Titulo : 'CHS +'}
+           
           </Typography>
+          <MenuItem sx={{marginLeft:2 ,backgroundColor:'#000', opacity:0.6, borderRadius:2}}>
+            <Typography variant="h6" textAlign="center" >{props.Seleccion ? props.Seleccion : 'Inicio'}</Typography>
+          </MenuItem>
           <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems:'center' }}>
+            <Typography
+              variant="subtitle"
+              noWrap
+              component="div"
+              sx={{ display: { xs: 'none', sm: 'block' } }}
+            >
+              
+              {persona}
+            </Typography>
             {Config.Menu_iconos.map((val,i)=>
               <IconButton size="large" color="inherit" key={`menu-icono-${i}`} title={val.title} onClick={()=>props.Seleccion_pantalla(val.value)}>
                 <Badge badgeContent={0} color="error">

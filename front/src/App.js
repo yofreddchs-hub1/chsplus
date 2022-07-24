@@ -21,6 +21,9 @@ import { pantallas } from './page/pantallas';
 import {const_procesos} from './constantes';
 import {genera_fromulario, conexiones} from './procesos/servicios'
 import {Form_todos} from './constantes';
+import Noexiste from './componentes/herramientas/pantallas/noexiste'
+
+import { Apis } from './apis';
 
 class InicioPrincipal extends Component {
   constructor(props) {
@@ -39,7 +42,7 @@ class InicioPrincipal extends Component {
     const respuesta= await conexiones.Login(datos);
     console.log(respuesta)
     if (respuesta.Respuesta==='OK'){
-      await Usuario('Guardar', respuesta.user)
+      await Usuario({status:'Guardar', dato:respuesta.user})
       this.setState({
         dialogo:{open:false}
       })
@@ -148,29 +151,50 @@ class InicioPrincipal extends Component {
       }
       return val
     })
-    console.log(resultado)
     return resultado
   }
 
-  Seleccion_pantalla = (value)=>{
+  Buscar_pantalla = async (listas, seleccion) =>{
+    let Pantallas={}
+    // Object.keys(listas).map(async v=>{
+    for (var i=0 ; i<Object.keys(listas).length; i++ ){ 
+      let v=Object.keys(listas)[i];
+      if (typeof listas[v]==='object'){
+        let nuevo= await this.Buscar_pantalla(listas[v], seleccion)
+        Pantallas={...Pantallas, ...nuevo}
+      }else if(v===seleccion){
+        const P = listas[v]
+        Pantallas[v]=<P {...this.state}/>
+      }  
+      // return v
+    }//)
+    
+    return Pantallas
+  }
+
+  Seleccion_pantalla = async(value, padre)=>{
     let {Config}= this.state;
     this.Sacar(Config.Menu)
     let seleccion= value.pantalla ? value.pantalla : value.value;
+    let pantalla= value.primary;
     
-    // const Pantallas={
-    //   Configuracion: <Configuracion {...this.state} />,
-    //   Datos:<Configuracion {...this.state} />,
-    //   Tablas:<DataBase {...this.state} />,
-    //   'Crear Formulario': <CrearFormulario {...this.state}/>
+    
+    let Pantallas= await this.Buscar_pantalla(pantallas, seleccion)
+    // Object.keys(pantallas).map(v=>{
+    //   console.log(v)
+    //   console.log( typeof pantallas[v])
+    //   if(v===seleccion){
+    //     const P = pantallas[v]
+    //     Pantallas[v]=<P {...this.state}/>
+    //   }  
+    //   return v
+    // })
+    // if (padre){
+    //   seleccion = Pantallas[padre.value][seleccion] ? Pantallas[padre.value][seleccion] :  <Noexiste />
+    // }else{
+      seleccion = Pantallas[seleccion] ? Pantallas[seleccion] :  <Noexiste />
     // }
-    let Pantallas={}
-    Object.keys(pantallas).map(v=>{
-      const P = pantallas[v]
-      Pantallas[v]=<P {...this.state}/>
-      return v
-    })
-    seleccion = Pantallas[seleccion] ? Pantallas[seleccion] :  <div> no existe</div>
-    this.setState({seleccion})
+    this.setState({seleccion, pantalla})
 
   }
   
@@ -209,21 +233,33 @@ class InicioPrincipal extends Component {
       <Cuerpo Bloques={Bloques}/>
     )
   }
-
+  
   render(){
-    const {esperar, seleccion}=this.state;
+    const {esperar, seleccion, pantalla}=this.state;
     const Pantalla = seleccion ? seleccion : <Home {...this.state} />
-    return esperar ? <Esperar/> : (
-      <div> 
-        <Principal 
-            {...this.state}
-            Pantalla={Pantalla}
-            Seleccion_pantalla= {this.Seleccion_pantalla}
-        />
-        <Dialogo {...this.state.dialogo} config={this.state.Config}/>
-      </div>
-    )
-        
+    let dir = window.location.pathname.split('/');
+    if (dir[1]!=='' && Apis[dir[1]]===undefined) window.location.pathname='';
+    if (dir[1]==='' ){
+      return esperar ? <Esperar/> : (
+        <div> 
+          <Principal 
+              {...this.state}
+              Pantalla={Pantalla}
+              Seleccion_pantalla= {this.Seleccion_pantalla}
+              Seleccion={pantalla}
+              pantallas={pantallas}
+          />
+          <Dialogo {...this.state.dialogo} config={this.state.Config}/>
+        </div>
+      )
+    }else{
+      const Api = Apis[dir[1]];
+      window.document.title= `CHS+ ${dir[1].toUpperCase()}`
+      return esperar ? <Esperar/> :(
+        <Api/>
+      )
+      
+    }
   }
 }
 

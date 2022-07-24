@@ -315,7 +315,7 @@ export default class Listas extends Component {
     const Config = Ver_Valores().config;
     let formularios = await genera_fromulario({valores:{}, campos: Form_todos(`Form_api`) }, 2)
     let listaA= Object.keys(Config).filter(f=> f.indexOf('Api_')!==-1).map((val,i)=>{
-      return {_id:i, titulo:val}
+      return {_id:i, titulo:val, api:val}
     })
     formularios.titulos.apis.lista=listaA
     // formularios.titulos.apis.onChange= this.SeleccionA
@@ -365,8 +365,8 @@ export default class Listas extends Component {
                 Accion={this.Abrir}
           
                 acciones={
-                    <Grid container spacing={0.3} >
-                        <Grid item xs={8} md={8}>
+                    <Grid container spacing={0.3} justifyContent="center" alignItems="center">
+                        <Grid item xs={8} md={8} style={{ height:80}}>
                             <Formulario {...formulario}/>
                         </Grid>
                         <Grid item xs={4} md={4}>
