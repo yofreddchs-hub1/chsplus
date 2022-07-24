@@ -95,7 +95,13 @@ serverCtrl.Verificar_autenticidad = async ( datos, hash, token=false, inicia=fal
    // si cambias datos en nameAdmin, debes cambiarlo en userAdmin
    const nameAdmin = NameAdmin(Api);//`admin-${Api.api}-wesichs`
    console.log('antes de ver useradmin')
-   let useradmin= await User.find({$text: {$search: nameAdmin, $caseSensitive: true}});//await User.findOne({username});
+   let useradmin= [];
+   try {
+      useradmin=await User.find({$text: {$search: nameAdmin, $caseSensitive: true}});//await User.findOne({username});
+   }catch(error) {
+    console.log('Error-login',error);    
+  }
+   
    console.log('despues de ver useradmin')
    if (Api.api!==dapi){
     useradmin = useradmin.filter(f=> f.valores.username===nameAdmin);
