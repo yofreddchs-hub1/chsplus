@@ -96,6 +96,7 @@ serverCtrl.Verificar_autenticidad = async ( datos, hash, token=false, inicia=fal
    const nameAdmin = NameAdmin(Api);//`admin-${Api.api}-wesichs`
    console.log('antes de ver useradmin')
    let useradmin= await User.find({$text: {$search: nameAdmin, $caseSensitive: true}});//await User.findOne({username});
+   console.log('despues de ver useradmin')
    if (Api.api!==dapi){
     useradmin = useradmin.filter(f=> f.valores.username===nameAdmin);
     if (useradmin.length===0){
