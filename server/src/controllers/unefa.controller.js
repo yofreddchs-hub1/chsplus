@@ -6,9 +6,7 @@ const { Codigo_chs, Hash_chs} = require('../servicios/conexiones');
 const {Verifica_api, Tablas} = require('../controllers/api.controller');
 
 Ver_disponibilidad = (datos, horario)=>{
-    
     return datos.valores.valor === horario.valores.horario[datos.pos.fila][datos.pos.columna].valor || horario.valores.horario[datos.pos.fila][datos.pos.columna].valor===''
-
 }
 
 unefaCtrl.DisponibilidadHorario = async (req, res) =>{
