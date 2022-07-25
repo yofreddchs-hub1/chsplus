@@ -231,10 +231,16 @@ unefaCtrl.GuardarHorario = async (req, res) =>{
 Buscar_Horario= async(datos, campo='_id_tipo')=>{
     await Tablas('unefa_horario');
     const Horario = require(`../models/unefa_horario`);
-    let horario = await Horario.find({$text: {$search: datos[campo], $caseSensitive: true}})
+    let horario= []
+    try {
+        horario = await Horario.find({$text: {$search: datos[campo], $caseSensitive: true}})
+    }catch(error) {
+        console.log('Error-buscarhoraio',error);    
+    }
     horario= horario.filter(f=> f.valores[campo]===datos[campo] && f.valores.periodo===datos.periodo) 
     return horario
 }
+
 unefaCtrl.LeerHorario = async (req, res) =>{
     let {user, api, datos, table, hash} = req.body;
     user= typeof user==='string' ? JSON.parse(user) : user;
