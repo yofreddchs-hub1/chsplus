@@ -170,8 +170,8 @@ function Tabla_multiple (props) {
                                     ? await genera_fromulario({...valores, campos: Form_origen })
                                     : await genera_fromulario({valores:{},  campos: Form_origen})
         let dato=nuevos.datos;
-        const pguardar=await Permiso('guardar');
-        const peliminar= await Permiso('eliminar')
+        const pguardar= true//await Permiso('guardar');
+        const peliminar= true//await Permiso('eliminar')
         const formulario ={
             ...nuevos,
             // datos:valores,
