@@ -8,6 +8,7 @@ import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
+import Pagination from '@mui/material/Pagination';
 import TableRow from '@mui/material/TableRow';
 import Grid from '@mui/material/Grid';
 import InputBase from '@mui/material/InputBase';
@@ -163,9 +164,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 // }));
 export default function Tabla(props) {
   
-  const {titulos, datos, Config, Titulo, acciones, acciones1, actualizando, progreso, Accion} = props;
+  const {titulos, datos, Config, Titulo, acciones, acciones1, actualizando, progreso, Accion, paginacion, Cambio} = props;
   
-  const alto= props.sinpaginacion ? window.innerHeight* 0.77 : window.innerHeight* 0.70;
+  const alto= props.sinpaginacion ? window.innerHeight* 0.77 : window.innerHeight* 0.73;
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   
@@ -241,7 +242,8 @@ export default function Tabla(props) {
               //   : 
               actualizando 
                 ? <Box sx={{ width: '100%' }}>
-                    <LinearProgressWithLabel value={progreso!==undefined ? progreso : 0} />
+                    {/* <LinearProgressWithLabel value={progreso!==undefined ? progreso : 0} /> */}
+                    <LinearProgress color="inherit"/>
                   </Box>
                 : null
             }
@@ -350,15 +352,26 @@ export default function Tabla(props) {
       </TableContainer>
       {props.sinpaginacion
         ? null 
-        : <TablePagination
-            rowsPerPageOptions={[10, 25, 50, 100]}
-            component="div"
-            count={datos.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
+        : paginacion && paginacion !== undefined && paginacion.paginas.length > 1 ?
+          <div style={{paddingTop:5, paddingBottom:5,  backgroundColor:'#DBDBDB'}}>
+            <div style={{display:'inline-flex', textalign:'center' }}>
+              <Pagination count={paginacion.paginas.length}
+                           shape="rounded"
+                          onChange={Cambio }
+              />
+            </div>
+          </div>:
+          null
+        
+        // : <TablePagination
+        //     rowsPerPageOptions={[10, 25, 50, 100]}
+        //     component="div"
+        //     count={datos.length}
+        //     rowsPerPage={rowsPerPage}
+        //     page={page}
+        //     onPageChange={handleChangePage}
+        //     onRowsPerPageChange={handleChangeRowsPerPage}
+        //   />
       }
     </Paper>
   );

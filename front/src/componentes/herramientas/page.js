@@ -9,7 +9,7 @@ import { makeStyles } from '@mui/styles';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import ButtonBase from '@mui/material/ButtonBase';
-import Autocomplete from '@mui/material/Autocomplete';
+import Autocomplete from './autocomplete';//'@mui/material/Autocomplete';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
@@ -221,9 +221,11 @@ const useStyles = makeStyles({
 });
 
 const Entrada = (props)=>{
+  
+  
     const Config= props.config ? props.config : Ver_Valores().config;
     const estos = Object.keys(props).filter(f=> 
-      ['helperText', 'margin', 'no_modificar','no_mostrar', 'Subtotal', 'getOptionLabel', 'getOptionSelected', 'agregar'].indexOf(f)===-1)
+      ['helperText', 'margin', 'no_modificar','no_mostrar', 'Subtotal', 'getOptionLabel', 'getOptionSelected', 'agregar', 'comparar'].indexOf(f)===-1)
     let permitidos={}
     
     estos.map(v=>{
@@ -478,7 +480,8 @@ export default function Page(props) {
     ): ['select', 'Lista'].indexOf(valor.tipo)!==-1 ? (
       <div>
         <div style={{ display: 'flex', flexDirection:'row'}}>
-          <Autocomplete
+          <Autocomplete valor={valor} values={values} Config={Config}/>
+          {/* <Autocomplete
             multiple={valor.multiple}
             
             sx={{ width:'100%', 
@@ -532,7 +535,7 @@ export default function Page(props) {
                     :   valor.value
             }
             // inputValue={ valor.value=== undefined ? '' : valor.value.titulo}
-
+            isOptionEqualToValue={(option, value) => option._id === value._id}
             noOptionsText='No hay opciones'
             onChange={(event, newValue) => {
               // console.log(newValue)
@@ -542,6 +545,7 @@ export default function Page(props) {
               // }
             }}
             label={valor.label ? valor.label : valor.placeholder}
+            loading={true}
             renderInput={(params) =>
                             <TextField {...params} variant="outlined"
                                 label={valor.label ? valor.label : valor.placeholder}
@@ -549,10 +553,18 @@ export default function Page(props) {
                                 // onChange={values.Cambio}
                                 style= {{ margin: 8 , backgrounColor:'#f0f'}}
                                 name={valor.name}
-                                
+                                InputProps={{
+                                  ...params.InputProps,
+                                  endAdornment: (
+                                    <React.Fragment>
+                                       {loading ? <CircularProgress color="inherit" size={20} /> : null} 
+                                      {params.InputProps.endAdornment}
+                                    </React.Fragment>
+                                  ),
+                                }}
                             />
                         }
-          />
+          /> */}
 
           {valor.agregar 
             ? <IconButton title='Agregar sub-titulo'      
@@ -565,7 +577,7 @@ export default function Page(props) {
             : null
           }
         </div>
-        {valor.error
+        {valor.error &&(valor.value=== undefined || valor.value==='' || valor.value===null)
           ? <div style={{paddingLeft:20, marginTop:-5, textAlign:'justify'}}> 
               <label style={{color:'red', fontSize: 12}}>{valor.mensaje_error}</label>
             </div>

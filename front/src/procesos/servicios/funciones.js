@@ -362,12 +362,13 @@ const item_form = async(val, valores, _id)=>{
   }else if (val.tipo==='lista_multiuso'){
     let lista  
     const table=val.lista;
-    if (typeof val.lista==='string' && val.lista.indexOf('lista_')===-1) {  
-      const listado = await conexiones.Leer_C([val.lista],{[val.lista]:{}})
-      lista= listado.datos[val.lista].map( v=>{
-        return {...v.valores ? {_id:v._id, ...v.valores} : v}
-      })
-    }else if (val.lista.indexOf('lista_')!==-1){
+    // if (typeof val.lista==='string' && val.lista.indexOf('lista_')===-1) {  
+    //   const listado = await conexiones.Leer_C([val.lista],{[val.lista]:{}})
+    //   lista= listado.datos[val.lista].map( v=>{
+    //     return {...v.valores ? {_id:v._id, ...v.valores} : v}
+    //   })
+    // }else 
+    if (val.lista.indexOf('lista_')!==-1){
       lista = Ver_Valores()['config']['Listas'][val.lista]
       if (lista===undefined) lista=[]
     }else {
@@ -490,6 +491,7 @@ export const genera_fromulario = async (datos, columnas=1)=>{
             pos=Object.keys(titulos).length-1;
           }
           titulos[pos].value[val.name]= await item_form(val, valores, _id);
+          
           titulos[pos].listo=true ;
         }else{
           let pos= Object.keys(titulos).findIndex(f=> !titulos[f].listo && Object.keys(titulos[f].value).length<columnas);

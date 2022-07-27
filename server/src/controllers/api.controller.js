@@ -295,8 +295,9 @@ serverCtrl.Ver_datos_C = async (tablas, condicion) =>{
         // console.log('Paginando', condicion[data].pag,condicion[data].cantidad, data)
       }else if (Object.keys(condicion[data]).length===0){
         dbs = await DB.find();
+      }else if (Object.keys(condicion[data]).length!==0 && Object.keys(condicion[data]).indexOf('condicion')!==-1 && Object.keys(condicion[data]).indexOf('sort')!==-1){
+        dbs = await DB.find(condicion[data].condicion).sort(condicion[data].sort);
       }else{
-        
         dbs = await DB.find(condicion[data]);
         
       }

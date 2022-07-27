@@ -33,8 +33,8 @@ function General (props) {
                 }}
                 Titulo_dialogo ={(dato)=> dato._id ? `Registro `: `Nuevo Carrera`}
                 Titulos_tabla = {Titulos_todos(`${props.Titulos}`)}
-                cargaporparte = {true}
-                sinpaginacion = {true}
+                cargaporparte = {props.cargaporparte ? props.cargaporparte: {condicion:{}}}
+                sinpaginacion = {false}
                 
             />
         

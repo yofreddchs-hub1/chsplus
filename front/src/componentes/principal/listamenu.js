@@ -54,8 +54,8 @@ export default function CustomizedList(props) {
         for (var i=0; i<Config.Menu.length;i++){
             let f=Config.Menu[i];
             const permiso=props.Api ? await Permiso(f.value, props.Api) : await Permiso(f.value);
-            f.libre = f.libre===true || f.libre ==='true';
-            if (f.libre || permiso){
+            // f.libre = f.libre===true || f.libre ==='true';
+            if (f.libre===true || f.libre ==='true' || permiso){
                 nuevo=[...nuevo,f];
                 // if (Listado===null){
                 //     console.log('_______________')

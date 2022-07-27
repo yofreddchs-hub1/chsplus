@@ -90,7 +90,6 @@ class Tabla extends Component {
     let respuesta = await conexiones.Leer([table])
     if (cargaporparte){
       let cantidad= respuesta.datos[table+'_cantidad']
-      
       respuesta= await conexiones.Leer_C([table], 
         {
           [table]:{pagina:true, cantidad:items, pag:0, ...cargaporparte},
@@ -106,7 +105,7 @@ class Tabla extends Component {
       // if (cantidad<items) {
         // cargacompleta({Titulo, datos, cantidad});
       // if (!cargaporparte){
-        
+        console.log(this.state.pagina)
         cargacompleta({table, nuevodatos:datos, cantidad});
       // }else{
 
@@ -122,7 +121,7 @@ class Tabla extends Component {
       let cantidad=0
       cargacompleta({Titulo, datos, cantidad});
     }
-    this.setState({actualizando:false})
+    this.setState({actualizando:false, pagina:1})
   }
 
   componentDidMount(){
@@ -148,9 +147,12 @@ class Tabla extends Component {
     if (titulos===undefined && datos.length!==0){
       titulos= Titulo_default(datos[0]);
     }
-    this.setState({ordenar, titulos, datos, paginacion, table,
-                   total:datos, items, Cargar_todo:this.Cargar_todo, 
-                   Iniciar_descarga:this.Iniciar_descarga, cantidad, cargaporparte});
+    this.setState({
+                    ordenar, titulos, datos, paginacion, table,
+                    total:datos, items, Cargar_todo:this.Cargar_todo, 
+                    Iniciar_descarga:this.Iniciar_descarga, cantidad, cargaporparte,
+                    Cambio_pagina: this.Cambio_pagina
+                  });
   }
 
 
@@ -160,7 +162,7 @@ class Tabla extends Component {
     if (props !== state.props && !state.actualizando) {
       
       let {Titulo,datos, titulos, items, cantidad, table, condicion, cargacompleta, ordenar, cargaporparte}= props;
-      // console.log('>>>>> Segunda', cantidad)
+      // console.log('>>>>> Segunda', cantidad, datos)
       items= items===undefined ? itemsF : items;
       if (cantidad ===-1){
         state.Iniciar_descarga(table,Titulo, ordenar, items, cargacompleta, cargaporparte, condicion)
@@ -173,21 +175,24 @@ class Tabla extends Component {
         titulos= Titulo_default(datos[0]);
       }
       
-      if (cantidad>items && !cargaporparte)
+      if (cantidad>items && !cargaporparte){
         state.Cargar_todo(cantidad, table, datos, items, condicion, cargacompleta, ordenar, cargaporparte);
-      
+      }
       let paginacion =Paginas({
-                                datos, cantp: items,
+                                datos: state.pagina ===1 ? datos : state.datos, cantp: items,
                                 pagina: state.pagina,
                                 buscar: state.buscar, ctotal:cantidad
                               });
       paginacion.cantidad=items;
       // paginacion.datos=paginacion.datos;//datos;
-      // console.log('por aqoi', datos, cantidad)
-
+      // if (state.pagina!==1){
+      //   console.log(datos===state.datos)
+      //   state.Cambio_pagina({},state.pagina)
+      // }
+      
       return {  
         props,
-        datos,
+        datos: state.pagina ===1 ? datos : state.datos,
         paginacion,
         titulos, total:datos,
         items, table, cantidad,
@@ -203,9 +208,12 @@ class Tabla extends Component {
     let {pagina, datos, items, cantidad, cargaporparte, table, ordenar}= this.state;
     pagina= page;
     let paginacion
+    this.setState({actualizando:true});
+    console.log(this.state.buscar)
     if (!cargaporparte || this.state.buscar!==''){
+      console.log('Por cambio pagina,')
       paginacion =Paginas({datos, cantp: items, pagina: pagina, buscar: this.state.buscar});
-      this.setState({paginacion, pagina});
+      this.setState({paginacion, pagina, actualizando:false});
     }else{
       let resultados= await conexiones.Leer_C([table], 
         {
@@ -224,7 +232,7 @@ class Tabla extends Component {
       paginacion.cantidad=items;
       nuevodatos= ordenar ? ordenar(nuevodatos) : nuevodatos
       paginacion.datos=nuevodatos
-      this.setState({datos:nuevodatos, paginacion, pagina})
+      this.setState({datos:nuevodatos, paginacion, pagina, actualizando:false})
     }
     
   }
@@ -241,6 +249,7 @@ class Tabla extends Component {
 
   Buscar = async(e)=>{
     let {pagina, datos, total, buscar, items, cargaporparte, table, ordenar, cantidad}= this.state;
+    this.setState({actualizando:true})
     const {name, value}=e.target;
     pagina=1;
     if(!cargaporparte){  
@@ -257,9 +266,10 @@ class Tabla extends Component {
       this.setState({[name]:value, pagina, total, paginacion, datos})
     }else  if (value!==''){
       this.setState({[name]:value});
+      //verficar cuando no tiene cargaporparte
       let resultados= await conexiones.Leer_C([table], 
         {
-          [table]:{$text: {$search: value, $caseSensitive: false}},
+          [table]:cargaporparte ? {...cargaporparte, condicion:{$text: {$search: value, $caseSensitive: false}}} : {$text: {$search: value, $caseSensitive: false}},
           
         }
       );
@@ -267,13 +277,13 @@ class Tabla extends Component {
       let paginacion =Paginas({
         datos:nuevodatos, cantp: items,
         pagina: pagina,
-        buscar: this.state.buscar,
+        buscar: value,
         
       });
       
       paginacion.cantidad=items;
       
-      this.setState({ datos:nuevodatos, paginacion, pagina})
+      this.setState({ datos:nuevodatos, paginacion, pagina, actualizando:false, buscar:value})
     }else{
 
       this.setState({[name]:value});
@@ -288,14 +298,14 @@ class Tabla extends Component {
       let paginacion =Paginas({
         datos:nuevodatos, cantp: items,
         pagina: pagina,
-        buscar: this.state.buscar,
+        buscar: '',
         ctotal:cantidad
       });
       
       paginacion.cantidad=items;
       nuevodatos= ordenar ? ordenar(nuevodatos) : nuevodatos
       paginacion.datos=nuevodatos
-      this.setState({datos:nuevodatos, paginacion, pagina})
+      this.setState({datos:nuevodatos, paginacion, pagina, actualizando:false, buscar:''})
     }
   }
   

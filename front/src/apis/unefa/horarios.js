@@ -8,6 +8,7 @@ import Formulario from '../../componentes/herramientas/formulario';
 import { genera_fromulario, conexiones } from '../../procesos/servicios';
 import { Form_todos } from '../../constantes';
 import Logo from './imagenes/logo.png';
+import Cargando from '../../componentes/esperar/cargar';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : 'rgb(5, 30, 52)',
@@ -19,7 +20,8 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function Horarios_unefa(props) {
-    const [state, setState] = React.useState({});
+    const [state, setState] = React.useState({cargando:true});
+    const [cargando, setCargando] = React.useState(true);
     const cambio = (valores)=>{
         setState({...state,...valores})
     }
@@ -29,13 +31,45 @@ export default function Horarios_unefa(props) {
         formulario.titulos[0].value.lista.onChange= Seleccion_Horario(formulario);
         cambio({datos:{...resultados[name], periodo:resultados.periodo.periodo, tipo: resultados.tipo.value}, formulario})
     }
+
     const Seleccion = async(valores)=>{
-        const {name, resultados}= valores;
+        const {resultados}= valores;
         if(resultados.tipo && resultados.periodo && resultados.carrera){
+            setCargando(valores)
+        }
+        
+        return valores
+    }
+    
+    
+    React.useEffect(()=>{
+        let active = true;
+
+        if (!cargando) {
+        return undefined;
+        }
+
+        if (cargando && state.formulario===undefined){
+            //Inicio
+            (async () => {
+                let formulario = await genera_fromulario({ valores:{}, campos: Form_todos('Form_unefa_horario') });
+                formulario.titulos[0].value.carrera.onChange = Seleccion;
+                formulario.titulos[0].value.periodo.onChange = Seleccion;
+                formulario.titulos[0].value.tipo.onChange = Seleccion;
+                if (active) {
+                    cambio({formulario});
+                    setCargando(false)
+                }
+            })();
+            return
+        }
+        (async () => {
+            //Buscar los datos
+            const {resultados}= cargando;
             let datos= await conexiones.Leer_C([`unefa_${resultados.tipo.value}`, ...resultados.tipo.value==='seccion' ? ['unefa_asignatura','unefa_docente'] :[]], 
                 {
                     [`unefa_${resultados.tipo.value}`]:{},//{$text: {$search: resultados.carrera.nombres, $caseSensitive: false}},
-                    ...resultados.tipo.value==='seccion' ? {unefa_asignatura:{}, unefa_docente:{}} :{}
+                    ...resultados.tipo.value==='seccion' ? {unefa_asignatura:{"valores.carrera._id":resultados.carrera._id}, unefa_docente:{}} :{}
                 }
             );
             if (datos.Respuesta==='Ok'){
@@ -83,28 +117,30 @@ export default function Horarios_unefa(props) {
                 formulario.titulos[0].value.lista.lista= datos;
                 formulario.titulos[0].value.lista.value= null;
                 formulario.titulos[0].value.lista.onChange= Seleccion_Horario(formulario);
-                cambio({formulario})   
+                if (active) {
+                    cambio({formulario})   
+                }
+                
             }
-            
-        }    
-        return valores
-    }
-    const Inicio = async()=>{
-        let formulario = await genera_fromulario({ valores:{}, campos: Form_todos('Form_unefa_horario') });
-        formulario.titulos[0].value.carrera.onChange = Seleccion;
-        formulario.titulos[0].value.periodo.onChange = Seleccion;
-        formulario.titulos[0].value.tipo.onChange = Seleccion;
-        cambio({formulario})
-    }
-    // React.useEffect(()=>{
-    //     Inicio()
 
-    // },[])
-    if (state.formulario===undefined){
-        Inicio()
-    }
+            setCargando(false)
+        })();
+
+        return () => {
+        active = false;
+        };
+
+    },[cargando])
+
+
+
+
+    // if (state.formulario===undefined){
+    //     Inicio()
+        
+    // }
     return state.formulario ? (
-        <Box sx={{ flexGrow: 1 }}>
+        <Box sx={{ flexGrow: 1, position: "relative"}}>
             <Grid container spacing={0.5}>
                 <Grid item xs={12}>
                 <Item style={{height: 100}}><Formulario {...state.formulario}/></Item>
@@ -115,6 +151,7 @@ export default function Horarios_unefa(props) {
                     </Item>
                 </Grid>
             </Grid>
+            <Cargando open={cargando} Logo={Logo} Fondo={'#ffffff'}/>
         </Box>
     ): null;
 }

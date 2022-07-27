@@ -5367,26 +5367,6 @@
                     "name": "apellidos"
                 },
                 {
-                    "nombre": "asignaturas",
-                    "tipo": "lista_multiuso",
-                    "label": "Asignaturas",
-                    "placeholder": "Asignaturas",
-                    "title": "Asignaturas",
-                    "mensaje_error": "",
-                    "disabled": false,
-                    "numberOfLines": "",
-                    "lista": "unefa_asignatura",
-                    "getOptionLabel": [
-                        "codigo",
-                        "nombre",
-                        "semestre.titulo"
-                    ],
-                    "key": "asignaturas",
-                    "name": "asignaturas",
-                    "multiline": false,
-                    "multiple": true
-                },
-                {
                     "nombre": "carreras",
                     "tipo": "lista_multiuso",
                     "label": "Carreras",
@@ -5402,6 +5382,23 @@
                     "key": "carreras",
                     "name": "carreras",
                     "multiline": false,
+                    "multiple": true
+                },{
+                    "nombre": "asignaturas",
+                    "tipo": "lista_multiuso",
+                    "label": "Asignaturas",
+                    "placeholder": "Asignaturas",
+                    "title": "Asignaturas",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "lista": "unefa_asignatura",
+                    "getOptionLabel": [
+                        "nombre",
+                        "semestre.titulo"
+                    ],
+                    "key": "asignaturas",
+                    "name": "asignaturas",
                     "multiple": true
                 },
                 {

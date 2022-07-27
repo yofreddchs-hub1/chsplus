@@ -20,7 +20,7 @@ export default function Esperar(props) {
         <div>
         <img
                 src={props.Logo ? props.Logo : Logo}
-                alt={'En Contruccion'}
+                alt={'Cargando datos'}
                 loading="lazy"
         />
         <Box sx={{ width: '100%' }}>
