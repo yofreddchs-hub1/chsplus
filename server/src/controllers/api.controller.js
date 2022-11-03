@@ -287,7 +287,7 @@ serverCtrl.Ver_datos_C = async (tablas, condicion) =>{
                             .sort(condicion[data].sort ? condicion[data].sort : {$natural:-1})//'-createdAt')
                             .limit(condicion[data].cantidad)
                             .skip(condicion[data].pag*condicion[data].cantidad).exec();
-        // console.log('Paginando', condicion[data].pag,condicion[data].cantidad, data)
+        // console.log('Paginando', condicion[data].pag,condicion[data].cantidad, data, condicion[data].condicion)
       }else if( Object.keys(condicion[data] !==undefined && condicion[data]).indexOf('pagina')!==-1){
         dbs = await DB.find()
                             .limit(condicion[data].cantidad)
@@ -298,6 +298,7 @@ serverCtrl.Ver_datos_C = async (tablas, condicion) =>{
       }else if (Object.keys(condicion[data]).length!==0 && Object.keys(condicion[data]).indexOf('condicion')!==-1 && Object.keys(condicion[data]).indexOf('sort')!==-1){
         dbs = await DB.find(condicion[data].condicion).sort(condicion[data].sort);
       }else{
+        await DB.createIndexes()
         dbs = await DB.find(condicion[data]);
         
       }
@@ -609,12 +610,13 @@ serverCtrl.Leer_data = async (req, res) =>{
     let datos;
     try{
         let data = fs.readFileSync(direct, 'utf8');
-        if (Api.master){
-          datos = data;  
-        }else{
-          datos = JSON.stringify(JSON.parse(data)['Api_'+Api.api])
-          // console.log('No es master', datos)
-        }
+        datos=data;
+        // if (Api.master){
+        //   datos = data;  
+        // }else{
+        //   datos = JSON.stringify(JSON.parse(data)['Api_'+Api.api])
+        //   // console.log('No es master', datos)
+        // }
         
     } catch (err) {
         console.log('no existe');
@@ -637,7 +639,9 @@ serverCtrl.Guardar_data = async (req, res) =>{
   if (hash===hashn && igual) {
     const direct= __dirname.replace('controllers',archivo);
     fs.writeFileSync(direct, valor);
-    global.io.emit('Refrescar',valor)
+    let api= archivo.replace('data/','').replace('.js','');
+    console.log(api)
+    global.io.emit(`Refrescar-${api}`,valor)
     res.json({Respuesta:'Ok'});
   }else{
     res.json({Respuesta:'Error', mensaje:'hash o api invalido'});
@@ -670,6 +674,21 @@ serverCtrl.DataBase = async (req, res) =>{
     const DB = require(`../models/${models[0]}`);
     const datos = await DB.find();
     res.json({Respuesta:'Ok', models, datos});
+  }else{
+    res.json({Respuesta:'Error', mensaje:'hash invalido'});
+  }
+
+}
+// ver configuracion de apis
+serverCtrl.VerApis = async (req, res) =>{
+  const {User, hash} = req.body;
+  const hashn = await Hash_texto(JSON.stringify({User}));
+  if (hash===hashn) {
+    const direct= __dirname.replace('controllers','data');
+    let data = fs.readdirSync(direct, 'utf8');
+    let lista=data.map(valor =>  valor.replace('.js', ''));
+    lista = lista.filter(f=> ['datos copy', 'ejemplos.json', 'ejemploson', 'datos copy 2'].indexOf(f)===-1);
+    res.json({Respuesta:'Ok', lista});
   }else{
     res.json({Respuesta:'Error', mensaje:'hash invalido'});
   }
@@ -776,6 +795,288 @@ serverCtrl.Posicion_geo = async (req, res) =>{
 
 }
 
+//Para SistemaCHS
+
+serverCtrl.Guardar_produccion = async (req, res)=>{
+    let {User, Api, datos, hash} = req.body;
+    User= typeof User==='string' ? JSON.parse(User) : User;
+    const hashn = await Hash_texto(JSON.stringify({User, Api, datos}));
+    const igual= await serverCtrl.Verifica_api(Api, true);
+    if (hashn===hash && igual) {
+      const fecha = moment(new Date()).format('YYYY-MM-DD');
+      await serverCtrl.Tablas('egresomp');
+      await serverCtrl.Tablas('egresoem');
+      await serverCtrl.Tablas('ingresopt');
+      const Produccion = require(`../models/produccion`);
+      const MP = require(`../models/inventariomp`);
+      const PT = require(`../models/inventariopt`);
+      const EMPAQUE = require(`../models/empaque`);
+      const FORMULA = require(`../models/formula`);
+      const EM = require(`../models/egresomp`);
+      const EEM= require(`../models/egresoem`);
+      const IPT= require(`../models/ingresopt`);
+      datos = JSON.parse(datos);
+      let movimiento = [];
+      let movimiento_pt = [];
+      let movimiento_em = [];
+      for (var i=0; i< datos.produccion.length; i++){
+        const produccion = datos.produccion[i];
+        //Materia prima
+        
+        for (var m=0; m<produccion.mp.length; m++){
+          const mp=produccion.mp[m];
+          let prima = await MP.findOne({_id:mp._id});
+          prima= prima.valores ? prima.valores : prima;
+          prima.actual = Number(prima.actual && prima.actual!=='' ? prima.actual : 0) - Number(mp.cantidadr);
+          await MP.updateOne({_id:mp._id},{valores:{...prima}, actualizado:User.username},{ upsert: true });
+          //movimiento de egreso de materia prima
+          movimiento = [...movimiento,{
+            _id: mp._id, codigo:mp.codigo, unidad:mp.unidad, descripcion: mp.descripcion,
+            cantidad: mp.cantidadr
+          }]
+        }
+
+        //Producto terminado
+        for (var p=0; p<produccion.pt.length; p++){
+          const pt=produccion.pt[p];
+          let producto = await PT.findOne({_id:pt._id});
+          producto = producto.valores ? producto.valores : producto;
+          producto.actual = Number(producto.actual && producto.actual!=='' ? producto.actual : 0) + Number(pt.cantidadFinalr);
+          //movimiento de ingreso de producto terminado
+          movimiento_pt=[...movimiento_pt,{
+            _id: producto._id, codigo:producto.codigo, unidad:producto.unidad, descripcion: producto.descripcion,
+            cantidad: Number(pt.cantidadFinalr)
+          }]
+          // Actualizar empaques 
+          if (producto.empaque){
+            let empaque = await EMPAQUE.findOne({_id:producto.empaque._id});
+            empaque = empaque.valores ? empaque.valores : empaque;
+            empaque.actual = Number(empaque.actual ? empaque.actual : 0)-Number(pt.cantidadFinalr);
+            await EMPAQUE.updateOne({_id:producto.empaque._id}, {valores:{...empaque}, actualizado:User.username},{ upsert: true });
+            // movimiento de egreso de empaque
+            if (Number(pt.cantidadFinalr)!==0){
+              movimiento_em=[...movimiento_em,{
+                _id: empaque._id, codigo:empaque.codigo, unidad:empaque.unidad, descripcion: empaque.descripcion,
+                cantidad: Number(pt.cantidadFinalr)
+              }]
+            }
+          }
+          //Actualizar la materia prima adicional
+          if (producto.madicional){
+            let materia = await MP.findOne({_id:producto.madicional._id});
+            materia = materia.valores ? materia.valores : materia;
+            materia.actual = Number(materia.actual ? materia.actual : 0) - Number(producto.cantidadm)
+            await MP.updateOne({_id:producto.madicional._id},{valores:{...materia}, actualizado:User.username},{ upsert: true });
+            //movimiento de egreso de materia prima
+            movimiento = [...movimiento,{
+              _id: materia._id, codigo:materia.codigo, unidad:materia.unidad, descripcion: materia.descripcion,
+              cantidad: producto.cantidadm
+            }]
+          }
+          await PT.updateOne({_id:pt._id},{valores:{...producto}, actualizado:User.username},{ upsert: true });
+        }
+
+        let formula = await FORMULA.findOne({_id:produccion._id});
+        formula = formula.valores ? formula.valores : formula;
+        formula.actual = Number(formula.actual ? formula.actual : 0) + Number(produccion.resta);
+        await FORMULA.updateOne({_id:produccion._id},{valores:{...formula}, actualizado:User.username},{ upsert: true });
+      }
+      await Produccion.updateOne({_id:datos._id},{valores:{...datos}, actualizado:User.username},{ upsert: true });
+
+      //Guardar el egreso de materia prima
+      let valores = {fecha, movimiento};
+      let cod_chs = await Codigo_chs({...valores});
+      let hash_chs = await Hash_chs({...valores, cod_chs})
+      const Nuevo = new EM({valores, cod_chs, hash_chs, actualizado:'Sistema'});
+      await Nuevo.save();
+
+      //Guardar el egreso de empaque
+      valores = {fecha, movimiento: movimiento_em};
+      cod_chs = await Codigo_chs({...valores});
+      hash_chs = await Hash_chs({...valores, cod_chs})
+      const NuevoE = new EEM({valores, cod_chs, hash_chs, actualizado:'Sistema'});
+      await NuevoE.save();
+      
+      //Guardar el ingreso producto terminado
+      valores = {fecha, movimiento:movimiento_pt};
+      cod_chs = await Codigo_chs({...valores});
+      hash_chs = await Hash_chs({...valores, cod_chs})
+      const NuevoI = new IPT({valores, cod_chs, hash_chs, actualizado:'Sistema'});
+      await NuevoI.save();
+
+      res.json({Respuesta:'Ok', datos});
+    }else{
+        res.json({Respuesta:'Error', mensaje:'hash invalido'});
+    }
+}
+//Ingresos de Materia Prima
+serverCtrl.Ingresar_material = async (req, res)=>{
+    let {User, Api, datos, hash} = req.body;
+    User= typeof User==='string' ? JSON.parse(User) : User;
+    const hashn = await Hash_texto(JSON.stringify({User, Api, datos}));
+    const igual= await serverCtrl.Verifica_api(Api, true);
+    if (hashn===hash && igual) {
+      const fecha = moment(new Date()).format('YYYY-MM-DD');
+      await serverCtrl.Tablas('ingresomp');
+      const MP = require(`../models/inventariomp`);
+      const IM = require(`../models/ingresomp`);
+      datos = JSON.parse(datos);
+      let movimiento = [];
+      
+      for (var i=0; i<datos.length; i++){
+        let material =  datos[i];
+        let Mat = await MP.findOne({_id:material._id});
+        Mat.valores.actual= Number(Mat.valores.actual) + Number(material.cantidad);
+        await MP.updateOne({_id:material._id},{valores:Mat.valores, actualizado:User.username},{ upsert: true });
+        movimiento=[...movimiento,{
+          _id: material._id, codigo:material.codigo, unidad:material.unidad, descripcion: material.descripcion,
+          cantidad: material.cantidad
+        }]
+      }
+      let valores = {fecha, movimiento};
+      let cod_chs = await Codigo_chs({...valores});
+      const hash_chs = await Hash_chs({...valores, cod_chs})
+      const Nuevo = new IM({valores, cod_chs, hash_chs, actualizado:'Sistema'});
+      await Nuevo.save();
+      res.json({Respuesta:'Ok', datos});
+    }else{
+      res.json({Respuesta:'Error', mensaje:'hash invalido'});
+  }
+}
+// Ingreso de empaque
+serverCtrl.Ingresar_empaque = async (req, res)=>{
+  let {User, Api, datos, hash} = req.body;
+  User= typeof User==='string' ? JSON.parse(User) : User;
+  const hashn = await Hash_texto(JSON.stringify({User, Api, datos}));
+  const igual= await serverCtrl.Verifica_api(Api, true);
+  if (hashn===hash && igual) {
+    const fecha = moment(new Date()).format('YYYY-MM-DD');
+    await serverCtrl.Tablas('ingresoem');
+    const EM = require(`../models/empaque`);
+    const IE = require(`../models/ingresoem`);
+    datos = JSON.parse(datos);
+    let movimiento = [];
+
+    for (var i=0; i<datos.length; i++){
+      let material =  datos[i];
+      let Mat = await EM.findOne({_id:material._id});
+      Mat.valores.actual= Number(Mat.valores.actual) + Number(material.cantidad);
+      await EM.updateOne({_id:material._id},{valores:Mat.valores, actualizado:User.username},{ upsert: true });
+      movimiento=[...movimiento,{
+        _id: material._id, codigo:material.codigo, unidad:material.unidad, descripcion: material.descripcion,
+        cantidad: material.cantidad
+      }]
+      
+    }
+    let valores = {fecha, movimiento};
+    let cod_chs = await Codigo_chs({...valores});
+    const hash_chs = await Hash_chs({...valores, cod_chs})
+    const Nuevo = new IE({valores, cod_chs, hash_chs, actualizado:'Sistema'});
+    await Nuevo.save();
+    res.json({Respuesta:'Ok', datos});
+  }else{
+    res.json({Respuesta:'Error', mensaje:'hash invalido'});
+}
+}
+serverCtrl.Ingreso_Egreso = async (req, res)=>{
+  let {User, Api, datos, hash} = req.body;
+  User= typeof User==='string' ? JSON.parse(User) : User;
+  const hashn = await Hash_texto(JSON.stringify({User, Api, datos}));
+  const igual= await serverCtrl.Verifica_api(Api, true);
+  if (hashn===hash && igual) {
+    
+    datos = JSON.parse(datos);
+    let Ingreso;
+    let Egreso;
+    let Inventario;
+    if (datos.tipo === undefined ){
+      res.json({Respuesta:'Ok', inventario:[], mensaje:'Tipo de ingreso y egresos no conocidos'});
+    }
+    if (datos.tipo==='Materia Prima'){
+      await serverCtrl.Tablas('ingresomp');
+      await serverCtrl.Tablas('egresomp');
+      await serverCtrl.Tablas('inventariomp');
+      Ingreso=require(`../models/ingresomp`);
+      Egreso=require(`../models/egresomp`);
+      Inventario = require(`../models/inventariomp`);
+    }else if (datos.tipo==='Empaque'){
+      await serverCtrl.Tablas('ingresoem');
+      await serverCtrl.Tablas('egresoem');
+      await serverCtrl.Tablas('empaque');
+      Ingreso=require(`../models/ingresoem`);
+      Egreso=require(`../models/egresoem`);
+      Inventario = require(`../models/empaque`);
+    }else if (datos.tipo==='Producto Terminado'){
+      await serverCtrl.Tablas('ingresopt');
+      await serverCtrl.Tablas('egresopt');
+      await serverCtrl.Tablas('inventariopt');
+      Ingreso=require(`../models/ingresopt`);
+      Egreso=require(`../models/egresopt`);
+      Inventario = require(`../models/inventariopt`);
+    }else{
+      res.json({Respuesta:'Ok', inventario:[], mensaje:'Tipo de ingreso y egresos no conocidos'});
+      return
+    }
+    let ingresos=[];
+    let egresos=[];
+    let inventario = await Inventario.find();
+    inventario= inventario.map(val=>{return{_id:val._id, ...val.valores}});
+
+    for (var i=0; i<datos.meses.length;i++){
+      const mes = datos.meses[i];
+      let ingreso = await Ingreso.find({$text: {$search: mes, $caseSensitive: false}});
+      ingreso= ingreso.filter(f=>f.valores.fecha===mes).map(val=>{return{_id: val._id, ...val.valores}});
+      ingresos=[...ingresos,...ingreso];
+      let egreso = await Egreso.find({$text: {$search: mes, $caseSensitive: false}});
+      egreso= egreso.filter(f=>f.valores.fecha===mes).map(val=>{return{_id: val._id, ...val.valores}});
+      egresos=[...egresos,...egreso];
+    }
+
+    for (var i=0; i<ingresos.length; i++){
+      const ingreso = ingresos[i];
+      // console.log('pppppp', ingreso)
+      for (var j=0; j<ingreso.movimiento.length;j++){
+        const mp= ingreso.movimiento[j];
+        
+        const pos = inventario.findIndex(f=>String(f._id)===String(mp._id));
+        
+        if (pos!==-1){
+          if(inventario[pos][ingreso.fecha]){
+            inventario[pos][ingreso.fecha].ingreso+=Number(mp.cantidad);  
+          }else{
+            inventario[pos][ingreso.fecha]={ingreso:Number(mp.cantidad), egreso:0};
+          }
+          // console.log('Agregar en ingreso>>>>>>')
+          // console.log(datos.tipo,ingreso.fecha,inventario[pos][ingreso.fecha])
+        }
+      }
+    }
+    
+    for (var i=0; i<egresos.length; i++){
+      const egreso = egresos[i];
+      // console.log('pppppp', ingreso)
+      for (var j=0; j<egreso.movimiento.length;j++){
+        const mp= egreso.movimiento[j];
+        const pos = inventario.findIndex(f=>String(f._id)===String(mp._id) || f.codigo===mp.codigo);
+        if (pos!==-1){
+          if(inventario[pos][egreso.fecha]){
+            inventario[pos][egreso.fecha].egreso+=Number(mp.cantidad);  
+          }else{
+            inventario[pos][egreso.fecha]={ingreso:0, egreso:Number(mp.cantidad)};
+          }
+          // console.log('Agregar en engreso>>>>>>')
+          // console.log(datos.tipo,egreso.fecha,inventario[pos][egreso.fecha])
+        }
+      }
+    }
+    // console.log('Ingresos',ingresos);
+    // console.log('Egresos',egresos);
+    // console.log(inventario)
+    res.json({Respuesta:'Ok', inventario});
+  }else{
+    res.json({Respuesta:'Error', mensaje:'hash invalido'});
+}
+}
 // para egew
 // Cuentas de wesipay
 Buscar_completo= async(DB,User)=>{

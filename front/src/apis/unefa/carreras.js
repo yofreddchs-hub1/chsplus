@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import TablaMultiple from '../../componentes/herramientas/tabla/tabla_multiple';
-import { Ver_Valores } from '../../constantes';
 import { Form_todos, Titulos_todos } from '../../constantes/formularios';
 
 function Carreras (props) {

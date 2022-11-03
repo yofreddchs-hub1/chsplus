@@ -252,60 +252,84 @@ class Tabla extends Component {
     this.setState({actualizando:true})
     const {name, value}=e.target;
     pagina=1;
-    if(!cargaporparte){  
-      if (buscar===''){
-        total=datos;
-        datos=[];
-      }else if (value===''){
-        datos=total;
+    if(!cargaporparte){
+      console.log('Buscar por no por parte', buscar, value);
+      // if (buscar===''){
+      //   console.log(total)
+      //   total=[...datos];
+      //   datos=[];
+      // }else 
+      if (value===''){
+        datos=[...total];
       }
       if (value!==''){
         datos=Resultado_encontrados(total,value);
       }
       let paginacion =Paginas({datos, cantp: items, pagina: pagina, buscar: value});
-      this.setState({[name]:value, pagina, total, paginacion, datos})
+      this.setState({[name]:value, pagina, total, paginacion, datos, actualizando:false})
     }else  if (value!==''){
+      // console.log('Buscar por por parte');
+      // this.setState({[name]:value});
+      // //verficar cuando no tiene cargaporparte
+      // let resultados= await conexiones.Leer_C([table], 
+      //   {
+      //     [table]:cargaporparte ? {...cargaporparte, condicion:{$text: {$search: value, $caseSensitive: false}}} : {$text: {$search: value, $caseSensitive: false}},
+          
+      //   }
+      // );
+      // let nuevodatos=resultados.datos[table];
+      // let paginacion =Paginas({
+      //   datos:nuevodatos, cantp: items,
+      //   pagina: pagina,
+      //   buscar: value,
+        
+      // });
+      
+      // paginacion.cantidad=items;
+      
+      // this.setState({ datos:nuevodatos, paginacion, pagina, actualizando:false, buscar:value})
       this.setState({[name]:value});
-      //verficar cuando no tiene cargaporparte
       let resultados= await conexiones.Leer_C([table], 
         {
-          [table]:cargaporparte ? {...cargaporparte, condicion:{$text: {$search: value, $caseSensitive: false}}} : {$text: {$search: value, $caseSensitive: false}},
+          [table]:{$text: {$search: value, $caseSensitive: false}},
           
         }
       );
-      let nuevodatos=resultados.datos[table];
+      let nuevodatos=ordenar ? ordenar(resultados.datos[table]) : resultados.datos[table];
       let paginacion =Paginas({
         datos:nuevodatos, cantp: items,
         pagina: pagina,
-        buscar: value,
+        buscar: this.state.buscar,
         
       });
       
       paginacion.cantidad=items;
       
-      this.setState({ datos:nuevodatos, paginacion, pagina, actualizando:false, buscar:value})
+      this.setState({ datos:nuevodatos, paginacion, pagina, actualizando:false,})
     }else{
 
       this.setState({[name]:value});
+      pagina=0;
       let resultados= await conexiones.Leer_C([table], 
         {
-          [table]:{pagina:true, cantidad:items, pag:0, ...cargaporparte},
+          [table]:{pagina:true, cantidad:items, pag:pagina, ...cargaporparte},
           
         }
       );
-      
+      console.log(resultados, value, items, pagina)
       let nuevodatos=resultados.datos[table];
       let paginacion =Paginas({
         datos:nuevodatos, cantp: items,
         pagina: pagina,
-        buscar: '',
+        buscar: this.state.buscar,
         ctotal:cantidad
       });
       
       paginacion.cantidad=items;
       nuevodatos= ordenar ? ordenar(nuevodatos) : nuevodatos
       paginacion.datos=nuevodatos
-      this.setState({datos:nuevodatos, paginacion, pagina, actualizando:false, buscar:''})
+      // this.setState({datos:nuevodatos, paginacion, pagina, actualizando:false, buscar:''})
+      this.setState({datos:nuevodatos, paginacion, pagina, actualizando:false,})
     }
   }
   

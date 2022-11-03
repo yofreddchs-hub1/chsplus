@@ -31,6 +31,8 @@ const { Ver_api, Login,Verificar, Getall, Getall_C, Setall, Delall, Leer_data, G
         Egew_comprarWesi, Egew_statusComprarWesi, Egew_cambiar_status_compra, Egew_cambiar_password,
         Egew_pagarWesi,
         Egew_transferirWesi,
+        VerApis,
+        Guardar_produccion, Ingresar_material, Ingresar_empaque, Ingreso_Egreso
       } = require('../controllers/api.controller');
 
 const {Mensualidades, EnviarPago, Solvencias, Resumen} = require('../controllers/colegio.controller');
@@ -47,6 +49,7 @@ router.post('/setall',archivos ,Setall);
 router.post('/leer_data',Leer_data);
 router.post('/guardar_data',Guardar_data);
 router.post('/database',DataBase);
+router.post('/verapis',VerApis);
 router.post('/varios_datos',Varios_Datos);
 router.post('/valor_dolar',Valor_Dolar);
 router.post('/guardar_excel',Guardar_data_excel);
@@ -54,6 +57,11 @@ router.post('/posicion_geo',Posicion_geo);
 
 router.delete('/delall',Delall);
 router.delete('/eliminar_data',Eliminar_data);
+// SistemaCHS
+router.post('/guardarproduccion',Guardar_produccion);
+router.post('/ingresarmaterial',Ingresar_material);
+router.post('/ingresarempaque',Ingresar_empaque);
+router.post('/ingresoegreso',Ingreso_Egreso);
 
 // Para EGEW
 router.post('/cuentas_wesi',Egew_cuentas_wesi);

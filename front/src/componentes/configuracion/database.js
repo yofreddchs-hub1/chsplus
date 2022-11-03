@@ -38,7 +38,7 @@ export default class Configuracion extends Component {
         return datos
       }
       default:
-        return datos;
+        return datos.valores;
     }
 
   }
@@ -246,7 +246,7 @@ export default class Configuracion extends Component {
           <Formulario {...formulario_lista} config={Config}/>
         </div>
         
-        <div style={{marginTop:-50}}/>
+        <div style={{marginTop:-30}}/>
         <Cuerpo Bloques={Bloques}/>
         <Cargando open={cargando}/>
       </div>

@@ -1,5 +1,5 @@
 const User = require('./models/User_api');
-global.io = require("socket.io")(global.global_http);
+// global.io = require("socket.io")(global.global_http);
 const conexiones = require('./servicios/conexiones');
 const  {Ver_datos}= require('./controllers/api.controller');
 const tiempo= 5 * (1000)

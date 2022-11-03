@@ -1,6 +1,10 @@
 import React, {Component,  useState} from 'react';
+// Import Parse minified version
+import Parse from 'parse/dist/parse.min.js';
+
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { SnackbarProvider, useSnackbar } from 'notistack';
+import Snackbar from '@mui/material/Snackbar';
 import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import CloseIcon from '@mui/icons-material/Close';
 import { IconButton } from '@mui/material';
@@ -24,6 +28,15 @@ import {Form_todos} from './constantes';
 import Noexiste from './componentes/herramientas/pantallas/noexiste'
 
 import { Apis } from './apis';
+import Logo from './imagenes/logo1.png'
+import Carrusel from './componentes/carrusel';
+
+// Your Parse initialization configuration goes here
+const PARSE_APPLICATION_ID = 'K6Z0K1MkzhWG4MTgg3xzWowj0eJl6J6KTUPfFWrd';
+const PARSE_HOST_URL = 'https://chs.b4a.app';
+const PARSE_JAVASCRIPT_KEY = 'Bt1PyOaq93UHGnReFsSCekWr56v0tXjoHwOb3pzA';
+Parse.initialize(PARSE_APPLICATION_ID, PARSE_JAVASCRIPT_KEY);
+Parse.serverURL = PARSE_HOST_URL;
 
 class InicioPrincipal extends Component {
   constructor(props) {
@@ -32,7 +45,9 @@ class InicioPrincipal extends Component {
         props: this.props,
         esperar:true,
         Login: this.Login,
-        dialogo:{open:false}
+        dialogo:{open:false},
+        publicidad:false,
+        portadas:[]
       }
 
   }
@@ -104,7 +119,7 @@ class InicioPrincipal extends Component {
       let Config = await Inicio() 
       this.setState({Config})
     })
-    socket.on("Refrescar", data => {
+    socket.on("Refrescar-datos", data => {
       // this.Refrescar()
       try{
         let Config = JSON.parse(data)
@@ -116,7 +131,10 @@ class InicioPrincipal extends Component {
     socket.on("Usuario_presentes", datos =>{
       // console.log('Usuarios presentes',datos)
     })
-    
+    socket.on("Actualizar_Portada", datos =>{
+      //  console.log('Actualizar Portada',datos);
+       this.Publicidades();
+    })
     
     this.setState({socket})
     nuevo_Valores({socket})
@@ -134,8 +152,26 @@ class InicioPrincipal extends Component {
   async componentDidMount(){
     this.Inicio_Socket();
     this.Refrescar();
+    this.Publicidad();
+    this.Publicidades();
+
   }
   
+  Publicidades = async()=>{
+    let resultados= await conexiones.Leer_C(['Portada'], {'Portada':{}});
+    if (resultados.Respuesta==='Ok'){
+        this.setState({portadas:[...resultados.datos.Portada]});
+    }
+  }
+  Publicidad = (estado=true)=>{
+    this.setState({publicidad:estado})
+    if (!this.state.publicidad || !estado){
+      setTimeout(()=>{
+        this.Publicidad();
+      }, 10 * 60 * 1000)
+    }
+  }
+
   componentWillUnmount(){
     
   }
@@ -173,6 +209,7 @@ class InicioPrincipal extends Component {
   }
 
   Seleccion_pantalla = async(value, padre)=>{
+    console.log(value)
     let {Config}= this.state;
     this.Sacar(Config.Menu)
     let seleccion= value.pantalla ? value.pantalla : value.value;
@@ -256,7 +293,39 @@ class InicioPrincipal extends Component {
       const Api = Apis[dir[1]];
       window.document.title= `CHS+ ${dir[1].toUpperCase()}`
       return esperar ? <Esperar/> :(
-        <Api/>
+        <div>
+          <Api/>
+          <Snackbar open={this.state.publicidad} autoHideDuration={6000} >
+            <div style={{ width:230, backgroundColor:'#fff', borderRadius:10, borderColor:'#000'}}>
+              <div style={{width:'100%', height:30, backgroundColor:'gray', borderTopLeftRadius:10, borderTopRightRadius:10, flexDirection:'row', display:'flex'}}>
+                <div style={{width:'20%', height:30, borderTopLeftRadius:10, color:'#fff'}}>
+                  <img
+                          src={Logo}
+                          alt={'Logo'}
+                          loading="lazy"
+                          style={{height:25}}
+                  />
+                </div>
+                <div style={{width:'60%', height:30, color:'#fff', padding:5}}>Publicidad</div>
+                <div style={{width:'20%', height:30, borderTopRightRadius:10, cursor:'pointer', color:'#fff'}}
+                      onClick={()=>{
+                        this.Publicidad(false);
+                      }}
+                >
+                  <IconButton onClick={()=>{
+                        this.Publicidad(false);
+                      }}
+                  >
+                      <CloseIcon fontSize="small"/>
+                  </IconButton>
+                </div>
+              </div>
+              <div onClick={()=>window.location.pathname=''}>
+                <Carrusel datos={this.state.portadas} height={200}/>
+              </div>
+            </div>
+          </Snackbar>
+        </div>
       )
       
     }

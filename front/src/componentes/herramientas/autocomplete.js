@@ -27,6 +27,10 @@ export default function Listados(props) {
         
       if (valor.lista && typeof valor.lista!=='string'){
         setOptions([...valor.lista]);
+      }else if(valor.lista.indexOf('lista_')!==-1){
+        let lista = Config.Listas[valor.lista]
+        if (lista===undefined) lista=[]
+        setOptions([...lista]);
       }else{
         const listado = await conexiones.Leer_C([valor.lista],{[valor.lista]:valor.condicion ? valor.condicion : {}})
         if (listado.Respuesta==='Ok'){

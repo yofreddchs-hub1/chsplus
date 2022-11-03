@@ -159,7 +159,7 @@ class Carrusel extends React.Component {
               alt={step.title}
               loading="lazy"
               style={{
-                  height:'74vh',
+                  height: this.state.props.height ? this.state.props.height - this.state.props.height *0.06 : '74vh',
                   overflow: 'hidden',
                   objectFit: 'cover',
                   
@@ -197,14 +197,14 @@ class Carrusel extends React.Component {
   };
 
   render() {
-    const Config = Ver_Valores().config;
+    const Config = this.state.props.Config ? this.state.props.Config : Ver_Valores().config;
     return (
     <Box sx={{    }}>
         <Grid container spacing={2}>
             <Grid item xs={12}>
                 <Box sx={{
                     width: '99%',
-                    height: '80vh',
+                    height: this.state.props.height ? this.state.props.height : '80vh',
                     margin: '20px auto',
                     border: '3px solid rgba(122, 188, 50, 0.911)',
                     display: 'flex',

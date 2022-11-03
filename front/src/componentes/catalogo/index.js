@@ -12,6 +12,7 @@ import Skeleton from '@mui/material/Skeleton';
 import { conexiones } from '../../procesos/servicios';
 import Dialogo from '../herramientas/dialogo';
 import Tarjeta from './tarjeta';
+import Item from './item';
 
 export default function Catalogo(props) {
   const [itemData, setItemData] = React.useState([]);
@@ -69,10 +70,10 @@ export default function Catalogo(props) {
 }
 
   return (
-    <Paper elevation={3} sx={{ bgcolor:'#000000', color:'#ffffff', overflowX:'hide'}}>
+    <Paper elevation={3} sx={{ bgcolor:'#0000ff', color:'#ffffff', overflowX:'hide', marginBottom:1.5, padding:0.5}}>
       <Grid container spacing={2}>
           <Grid item xs={12}>
-              <Box sx={{ width: '99%',height: '60vh'}}>
+              <Box sx={{ width: '100%',overflowY:'auto'}}>
                 <ImageList  cols={3}   
                             
                 >
@@ -80,7 +81,7 @@ export default function Catalogo(props) {
                     <ListSubheader component="div">{props.titulo ? props.titulo : 'Catalogo'}</ListSubheader>
                   </ImageListItem>
                   {itemData.length===0
-                    ? [0,1,2,3,4,5,6].map(item =>
+                    ? [0,1,2,3,4,5,6,7,8].map(item =>
                       <ImageListItem key={item}>
                         <Skeleton variant="rectangular"  height={141} />
                         <ImageListItemBar
@@ -92,29 +93,31 @@ export default function Catalogo(props) {
                       </ImageListItem>
                       )
                   
-                    : itemData.map((item) => (
-                      <ImageListItem key={item.img}>
-                        <img
-                          src={`${item.img}?w=121&h=121&fit=crop&auto=format`}
-                          srcSet={`${item.img}?w=121&h=121&fit=crop&auto=format&dpr=2 2x`}
-                          alt={item.title}
-                          loading="lazy"
+                    : itemData.map((item, i) => (
+                      <Item key={item.img+'-'+i} {...item}/>
+                      // <ImageListItem key={item.img+'-'+i}>
+                      //   <img
+                      //     src={`${item.img}?w=121&h=121&fit=crop&auto=format`}
+                      //     srcSet={`${item.img}?w=121&h=121&fit=crop&auto=format&dpr=2 2x`}
+                      //     alt={item.title}
+                      //     style={{height:200}}
+                      //     loading="lazy"
                           
-                        />
-                        <ImageListItemBar
-                          title={String(item.title).toUpperCase()}
-                          subtitle={<span>{item.author}</span>}
-                          actionIcon={
-                            <IconButton
-                              sx={{ color: 'rgba(255, 255, 255, 0.54)' }}
-                              aria-label={`Informacion sobre ${item.title}`}
-                              onClick={()=> Abrir(item)}
-                            >
-                              <InfoIcon />
-                            </IconButton>
-                          }
-                        />
-                      </ImageListItem>
+                      //   />
+                      //   <ImageListItemBar
+                      //     title={String(item.title).toUpperCase()}
+                      //     subtitle={<span>{item.author}</span>}
+                      //     actionIcon={
+                      //       <IconButton
+                      //         sx={{ color: 'rgba(255, 255, 255, 0.54)' }}
+                      //         aria-label={`Informacion sobre ${item.title}`}
+                      //         onClick={()=> Abrir(item)}
+                      //       >
+                      //         <InfoIcon />
+                      //       </IconButton>
+                      //     }
+                      //   />
+                      // </ImageListItem>
                   ))}
                 </ImageList>
               </Box>

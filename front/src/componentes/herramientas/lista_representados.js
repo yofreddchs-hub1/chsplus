@@ -12,32 +12,33 @@ import TextField from '@mui/material/TextField';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { green } from '@mui/material/colors';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = {//makeStyles((theme) => ({
   root: {
     width: '100%',
     // maxWidth: 360,
-    backgroundColor: theme.palette.background.paper,
+    // backgroundColor: theme.palette.background.paper,
     // backgroundColor: '#000000',
     border:1,
   },
   nested: {
-    paddingLeft: theme.spacing(4),
+    paddingLeft: 4//theme.spacing(4),
   },
   agregar:{
     display: 'flex',
     flexDirection:'row',
     marginBottom: 10,
   }
-}));
+}
+// }));
 
 export default function Lista_Representantes(props) {
-  const classes = useStyles();
+  const classes = useStyles//();
   // const [open, setOpen] = React.useState(true);
 
   // const handleClick = () => {
   //   setOpen(!open);
   // };
-  
+  const {Config} = props;
   const {valor, cambio} = props;
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const [value, setValue] = React.useState(valor.value);
@@ -77,7 +78,7 @@ export default function Lista_Representantes(props) {
         <ListSubheader component="div" id="nested-list-subheader">
           {valor.label}
           {valor.activar ? 
-            <div className={classes.agregar}>
+            <div style={classes.agregar}>
                 <Autocomplete
                   disabled={!valor.activar}
                   options={valor.lista}
@@ -92,7 +93,7 @@ export default function Lista_Representantes(props) {
                   }}
                 />
                 <IconButton title='Agregar sub-titulo'
-                          className={classes.margin}
+                          style={classes.margin}
                           onClick={agregarsubClik}
                           key={'buton-aceptar-'+valor.name}
                           disabled={!valor.activar}
@@ -103,7 +104,7 @@ export default function Lista_Representantes(props) {
           }
         </ListSubheader>
       }
-      className={classes.root}
+      style={classes.root}
     >
       {value ? value.map((val,i)=>
         <ListItem button
@@ -112,7 +113,7 @@ export default function Lista_Representantes(props) {
             onClick={(event) => handleListItemClick(event, i)}
         >
 
-          <ListItemText key={'text-'+val.cedula} primary={`${val.cedula} ${val.nombres} ${val.apellidos}`} />
+          <ListItemText key={'text-'+val.cedula} primary={`${val.cedula} ${val.nombres} ${val.apellidos}`} sx={{...Config ? {color:Config.Estilos.Input_label.color} :{}}}/>
           <ListItemSecondaryAction key={'boton-'+val.cedula}>
             {valor.activar ? 
               <IconButton disabled={!valor.activar} key={'eliminar-'+val.cedula} edge="end" aria-label="delete" onClick={() => Eliminar(val)}>

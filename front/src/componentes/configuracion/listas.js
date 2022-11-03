@@ -65,24 +65,42 @@ export default class Listas extends Component {
 
   async componentDidMount(){
       
-    const Config = Ver_Valores().config;
-    
-    this.Refrescar(Config)
-    // let nuevos = await genera_fromulario({valores:{}, campos: Form_todos('Form_Listas') })
-
-    // nuevos.titulos.select_a.lista=Object.keys(Config.Listas).filter(f=>['lista_tipo'].indexOf(f)===-1).map((v,i)=>{
-    //     return {_id:i, titulo:v}
-    // })
-    // nuevos.datos.select_a=nuevos.titulos.select_a.lista[0]
-    // nuevos.titulos.select_a.value=nuevos.titulos.select_a.lista[0]
-    // nuevos.titulos.select_a.onChange = this.Cambio;
-    
-    // const datos= Config.Listas[nuevos.datos.select_a.titulo];
-
-    // this.setState({formulario:nuevos, datos, seleccion:nuevos.datos.select_a.titulo})
-    
+    let formulario_lista= await genera_fromulario({valores:{}, campos: Form_todos(`Form_api`) })
+    const litt= await conexiones.VerApis()
+    let lista=[]
+    if (litt.Respuesta==='Ok'){
+      lista= litt.lista.filter(f=> f!=='Apis').map( (v, i)=>{
+        return {_id:i, titulo:v, nombre:v, api:v}
+      })
+    }else{
+      const listado = await conexiones.Leer_C(['Api'],{'Api':{}})
+      lista= listado.datos.Api.map( v=>{
+        return {...v.valores ? {_id:v._id, ...v.valores} : v}
+      })
+    }
+    const seleccionado = lista[0]
+    formulario_lista.titulos.apis.value= seleccionado
+    formulario_lista.titulos.apis.onChange= this.Seleccion
+    formulario_lista.titulos.apis.lista= lista;
+    this.setState({formulario_lista, lista_apis:lista})
+    this.SeleccionA(seleccionado)
   }
 
+  Seleccion = (data)=>{
+    let seleccionado = data.resultados.apis;
+    this.SeleccionA(seleccionado)
+  }
+  SeleccionA = async(seleccionado) =>{
+    let Config = Ver_Valores().config;
+    let archivo=`data/${seleccionado.api}.js`;
+    const respuesta = await conexiones.Leer_data(archivo);
+    if (respuesta.Respuesta==='Ok'){
+      Config=JSON.parse(respuesta.datos);
+      this.setState({Config, seleccionado})
+    }
+    
+    this.Refrescar(Config)
+  }
   static getDerivedStateFromProps(props, state) {
 
     if (props !== state.props) {
@@ -97,18 +115,18 @@ export default class Listas extends Component {
   }
 
   Cambio = (datos)=>{
-    const Config = Ver_Valores().config;
+    // const Config = Ver_Valores().config;
+    const {Config}= this.state;
     const nuevo=Config.Listas[datos.resultados[datos.name].titulo];
     this.setState({datos:nuevo, seleccion:datos.resultados[datos.name].titulo})
   }
 
   Guardar = async(datos)=>{
-    let Config = Ver_Valores().config;
-    const{seleccion}=this.state;
+    //let Config = this.state.Config;//Ver_Valores().config;
+    let {seleccion, Config, seleccionado}=this.state;
     const pos= Config.Listas[seleccion].findIndex(f=>f._id===datos._id);
     
     let permitir = Object.keys(datos).filter(f=> f.indexOf('Error-')===-1)
-    console.log(permitir)
     let nuevod={}
     permitir.map(value=>{
       nuevod[value]=datos[value]
@@ -133,8 +151,8 @@ export default class Listas extends Component {
     } 
     let nuevo=Config;
     nuevo=JSON.stringify(nuevo, null, 4)
-    const resul= await conexiones.Guardar_data(`data/datos${'.js'}`,nuevo)
-    this.Refrescar(Config, this.state.seleccion)
+    const resul= await conexiones.Guardar_data(`data/${seleccionado.api}${'.js'}`,nuevo)
+    this.Refrescar(Config, seleccion)
     this.setState({dialogo:{...this.state.dialogo, open: false}})
     return resul
 
@@ -142,14 +160,14 @@ export default class Listas extends Component {
   
   Eliminar = async(datos)=>{
     
-    let Config = Ver_Valores().config;
-    const{seleccion}=this.state;
+    // let Config = Ver_Valores().config;
+    let {seleccion, Config, seleccionado}=this.state;
     Config.Listas[seleccion]= Config.Listas[seleccion].filter(f=>f._id!==datos._id).map((v,i)=>{
         return {...v, _id:i}
     });
     let nuevo=Config;
     nuevo=JSON.stringify(nuevo, null, 4)
-    const resul= await conexiones.Guardar_data(`data/datos${'.js'}`,nuevo)
+    const resul= await conexiones.Guardar_data(`data/${seleccionado.api}${'.js'}`,nuevo)
     this.Refrescar(Config, this.state.seleccion)
     this.setState({dialogo:{...this.state.dialogo, open: false}})
     return resul
@@ -205,11 +223,12 @@ export default class Listas extends Component {
 
   Crear = async(valores) =>{
     const nueva= `lista_${valores.nombre}`;
-    let Config = Ver_Valores().config;
+    // let Config = Ver_Valores().config;
+    let {Config, seleccionado} = this.state;
     Config.Listas={...Config.Listas, [nueva]:[]}
     let nuevo=Config;
     nuevo=JSON.stringify(nuevo, null, 4)
-    await conexiones.Guardar_data(`data/datos${'.js'}`,nuevo)
+    await conexiones.Guardar_data(`data/${seleccionado.api}${'.js'}`,nuevo)
     this.Refrescar(Config, this.state.seleccion)
     this.setState({dialogo:{...this.state.dialogo, open: false}})
   }
@@ -252,8 +271,8 @@ export default class Listas extends Component {
 
   Eliminar_lista_e = async(datos)=>{
     console.log('Elimniar',datos)
-    let Config = Ver_Valores().config;
-    
+    //let Config = Ver_Valores().config;
+    let {Config, seleccionado} = this.state;
     let lista= {};
     Object.keys(Config.Listas).filter(f=>f!==datos.select_a.titulo).map(v=>{
       lista={...lista, [v]:Config.Listas[v]}
@@ -263,7 +282,7 @@ export default class Listas extends Component {
     
     let nuevo=Config;
     nuevo=JSON.stringify(nuevo, null, 4)
-    const resul= await conexiones.Guardar_data(`data/datos${'.js'}`,nuevo)
+    const resul= await conexiones.Guardar_data(`data/${seleccionado.api}${'.js'}`,nuevo)
     this.Refrescar(Config)
     this.setState({dialogo:{...this.state.dialogo, open: false}})
     return resul
@@ -302,22 +321,30 @@ export default class Listas extends Component {
   }
 
   Copia = async(valores)=>{
-    let Config = Ver_Valores().config;
-    Config[valores.apis.titulo].Listas = Config[valores.apis.titulo].Listas ? Config[valores.apis.titulo].Listas : {};
-    Config[valores.apis.titulo].Listas[this.state.seleccion]=this.state.datos;
-    console.log(valores, Config[valores.apis.titulo], Config[valores.apis.titulo].Listas, this.state.datos, this.state.seleccion)
-    let nuevoc=Config;
+    // let Config = Ver_Valores().config;
+    const {Config} = this.state;
+    let Config_nuevo= Ver_Valores().config;
+    let archivo=`data/${valores.apis.titulo}.js`;
+    const respuesta = await conexiones.Leer_data(archivo);
+    if (respuesta.Respuesta==='Ok'){
+      Config_nuevo=JSON.parse(respuesta.datos);
+    }
+    Config_nuevo.Listas = Config_nuevo.Listas ? Config_nuevo.Listas : {};
+    Config_nuevo.Listas[this.state.seleccion]=this.state.datos;
+    // console.log(valores, Config[valores.apis.titulo], Config[valores.apis.titulo].Listas, this.state.datos, this.state.seleccion)
+    let nuevoc=Config_nuevo;
     nuevoc=JSON.stringify(nuevoc, null, 4)
-    await conexiones.Guardar_data(`data/datos${'.js'}`,nuevoc)
+    await conexiones.Guardar_data(`data/${valores.apis.titulo}${'.js'}`,nuevoc);
+    this.setState({dialogo:{...this.state.dialogo,open:false}})
     return
   }
   Copiar = async()=>{
     const Config = Ver_Valores().config;
     let formularios = await genera_fromulario({valores:{}, campos: Form_todos(`Form_api`) }, 2)
-    let listaA= Object.keys(Config).filter(f=> f.indexOf('Api_')!==-1).map((val,i)=>{
-      return {_id:i, titulo:val, api:val}
-    })
-    formularios.titulos.apis.lista=listaA
+    // let listaA= Object.keys(Config).filter(f=> f.indexOf('Api_')!==-1).map((val,i)=>{
+    //   return {_id:i, titulo:val, api:val}
+    // })
+    formularios.titulos.apis.lista=this.state.lista_apis;
     // formularios.titulos.apis.onChange= this.SeleccionA
     const pguardar=await Permiso('guardar');
     const formulario ={
@@ -349,7 +376,7 @@ export default class Listas extends Component {
   }
 
   render(){
-    const {Config, formulario, datos, dialogo}=this.state;
+    const {Config, formulario, datos, dialogo, formulario_lista}=this.state;
     
     return (
       <Box sx={{ flexGrow: 1, padding:0.2 }}>
@@ -364,8 +391,8 @@ export default class Listas extends Component {
                 datos={datos}
                 Accion={this.Abrir}
           
-                acciones={
-                    <Grid container spacing={0.3} justifyContent="center" alignItems="center">
+                acciones1={
+                    <Grid container spacing={0.3} justifyContent="center" alignItems="center" sx={{marginTop:-5}}>
                         <Grid item xs={8} md={8} style={{ height:80}}>
                             <Formulario {...formulario}/>
                         </Grid>
@@ -385,7 +412,7 @@ export default class Listas extends Component {
                         </Grid>
                     </Grid>
                 }
-                acciones1={<div>por aqui</div>}
+                acciones={<Formulario {...formulario_lista}/>}
           />
         </Item>  
         <Dialogo  {...dialogo} config={Config}/>

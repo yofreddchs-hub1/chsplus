@@ -99,7 +99,7 @@ const StyledTab = styled((props) => <Tab disableRipple {...props} />)(
 
 export default function UnstyledTabsCustomized(props) {
   const theme = useTheme();
-  const {Bloques }=props;
+  const {Bloques, Config }=props;
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -114,7 +114,7 @@ export default function UnstyledTabsCustomized(props) {
   //   setValue(0);
   // }
   return (
-    <Container fixed disableGutters style={{width:'100%'}}>
+    <Container fixed disableGutters  maxWidth="xl">
       <Grid container spacing={0}  >
         <Grid item xs={12}>
           <Box sx={{width: '100%',}}>
@@ -129,7 +129,8 @@ export default function UnstyledTabsCustomized(props) {
                   },
                   backgroundColor: blue[500],
                   borderRadius: '8px',
-                  width:'100%'
+                  width:'100%',
+                  ...Config ? Config.Estilos.barra_menu : {}
                 }}
               >
                 {Bloques 
@@ -155,7 +156,7 @@ export default function UnstyledTabsCustomized(props) {
                 Object.keys(Bloques).map((valor,i)=>
                   value===i  && (
                     
-                        <Paper key={i+'-'+valor} elevation={3} sx={{  marginTop: 0, height:'82vh', bgcolor:'#000000', color:'#ffffff', overflowX:'auto'}}>
+                        <Paper key={i+'-'+valor} elevation={3} sx={{  marginTop: 0, height:'100%', bgcolor:'#000000', color:'#ffffff', overflowX:'auto', ... Config ? Config.Estilos.Dialogo_cuerpo :{}}}>
                             {Bloques[valor]}
                         </Paper>
                     

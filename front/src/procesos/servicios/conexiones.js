@@ -22,6 +22,7 @@ export const conexiones = {
   Guardar_data,
   Eliminar_data,
   DataBase,
+  VerApis,
   Verificar,
   Guardar_excel,
   ValorCambio,
@@ -29,6 +30,11 @@ export const conexiones = {
   Solvencias,
   Resumen,
   Enviar_pago,
+  //SistemaCHS
+  Guardar_produccion,
+  Ingresar_material,
+  Ingresar_empaque,
+  Ingreso_Egreso,
   //unefa
   MisDatos,
   LeerHorario,
@@ -98,6 +104,15 @@ async function DataBase(){
                           });
   return resultados
 }
+//Ver bases de datos del sistema
+async function VerApis(){
+  const resultados= await Enviar({
+                            datos:{User},
+                            http_destino:'/api/verapis',
+                            method:'POST',
+                          });
+  return resultados
+}
 //Pide datos al servidor
 //Necesario tablas=[tabla1,tabla2....]
 async function Leer(tablas, mensaje='Solicitando datos...'){
@@ -125,13 +140,14 @@ async function Leer_C(tablas, condicion, timeout=50000,mensaje='Solicitando dato
 async function Guardar(dato, tabla, user=undefined, mensaje='Guardando datos...', acciones=null){
   dato.actualizado=user ? user : User ? User.username : 'Sin usuario';
   let files=undefined;
-  let imagenes= ['foto','avatar','image-cedula', 'video', 'logo', 'Logo'];
+  let imagenes= ['foto','avatar','image-cedula', 'video', 'logo', 'Logo', 'img', 'portada'];
   if (dato.files && Object.keys(dato.files).length!==0){
     files=dato.files;
   }else if (dato.file){
     files={'file_0':dato.file[0]};
     // dato.file=null;
   } else if (dato.multiples_valores){
+    console.log('Por aquiiiiiiii', dato.valores)
     if (dato.valores._id) dato['_id']=dato.valores._id
     Object.keys(dato.valores).map(val=>{
       const nombre=val.split('_url')[0];
@@ -156,6 +172,7 @@ async function Guardar(dato, tabla, user=undefined, mensaje='Guardando datos...'
       return val
     })
   }
+  console.log(files)
   const resultados= await Enviar({
                             datos:{User: user ? user : User , Api, datos:JSON.stringify(dato), tabla},
                             http_destino:'/api/setall',
@@ -261,6 +278,52 @@ async function Guardar_Pago(dato, mensaje='Guardando datos...'){
   const resultados= await Enviar({
                             datos:{User, datos:JSON.stringify(dato)},
                             http_destino:'/api/procesarpago',
+                            method:'POST',
+                            destino:'archivos/imagenes',
+                            mensaje_esperar:mensaje,
+                          });
+  return resultados
+}
+//SistemasCHS
+//Guardar los la produccion del dia
+async function Guardar_produccion(datos, mensaje='Guardando datos...'){
+  
+  const resultados= await Enviar({
+                            datos:{User, Api, datos:JSON.stringify(datos)},
+                            http_destino:'/api/guardarproduccion',
+                            method:'POST',
+                            destino:'archivos/imagenes',
+                            mensaje_esperar:mensaje,
+                          });
+  return resultados
+}
+async function Ingresar_material(datos, mensaje='Guardando datos...'){
+  
+  const resultados= await Enviar({
+                            datos:{User, Api, datos:JSON.stringify(datos)},
+                            http_destino:'/api/ingresarmaterial',
+                            method:'POST',
+                            destino:'archivos/imagenes',
+                            mensaje_esperar:mensaje,
+                          });
+  return resultados
+}
+async function Ingresar_empaque(datos, mensaje='Guardando datos...'){
+  
+  const resultados= await Enviar({
+                            datos:{User, Api, datos:JSON.stringify(datos)},
+                            http_destino:'/api/ingresarempaque',
+                            method:'POST',
+                            destino:'archivos/imagenes',
+                            mensaje_esperar:mensaje,
+                          });
+  return resultados
+}
+async function Ingreso_Egreso(datos, mensaje='Guardando datos...'){
+  
+  const resultados= await Enviar({
+                            datos:{User, Api, datos:JSON.stringify(datos)},
+                            http_destino:'/api/ingresoegreso',
                             method:'POST',
                             destino:'archivos/imagenes',
                             mensaje_esperar:mensaje,

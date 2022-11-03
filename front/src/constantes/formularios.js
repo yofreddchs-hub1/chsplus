@@ -1,7 +1,7 @@
 import { Ver_Valores } from ".";
 
-export const Form_todos = (key)=>{
-    const Form= Ver_Valores().config.Formularios[key];
+export const Form_todos = (key, config=null)=>{
+    const Form= config===null ? Ver_Valores().config.Formularios[key.trim()] : config.Formularios[key.trim()];
     return Form
             ? Form
             : {columna:1,
@@ -11,8 +11,8 @@ export const Form_todos = (key)=>{
               }
 };
 
-export const Titulos_todos = (key)=>{
-    let Form= Ver_Valores().config.Titulos[key];
+export const Titulos_todos = (key, config=null)=>{
+    let Form= config===null ? Ver_Valores().config.Titulos[key.trim()] : config.Titulos[key.trim()];
     Form= Form
             ? Form
             : [ 

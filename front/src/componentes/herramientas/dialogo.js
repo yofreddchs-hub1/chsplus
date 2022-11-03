@@ -11,6 +11,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import Typography from '@mui/material/Typography';
 
 import logo from '../../imagenes/logo.png';
+import { Ver_Valores } from '../../constantes';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -44,7 +45,7 @@ const BootstrapDialogTitle = (props) => {
             position: 'absolute',
             right: 8,
             top: 8,
-            color: (theme) => theme.palette.grey[500],
+            color: (theme) => theme.palette.grey[200],
           }}
         >
           <CloseIcon />
@@ -61,7 +62,9 @@ BootstrapDialogTitle.propTypes = {
 
 export default function Dialogo(props) {
   // const [open, setOpen] = React.useState(false);
-  const {open, Cerrar, Titulo, Cuerpo, Botones, tam,fullScreen, config}= props;
+  let {open, Cerrar, Titulo, Cuerpo, Botones, tam,fullScreen, config}= props;
+  
+  config = config.Estilos ? config : Ver_Valores().config;
   // const handleClickOpen = () => {
   //   // setOpen(true);
   // };

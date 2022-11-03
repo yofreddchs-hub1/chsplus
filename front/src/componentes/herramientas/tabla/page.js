@@ -165,7 +165,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function Tabla(props) {
   
   const {titulos, datos, Config, Titulo, acciones, acciones1, actualizando, progreso, Accion, paginacion, Cambio} = props;
-  
   const alto= props.sinpaginacion ? window.innerHeight* 0.77 : window.innerHeight* 0.73;
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -198,7 +197,7 @@ export default function Tabla(props) {
   }
   
   return (
-    <Paper sx={{ width: '100%',  }}>
+    <Paper sx={{ width: '100%', height:'100%' }}>
       <AppBar position="static" style={{padding:10, ...Config.Estilos.Tabla_cabezera ? Config.Estilos.Tabla_cabezera : {} }}>
         <Grid container spacing={0.5} justifyContent="center" alignItems="center">
           <Grid item xs={3}>
@@ -250,7 +249,14 @@ export default function Tabla(props) {
           </Grid>
         </Grid>
       </AppBar>
-      <TableContainer sx={{ height: alto}}>
+      <TableContainer sx={{ height: paginacion && paginacion !== undefined && paginacion.paginas.length > 1 ? '80%' : actualizando ? '87.5%' : '88%', overflow: 'auto auto',
+            '&::-webkit-scrollbar': { height: 10, width:10, WebkitAppearance: 'none' },
+            '&::-webkit-scrollbar-thumb': {
+                borderRadius: 8,
+                border: '2px solid',
+                // borderColor: theme.palette.mode === 'dark' ? '' : '#E7EBF0',
+                backgroundColor: 'rgba(0 0 0 / 0.5)',
+            },}}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>       
             <TableRow>
@@ -353,13 +359,26 @@ export default function Tabla(props) {
       {props.sinpaginacion
         ? null 
         : paginacion && paginacion !== undefined && paginacion.paginas.length > 1 ?
-          <div style={{paddingTop:5, paddingBottom:5,  backgroundColor:'#DBDBDB'}}>
-            <div style={{display:'inline-flex', textalign:'center' }}>
-              <Pagination count={paginacion.paginas.length}
-                           shape="rounded"
-                          onChange={Cambio }
-              />
-            </div>
+          <div style={{padding:5, backgroundColor:'#000000', ...Config.Estilos.Tabla_titulos ? Config.Estilos.Tabla_titulos : {}}}>
+            <Grid container spacing={0.5} justifyContent="center" alignItems="center">
+              <Grid item xs={3}></Grid>
+              <Grid item xs={6}>
+                <div style={{textAlign:'center', display:'inline-flex'}}>
+                  <Pagination count={paginacion.paginas.length}
+                              shape="rounded"
+                              onChange={Cambio }
+                  />
+                </div>
+              </Grid>
+              <Grid item xs={3}>
+                {/* <Typography variant="subtitle1" gutterBottom component="div" align={'right'} 
+                          style={{...Config.Estilos.Tabla_titulo ? Config.Estilos.Tabla_titulo : {}}}
+                >
+                  {paginacion.total}
+                </Typography> */}
+              </Grid>
+            </Grid>
+            
           </div>:
           null
         

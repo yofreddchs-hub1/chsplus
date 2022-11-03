@@ -16,7 +16,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Collapse from '@mui/material/Collapse';
 import Icon from '@mui/material/Icon';
 import { Permiso} from '../../procesos/servicios';
-
+import { Apis_menu } from '../../apis';
 // const data = [
 //   { icon: <People />, label: 'Authentication' },
 //   { icon: <Dns />, label: 'Database' },
@@ -54,8 +54,16 @@ export default function CustomizedList(props) {
         for (var i=0; i<Config.Menu.length;i++){
             let f=Config.Menu[i];
             const permiso=props.Api ? await Permiso(f.value, props.Api) : await Permiso(f.value);
-            // f.libre = f.libre===true || f.libre ==='true';
-            if (f.libre===true || f.libre ==='true' || permiso){
+            f.libre = f.libre===true || f.libre ==='true' ? 'true' : 'false';
+            f.app_chs = f.app_chs===true || f.app_chs ==='true' ? 'true' : 'false';
+            if (f.app_chs ==='true'){
+              Object.keys(Apis_menu).map(v=>{
+                const pos = f.childen.findIndex(f=> f.value===v.toLowerCase());
+                if (pos===-1)
+                  f.childen=[...f.childen,{value:v, primary:v, icon:'apps', link:`/${v}`}]
+              })
+            }
+            if (f.libre ==='true' || permiso){
                 nuevo=[...nuevo,f];
                 // if (Listado===null){
                 //     console.log('_______________')
@@ -85,8 +93,10 @@ export default function CustomizedList(props) {
     let nopen={...open,[index.value]:!open[index.value]};
     setOpen(nopen);
     setSelectedIndex(index.value);
+    if (index.link){
+      window.location.pathname=index.link;
+    }
     if (props.Seleccion_pantalla){
-      
         props.Seleccion_pantalla(index, padre)
     }
   };
@@ -176,7 +186,17 @@ export default function CustomizedList(props) {
           },
         })}
       >
-        <Paper elevation={0} sx={{ width:'100%', height:'100%',   overflowX:'hidden', overflowY:'auto' }}>
+        <Paper elevation={0} 
+                sx={(theme)=>({ width:'100%', height:'100%',   overflowX:'hidden', overflowY:'auto', 
+                        '&::-webkit-scrollbar': { height: 10, width:10, WebkitAppearance: 'none' },
+                        '&::-webkit-scrollbar-thumb': {
+                            borderRadius: 8,
+                            border: '2px solid',
+                            borderColor: theme.palette.mode === 'dark' ? '' : '#E7EBF0',
+                            backgroundColor: 'rgba(0 0 0 / 0.5)',
+                        },    
+                    })}
+        >
     
             {render(Listado)}
           

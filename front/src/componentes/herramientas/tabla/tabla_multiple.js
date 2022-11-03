@@ -62,7 +62,7 @@ function Tabla_multiple (props) {
     
     const {Form_origen,Table,Titulo_dialogo,Titulo_tabla,Titulos_tabla, Agregar_mas, Columnas, 
             Acciones1, Seleccion, Nuevo, cargaporparte,Config, multiples_valores,
-            Condiciones, Acciones, sinpaginacion
+            Condiciones, Acciones, sinpaginacion, Eliminar_props
           }=props
     const estilos=Ver_Valores().config.Estilos.Usuarios ? Ver_Valores().config.Estilos.Usuarios : {} //props.config.Estilos.Usuarios ? props.config.Estilos.Usurios : {}
     const classes= Estilos(estilos);
@@ -90,6 +90,7 @@ function Tabla_multiple (props) {
         // cambiarState({esperar:true, mensaje:'Guardando...'})
         let nuevos;
         if (multiples_valores){
+            // console.log(valores)
             campos = await crear_campos(campos, Form_origen)
             if (Condiciones){
                 valores = await Condiciones(state.table, {campos, valores})    
@@ -101,7 +102,7 @@ function Tabla_multiple (props) {
                 nuevos=valores
             }
         }else{
-            const datos= await Condiciones(state.table, valores)
+            const datos= await Condiciones(state.table, valores);
             nuevos= await conexiones.Guardar(datos,state.table);
         }
         
@@ -166,6 +167,10 @@ function Tabla_multiple (props) {
         //                 : await genera_fromulario({valores:{}, campos },Columnas)
         
         // Verfificar con clama el caso anterio verifica los campos guardados para mostrar esos campos ahora solo se muestra lo indicado en Form_origen
+        console.log(valores);
+        if (valores.valores===undefined){
+            valores={_id:valores._id, valores};
+        }
         const nuevos = valores._id!==undefined
                                     ? await genera_fromulario({...valores, campos: Form_origen })
                                     : await genera_fromulario({valores:{},  campos: Form_origen})
@@ -212,7 +217,8 @@ function Tabla_multiple (props) {
         })
     }
     
-    const color =  props.Config.Estilos.Input_icono ? props.Config.Estilos.Input_icono : {};
+    const color =  props.Config.Estilos.Input_label ? props.Config.Estilos.Input_label : {};
+    
     return (
         <div className={classes.root}>
             <Tabla  Titulo={Titulo_tabla}

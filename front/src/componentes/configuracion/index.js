@@ -12,6 +12,7 @@ import Cuerpo from '../herramientas/cuerpo';
 import {conexiones, genera_fromulario}from '../../procesos/servicios'
 import {Form_todos} from '../../constantes/formularios';
 import Cargando from '../esperar/cargar';
+import { Ver_Valores } from '../../constantes';
 
 // import Tabla_multiple from '../tabla/tabla_multiple';
 
@@ -27,10 +28,10 @@ export default class Configuracion extends Component {
       }
   }
 
-  Editores = (campo)=>{
-    const {Config} = this.state;
+  Editores = (seleccionado, Config, campo)=>{
+    // const {Config} = this.state;
     let formulario={
-        datos:{archivo:'datos', data:Config, path:'data/',tipo:'.json'},
+        datos:{archivo: seleccionado.api, data:Config, path:'data/',tipo:'.json'},
         titulos:{
           data:{
             label:`${campo}`,
@@ -55,28 +56,35 @@ export default class Configuracion extends Component {
             {
               name:'guardar', label:'Guardar', title:'Guardar cambios',
               variant:"contained", color:"primary",
-              sx:{...Config.Estilos.Botones ? Config.Estilos.Botones.Aceptar : {}},
+              sx:{...Config.Estilos && Config.Estilos.Botones ? Config.Estilos.Botones.Aceptar : Ver_Valores().config.Estilos.Botones.Aceptar},
               icono:<CheckIcon />, mesperar:'Guardando...',
               onClick:(datos)=>this.Guardar_parte(datos, campo)
             }
         ]
     };
-    return <Formulario {...formulario} config={Config}/>
+    return <Formulario {...formulario}/>
     
 
   }
 
-  SeleccionA = (valores)=>{
-    console.log(valores)
-   let Bloques = this.Filtrar(valores.resultados.apis);
-   this.setState({Bloques})
+  SeleccionA = async (valores)=>{
+    let Bloques = await this.Filtrar(valores.resultados.apis);
+    this.setState({Bloques})
 
   }
 
-  Filtrar = (seleccionado) =>{
-    const {Config} = this.state;
-    if (seleccionado.master){
+  Filtrar = async (seleccionado) =>{
+    let {Config} = this.state;
+    console.log(seleccionado)
+    let archivo=`data/${seleccionado.api}.js`;
+    const respuesta = await conexiones.Leer_data(archivo);
+    if (respuesta.Respuesta==='Ok'){
+      Config=JSON.parse(respuesta.datos);
+      this.setState({Config, seleccionado})
+    }
+    //if (seleccionado.master){
       console.log('Es master')
+      
       let formulario={
           datos:{archivo:'datos', data:Config, path:'data/',tipo:'.json'},
           titulos:{
@@ -96,7 +104,7 @@ export default class Configuracion extends Component {
               {
                 name:'guardar', label:'Guardar', title:'Guardar cambios',
                 variant:"contained", color:"primary",
-                sx:{...Config.Estilos.Botones ? Config.Estilos.Botones.Aceptar : {}},
+                sx:{...Config.Estilos && Config.Estilos.Botones ? Config.Estilos.Botones.Aceptar : Ver_Valores().config.Estilos.Botones.Aceptar},
                 icono:<CheckIcon />, mesperar:'Guardando...',
                 onClick:this.Guardar
               },
@@ -117,37 +125,51 @@ export default class Configuracion extends Component {
           ]
       };
       let Bloques={
-          Datos:<Formulario {...formulario} config={Config}/>,
+          Datos:<Formulario {...formulario} />,
       }
       Object.keys(Config).map(m=>{
-          Bloques[m]=this.Editores(m);
+          Bloques[m]=this.Editores(seleccionado, Config, m);
           return m
       })
 
       return Bloques
-    }else{
-      let Bloques={
-      }
-      Object.keys(Config).map(m=>{
+    //}else{
+    //   let Bloques={
+    //   }
+    //   Object.keys(Config).map(m=>{
         
-        if (m.indexOf(seleccionado.api)!==-1){
-          Bloques[m]=this.Editores(m);
-        }
-        console.log(m)
-        return m
-      })
-      return Bloques 
-    }
+    //     if (m.indexOf(seleccionado.api)!==-1){
+    //       Bloques[m]=this.Editores(m);
+    //     }
+    //     // console.log(m)
+    //     return m
+    //   })
+    //   return Bloques 
+    // }
   }
 
   async componentDidMount(){
     let formulario_lista= await genera_fromulario({valores:{}, campos: Form_todos(`Form_api`) }, 2)
+    const litt= await conexiones.VerApis()
+    console.log(litt)
+    let lista=[]
+    if (litt.Respuesta==='Ok'){
+      lista= litt.lista.map( (v, i)=>{
+        return {_id:i, titulo:v, nombre:v, api:v}
+      })
+    }else{
+      const listado = await conexiones.Leer_C(['Api'],{'Api':{}})
+      lista= listado.datos.Api.map( v=>{
+        return {...v.valores ? {_id:v._id, ...v.valores} : v}
+      })
+    }
     
-    const seleccionado = formulario_lista.titulos.apis.lista[0]
+    const seleccionado = lista[0]
     formulario_lista.titulos.apis.value= seleccionado
     formulario_lista.titulos.apis.onChange= this.SeleccionA
+    formulario_lista.titulos.apis.lista= lista;
+    let Bloques= await this.Filtrar(seleccionado)
     
-    let Bloques= this.Filtrar(seleccionado)
     this.setState({Bloques, formulario_lista, cargando:false})
   }
 
@@ -250,9 +272,9 @@ export default class Configuracion extends Component {
   }
   //Guardar los datos de la configuracion
   Guardar=async(datos)=>{
-    const {Config}=this.state;
+    const {Config, seleccionado}=this.state;
     if (datos.data===undefined){
-        let nuevo = {archivo:'datos', path:'data/',tipo:'.json'}
+        let nuevo = {archivo:seleccionado.api, path:'data/',tipo:'.json'}
         nuevo.data=Config;
         Object.keys(datos).map(val=>{
           if (['path','archivo','tipo', 'data'].indexOf(val)===-1 && val.indexOf('Error')===-1){
@@ -263,6 +285,7 @@ export default class Configuracion extends Component {
         nuevo.data=JSON.stringify(nuevo.data, null, 4)
         datos=nuevo
     }else if (typeof datos.data ==='object'){
+        datos.archivo=seleccionado.api;
         datos.data=JSON.stringify(datos.data, null, 4)
     }
     
@@ -273,10 +296,10 @@ export default class Configuracion extends Component {
     return (
       <div style={{width:'100%', position: "relative"}}>
         <div style={{width:'50vw'}}>
-          <Formulario {...formulario_lista} config={Config}/>
+          <Formulario {...formulario_lista} />
         </div>
         
-        <div style={{marginTop:-50}}/>
+        <div style={{marginTop:-20}}/>
         <Cuerpo Bloques={Bloques}/>
         <Cargando open={cargando}/>
       </div>

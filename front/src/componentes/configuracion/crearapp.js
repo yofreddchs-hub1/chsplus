@@ -67,10 +67,10 @@ export default class Crear_app extends Component {
     const {seleccionado} = this.state
     const item = `Api_${valores.archivo}`
     let codigo = JSON.parse(valores.codigo) 
-    Config[item]=codigo;
-    console.log(Config)
-    Config = JSON.stringify(Config, null, 4)
-    return await conexiones.Guardar_data(`${'data/'}${'datos'}${'.js'}`,Config)
+    // Config[item]=codigo;
+    // console.log(Config)
+    codigo = JSON.stringify(codigo, null, 4)
+    return await conexiones.Guardar_data(`${'data/'}${item}${'.js'}`,codigo)
 
     // return await conexiones.Guardar_data(`models/${valores.archivo}.js`,valores.codigo)
   }
@@ -102,11 +102,14 @@ export default class Crear_app extends Component {
         nuevo.Subtotales={}
         codigo = JSON.stringify(nuevo, null, 4)
     }else{
+        console.log('Por aqui')
         let nuevo = {...Config['Api_'+seleccionado.api]}
         nuevo.Titulo= campo.toUpperCase()
         nuevo.Logo="/api/imagen/logo.png";
+        nuevo.Estilos=Config.Estilos;
+        nuevo.TipoMenu='0';
         nuevo.Menu=[{value: "Inicio", primary: "Inicio", icon: "home", libre: "true"}];
-        nuevo.Menu_iconos= [{icon: "shoppingcart", title: "Carrito de Compra", value: "carrito"}];
+        nuevo.Menu_iconos= [];
         nuevo.Formularios={}
         nuevo.Listas={}
         nuevo.Titulos={}
@@ -168,7 +171,7 @@ export default class Crear_app extends Component {
     
     const seleccionado = formulario_lista.titulos.apis.lista[0]
     formulario_lista.titulos.apis.value= seleccionado
-    formulario_lista.titulos.apis.onChange= this.SeleccionA
+    // formulario_lista.titulos.apis.onChange= this.SeleccionA
 
     this.setState({formulario, formulario_lista, seleccionado, cargando:false})
   }
@@ -225,10 +228,8 @@ export default class Crear_app extends Component {
     const {formulario, formulario_lista, Config, cargando}=this.state;
     return (
       <div style={{width:'100%', position: "relative", height:'100%'}}>
-        <div style={{width:'50%'}}>
-            <Formulario {...formulario_lista} config={Config}/>
-        </div>
-        <div style={{marginTop:-50}}/>
+        
+        {/* <div style={{marginTop:-30}}/> */}
             <Formulario {...formulario} config={Config}/>
       </div>
     )

@@ -10,67 +10,67 @@
             "libre": true
         },
         {
-            "value": "Colegio",
-            "primary": "Colegio",
-            "icon": "supervisor_account",
+            "value": "Aplicaciones",
+            "primary": "Aplicaciones",
+            "icon": "apps",
+            "libre": true,
+            "app_chs": true,
+            "childen": []
+        },
+        {
+            "value": "Sistema",
+            "primary": "Sistema CHS",
+            "icon": "dataset",
             "libre": false,
             "childen": [
                 {
-                    "value": "Inscripcion",
-                    "primary": "Inscripción",
-                    "icon": "drive_file_rename_outline"
+                    "value": "Reportes",
+                    "primary": "Reportes",
+                    "icon": "content_paste_search"
                 },
                 {
-                    "value": "Pagar",
-                    "primary": "Pagar",
-                    "icon": "payments"
-                },
-                {
-                    "value": "Administrativo",
-                    "primary": "Administrativo",
-                    "icon": "drag_indicator",
+                    "value": "Ingresos",
+                    "primary": "Ingresos",
+                    "icon": "create_new_folder",
                     "childen": [
                         {
-                            "value": "Inscripciones",
-                            "primary": "Inscripciones",
-                            "icon": "drive_file_rename_outline"
+                            "value": "Ingreso Material",
+                            "primary": "Ingreso Material",
+                            "icon": "post_add"
                         },
                         {
-                            "value": "Aranceles",
-                            "primary": "Aranceles",
-                            "icon": "calculate"
-                        },
-                        {
-                            "value": "Representantes",
-                            "primary": "Representantes",
-                            "icon": "groups"
-                        },
-                        {
-                            "value": "Estudiantes",
-                            "primary": "Estudiantes",
-                            "icon": "group"
-                        },
-                        {
-                            "value": "Docentes",
-                            "primary": "Docentes",
-                            "icon": "diversity_3"
-                        },
-                        {
-                            "value": "Recibos",
-                            "primary": "Recibos",
-                            "icon": "text_snippet"
-                        },
-                        {
-                            "value": "Solvencias",
-                            "primary": "Solvencias",
-                            "icon": "fact_check"
+                            "value": "Ingresar Empaque",
+                            "primary": "Ingresar Empaque",
+                            "icon": "assignment_add"
                         }
                     ]
                 },
                 {
-                    "value": "Horario",
-                    "primary": "Horario",
-                    "icon": "calendar_month"
+                    "value": "Egresos",
+                    "primary": "Egresos",
+                    "icon": "folder_delete",
+                    "childen": [
+                        {
+                            "value": "Egreso Material",
+                            "primary": "Egreso Material",
+                            "icon": "remove"
+                        },
+                        {
+                            "value": "Egreso Producto Terminado",
+                            "primary": "Egreso Producto Terminado",
+                            "icon": "remove"
+                        }
+                    ]
+                },
+                {
+                    "value": "Planificar",
+                    "primary": "Planificar",
+                    "icon": "event_note"
+                },
+                {
+                    "value": "Produccion",
+                    "primary": "Produccion",
+                    "icon": "fact_check"
                 },
                 {
                     "value": "Registros",
@@ -997,6 +997,122 @@
                 "id": 4,
                 "otro": ""
             }
+        ],
+        "lista_unidades": [
+            {
+                "_id": 0,
+                "titulo": "Gramo",
+                "value": "g",
+                "permisos": "",
+                "id": 1,
+                "otro": ""
+            },
+            {
+                "_id": 1,
+                "titulo": "Kilogramo",
+                "value": "Kg",
+                "permisos": "",
+                "id": 1,
+                "otro": ""
+            },
+            {
+                "_id": 2,
+                "titulo": "Metro",
+                "value": "m",
+                "permisos": ""
+            },
+            {
+                "_id": 3,
+                "titulo": "Saco",
+                "value": "saco",
+                "permisos": ""
+            },
+            {
+                "_id": 4,
+                "titulo": "Centímetro Cúbico",
+                "value": "cc",
+                "permisos": "",
+                "id": 4,
+                "otro": ""
+            },
+            {
+                "_id": 5,
+                "titulo": "Litro",
+                "value": "L",
+                "permisos": "",
+                "id": 5,
+                "otro": ""
+            },
+            {
+                "_id": 6,
+                "titulo": "Pieza",
+                "value": "pza",
+                "permisos": ""
+            },
+            {
+                "_id": 7,
+                "titulo": "Otro",
+                "value": "otro",
+                "permisos": ""
+            }
+        ],
+        "lista_categoria_producto_terminado": [
+            {
+                "_id": 0,
+                "titulo": "ADITIVOS E IMPERMEABILIZANTES para Concretos y Morteros",
+                "value": "ADITIVOS E IMPERMEABILIZANTES para Concretos y Morteros",
+                "permisos": ""
+            },
+            {
+                "_id": 1,
+                "titulo": "ACABADOS SUPERFICIALES para Paredes y Techos",
+                "value": "ACABADOS SUPERFICIALES para Paredes y Techos",
+                "permisos": ""
+            },
+            {
+                "_id": 2,
+                "titulo": "MORTEROS Y CONCRETOS para la Construcción",
+                "value": "MORTEROS Y CONCRETOS para la Construcción",
+                "permisos": ""
+            },
+            {
+                "_id": 3,
+                "titulo": "OTROS PRODUCTOS",
+                "value": "OTROS PRODUCTOS:",
+                "permisos": ""
+            },
+            {
+                "_id": 4,
+                "titulo": "REVESTIMIENTO Y DECORACION",
+                "value": "REVESTIMIENTO Y DECORACION",
+                "permisos": ""
+            }
+        ],
+        "lista_categoria_empaque": [
+            {
+                "_id": 0,
+                "titulo": "ADITIVOS E IMPERMEABILIZANTES para Concretos y Morteros",
+                "value": "ADITIVOS E IMPERMEABILIZANTES para Concretos y Morteros",
+                "permisos": ""
+            },
+            {
+                "_id": 1,
+                "titulo": "ACABADOS SUPERFICIALES para Paredes y Techos",
+                "value": "ACABADOS SUPERFICIALES para Paredes y Techos",
+                "permisos": ""
+            },
+            {
+                "_id": 2,
+                "titulo": "MORTEROS Y CONCRETOS para la Construcción",
+                "value": "MORTEROS Y CONCRETOS para la Construcción",
+                "permisos": ""
+            },
+            {
+                "_id": 3,
+                "titulo": "OTROS PRODUCTOS",
+                "value": "OTROS PRODUCTOS",
+                "permisos": ""
+            }
         ]
     },
     "Formularios": {
@@ -1189,12 +1305,20 @@
             "columna": 1,
             "value": [
                 {
-                    "name": "normal",
+                    "nombre": "normal",
+                    "tipo": "input",
+                    "label": "Input normal 1",
                     "placeholder": "Input normal",
-                    "icono": "tableview",
-                    "tipo": "",
-                    "label": "Input normal",
-                    "disabled": false
+                    "title": "",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": false,
+                    "key": "normal",
+                    "name": "normal"
                 },
                 {
                     "name": "ejemplo_lista",
@@ -1352,13 +1476,21 @@
                     "title": "Tipo del campo generico"
                 },
                 {
-                    "key": "formato",
-                    "name": "formato",
+                    "nombre": "formato",
+                    "tipo": "multiline",
                     "label": "Formato",
                     "placeholder": "Formato",
                     "title": "Formato del valor",
-                    "multiline": true,
-                    "numberOfLines": 2
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": 4,
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": false,
+                    "key": "formato",
+                    "name": "formato",
+                    "multiline": true
                 }
             ]
         },
@@ -1744,6 +1876,22 @@
                     "label": "Dirección",
                     "multiline": true,
                     "numberOfLines": 4
+                },
+                {
+                    "nombre": "codigo",
+                    "tipo": "auto-codigo",
+                    "label": "Código",
+                    "placeholder": "Código",
+                    "title": "Código",
+                    "mensaje_error": "C",
+                    "disabled": true,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "codigo",
+                    "name": "codigo",
+                    "multiline": false
                 }
             ]
         },
@@ -1781,6 +1929,22 @@
                     "label": "Dirección",
                     "multiline": true,
                     "numberOfLines": 4
+                },
+                {
+                    "nombre": "codigo",
+                    "tipo": "auto-codigo",
+                    "label": "Código",
+                    "placeholder": "Código",
+                    "title": "Código",
+                    "mensaje_error": "P",
+                    "disabled": true,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "codigo",
+                    "name": "codigo",
+                    "multiline": false
                 }
             ]
         },
@@ -5383,7 +5547,8 @@
                     "name": "carreras",
                     "multiline": false,
                     "multiple": true
-                },{
+                },
+                {
                     "nombre": "asignaturas",
                     "tipo": "lista_multiuso",
                     "label": "Asignaturas",
@@ -5684,6 +5849,667 @@
                     "key": "categoria",
                     "name": "categoria",
                     "multiline": false
+                }
+            ]
+        },
+        "Form_inventariomp": {
+            "columna": 2,
+            "value": [
+                {
+                    "nombre": "codigo",
+                    "tipo": "input",
+                    "label": "Código",
+                    "placeholder": "Código",
+                    "title": "Código de materia prima",
+                    "required": true,
+                    "mensaje_error": "Debe colocar código de materia prima",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "codigo",
+                    "name": "codigo",
+                    "multiline": false
+                },
+                {
+                    "nombre": "descripcion",
+                    "tipo": "multiline",
+                    "label": "Descripción",
+                    "placeholder": "Descripción",
+                    "title": "Descripción o nombre de materia prima",
+                    "required": true,
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "2",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "descripcion",
+                    "name": "descripcion",
+                    "multiline": true
+                },
+                {
+                    "nombre": "unidad",
+                    "tipo": "lista_multiuso",
+                    "label": "Unidad",
+                    "placeholder": "Unidad",
+                    "title": "Unidad",
+                    "required": false,
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "lista": "lista_unidades",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "unidad",
+                    "name": "unidad",
+                    "multiline": false
+                },
+                {
+                    "nombre": "proveedor",
+                    "tipo": "lista_multiuso",
+                    "label": "Proveedor(es)",
+                    "placeholder": "Proveedor(es)",
+                    "title": "Proveedor(es)",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "lista": "Proveedor",
+                    "getOptionLabel": [
+                        "rif",
+                        "nombre"
+                    ],
+                    "agregar": true,
+                    "key": "proveedor",
+                    "name": "proveedor",
+                    "form": "Form_Proveedor",
+                    "multiple": true
+                },
+                {
+                    "nombre": "minimo",
+                    "tipo": "number",
+                    "label": "Inventario Mínimo",
+                    "placeholder": "Inventario Mínimo",
+                    "title": "Inventario Mínimo deseado en almacén",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "minimo",
+                    "name": "minimo",
+                    "multiline": false
+                },
+                {
+                    "nombre": "actual",
+                    "tipo": "number",
+                    "label": "Inventario Actual",
+                    "placeholder": "Inventario Actual",
+                    "title": "Inventario Actual en almacén",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "actual",
+                    "name": "actual",
+                    "multiline": false
+                }
+            ]
+        },
+        "Form_inventariopt": {
+            "columna": 2,
+            "value": [
+                {
+                    "nombre": "codigo",
+                    "label": "Código",
+                    "placeholder": "Código",
+                    "title": "Código",
+                    "required": true,
+                    "mensaje_error": "Debe indicar código",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "codigo",
+                    "name": "codigo"
+                },
+                {
+                    "nombre": "unidad",
+                    "tipo": "lista_multiuso",
+                    "label": "Unidad",
+                    "placeholder": "Unidad",
+                    "title": "Unidad",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "lista": "lista_unidades",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "unidad",
+                    "name": "unidad",
+                    "multiline": false
+                },
+                {
+                    "nombre": "descripcion",
+                    "tipo": "multiline",
+                    "label": "Descripción",
+                    "placeholder": "Descripción",
+                    "title": "Descripción",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "2",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "descripcion",
+                    "name": "descripcion",
+                    "multiline": true
+                },
+                {
+                    "nombre": "minimo",
+                    "tipo": "number",
+                    "label": "Inventario Mínimo",
+                    "placeholder": "Inventario Mínimo",
+                    "title": "Inventario Mínimo",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "minimo",
+                    "name": "minimo",
+                    "multiline": false
+                },
+                {
+                    "nombre": "actual",
+                    "tipo": "number",
+                    "label": "Inventario Actual",
+                    "placeholder": "Inventario Actual",
+                    "title": "Inventario Actual",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "actual",
+                    "name": "actual",
+                    "multiline": false
+                },
+                {
+                    "nombre": "formula",
+                    "tipo": "lista_multiuso",
+                    "label": "Formula",
+                    "placeholder": "Formula",
+                    "title": "Formula",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "lista": "formula",
+                    "getOptionLabel": [
+                        "mezcla"
+                    ],
+                    "key": "formula",
+                    "name": "formula",
+                    "multiline": false
+                },
+                {
+                    "nombre": "cantidadf",
+                    "tipo": "number",
+                    "label": "Cantidad Formula",
+                    "placeholder": "Cantidad Formula",
+                    "title": "Cantidad Formula",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "cantidadf",
+                    "name": "cantidadf",
+                    "multiline": false
+                },
+                {
+                    "nombre": "madicional",
+                    "tipo": "lista_multiuso",
+                    "label": "Materia Prima Adicional",
+                    "placeholder": "Materia Prima Adicional",
+                    "title": "Materia Prima Adicional",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "lista": "inventariomp",
+                    "getOptionLabel": [
+                        "codigo",
+                        "descripcion"
+                    ],
+                    "key": "madicional",
+                    "name": "madicional",
+                    "multiline": false
+                },
+                {
+                    "nombre": "cantidadm",
+                    "tipo": "number",
+                    "label": "Cantidad Materia Prima",
+                    "placeholder": "Cantidad Materia Prima",
+                    "title": "Cantidad Materia Prima",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "cantidadm",
+                    "name": "cantidadm",
+                    "multiline": false
+                },
+                {
+                    "nombre": "empaque",
+                    "tipo": "lista_multiuso",
+                    "label": "Empaque",
+                    "placeholder": "Empaque",
+                    "title": "Empaque",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "lista": "empaque",
+                    "getOptionLabel": [
+                        "codigo",
+                        "descripcion"
+                    ],
+                    "key": "empaque",
+                    "name": "empaque",
+                    "multiline": false
+                },
+                {
+                    "nombre": "imagen",
+                    "tipo": "Imagen",
+                    "label": "Imagen",
+                    "placeholder": "Imagen",
+                    "title": "Imagen",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "imagen",
+                    "name": "imagen",
+                    "multiline": false
+                },
+                {
+                    "nombre": "categoria",
+                    "tipo": "lista_multiuso",
+                    "label": "Categoría",
+                    "placeholder": "Categoría",
+                    "title": "Categoría",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "lista": "lista_categoria_producto_terminado",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "categoria",
+                    "name": "categoria",
+                    "multiline": false
+                }
+            ]
+        },
+        "Form_formula": {
+            "columna": 2,
+            "value": [
+                {
+                    "nombre": "mezcla",
+                    "tipo": "input",
+                    "label": "Mezcla",
+                    "placeholder": "Mezcla",
+                    "title": "Nombre de mezcla para producto final",
+                    "required": true,
+                    "mensaje_error": "Debe colocar nombre de la mezcla",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "mezcla",
+                    "name": "mezcla",
+                    "multiline": false
+                },
+                {
+                    "key": "formulas",
+                    "name": "formulas",
+                    "label": "Formula",
+                    "tipo": "Tabla",
+                    "titulos": "Titulos_formula_mp",
+                    "Form": "Form_formula_mp",
+                    "nopaginar": true,
+                    "style": {
+                        "height": 300
+                    }
+                },
+                {
+                    "nombre": "actual",
+                    "tipo": "number",
+                    "label": "Cantidad Existente",
+                    "placeholder": "Cantidad Existente",
+                    "title": "Cantidad Existente",
+                    "mensaje_error": "",
+                    "disabled": true,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "actual",
+                    "name": "actual",
+                    "multiline": false
+                }
+            ]
+        },
+        "Form_formula_mp": {
+            "columna": 1,
+            "value": [
+                {
+                    "key": "select_a",
+                    "name": "select_a",
+                    "label": "Selecciona Materia Prima",
+                    "tipo": "lista_multiuso",
+                    "lista": "inventariomp",
+                    "multiple": false,
+                    "getOptionLabel": [
+                        "codigo",
+                        "descripcion"
+                    ]
+                }
+            ]
+        },
+        "Form_formula_pt": {
+            "columna": 1,
+            "value": [
+                {
+                    "key": "select_a",
+                    "name": "select_a",
+                    "label": "Selecciona Materia Prima",
+                    "tipo": "lista_multiuso",
+                    "lista": "inventariopt",
+                    "multiple": false,
+                    "getOptionLabel": [
+                        "codigo",
+                        "descripcion"
+                    ]
+                }
+            ]
+        },
+        "Form_empaque": {
+            "columna": 2,
+            "value": [
+                {
+                    "nombre": "codigo",
+                    "label": "Código",
+                    "placeholder": "Código",
+                    "title": "Código",
+                    "required": true,
+                    "mensaje_error": "Debe colocar código a empaque",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "codigo",
+                    "name": "codigo"
+                },
+                {
+                    "nombre": "descripcion",
+                    "tipo": "multiline",
+                    "label": "Descripción",
+                    "placeholder": "Descripción",
+                    "title": "Descripción",
+                    "required": true,
+                    "mensaje_error": "Debe colocar descripción del empaque",
+                    "disabled": false,
+                    "numberOfLines": "2",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "descripcion",
+                    "name": "descripcion",
+                    "multiline": true
+                },
+                {
+                    "nombre": "capacidad",
+                    "label": "Capacidad",
+                    "placeholder": "Capacidad",
+                    "title": "Capacidad el empaque",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "capacidad",
+                    "name": "capacidad"
+                },
+                {
+                    "nombre": "minimo",
+                    "tipo": "number",
+                    "label": "Inventario Mínimo",
+                    "placeholder": "Inventario Mínimo",
+                    "title": "Inventario Mínimo",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": false,
+                    "key": "minimo",
+                    "name": "minimo"
+                },
+                {
+                    "nombre": "actual",
+                    "tipo": "number",
+                    "label": "Inventario Actual",
+                    "placeholder": "Inventario Actual",
+                    "title": "Inventario Actual",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "actual",
+                    "name": "actual",
+                    "multiline": false
+                },
+                {
+                    "nombre": "categoria",
+                    "tipo": "lista_multiuso",
+                    "label": "Categoría",
+                    "placeholder": "Categoría",
+                    "title": "Categoría",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "lista": "lista_categoria_empaque",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "categoria",
+                    "name": "categoria",
+                    "multiline": false
+                }
+            ]
+        },
+        "Form_planificar_formula": {
+            "columna": 2,
+            "value": [
+                {
+                    "nombre": "formula",
+                    "tipo": "lista_multiuso",
+                    "label": "Formula",
+                    "placeholder": "Formula",
+                    "title": "Formula",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "lista": "formula",
+                    "getOptionLabel": [
+                        "mezcla"
+                    ],
+                    "key": "formula",
+                    "name": "formula",
+                    "multiline": false
+                },
+                {
+                    "nombre": "cantidad",
+                    "tipo": "number",
+                    "label": "Cant. Trompo",
+                    "placeholder": "Cant. Trompo",
+                    "title": "Cant. Trompo",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": false,
+                    "key": "cantidad",
+                    "name": "cantidad"
+                }
+            ]
+        },
+        "Form_planificacion_dia": {
+            "columna": 1,
+            "value": [
+                {
+                    "nombre": "fecha",
+                    "tipo": "Fecha",
+                    "label": "Dia",
+                    "placeholder": "Dia",
+                    "title": "Dia",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "fecha",
+                    "name": "fecha",
+                    "multiline": false
+                }
+            ]
+        },
+        "Form_ingreso_materia_prima": {
+            "columna": 1,
+            "value": [
+                {
+                    "key": "mp",
+                    "name": "mp",
+                    "label": "Materias Primas",
+                    "tipo": "Tabla",
+                    "titulos": "Titulos_formula_mp",
+                    "Form": "Form_formula_mp",
+                    "nopaginar": true,
+                    "style": {
+                        "height": 300
+                    }
+                }
+            ]
+        },
+        "Form_ingreso_empaque": {
+            "columna": 1,
+            "value": [
+                {
+                    "key": "empaque",
+                    "name": "empaque",
+                    "label": "Empaques",
+                    "tipo": "Tabla",
+                    "titulos": "Titulos_formula_em",
+                    "Form": "Form_formula_em",
+                    "nopaginar": true,
+                    "style": {
+                        "height": 300
+                    }
+                }
+            ]
+        },
+        "Form_formula_em": {
+            "columna": 1,
+            "value": [
+                {
+                    "key": "select_a",
+                    "name": "select_a",
+                    "label": "Selecciona empaque",
+                    "tipo": "lista_multiuso",
+                    "lista": "empaque",
+                    "multiple": false,
+                    "getOptionLabel": [
+                        "codigo",
+                        "descripcion"
+                    ]
+                }
+            ]
+        },
+        "Form_egreso_pt": {
+            "columna": 1,
+            "value": [
+                {
+                    "key": "producto",
+                    "name": "producto",
+                    "label": "Producto Terminado",
+                    "tipo": "Tabla",
+                    "titulos": "Titulos_formula_em",
+                    "Form": "Form_formula_ept",
+                    "nopaginar": true,
+                    "style": {
+                        "height": 300
+                    }
+                }
+            ]
+        },
+        "Form_formula_ept": {
+            "columna": 1,
+            "value": [
+                {
+                    "key": "select_a",
+                    "name": "select_a",
+                    "label": "Selecciona producto termiando",
+                    "tipo": "lista_multiuso",
+                    "lista": "inventariopt",
+                    "multiple": false,
+                    "getOptionLabel": [
+                        "codigo",
+                        "descripcion"
+                    ]
+                }
+            ]
+        },
+        "Form_fecha": {
+            "columna": 1,
+            "value": [
+                {
+                    "nombre": "fecha",
+                    "tipo": "Fecha",
+                    "label": "",
+                    "placeholder": "",
+                    "title": "",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": false,
+                    "key": "fecha",
+                    "name": "fecha"
                 }
             ]
         }
@@ -6280,24 +7106,20 @@
                 "flex": 1
             },
             {
-                "title": "Monto",
+                "title": "Monto $",
                 "field": "montod",
                 "tipo": "",
                 "formato": "",
                 "default": "",
-                "type": "number",
-                "width": 100,
-                "flex": 0.5
+                "type": "number"
             },
             {
-                "title": "Monto",
+                "title": "Monto Bs.",
                 "field": "monto",
                 "tipo": "",
                 "formato": "",
                 "default": "",
-                "type": "number",
-                "width": 100,
-                "flex": 0.5
+                "type": "number"
             }
         ],
         "Titulos_Formaspago": [
@@ -6672,6 +7494,276 @@
                 "field": "apellidos",
                 "tipo": "",
                 "formato": "(dato)=> `${dato.valores.apellidos}`",
+                "default": "",
+                "type": ""
+            }
+        ],
+        "Titulos_inventariomp": [
+            {
+                "title": "Descripción",
+                "field": "descripcion",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.valores ? dato.valores.descripcion : dato.descripcion}`",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Código",
+                "field": "codigo",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.valores ? dato.valores.codigo : dato.codigo}`",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Cantidad Actual",
+                "field": "actual",
+                "tipo": "",
+                "formato": "(dato)=> `${Number(dato.valores ? dato.valores.actual : dato.actual).toFixed(3)}`",
+                "default": "",
+                "type": ""
+            }
+        ],
+        "Titulos_inventariopt": [
+            {
+                "title": "Descripción",
+                "field": "descripcion",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.valores.descripcion}`",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Código",
+                "field": "codigo",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.valores.codigo}`",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Inventario Actual",
+                "field": "actual",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.valores.actual}`",
+                "default": "",
+                "type": ""
+            }
+        ],
+        "Titulos_formula": [
+            {
+                "title": "Formula",
+                "field": "mezcla",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.valores.mezcla}`",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Cantidad Actual",
+                "field": "actual",
+                "tipo": "",
+                "formato": "(dato)=> `${Number(dato.valores.actual && dato.valores.actual!=='' ? dato.valores.actual : 0).toFixed(3)}`",
+                "default": "",
+                "type": ""
+            }
+        ],
+        "Titulos_formula_mp": [
+            {
+                "title": "Código",
+                "field": "codigo",
+                "tipo": "",
+                "formato": "",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Descripción",
+                "field": "descripcion",
+                "tipo": "",
+                "formato": "",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Unidad",
+                "field": "unidad",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.unidad && dato.unidad.value ? dato.unidad.value : ''}`",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Cantidad",
+                "field": "cantidad",
+                "tipo": "",
+                "formato": "(dato)=> Number(`${dato.cantidad ? dato.cantidad : 0}`)",
+                "default": "0",
+                "type": "number",
+                "editable": true
+            }
+        ],
+        "Titulos_formula_pt": [
+            {
+                "title": "Código",
+                "field": "codigo",
+                "tipo": "",
+                "formato": "",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Descripción",
+                "field": "descripcion",
+                "tipo": "",
+                "formato": "",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Unidad",
+                "field": "unidad",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.unidad && dato.unidad.value ? dato.unidad.value : ''}`",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Cantidad",
+                "field": "cantidad",
+                "tipo": "",
+                "formato": "(dato)=> Number(`${dato.cantidad ? dato.cantidad : 0}`)",
+                "default": "",
+                "type": "",
+                "editable": true
+            }
+        ],
+        "Titulos_empaque": [
+            {
+                "title": "Código",
+                "field": "codigo",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.valores.codigo}`",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Descripción",
+                "field": "descripcion",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.valores.descripcion}`",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Capacidad",
+                "field": "capacidad",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.valores.capacidad}`",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Cantidad Actual",
+                "field": "actual",
+                "tipo": "",
+                "formato": "(dato)=> `${Number(dato.valores.actual && dato.valores.actual!=='' ? dato.valores.actual : 0).toFixed(3)}`",
+                "default": "",
+                "type": ""
+            }
+        ],
+        "Titulos_produccion_dia": [
+            {
+                "title": "Formula a producir",
+                "field": "mezcla",
+                "tipo": "",
+                "formato": "",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Cantidad",
+                "field": "cantidad",
+                "tipo": "",
+                "formato": "(dato)=> Number(`${dato.cantidad}`)",
+                "default": "",
+                "type": "",
+                "editable": false
+            },
+            {
+                "title": "Materia Prima",
+                "field": "mp",
+                "tipo": "",
+                "formato": "(dato)=> {\n      let mensaje='';\n      if (dato && dato.mp){\n           mensaje='listar,descripcion,cantidad';\n      }\n      return mensaje\n}",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Producto(s) Terminado(s)",
+                "field": "pt",
+                "tipo": "",
+                "formato": "(dato)=> {\n      let mensaje='';\n      if (dato && dato.mp){\n           mensaje='listar,descripcion,cantidad';\n      }\n      return mensaje\n}",
+                "default": "",
+                "type": ""
+            }
+        ],
+        "Titulos_formula_em": [
+            {
+                "title": "Código",
+                "field": "codigo",
+                "tipo": "",
+                "formato": "",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Descripción",
+                "field": "descripcion",
+                "tipo": "",
+                "formato": "",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Cantidad Actual",
+                "field": "actual",
+                "tipo": "",
+                "formato": "(dato)=> `${Number(dato.actual && dato.actual!=='' ? dato.actual : 0)}`",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Cantidad",
+                "field": "cantidad",
+                "tipo": "",
+                "formato": "(dato)=> Number(`${dato.cantidad}`)",
+                "default": "",
+                "type": "",
+                "editable": true
+            }
+        ],
+        "Titulos_ingresos_egresos": [
+            {
+                "title": "Descripción",
+                "field": "descripcion",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.valores ? dato.valores.descripcion : dato.descripcion}`",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Código",
+                "field": "codigo",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.valores ? dato.valores.codigo : dato.codigo}`",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Inventario Actual",
+                "field": "actual",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.valores ? dato.valores.actual : dato.actual}`",
                 "default": "",
                 "type": ""
             }
@@ -8297,110 +9389,6 @@
                 }
             ]
         }
-    },
-    "Api_colegio": {
-        "Titulo": "COLEGIO ",
-        "Logo": "/api/imagen/logo.png",
-        "Recibo": 1000,
-        "Menu": [
-            {
-                "value": "Inicio",
-                "primary": "Inicio",
-                "icon": "home",
-                "libre": "true"
-            }
-        ],
-        "Menu_iconos": [
-            {
-                "icon": "shoppingcart",
-                "title": "Carrito de Compra",
-                "value": "carrito"
-            }
-        ],
-        "Estilos": {
-            "Logo": {
-                "height": 60,
-                "width": 60
-            },
-            "Input_label": {
-                "color": "#fff",
-                "textAlign": "left"
-            },
-            "Input_helper": {
-                "color": "#F92C2C",
-                "textAlign": "left"
-            },
-            "Input_fondo": {
-                "backgroundColor": "rgba(0, 0, 0,1)"
-            },
-            "Input_input": {
-                "color": "#ffffff"
-            },
-            "Input_input_disabled": {
-                "color": "#CEBAB6"
-            },
-            "Input_icono": {
-                "color": "#ffffff"
-            },
-            "Barra_menu": {
-                "backgroundColor": "rgba(0, 0, 0)",
-                "color": "#ffffff"
-            },
-            "Lista_menu_fondo": {
-                "bgcolor": "#7ABC32",
-                "padding": 0.2,
-                "height": "100%"
-            },
-            "Lista_menu_cuerpo": {
-                "primary": {
-                    "main": "rgb(102, 157, 246)"
-                },
-                "background": {
-                    "paper": "rgb(5, 30, 52)"
-                }
-            },
-            "Dialogo_cuerpo": {
-                "backgroundColor": "rgb(5, 30, 52)"
-            },
-            "Tabla_titulo": {
-                "color": "#ffffff"
-            },
-            "Tabla_cabezera": {
-                "backgroundImage": "linear-gradient(0deg, #080303 0, #524D4D 90% )"
-            },
-            "Tabla_buscar_fondo": {
-                "backgroundColor": "rgba(0, 0, 0,1)"
-            },
-            "Tabla_buscar_input": {
-                "color": "#ffffff"
-            },
-            "Tabla_buscar_icono": {
-                "color": "#ffffff"
-            },
-            "Tabla_titulos": {
-                "backgroundColor": "rgba(0, 0, 0, 1)",
-                "color": "#ffffff"
-            },
-            "Botones": {
-                "Aceptar": {
-                    "backgroundImage": "linear-gradient(0deg, #19A203 0, #0E5003 50% )"
-                },
-                "Cancelar": {
-                    "backgroundImage": "linear-gradient(0deg, #524D4D 0, #080303 50% )"
-                },
-                "Eliminar": {
-                    "backgroundImage": "linear-gradient(0deg, #DB1007 0, #880904 50% )"
-                }
-            },
-            "barra_menu": {
-                "backgroundColor": "rgba(0, 19, 36)"
-            }
-        },
-        "Listas": {},
-        "Formularios": {},
-        "Titulos": {},
-        "Funciones": {},
-        "Subtotales": {}
     },
     "Api_unefa": {
         "Titulo": "UNEFA",

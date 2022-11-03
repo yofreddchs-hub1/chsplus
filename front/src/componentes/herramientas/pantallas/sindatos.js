@@ -23,7 +23,7 @@ export default function Sindatos() {
                 src={Logo}
                 alt={'En Contruccion'}
                 loading="lazy"
-                style={{height:200}}
+                style={{height:window.innerHeight * 0.25}}
             />
           
        

@@ -60,14 +60,15 @@ export default class CrearFormulario extends Component {
   }
 
   Guardar = async(valores, campos)=>{
-    let Config = Ver_Valores().config;
+    // let Config = Ver_Valores().config;
+    let {Config, seleccionadoA} = this.state;
     const nuevo = this.state.formulario_seleccionado//this.state.nueva_entrada.value //await this.Ordenar(campos)
     Config.Formularios[this.state.seleccionado]={columna:Number(this.state.columnas), value:nuevo}
     let nuevoc=Config;
     
     nuevoc=JSON.stringify(nuevoc, null, 4)
     
-    const resul= await conexiones.Guardar_data(`data/datos${'.js'}`,nuevoc)
+    const resul= await conexiones.Guardar_data(`data/${seleccionadoA.api}${'.js'}`,nuevoc)
     return resul
     
     // const nuevo = desgenera_formulario(campos)
@@ -292,6 +293,7 @@ export default class CrearFormulario extends Component {
         }, 
         campos: Form_todos(`Form_agregaritemt`) 
       });
+      input_campos.titulos.tipo.lista= Config.Listas[input_campos.titulos.tipo.lista]
       tipo= input_campos.titulos.tipo.lista.filter(f=> f.value===tipo)[0];
       tipo = tipo===undefined ? {_id:1, titulo:'Input', value:'input'} : tipo;
       input_campos.datos.tipo=tipo;
@@ -416,22 +418,51 @@ export default class CrearFormulario extends Component {
 
   SeleccionA = async(valores) => {
     const destino= valores.resultados[valores.name].titulo;
-    let Config = Ver_Valores().config;
+    // let Config = Ver_Valores().config;
+    let {Config, seleccionadoA} = this.state;
     confirmAlert({
       title: 'Copiar formulario en api',
-      message: `Desea copiar ${this.state.seleccionado} en ${destino}?`,
+      message: `Desea copiar ${this.state.seleccionado} en ${destino} o eliminar ${this.state.seleccionado} de ${seleccionadoA.api}?`,
       buttons: [
         {
-          label: 'SI',
+          label: 'COPIAR',
           onClick: async () => {
-            Config[destino].Formularios[this.state.seleccionado]=Config.Formularios[this.state.seleccionado]
-            let nuevoc=Config;
+            let Config_nuevo= Ver_Valores().config;
+            let archivo=`data/${valores.resultados.apis.api}.js`;
+            const respuesta = await conexiones.Leer_data(archivo);
+            if (respuesta.Respuesta==='Ok'){
+              Config_nuevo=JSON.parse(respuesta.datos);
+            }
+            Config_nuevo.Formularios = Config_nuevo.Formularios ? Config_nuevo.Formularios : {};
+            Config_nuevo.Formularios[this.state.seleccionado]=Config.Formularios[this.state.seleccionado];
+            console.log(destino, Config_nuevo.Formularios)
+            // Config[destino].Formularios[this.state.seleccionado]=Config.Formularios[this.state.seleccionado]
+            let nuevoc=Config_nuevo;
             nuevoc=JSON.stringify(nuevoc, null, 4)
-            const resul= await conexiones.Guardar_data(`data/datos${'.js'}`,nuevoc)
+            const resul= await conexiones.Guardar_data(`data/${valores.resultados.apis.api}${'.js'}`,nuevoc)
           }
         },
         {
-          label: 'NO',
+          label: 'ELIMINAR',
+          onClick: async () => {
+            let nuevo={}
+            Object.keys(Config.Formularios).map(v=>{
+              console.log(v, this.state.seleccionado)
+              if (v!==this.state.seleccionado){
+                nuevo[v]=Config.Formularios[v]
+              }
+              return v
+            })
+            console.log(nuevo)
+            Config.Formularios = nuevo;
+            
+            let nuevoc=Config;
+            nuevoc=JSON.stringify(nuevoc, null, 4)
+            const resul= await conexiones.Guardar_data(`data/${seleccionadoA.api}${'.js'}`,nuevoc)
+          }
+        },
+        {
+          label: 'CANCELAR',
 
         }
       ]
@@ -467,10 +498,10 @@ export default class CrearFormulario extends Component {
       formularios.titulos.columna.value= columnas;
       formularios.titulos.columna.onChange= this.CambioColumna;
 
-      let listaA= Object.keys(Config).filter(f=> f.indexOf('Api_')!==-1).map((val,i)=>{
-        return {_id:i, titulo:val}
-      })
-      formularios.titulos.apis.lista=listaA
+      // let listaA= Object.keys(Config).filter(f=> f.indexOf('Api_')!==-1).map((val,i)=>{
+      //   return {_id:i, titulo:val}
+      // })
+      formularios.titulos.apis.lista=this.state.lista_apis//listaA
       formularios.titulos.apis.onChange= this.SeleccionA
       
       //En muestra de formulario
@@ -500,7 +531,7 @@ export default class CrearFormulario extends Component {
           ...nuevos,
           botones:[
               {
-                  name:'guardar', label:'Guardar', title:'Guardar ',
+                  name:'guardar', label:'Crear', title:'Crear formulario',
                   variant:"contained", color:"success", icono:<CheckIcon/>,
                   onClick: this.Crear, validar:'true', 
                   sx:{...Config.Estilos.Botones ? Config.Estilos.Botones.Aceptar : {}},
@@ -531,11 +562,12 @@ export default class CrearFormulario extends Component {
 
   Crear = async(valores) =>{
     const nueva= `Form_${valores.nombre}`;
-    let Config = Ver_Valores().config;
+    // let Config = Ver_Valores().config;
+    let {Config, seleccionadoA}= this.state;
     Config.Formularios={...Config.Formularios, [nueva]:{columna:1, value:[]}}
     let nuevo=Config;
     nuevo=JSON.stringify(nuevo, null, 4)
-    const resul= await conexiones.Guardar_data(`data/datos${'.js'}`,nuevo)
+    const resul= await conexiones.Guardar_data(`data/${seleccionadoA.api}${'.js'}`,nuevo)
     this.Refrescar(Config)
     this.setState({dialogo:{...this.state.dialogo, open: false}})
   }
@@ -548,6 +580,7 @@ export default class CrearFormulario extends Component {
       database=[]
     }
     // Object.keys(Config.Formularios).map(async v=>{
+      console.log(Config)
     const formul=Object.keys(Config.Formularios);
     let lista=formul.map((val,i)=>{
       return {_id:i, titulo:val}
@@ -563,10 +596,10 @@ export default class CrearFormulario extends Component {
     formularios.titulos.lista.onChange= this.Seleccion
     formularios.titulos.input.disabled=true
     
-    let listaA= Object.keys(Config).filter(f=> f.indexOf('Api_')!==-1).map((val,i)=>{
-      return {_id:i, titulo:val}
-    })
-    formularios.titulos.apis.lista=listaA
+    // let listaA= Object.keys(Config).filter(f=> f.indexOf('Api_')!==-1).map((val,i)=>{
+    //   return {_id:i, titulo:val}
+    // })
+    formularios.titulos.apis.lista=this.state.lista_apis;//listaA
     formularios.titulos.apis.onChange= this.SeleccionA
 
     let muestra_entrada=undefined;
@@ -577,12 +610,47 @@ export default class CrearFormulario extends Component {
 
   async componentDidMount(){
       
-    const Config = Ver_Valores().config;
+    let formulario_lista= await genera_fromulario({valores:{}, campos: Form_todos(`Form_api`) })
+    const litt= await conexiones.VerApis()
+    let lista=[]
+    if (litt.Respuesta==='Ok'){
+      lista= litt.lista.filter(f=> f!=='Apis').map( (v, i)=>{
+        return {_id:i, titulo:v, nombre:v, api:v}
+      })
+    }else{
+      const listado = await conexiones.Leer_C(['Api'],{'Api':{}})
+      lista= listado.datos.Api.map( v=>{
+        return {...v.valores ? {_id:v._id, ...v.valores} : v}
+      })
+    }
+    const seleccionadoA = lista[0]
+    formulario_lista.titulos.apis.value= seleccionadoA
+    formulario_lista.titulos.apis.onChange= this.SeleccionN
+    formulario_lista.titulos.apis.lista= lista;
+    this.setState({formulario_lista, lista_apis:lista})
+    this.SeleccionAN(seleccionadoA)
+
+    // const Config = Ver_Valores().config;
     
-   this.Refrescar(Config)
+    // this.Refrescar(Config)
     
   }
-
+  SeleccionN = (data)=>{
+    let seleccionadoA = data.resultados.apis;
+    this.SeleccionAN(seleccionadoA)
+  }
+  SeleccionAN = async(seleccionadoA) =>{
+    let Config = Ver_Valores().config;
+    let archivo=`data/${seleccionadoA.api}.js`;
+    const respuesta = await conexiones.Leer_data(archivo);
+    if (respuesta.Respuesta==='Ok'){
+      Config=JSON.parse(respuesta.datos);
+      this.setState({Config, seleccionadoA})
+      
+    }
+    console.log(Config, seleccionadoA)
+    this.Refrescar(Config)
+  }
   static getDerivedStateFromProps(props, state) {
 
     if (props !== state.props) {
@@ -597,13 +665,15 @@ export default class CrearFormulario extends Component {
   }
 
   render(){
-    const {formularios, formulario_muestra, muestra_entrada, seleccionado, input_campos, Config, dialogo}=this.state;
+    const {formularios, formulario_muestra, muestra_entrada, seleccionado, input_campos, Config, dialogo, formulario_lista}=this.state;
     
     return (
       <Box sx={{ flexGrow: 1 }}>
         <Grid container spacing={0.3}>
           <Grid item xs={4} md={4}>
             <Item style={{height:'90vh', overflow:'auto'}}>
+              {formulario_lista ? <Formulario {...formulario_lista}/> : null}
+              <div style={{marginTop:-15}}/>
               {seleccionado
                 ? <div>
                     {seleccionado}

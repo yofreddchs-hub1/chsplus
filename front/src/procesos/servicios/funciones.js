@@ -353,10 +353,28 @@ const item_form = async(val, valores, _id)=>{
       maxRows: val.numberOfLines ? val.numberOfLines : val.maxRows ?  val.maxRows : 4,
     }
   }else if (val.tipo==='auto-codigo'){
+    let cod = 'S';
+    let numeracion = 10;
+    let cant = 6;
+    console.log(valores[val.name])
+    if (val.mensaje_error){
+      let dat = val.mensaje_error.split(';');
+      if (dat.length===1){
+        cod=dat[0];
+      }else if (dat.length===2){
+        cod=dat[0];
+        numeracion=dat[1];
+      }else if (dat.length===3){
+        cod=dat[0];
+        numeracion=dat[1];
+        cant=dat[2];
+      }
+
+    }
     resultado={
       ...resultado,
       tipo:'',
-      value:Generar_id('S')
+      value:valores[val.name] ? valores[val.name] : Generar_id(cod, numeracion, cant)
 
     }
   }else if (val.tipo==='lista_multiuso'){
@@ -368,12 +386,12 @@ const item_form = async(val, valores, _id)=>{
     //     return {...v.valores ? {_id:v._id, ...v.valores} : v}
     //   })
     // }else 
-    if (val.lista.indexOf('lista_')!==-1){
-      lista = Ver_Valores()['config']['Listas'][val.lista]
-      if (lista===undefined) lista=[]
-    }else {
+    // if (val.lista.indexOf('lista_')!==-1){
+    //   lista = Ver_Valores()['config']['Listas'][val.lista]
+    //   if (lista===undefined) lista=[]
+    // }else {
       lista= val.lista
-    };
+    // };
     
     resultado={
       ...resultado,
@@ -572,8 +590,11 @@ export const crear_campos = async(campos, Form_origen)=>{
   return {columna:Form_origen.columna, value:resultado}
 }
 
-export const Generar_id =(id)=>{
-  return `${id ? id+'-' :''}${moment().format('x')}` 
+export const Generar_id =(id, numeracion=10, cant=6)=>{
+  const id1 = Math.random().toString(numeracion).slice(-cant);
+  // console.log('Id con math >>>', id1)
+  return `${id ? id+'-' :''}${id1}`
+  // return `${id ? id+'-' :''}${moment().format('x')}` 
 }
 
 export var numeroALetras = (function() {

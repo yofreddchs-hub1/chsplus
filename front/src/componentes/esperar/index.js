@@ -18,14 +18,15 @@ export default function Esperar(props) {
       >
         {/* <CircularProgress color="inherit" /> */}
         <div>
-        <img
-                src={props.Logo ? props.Logo : Logo}
-                alt={'Cargando datos'}
-                loading="lazy"
-        />
-        <Box sx={{ width: '100%' }}>
-          <LinearProgress color="inherit"/>
-        </Box>
+          <img
+                  src={props.Logo ? props.Logo : Logo}
+                  alt={'Cargando datos'}
+                  loading="lazy"
+                  style={{height:window.innerHeight * 0.25}}
+          />
+          <Box sx={{ width: '100%' }}>
+            <LinearProgress color="inherit"/>
+          </Box>
         </div>
       </Backdrop>
     </div>

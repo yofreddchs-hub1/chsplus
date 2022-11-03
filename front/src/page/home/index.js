@@ -4,6 +4,7 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 
 import Carrusel from '../../componentes/carrusel';
+import CarruselPdf from '../../componentes/carrusel_pdf';
 import Catalogo from '../../componentes/catalogo';
 
 import {conexiones}from '../../procesos/servicios'
@@ -32,16 +33,15 @@ export default class Home extends React.Component {
             'Producto':{},
             }
         );
-        console.log('>>>>>>>>>>>>',resultados.datos)
         if (resultados.Respuesta==='Ok'){
             this.setState({
                 portada:[
                     ...resultados.datos.Portada, 
-                    {valores:{
-                                img: 'https://res.cloudinary.com/dtu1dwuwf/video/upload/v1645729310/videochs_s6y6hk.mp4',
-                                title: '',
-                            }
-                    }
+                    // {valores:{
+                    //             img: 'https://res.cloudinary.com/dtu1dwuwf/video/upload/v1645729310/videochs_s6y6hk.mp4',
+                    //             title: '',
+                    //         }
+                    // }
                 ],
                 producto:resultados.datos.Producto
             })
@@ -64,10 +64,24 @@ export default class Home extends React.Component {
   render(){
     const {Config, portada, producto}=this.state
     return (
-        <Box sx={{ flexGrow: 1, height:'100%', ...Config.Estilos.Dialogo_cuerpo}}>
+        <Box sx={(theme) => ({ flexGrow: 1, height:'100%', ...Config.Estilos.Dialogo_cuerpo,
+        
+            overflow: 'hidden auto',
+            '&::-webkit-scrollbar': { height: 10, width:10, WebkitAppearance: 'none' },
+            '&::-webkit-scrollbar-thumb': {
+                borderRadius: 8,
+                border: '2px solid',
+                borderColor: theme.palette.mode === 'dark' ? '' : '#E7EBF0',
+                backgroundColor: 'rgba(0 0 0 / 0.5)',
+            },
+        
+        })}>
             <Grid container spacing={0}>
                 <Grid item xs={12}>
                     <Carrusel datos={portada}/>
+                </Grid>
+                <Grid item xs={12}>
+                    <CarruselPdf datos={portada}/>
                 </Grid>
                 <Grid item xs={12}>
                     <Catalogo datos={producto} titulo={'Productos'} {...this.state}/>

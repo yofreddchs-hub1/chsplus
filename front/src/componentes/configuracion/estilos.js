@@ -34,16 +34,17 @@ export default class Estilos extends Component {
   }
 
   Guardar = async(valores, campos)=>{
-    const {api} = this.state;
-    let Config = {...Ver_Valores().config}
-    if (api === undefined || api.master){
-        console.log('Master')
-        Config = {...Config, ...this.state.Config}
-    }else{
-        console.log('No master')
-        Config = {...Config, ['Api_'+api.api] : this.state.Config}
-    }
-    console.log(Config, valores)
+    let {api, Config} = this.state;
+    // let Config = {...Ver_Valores().config}
+    // if (api === undefined || api.master){
+    //     console.log('Master')
+    //     Config = {...Config, ...this.state.Config}
+    // }else{
+    //     console.log('No master')
+    //     Config = {...Config, ['Api_'+api.api] : this.state.Config}
+    // }
+    valores.archivo= api.api;
+    // console.log(Config, valores, api)
     Config = JSON.stringify(Config, null, 4)
     return await conexiones.Guardar_data(`${valores.path}${valores.archivo}${'.js'}`,Config)
     
@@ -51,15 +52,15 @@ export default class Estilos extends Component {
     // const nuevo = desgenera_formulario(campos)
   }
 
-  SeleccionA = (valores)=>{
+  SeleccionA = async(valores)=>{
     const api = valores.resultados.apis
     if (api.master){
         console.log('Master')
-        let Config = Ver_Valores().config
+        let Config = await this.Ver_Config(api);//Ver_Valores().config
         this.Refrescar(Config)
     }else{
         console.log('No master')
-        let Config = Ver_Valores().config['Api_'+api.api]
+        let Config = await this.Ver_Config(api);//Ver_Valores().config['Api_'+api.api]
         this.Refrescar(Config)
     }
     this.setState({api})
@@ -139,16 +140,43 @@ export default class Estilos extends Component {
 
   async componentDidMount(){
       
-    const Config = Ver_Valores().config;
+    let Config = Ver_Valores().config;
+    const litt= await conexiones.VerApis()
+    let lista=[]
+    if (litt.Respuesta==='Ok'){
+      lista= litt.lista.filter(f=> f!=='Apis').map( (v, i)=>{
+        return {_id:i, titulo:v, nombre:v, api:v}
+      })
+    }else{
+      const listado = await conexiones.Leer_C(['Api'],{'Api':{}})
+      lista= listado.datos.Api.map( v=>{
+        return {...v.valores ? {_id:v._id, ...v.valores} : v}
+      })
+    }
     let formulario_lista= await genera_fromulario({valores:{}, campos: Form_todos(`Form_api`) }, 2)
-    const seleccionado = formulario_lista.titulos.apis.lista[0]
+    formulario_lista.titulos.apis.lista=lista;
+    const seleccionado = formulario_lista.titulos.apis.lista[0];
+    
     formulario_lista.titulos.apis.value= seleccionado
     formulario_lista.titulos.apis.onChange= this.SeleccionA
-    this.setState({Config, formularios:formulario_lista})
+
+    
+    Config=await this.Ver_Config(seleccionado);
+    
+    this.setState({Config, api: seleccionado, formularios:formulario_lista})
     this.Refrescar(Config)
     
   }
 
+  Ver_Config = async(seleccionado)=>{
+    let Config = Ver_Valores().config;
+    let archivo=`data/${seleccionado.api}.js`;
+    const respuesta = await conexiones.Leer_data(archivo);
+    if (respuesta.Respuesta==='Ok'){
+      Config=JSON.parse(respuesta.datos);
+    }
+    return Config
+  }
   static getDerivedStateFromProps(props, state) {
 
     if (props !== state.props) {
@@ -182,10 +210,12 @@ export default class Estilos extends Component {
           <Grid item xs={12} md={12}>
             <Grid container spacing={0.3}>
               <Grid item xs={12} md={12}>
-                <Item style={{height:'90vh', overflow:'auto'}}>
+                <Item style={{height:'90vh', overflow:'auto', ...Config.Estilos.Fondo_pantalla}}>
                     Muestra del Formulario
                     <Divider />
-                    <Formulario {...formulario_muestra} config={Config}/>
+                    <div style={{...Config.Estilos.Dialogo_cuerpo}}>
+                      <Formulario {...formulario_muestra} config={Config}/>
+                    </div>
                 </Item>
               </Grid>
             </Grid>

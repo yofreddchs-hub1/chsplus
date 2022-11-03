@@ -131,7 +131,7 @@ const useStyles = makeStyles({
     alignItems: 'center',
     textAlign: 'center',
     marginTop:10,
-    marginBottom: 20,
+    marginBottom: 7,//10,
     
     // height:window.innerHeight - theme.spacing(21),//window.innerHeight * 0.85,
     // overflow: 'auto',
@@ -588,7 +588,7 @@ export default function Page(props) {
       <Lista key={'Listados-'+valor.name} valor={valor} cambio={values.Cambio} config={Config}/>
 
     ): valor.tipo==='lista_representados' ? (
-      <ListaRepresentados key={'Listados-'+valor.name} valor={valor} cambio={values.Cambio}/>
+      <ListaRepresentados key={'Listados-'+valor.name} valor={valor} cambio={values.Cambio} Config={Config}/>
       
     ): valor.tipo==='password' ? (
       <Entrada
@@ -641,7 +641,7 @@ export default function Page(props) {
     ) : valor.tipo==='Checkbox' ? (
       <FormControlLabel
         disabled={valor.disabled}
-        sx={{color:'#fff', '.MuiFormControlLabel-label':{color:'#fff'}}}
+        sx={{color:Config ? Config.Estilos.Input_label.color : '#fff', '.MuiFormControlLabel-label':{color:Config ? Config.Estilos.Input_label.color : '#fff'}}}
         control={
           <Checkbox
             checked={['true',true].indexOf(valor.value)!==-1 ? true : false}
@@ -649,9 +649,9 @@ export default function Page(props) {
             inputprops={{ 'aria-label': 'primary checkbox' }}
             name={valor.name}
             sx={{
-              color: '#fff',
+              color: Config ? Config.Estilos.Input_label.color : '#fff',
               '&.Mui-checked': {
-                color: '#fff',
+                color: Config ? Config.Estilos.Input_label.color : '#fff',
               },
             }}
           />}
