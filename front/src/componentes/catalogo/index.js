@@ -4,6 +4,7 @@ import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
 import ListSubheader from '@mui/material/ListSubheader';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
@@ -11,6 +12,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import Skeleton from '@mui/material/Skeleton';
 import { conexiones } from '../../procesos/servicios';
 import Dialogo from '../herramientas/dialogo';
+import Scrollbars from '../scrolbars';
 import Tarjeta from './tarjeta';
 import Item from './item';
 
@@ -70,16 +72,32 @@ export default function Catalogo(props) {
 }
 
   return (
-    <Paper elevation={3} sx={{ bgcolor:'#0000ff', color:'#ffffff', overflowX:'hide', marginBottom:1.5, padding:0.5}}>
+    <Paper elevation={3} sx={{ bgcolor:'#0000ff', color:'#ffffff', overflow:'hide', marginBottom:0.5, padding:0.5, height:window.innerHeight * 0.86}}>
       <Grid container spacing={2}>
           <Grid item xs={12}>
-              <Box sx={{ width: '100%',overflowY:'auto'}}>
-                <ImageList  cols={3}   
+              <Box sx={{ width: '100%', height:'100%',overflow:'hidden',bgcolor:'#0f0', padding:0.5}}>
+                <Box sx={{bgcolor:'#000', width:'100%'}}>
+                  <Typography variant="h5" gutterBottom>
+                    {props.titulo ? props.titulo : 'Catalogo'}
+                  </Typography>
+                </Box>
+                <ImageList  cols={2}  sx={(theme) => ({
+                    
+                    overflow: 'hidden auto',
+                    '&::-webkit-scrollbar': { height: 10, width:10, WebkitAppearance: 'none' },
+                    '&::-webkit-scrollbar-thumb': {
+                        borderRadius: 8,
+                        border: '2px solid',
+                        borderColor: theme.palette.mode === 'dark' ? '' : '#E7EBF0',
+                        backgroundColor: 'rgba(0 0 0 / 0.5)',
+                    },
+                    
+                })}> 
                             
-                >
-                  <ImageListItem key="Subheader" cols={3}>
+                
+                  {/* <ImageListItem key="Subheader" cols={3}>
                     <ListSubheader component="div">{props.titulo ? props.titulo : 'Catalogo'}</ListSubheader>
-                  </ImageListItem>
+                  </ImageListItem> */}
                   {itemData.length===0
                     ? [0,1,2,3,4,5,6,7,8].map(item =>
                       <ImageListItem key={item}>

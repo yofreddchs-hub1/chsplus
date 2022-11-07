@@ -14,13 +14,16 @@ const Img = styled('img')({
 
 export default function Item(props) {
     console.log(props)
+    const alto = 250;
+    const altoImagen = alto * 0.85;
   return (
     <Paper
       sx={{
         p: 2,
         margin: 'auto',
         // maxWidth: 500,
-        height:250,
+        height:alto,
+        width:'100%',
         flexGrow: 1,
         backgroundColor: (theme) =>
           theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -28,8 +31,8 @@ export default function Item(props) {
     >
       <Grid container spacing={1}>
         <Grid item>
-          <ButtonBase sx={{ height: '90%' }}>
-            <Img alt="complex" src={props.valores.imagen} />
+          <ButtonBase sx={{ height: altoImagen }}>
+            <Img alt={props.valores.codigo} src={props.valores.imagen} sx={{maxHeight:altoImagen, maxWidth:100}}/>
           </ButtonBase>
         </Grid>
         <Grid item xs={12} sm container>

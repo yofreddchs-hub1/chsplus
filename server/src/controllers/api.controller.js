@@ -840,6 +840,8 @@ serverCtrl.Guardar_produccion = async (req, res)=>{
         for (var p=0; p<produccion.pt.length; p++){
           const pt=produccion.pt[p];
           let producto = await PT.findOne({_id:pt._id});
+          if (producto === null)
+            console.log(producto, pt)
           producto = producto.valores ? producto.valores : producto;
           producto.actual = Number(producto.actual && producto.actual!=='' ? producto.actual : 0) + Number(pt.cantidadFinalr);
           //movimiento de ingreso de producto terminado

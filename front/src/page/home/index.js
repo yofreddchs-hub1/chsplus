@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 
+import Scrollbars from '../../componentes/scrolbars';
 import Carrusel from '../../componentes/carrusel';
 import CarruselPdf from '../../componentes/carrusel_pdf';
 import Catalogo from '../../componentes/catalogo';
@@ -64,18 +65,9 @@ export default class Home extends React.Component {
   render(){
     const {Config, portada, producto}=this.state
     return (
-        <Box sx={(theme) => ({ flexGrow: 1, height:'100%', ...Config.Estilos.Dialogo_cuerpo,
+        <Scrollbars sx={{ flexGrow: 1, height:'100%', ...Config.Estilos.Dialogo_cuerpo,
         
-            overflow: 'hidden auto',
-            '&::-webkit-scrollbar': { height: 10, width:10, WebkitAppearance: 'none' },
-            '&::-webkit-scrollbar-thumb': {
-                borderRadius: 8,
-                border: '2px solid',
-                borderColor: theme.palette.mode === 'dark' ? '' : '#E7EBF0',
-                backgroundColor: 'rgba(0 0 0 / 0.5)',
-            },
-        
-        })}>
+        }}>
             <Grid container spacing={0}>
                 <Grid item xs={12}>
                     <Carrusel datos={portada}/>
@@ -87,7 +79,7 @@ export default class Home extends React.Component {
                     <Catalogo datos={producto} titulo={'Productos'} {...this.state}/>
                 </Grid>
             </Grid>
-        </Box>
+        </Scrollbars>
     )
   }
 }

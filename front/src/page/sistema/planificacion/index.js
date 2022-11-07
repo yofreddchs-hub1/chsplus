@@ -81,8 +81,9 @@ export default class Planificacion extends React.Component {
                 if (pos!==-1){
                     cantidadE = empaques[pos].valores.actual ?  Number(empaques[pos].valores.actual) : 0;
                 }
-                return {...v.valores, cantidadE}
+                return {...v.valores, cantidadE, _id:v._id}
             });
+            console.log(ProductoTerminado)
         }
         let resulta = this.Calcular(Number(valor.actual ? valor.actual : 0),valor.formulas, ProductoTerminado);
         ProductoTerminado= resulta.productor;
