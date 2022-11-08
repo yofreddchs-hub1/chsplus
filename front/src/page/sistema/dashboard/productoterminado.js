@@ -12,10 +12,10 @@ export default function PT(props) {
         const Inicio= async()=>{
             let resp = await conexiones.Leer_C(['inventariopt'],{inventariopt:{}});
             if (resp.Respuesta==='Ok'){
-                let dat = resp.datos.inventariopt;
-                const mayor = dat.filter(f=> Number(f.valores.actual)>Number(f.valores.minimo) && f.valores.minimo!=='');
-                const menor = dat.filter(f=> Number(f.valores.actual)<=Number(f.valores.minimo) || f.valores.minimo==='');
-                dat=[...menor,...mayor]
+                let dat = resp.datos.inventariopt.sort((a,b)=> a.valores.categoria && b.valores.categoria && (a.valores.categoria.titulo>b.valores.categoria.titulo) ? 1 : -1);
+                // const mayor = dat.filter(f=> Number(f.valores.actual)>Number(f.valores.minimo) && f.valores.minimo!=='');
+                // const menor = dat.filter(f=> Number(f.valores.actual)<=Number(f.valores.minimo) || f.valores.minimo==='');
+                // dat=[...menor,...mayor]
                 setDatos(dat);
             }
         }
@@ -24,6 +24,7 @@ export default function PT(props) {
     const alto=props.Alto ? props.Alto : window.innerHeight * 0.50;
     const error='#AA9309';
     const correcto='#138E04';
+    let anterior
     return (
         <Box>
             <Box
@@ -55,31 +56,45 @@ export default function PT(props) {
             >
                 <div style={{height:'100%', paddingTop:10}}>
                     {datos
-                        ?   datos.map(val=>
-                                <Box key={val._id}
-                                        sx={{
-                                            backgroundColor:Number(val.valores.actual)> Number(val.valores.minimo) && val.valores.minimo!=='' ? correcto : error, 
-                                            marginBottom:2, borderRadius:2, width:'100%', padding:1,
-                                        }}
-                                >
-                                    <Grid container wrap="nowrap" spacing={0.5} alignItems="center">
-                                        <Grid item xs={8} zeroMinWidth>
-                                            <Typography noWrap textAlign={'left'}>{val.valores.descripcion}</Typography>
-                                        </Grid>
-                                        <Grid item xs={4}>
-                                            <Grid container spacing={0.5} textAlign={'right'}>
-                                                <Grid item xs={12}>
-                                                    <Typography title={'Cantidad actual'}>{Number(val.valores.actual)} EMP.</Typography>
+                        ?   datos.map(val=>{
+                                let titulo = null;
+                                if (val.valores.categoria && anterior!==val.valores.categoria.titulo){
+                                    console.log(val.valores.categoria.titulo)
+                                    anterior= val.valores.categoria.titulo
+                                    titulo = <Box sx={{borderBottom:3, marginBottom:2}}>
+                                        <Typography title={'Categoria'}>{anterior}</Typography>
+                                    </Box>
+                                }
+                                
+                                return(
+                                    <Box>
+                                        {titulo}
+                                        <Box key={val._id}
+                                                sx={{
+                                                    backgroundColor:Number(val.valores.actual)> Number(val.valores.minimo) && val.valores.minimo!=='' ? correcto : error, 
+                                                    marginBottom:2, borderRadius:2, width:'100%', padding:1,
+                                                }}
+                                        >
+                                            <Grid container wrap="nowrap" spacing={0.5} alignItems="center">
+                                                <Grid item xs={8} zeroMinWidth>
+                                                    <Typography noWrap textAlign={'left'}>{val.valores.descripcion}</Typography>
                                                 </Grid>
-                                                <Grid item xs={12} textAlign={'right'}>
-                                                    <Typography title={'Cantidad minima'}>{Number(val.valores.minimo)} EMP.</Typography>
+                                                <Grid item xs={4}>
+                                                    <Grid container spacing={0.5} textAlign={'right'}>
+                                                        <Grid item xs={12}>
+                                                            <Typography title={'Cantidad actual'}>{Number(val.valores.actual)} EMP.</Typography>
+                                                        </Grid>
+                                                        <Grid item xs={12} textAlign={'right'}>
+                                                            <Typography title={'Cantidad minima'}>{Number(val.valores.minimo)} EMP.</Typography>
+                                                        </Grid>
+                                                    </Grid>
                                                 </Grid>
                                             </Grid>
-                                        </Grid>
-                                    </Grid>
-                                    
-                                </Box>
-                            )
+                                            
+                                        </Box>
+                                    </Box>
+                                )
+                            })
                         :   <Cargando open={true}/>
                     }
                 </div>
