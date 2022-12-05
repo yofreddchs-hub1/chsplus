@@ -1904,6 +1904,20 @@
                     "key": "codigo",
                     "name": "codigo",
                     "multiline": false
+                },
+                {
+                    "nombre": "localidad",
+                    "label": "Localidad",
+                    "placeholder": "Localidad",
+                    "title": "Localidad",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "localidad",
+                    "name": "localidad"
                 }
             ]
         },

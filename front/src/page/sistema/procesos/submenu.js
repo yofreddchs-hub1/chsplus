@@ -10,8 +10,6 @@ import Icon from '@mui/material/Icon';
 
 
 export default function SubMenu(props) {
-    const [selectedIndex, setSelectedIndex] = React.useState(0);
-    console.log(props)
     const {Config}= props;
     const {Menu}= Config;
     const primer = props.submenu ? props.submenu[0] : 'Sistema';
@@ -27,8 +25,7 @@ export default function SubMenu(props) {
     }
     const handleListItemClick = (event, index) => {
         
-        console.log(index)
-        setSelectedIndex(index.value);
+        props.Seleccion_pantalla(index)
     };
     return (
                 <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>

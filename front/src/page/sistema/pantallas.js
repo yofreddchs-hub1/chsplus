@@ -18,7 +18,7 @@ export const sistema_pantallas={
     Registros,
     Produccion,
     Ingresos:{
-        Ingresos,
+        Ingresos:(props)=> <SubMenu {...props} submenu={['Sistema','Ingresos']}/>,
         'Ingreso Material':IMP,
         'Ingresar Empaque':Empaques
     },

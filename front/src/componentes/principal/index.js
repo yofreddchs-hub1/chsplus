@@ -106,7 +106,7 @@ export default function PersistentDrawerLeft(props) {
         Pantallas={...Pantallas, ...nuevo}
       }else if(v===seleccion){
         const P = listas[v]
-        Pantallas[v]=<P {...props}/>
+        Pantallas[v]=<P {...props} Seleccion_pantalla = {Seleccion_pantalla}/>
       }  
       // return v
     }//)
@@ -117,6 +117,7 @@ export default function PersistentDrawerLeft(props) {
   const Seleccion_pantalla = async(value, padre)=>{
     // let {Config}= props;
     // this.Sacar(Config.Menu)
+    console.log(value)
     let seleccion= value.pantalla ? value.pantalla : value.value;
     let pantalla= value.primary;
     
