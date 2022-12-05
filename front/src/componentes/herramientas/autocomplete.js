@@ -30,7 +30,7 @@ export default function Listados(props) {
       }else if(valor.lista.indexOf('lista_')!==-1){
         let lista = Config.Listas[valor.lista]
         if (lista===undefined) lista=[]
-        setOptions([...lista]);
+        setOptions([...valor.antes ? valor.antes : [], ...lista, ...valor.despues ? valor.despues : []]);
       }else{
         const listado = await conexiones.Leer_C([valor.lista],{[valor.lista]:valor.condicion ? valor.condicion : {}})
         if (listado.Respuesta==='Ok'){
@@ -38,8 +38,9 @@ export default function Listados(props) {
             return {...v.valores ? {_id:v._id, ...v.valores, key:v._id} : v}
           })
           if (active) {
-            setOptions([...lista]);
+            setOptions([...valor.antes ? valor.antes : [], ...lista, ...valor.despues ? valor.despues : []]);
           }
+          
         }else{
           console.log('Error')
         }

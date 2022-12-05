@@ -11,6 +11,7 @@ const Apid = require('../models/Api');
 const cloudinary = require("../servicios/api_cloudinary");
 const fs = require('fs');
 
+
 const admininicio= 'adminchs';
 const claveinicio= 'CHS19824./'
 const claveinicioapi= '4p1-';
@@ -886,20 +887,26 @@ serverCtrl.Guardar_produccion = async (req, res)=>{
       await Produccion.updateOne({_id:datos._id},{valores:{...datos}, actualizado:User.username},{ upsert: true });
 
       //Guardar el egreso de materia prima
-      let valores = {fecha, movimiento};
+      let total = await EM.estimatedDocumentCount();
+      let codigo = Generar_codigo(total,'EMP')
+      let valores = {codigo, fecha, movimiento};
       let cod_chs = await Codigo_chs({...valores});
       let hash_chs = await Hash_chs({...valores, cod_chs})
       const Nuevo = new EM({valores, cod_chs, hash_chs, actualizado:'Sistema'});
       await Nuevo.save();
 
       //Guardar el egreso de empaque
-      valores = {fecha, movimiento: movimiento_em};
+      total = await EEM.estimatedDocumentCount();
+      codigo = Generar_codigo(total,'EEM')
+      valores = {codigo, fecha, movimiento: movimiento_em};
       cod_chs = await Codigo_chs({...valores});
       hash_chs = await Hash_chs({...valores, cod_chs})
       const NuevoE = new EEM({valores, cod_chs, hash_chs, actualizado:'Sistema'});
       await NuevoE.save();
       
       //Guardar el ingreso producto terminado
+      total = await IPT.estimatedDocumentCount();
+      codigo = Generar_codigo(total,'IPT')
       valores = {fecha, movimiento:movimiento_pt};
       cod_chs = await Codigo_chs({...valores});
       hash_chs = await Hash_chs({...valores, cod_chs})
@@ -911,6 +918,16 @@ serverCtrl.Guardar_produccion = async (req, res)=>{
         res.json({Respuesta:'Error', mensaje:'hash invalido'});
     }
 }
+
+Generar_codigo = (valor, id='', cantidad=5)=>{
+  let nuevo = String(Number(valor) + 1);
+  let cero = cantidad-nuevo.length;
+  for (var i=0; i<cero; i++){
+    nuevo='0'+nuevo;
+  }
+  return `${id!=='' ? id+'-' : ''}${nuevo}`
+}
+
 //Ingresos de Materia Prima
 serverCtrl.Ingresar_material = async (req, res)=>{
     let {User, Api, datos, hash} = req.body;
@@ -935,7 +952,9 @@ serverCtrl.Ingresar_material = async (req, res)=>{
           cantidad: material.cantidad
         }]
       }
-      let valores = {fecha, movimiento};
+      let total = await IM.estimatedDocumentCount();
+      const codigo = Generar_codigo(total,'IMP');
+      let valores = {codigo, fecha, movimiento};
       let cod_chs = await Codigo_chs({...valores});
       const hash_chs = await Hash_chs({...valores, cod_chs})
       const Nuevo = new IM({valores, cod_chs, hash_chs, actualizado:'Sistema'});
@@ -970,7 +989,9 @@ serverCtrl.Ingresar_empaque = async (req, res)=>{
       }]
       
     }
-    let valores = {fecha, movimiento};
+    let total = await IM.estimatedDocumentCount();
+    const codigo = Generar_codigo(total,'IEM')
+    let valores = {codigo, fecha, movimiento};
     let cod_chs = await Codigo_chs({...valores});
     const hash_chs = await Hash_chs({...valores, cod_chs})
     const Nuevo = new IE({valores, cod_chs, hash_chs, actualizado:'Sistema'});
@@ -1074,7 +1095,7 @@ serverCtrl.Ingreso_Egreso = async (req, res)=>{
     // console.log('Ingresos',ingresos);
     // console.log('Egresos',egresos);
     // console.log(inventario)
-    res.json({Respuesta:'Ok', inventario});
+    res.json({Respuesta:'Ok', inventario, ingresos, egresos});
   }else{
     res.json({Respuesta:'Error', mensaje:'hash invalido'});
 }

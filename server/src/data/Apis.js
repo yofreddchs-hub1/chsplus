@@ -19,5 +19,12 @@
         "link": "/unefa",
         "data": "Api_unefa",
         "app": "unefa"
+    },
+    "UnefaPostgrado": {
+        "label": "Unefa PostGrado",
+        "logo": "/api/imagen/unefa.png",
+        "link": "/unefapostgrado",
+        "data": "Api_unefapostgrado",
+        "app": "unefapostgrado"
     }
 }

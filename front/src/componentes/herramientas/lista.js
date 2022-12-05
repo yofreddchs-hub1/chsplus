@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Lista(props) {
   const classes = useStyles();
   const {valor, cambio, abierto, subtitulo, alto}=props;
-  // console.log('.............',abierto);
+  console.log('.............',props.Config);
   const altol= alto ? alto : window.innerHeight* 0.85;
   let mostrar={};
   let agregar={};

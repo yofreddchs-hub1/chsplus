@@ -53,7 +53,7 @@ export default function CustomizedList(props) {
         let nuevo=[];
         for (var i=0; i<Config.Menu.length;i++){
             let f=Config.Menu[i];
-            const permiso=props.Api ? await Permiso(f.value, props.Api) : await Permiso(f.value);
+            const permiso=props.Api ? await Permiso(f.value, props.Api, false, Config.Listas[`lista_${props.Api}_categoria`]) : await Permiso(f.value);
             f.libre = f.libre===true || f.libre ==='true' ? 'true' : 'false';
             f.app_chs = f.app_chs===true || f.app_chs ==='true' ? 'true' : 'false';
             if (f.app_chs ==='true'){
@@ -61,6 +61,7 @@ export default function CustomizedList(props) {
                 const pos = f.childen.findIndex(f=> f.value===v.toLowerCase());
                 if (pos===-1)
                   f.childen=[...f.childen,{value:v, primary:v, icon:'apps', link:`/${v}`}]
+                return v
               })
             }
             if (f.libre ==='true' || permiso){

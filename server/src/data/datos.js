@@ -76,6 +76,18 @@
                     "value": "Registros",
                     "primary": "Registos",
                     "icon": "dataset"
+                },
+                {
+                    "value": "Nuevos",
+                    "primary": "Nuevos",
+                    "icon": "note_add",
+                    "childen": [
+                        {
+                            "value": "Formulas",
+                            "primary": "Formulas",
+                            "icon": "shopping_cart_checkout"
+                        }
+                    ]
                 }
             ]
         },
@@ -6512,6 +6524,167 @@
                     "name": "fecha"
                 }
             ]
+        },
+        "Form_formula_mov": {
+            "columna": 2,
+            "value": [
+                {
+                    "nombre": "formula",
+                    "tipo": "lista_multiuso",
+                    "label": "Formula",
+                    "placeholder": "Formula",
+                    "title": "Seleccionar Formula",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "lista": "formula",
+                    "getOptionLabel": [
+                        "mezcla"
+                    ],
+                    "key": "formula",
+                    "name": "formula"
+                },
+                {
+                    "nombre": "actual",
+                    "tipo": "number",
+                    "label": "Cantidad Actual",
+                    "placeholder": "Cantidad Actual",
+                    "title": "Cantidad Actual",
+                    "mensaje_error": "",
+                    "disabled": true,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "actual",
+                    "name": "actual",
+                    "multiline": false
+                }
+            ]
+        },
+        "Form_materia": {
+            "columna": 2,
+            "value": [
+                {
+                    "nombre": "codmateria",
+                    "label": "Código de Materia",
+                    "placeholder": "Código de Materia",
+                    "title": "Código de Materia",
+                    "required": true,
+                    "mensaje_error": "Debe indicar Código de Materia",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "codmateria",
+                    "name": "codmateria"
+                },
+                {
+                    "nombre": "nombre",
+                    "label": "Nombre",
+                    "placeholder": "Nombre",
+                    "title": "Nombre de Materia",
+                    "required": true,
+                    "mensaje_error": "Debe indicar Nombre de Materia",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "nombre",
+                    "name": "nombre"
+                },
+                {
+                    "nombre": "unidadcredito",
+                    "tipo": "number",
+                    "label": "Unidades de Crédito",
+                    "placeholder": "Unidades de Crédito",
+                    "title": "Unidades de Crédito",
+                    "required": false,
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "unidadcredito",
+                    "name": "unidadcredito",
+                    "multiline": false
+                },
+                {
+                    "nombre": "prelaciones",
+                    "label": "Prelaciones",
+                    "placeholder": "Prelaciones",
+                    "title": "Prelaciones",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "prelaciones",
+                    "name": "prelaciones"
+                },
+                {
+                    "nombre": "electivas",
+                    "label": "Electivas",
+                    "placeholder": "Electivas",
+                    "title": "Electivas",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "electivas",
+                    "name": "electivas"
+                },
+                {
+                    "nombre": "periodo",
+                    "label": "Periodo",
+                    "placeholder": "Periodo",
+                    "title": "Periodo",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "periodo",
+                    "name": "periodo"
+                },
+                {
+                    "nombre": "codprograma",
+                    "label": "Código Programa",
+                    "placeholder": "Código Programa",
+                    "title": "Código Programa",
+                    "required": false,
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "codprograma",
+                    "name": "codprograma"
+                },
+                {
+                    "nombre": "termino",
+                    "label": "Termino",
+                    "placeholder": "Termino",
+                    "title": "Termino",
+                    "required": false,
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "termino",
+                    "name": "termino"
+                }
+            ]
         }
     },
     "Titulos": {
@@ -7763,7 +7936,7 @@
                 "title": "Inventario Actual",
                 "field": "actual",
                 "tipo": "",
-                "formato": "(dato)=> `${dato.valores ? dato.valores.actual : dato.actual}`",
+                "formato": "(dato)=> `${Number(dato.valores && dato.valores.actual  ? dato.valores.actual : dato.actual ? dato.actual : 0).toFixed(2)}`\n",
                 "default": "",
                 "type": ""
             }

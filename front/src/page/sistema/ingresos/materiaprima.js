@@ -13,9 +13,8 @@ export default function IMP(props) {
     const [formulario, setFormulario] = useState();
     
     const Guardar= async(valores)=>{
-        console.log(valores)
+        
         const Resp = await conexiones.Ingresar_material(valores.mp);
-        console.log(formulario)
         // setFormulario(formulario);
         Inicio()
     }

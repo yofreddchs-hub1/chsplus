@@ -105,7 +105,7 @@ class Tabla extends Component {
       // if (cantidad<items) {
         // cargacompleta({Titulo, datos, cantidad});
       // if (!cargaporparte){
-        console.log(this.state.pagina)
+        // console.log(this.state.pagina)
         cargacompleta({table, nuevodatos:datos, cantidad});
       // }else{
 

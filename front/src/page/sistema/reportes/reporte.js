@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 // import MailIcon from '@material-ui/icons/Mail';
 // import NotificationsIcon from '@material-ui/icons/Notifications';
-
+import Typography from '@mui/material/Typography';
 import {conexiones, genera_fromulario, Permiso, MaysPrimera} from '../../../procesos/servicios'
 import Tabla from '../../../componentes/herramientas/tabla';
 import { Form_todos, Titulos_todos } from '../../../constantes';
@@ -10,6 +10,7 @@ import Cargando from '../../../componentes/esperar/cargar';
 import moment from 'moment';
 import Icon from '@mui/material/Icon';
 import IconButton from '@mui/material/IconButton';
+import Detalles from './detalles';
 
 export default class Reporte extends Component {
   constructor(props) {
@@ -25,7 +26,12 @@ export default class Reporte extends Component {
       }
   }
 
-  
+  Seleccion = (item)=>(dato) =>{
+
+    // console.log(dato.target.innerText, dato.target.cellIndex, this.state.Titulos[dato.target.cellIndex].field)
+    console.log(item, this.state.Titulos[item])
+    this.Abrir1(this.state.Titulos[item].field);
+  }
   async componentDidMount(){
     let fecha=new Date();
     var ultimoDia = new Date(fecha.getFullYear(), fecha.getMonth() + 1, 0).getUTCDate();
@@ -44,28 +50,50 @@ export default class Reporte extends Component {
           return `0 / 0 `
         }
     }];
+    const ingreso='#138E04';
+    const egreso='#A30E02';
+    const ambos ='#AA9309';
     for (var dia=1; dia<=ultimoDia;dia++){
       const campo = `${ano}-${mes}-${dia<10 ? '0' + dia : dia}`;
         titulos=[...titulos,{
             field:campo,
             default:'',
             title:`${dia<10 ? '0' + dia : dia}-${mes}-${ano} \n Ingresos/Egresos`,
+            tipo:'html',
+            props:{
+              onClick:this.Seleccion(Number(dia)+2)
+                
+            },
             formato: (dato)=>{
               if (dato[campo]){
-                return `${dato[campo].ingreso} / ${dato[campo].egreso} `
+                return <Typography variant="h6" 
+                              sx={{
+                                    color:dato[campo].ingreso!==0 && dato[campo].egreso===0 
+                                      ? ingreso 
+                                      : dato[campo].ingreso===0 && dato[campo].egreso!==0
+                                      ? egreso
+                                      : ambos
+                                  }} 
+                        >
+                          {`${dato[campo].ingreso} / ${dato[campo].egreso}`} 
+                        </Typography>
               }
-              return `0 / 0 `
+              return (<Typography variant="h6" >{`0 / 0`}</Typography>)
             }
         }];
         meses=[...meses, campo]
     }    
     const res = await conexiones.Ingreso_Egreso({meses, tipo:this.props.Titulo ? this.props.Titulo : undefined});
-    console.log('>>>>>>>>>>>>',titulos);
-    let datos = []
+    // console.log('>>>>>>>>>>>>', res, meses);
+    let datos = [];
+    let ingresos = [];
+    let egresos = [];
     if (res.Respuesta==='Ok'){
-      datos= res.inventario
+      datos= res.inventario;
+      ingresos = res.ingresos;
+      egresos = res.egresos;
     }
-    this.setState({cargando:false, Titulos:titulos, Titulos_dia, datos})
+    this.setState({cargando:false, Titulos:titulos, Titulos_dia, datos, ingresos, egresos})
    
   }
 
@@ -87,14 +115,13 @@ export default class Reporte extends Component {
     this.setState({dialogo:{...dialogo, open:false}})
   }
   Abrir = ()=>{
-    console.log('Abrir......')
     const {datos, Config, Titulos, dialogo}=this.state;
     this.setState({dialogo:{
         open:!dialogo.open,
         tam:'xl',
         Titulo: this.props.TituloDetalle ? this.props.TituloDetalle : 'Titulo',
         Cuerpo:
-          <div style={{margin:5, height:window.innerHeight * 0.70, backgroundColor:'#0f0'}}>
+          <div style={{margin:5, height:window.innerHeight * 0.70}}>
             <Tabla
             
                 Titulo={this.props.Titulo ? this.props.Titulo : 'Titulo tabla'}
@@ -113,17 +140,32 @@ export default class Reporte extends Component {
     }})
   }
 
-  Abrir1 = (valores)=>{
+  Abrir_detalle = ()=>{
+    const {datos, Config, Titulos, dialogo}=this.state;
+    this.setState({dialogo:{
+        open:!dialogo.open,
+        tam:'xl',
+        Titulo: this.props.TituloDetalle ? this.props.TituloDetalle : 'Titulo',
+        Cuerpo:
+          <div style={{margin:5, height:window.innerHeight * 0.70}}>
+            
+            <Detalles Config={this.state.Config} Titulo={this.props.Titulo} Ingresos={this.state.ingresos} Egresos={this.state.egresos}/>
+          </div>,
+        Cerrar: this.Cerrar
+    }})
+  }
 
-    const {datos, Config, Titulos, dialogo1}=this.state;
+  Abrir1 = (valores)=>{
+    let fecha = new Date(valores);
+    fecha.setDate(fecha.getDate()+1)
+    const { dialogo1}=this.state;
     this.setState({dialogo1:{
         open:!dialogo1.open,
         // tam:'xl',
         Titulo:'Detalles',
         Cuerpo:
-          <div style={{margin:5, height:window.innerHeight * 0.70, backgroundColor:'#0f0'}}>
-            
-            
+          <div style={{margin:5, height:window.innerHeight * 0.70}}>  
+            <Detalles Config={this.state.Config} Titulo={this.props.Titulo} Fecha={fecha}/>
           </div>,
         Cerrar: ()=>this.setState({dialogo1:{open:false}})
     }})
@@ -148,6 +190,9 @@ export default class Reporte extends Component {
             <div>
               <IconButton color={'primary'} sx={{color:'#fff'}} title={'Ver movimientos'} onClick={this.Abrir}>
                 <Icon>zoom_in</Icon>
+              </IconButton>
+              <IconButton color={'primary'} sx={{color:'#fff'}} title={'Detalles de Ingresos y egresos'} onClick={this.Abrir_detalle}>
+                <Icon>plagiarism</Icon>
               </IconButton>
             </div>
           }

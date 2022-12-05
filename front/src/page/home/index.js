@@ -1,9 +1,7 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 
-import Scrollbars from '../../componentes/scrolbars';
+import Scrollbars from '../../componentes/herramientas/scrolbars';
 import Carrusel from '../../componentes/carrusel';
 import CarruselPdf from '../../componentes/carrusel_pdf';
 import Catalogo from '../../componentes/catalogo';

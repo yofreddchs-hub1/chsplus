@@ -12,6 +12,7 @@ import Typography from '@mui/material/Typography';
 
 import logo from '../../imagenes/logo.png';
 import { Ver_Valores } from '../../constantes';
+import Scrollbars from './scrolbars';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -87,13 +88,15 @@ export default function Dialogo(props) {
         <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose} config={config}>
           {Titulo}
         </BootstrapDialogTitle>
-        <DialogContent dividers 
+        {/* <DialogContent dividers 
           style={{backgroundColor:'rgba(0, 0, 0,0.8)', 
                   ...config.Estilos.Dialogo_cuerpo ? config.Estilos.Dialogo_cuerpo :{}
                 }}
-        >
-          {Cuerpo!==undefined ? Cuerpo : null }
-        </DialogContent>
+        > */}
+          <Scrollbars sx={{flexGrow: 1, padding:0.5, ...config.Estilos.Dialogo_cuerpo ? config.Estilos.Dialogo_cuerpo :{}}}>
+            {Cuerpo!==undefined ? Cuerpo : null }
+          </Scrollbars>
+        {/* </DialogContent> */}
         {
           Botones ?
               <DialogActions>

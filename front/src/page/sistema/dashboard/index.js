@@ -8,6 +8,7 @@ import ProduccionDia from './producciondia';
 import Empaques from './empaques';
 import PT from './productoterminado';
 import ProduccionObrero from './produccion_obrero';
+
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
@@ -17,6 +18,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function Dashboard(props) {
+  
   return (
     <Box sx={(theme) => ({ flexGrow: 1, 
         height:'100%',
@@ -56,6 +58,7 @@ export default function Dashboard(props) {
             <ProduccionObrero/>
           </Item>
         </Grid>
+        
       </Grid>
     </Box>
   );

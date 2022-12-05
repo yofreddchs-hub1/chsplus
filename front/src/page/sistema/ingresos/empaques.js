@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
+// import Grid from '@mui/material/Grid';
+// import Typography from '@mui/material/Typography';
 
-import Cargando from '../../../componentes/esperar/cargar';
+// import Cargando from '../../../componentes/esperar/cargar';
 import { conexiones} from '../../../procesos/servicios';
 import { genera_fromulario } from '../../../procesos/servicios';
 import { Form_todos } from '../../../constantes';

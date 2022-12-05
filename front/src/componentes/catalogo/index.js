@@ -5,44 +5,43 @@ import ImageListItemBar from '@mui/material/ImageListItemBar';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import ListSubheader from '@mui/material/ListSubheader';
+
 import Grid from '@mui/material/Grid';
-import IconButton from '@mui/material/IconButton';
-import InfoIcon from '@mui/icons-material/Info';
+
 import Skeleton from '@mui/material/Skeleton';
-import { conexiones } from '../../procesos/servicios';
+// import { conexiones } from '../../procesos/servicios';
 import Dialogo from '../herramientas/dialogo';
-import Scrollbars from '../scrolbars';
-import Tarjeta from './tarjeta';
+
+// import Tarjeta from './tarjeta';
 import Item from './item';
 
 export default function Catalogo(props) {
   const [itemData, setItemData] = React.useState([]);
-  const [dialogo, setDialogo]= React.useState({
+  const [dialogo]= React.useState({
     open:false,  tam:'lg'
   });
-  const Inicio =async()=>{
-    let resultados= await conexiones.Leer_C(['Producto'], 
-        {
-          'Producto':{},
-        }
-    );
+  // const Inicio =async()=>{
+  //   let resultados= await conexiones.Leer_C(['Producto'], 
+  //       {
+  //         'Producto':{},
+  //       }
+  //   );
     
-    if (resultados.Respuesta==='Ok'){
-        let productos=resultados.datos.Producto.map(val=>{
+  //   if (resultados.Respuesta==='Ok'){
+  //       let productos=resultados.datos.Producto.map(val=>{
 
-            return {
-                ...val, 
-                img: val.valores.imagen,
-                author: val.valores.codigo,
-                title: val.valores.nombre,
+  //           return {
+  //               ...val, 
+  //               img: val.valores.imagen,
+  //               author: val.valores.codigo,
+  //               title: val.valores.nombre,
                 
-            }
-        })
-        // productos.push({img:'https://res.cloudinary.com/dtu1dwuwf/video/upload/v1645729310/videochs_s6y6hk.mp4', author:'yofredd', title:'Video'})
-        setItemData(productos)
-    }
-  }
+  //           }
+  //       })
+  //       // productos.push({img:'https://res.cloudinary.com/dtu1dwuwf/video/upload/v1645729310/videochs_s6y6hk.mp4', author:'yofredd', title:'Video'})
+  //       setItemData(productos)
+  //   }
+  // }
 
   React.useEffect(()=>{
     if (props.datos){
@@ -61,15 +60,15 @@ export default function Catalogo(props) {
     }
   }, [props])
 
-  const Abrir = async(valores) =>{
-    setDialogo({
-        ...dialogo, 
-        open: !dialogo.open,
-        Titulo:valores.valores.nombre,
-        Cuerpo:<Tarjeta datos={valores.valores}/>,
-        Cerrar: ()=>setDialogo({...dialogo,open:false}),
-    })
-}
+  // const Abrir = async(valores) =>{
+  //   setDialogo({
+  //       ...dialogo, 
+  //       open: !dialogo.open,
+  //       Titulo:valores.valores.nombre,
+  //       Cuerpo:<Tarjeta datos={valores.valores}/>,
+  //       Cerrar: ()=>setDialogo({...dialogo,open:false}),
+  //   })
+  // }
 
   return (
     <Paper elevation={3} sx={{ bgcolor:'#0000ff', color:'#ffffff', overflow:'hide', marginBottom:0.5, padding:0.5, height:window.innerHeight * 0.86}}>

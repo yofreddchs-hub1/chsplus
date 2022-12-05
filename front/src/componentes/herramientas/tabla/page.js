@@ -301,43 +301,44 @@ export default function Tabla(props) {
                         {titulos.map((column,i) => {
                           const value = row[column.field];
                           return (
-                            <StyledTableCell key={column.field+i+j} align={column.align}>
+                            <StyledTableCell key={column.field+i+j} align={column.align} {...column.props ? column.props : {}}>
                               {column.format && typeof value === 'number'
                                 ? column.format(value)
                                 : column.tipo && column.tipo==='foto'
-                                ? <div style={{display:'flex', justifyContent:'center', justifyItems:'center',alignItems:'center',}}>
-                                    <Avatar
-                                      alt={column.field}
-                                      src={column.formato ? column.formato(row) : value}
-                                      sx={{ width: 56, height: 56 }}
-                                    />
-                                  </div>
-                                : column.tipo && column.tipo==='imagen'
-                                ? <div style={{display:'flex', justifyContent:'center', justifyItems:'center',alignItems:'center',}}>
-                                    <img
-                                      alt={column.field}
-                                      src={column.formato ? `${column.formato(row)}?w=248&fit=crop&auto=format` : `${value}?w=48&fit=crop&auto=format`}
-                                      srcSet={column.formato ? `${column.formato(row)}?w=248&fit=crop&auto=format` : `${value}?w=48&fit=crop&auto=format&dpr=1 1x`}
-                                      loading="lazy"
-                                      style={{ width: 66 }}
-                                    />
-                                  </div>
-                                : column.tipo && column.tipo==='representados' && typeof column.formato(row) ==='object'
-                                ? <div style={{ }}>
-                                    {column.formato(row).map(val=>
-                                      <Typography key={val.cedula} variant="body1" gutterBottom>
-                                      {val.cedula + ' ' + val.nombres + ' ' + val.apellidos}
-                                      </Typography>  
-                                      
-                                    )}
-                                  </div>
-                                : column.tipo && column.tipo==='fecha' && column.formato
-                                ? moment(column.formato(row)).format('DD/MM/YYYY')
-                                : column.formato
-                                ? typeof column.formato(row)==='object'
-                                ? String(column.formato(row))
-                                : column.formato(row)
-                                : value}
+                                  ? <div style={{display:'flex', justifyContent:'center', justifyItems:'center',alignItems:'center',}}>
+                                      <Avatar
+                                        alt={column.field}
+                                        src={column.formato ? column.formato(row) : value}
+                                        sx={{ width: 56, height: 56 }}
+                                      />
+                                    </div>
+                                  : column.tipo && column.tipo==='imagen'
+                                    ? <div style={{display:'flex', justifyContent:'center', justifyItems:'center',alignItems:'center',}}>
+                                        <img
+                                          alt={column.field}
+                                          src={column.formato ? `${column.formato(row)}?w=248&fit=crop&auto=format` : `${value}?w=48&fit=crop&auto=format`}
+                                          srcSet={column.formato ? `${column.formato(row)}?w=248&fit=crop&auto=format` : `${value}?w=48&fit=crop&auto=format&dpr=1 1x`}
+                                          loading="lazy"
+                                          style={{ width: 66 }}
+                                        />
+                                      </div>
+                                    : column.tipo && column.tipo==='representados' && typeof column.formato(row) ==='object'
+                                      ? <div style={{ }}>
+                                          {column.formato(row).map(val=>
+                                            <Typography key={val.cedula} variant="body1" gutterBottom>
+                                            {val.cedula + ' ' + val.nombres + ' ' + val.apellidos}
+                                            </Typography>  
+                                            
+                                          )}
+                                        </div>
+                                      : column.tipo && column.tipo==='fecha' && column.formato
+                                        ? moment(column.formato(row)).format('DD/MM/YYYY')
+                                        : column.formato
+                                          ? typeof column.formato(row)==='object' && !column.tipo
+                                            ? String(column.formato(row))
+                                            : column.formato(row)
+                                          : value
+                                }
                             </StyledTableCell>
                           );
                         })}

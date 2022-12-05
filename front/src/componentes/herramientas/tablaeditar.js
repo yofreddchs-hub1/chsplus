@@ -428,6 +428,7 @@ export default function AntDesignGrid(props) {
                     ? () =>SubTotales({name:props.name, Subtotal:props.Subtotal, Cambio:props.Cambio, Subtotalvalor ,rows, Config}) 
                     : undefined
         }}
+        hideFooter= {props.Subtotal ? false : true}
         localeText={local}
         columns={columns}
         rows={rows}

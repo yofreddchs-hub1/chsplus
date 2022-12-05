@@ -5,7 +5,7 @@ import IconButton from '@mui/material/IconButton';
 import Tabla from './index';
 import Dialogo from '../dialogo';
 import Formulario from '../formulario';
-import {Permiso, conexiones, genera_fromulario, crear_campos} from '../../../procesos/servicios';
+import { conexiones, genera_fromulario, crear_campos} from '../../../procesos/servicios';
 
 import Esperar from '../../esperar/cargar';
 import { confirmAlert } from 'react-confirm-alert'; // Import
@@ -60,9 +60,9 @@ function Estilos(Estilos){
 
 function Tabla_multiple (props) {
     
-    const {Form_origen,Table,Titulo_dialogo,Titulo_tabla,Titulos_tabla, Agregar_mas, Columnas, 
+    const {Form_origen,Table,Titulo_dialogo,Titulo_tabla,Titulos_tabla, Agregar_mas, //Columnas, 
             Acciones1, Seleccion, Nuevo, cargaporparte,Config, multiples_valores,
-            Condiciones, Acciones, sinpaginacion, Eliminar_props
+            Condiciones, Acciones, sinpaginacion, //Eliminar_props
           }=props
     const estilos=Ver_Valores().config.Estilos.Usuarios ? Ver_Valores().config.Estilos.Usuarios : {} //props.config.Estilos.Usuarios ? props.config.Estilos.Usurios : {}
     const classes= Estilos(estilos);
@@ -134,29 +134,29 @@ function Tabla_multiple (props) {
         
     }
 
-    const Combinar = (campos, campos1) =>{
+    // const Combinar = (campos, campos1) =>{
         
-        let resultado = campos;
-        resultado.columna= campos1.columna;
-        resultado.value= resultado.value.map(val=>{
-            const pos= campos1.value.findIndex(f=> f.name===val.name);
-            if (pos!==-1){
-                return campos1.value[pos]
-            }else{
-                return val
-            }
-        })
+    //     let resultado = campos;
+    //     resultado.columna= campos1.columna;
+    //     resultado.value= resultado.value.map(val=>{
+    //         const pos= campos1.value.findIndex(f=> f.name===val.name);
+    //         if (pos!==-1){
+    //             return campos1.value[pos]
+    //         }else{
+    //             return val
+    //         }
+    //     })
 
-        campos1.value.map(val=>{
-            const pos= resultado.value.findIndex(f=> f.name===val.name);
-            if (pos===-1){
-                resultado.value=[...resultado.value, val]
-            }
-            return val
-        })
+    //     campos1.value.map(val=>{
+    //         const pos= resultado.value.findIndex(f=> f.name===val.name);
+    //         if (pos===-1){
+    //             resultado.value=[...resultado.value, val]
+    //         }
+    //         return val
+    //     })
 
-        return resultado
-    }
+    //     return resultado
+    // }
 
     const Abrir = async(valores) =>{
         // let campos = valores.campos ? Combinar(valores.campos, Form_origen) : Form_origen;
@@ -167,7 +167,7 @@ function Tabla_multiple (props) {
         //                 : await genera_fromulario({valores:{}, campos },Columnas)
         
         // Verfificar con clama el caso anterio verifica los campos guardados para mostrar esos campos ahora solo se muestra lo indicado en Form_origen
-        console.log(valores);
+        // console.log(valores);
         if (valores.valores===undefined){
             valores={_id:valores._id, valores};
         }
@@ -217,7 +217,7 @@ function Tabla_multiple (props) {
         })
     }
     
-    const color =  props.Config.Estilos.Input_label ? props.Config.Estilos.Input_label : {};
+    const color =  props.Config.Estilos.Input_icono ? props.Config.Estilos.Input_icono : {};
     
     return (
         <div className={classes.root}>

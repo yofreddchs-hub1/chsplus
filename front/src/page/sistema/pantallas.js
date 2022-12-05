@@ -10,6 +10,8 @@ import Egresos from './egresos';
 import EMP from './egresos/materiaprima';
 import EProducto from './egresos/egresosproducto';
 import Reportes from './reportes';
+import Formulas from './procesos/formulas';
+import SubMenu from './procesos/submenu';
 export const sistema_pantallas={
     Sistema:Dashboard,
     Planificar: Planificacion,
@@ -25,6 +27,11 @@ export const sistema_pantallas={
         'Egreso Material':EMP,
         'Egreso Producto Terminado':EProducto
     },
-    Reportes
+    Reportes,
+    Nuevos:{
+        Nuevos: (props)=> <SubMenu {...props} submenu={['Sistema','Nuevos']}/>,
+        Formulas
+    }
+    
    
 }

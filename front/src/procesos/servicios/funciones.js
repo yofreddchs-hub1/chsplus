@@ -104,10 +104,10 @@ export const Usuario = async(props)=>{
   }  
   
 }
-export const Permiso =  async(accion, api, superadmin=false) =>{
+export const Permiso =  async(accion, api, superadmin=false, Categoria = null) =>{
   let User = api ? await Usuario({api}) : await Usuario()//JSON.parse(localStorage.getItem(const_procesos.dir_user));
   if (User===null) return false
-  let categoria = api ? Ver_Valores()['config']['Listas'][`lista_${api}_categoria`] : categoria_usuario;
+  let categoria = Categoria ? Categoria: api ? Ver_Valores()['config']['Listas'][`lista_${api}_categoria`] : categoria_usuario;
   categoria = categoria.map(val=>{
     return {...val, permisos: typeof val.permisos==='string' ? val.permisos.split(',') : val.permisos}
   })
@@ -597,6 +597,26 @@ export const Generar_id =(id, numeracion=10, cant=6)=>{
   // return `${id ? id+'-' :''}${moment().format('x')}` 
 }
 
+export const Generar_codigo = (valor, id='', cantidad=5)=>{
+  let nuevo = String(Number(valor) + 1);
+  let cero = cantidad-nuevo.length;
+  for (var i=0; i<cero; i++){
+    nuevo='0'+nuevo;
+  }
+  return `${id!=='' ? id+'-' : ''}${nuevo}`
+}
+
+export const Dias_mes = (fecha=new Date())=>{
+    var ultimoDia = new Date(fecha.getFullYear(), fecha.getMonth() + 1, 0).getUTCDate();
+    var mes = moment(fecha).format('MM');
+    var ano = moment(fecha).format('YYYY');
+    let meses = [];
+    for (var dia=1; dia<=ultimoDia;dia++){
+      const campo = `${ano}-${mes}-${dia<10 ? '0' + dia : dia}`;
+      meses=[...meses, campo]
+    }    
+    return meses;
+}
 export var numeroALetras = (function() {
   // Código basado en el comentario de @sapienman
   // Código basado en https://gist.github.com/alfchee/e563340276f89b22042a

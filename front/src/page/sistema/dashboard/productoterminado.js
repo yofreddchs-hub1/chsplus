@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 
 import Cargando from '../../../componentes/esperar/cargar';
 import { conexiones} from '../../../procesos/servicios';
+import { Generar_id } from '../../../procesos/servicios';
 
 export default function PT(props) {
     const [datos,setDatos]=React.useState([]);
@@ -59,7 +60,7 @@ export default function PT(props) {
                         ?   datos.map(val=>{
                                 let titulo = null;
                                 if (val.valores.categoria && anterior!==val.valores.categoria.titulo){
-                                    console.log(val.valores.categoria.titulo)
+                                    
                                     anterior= val.valores.categoria.titulo
                                     titulo = <Box sx={{borderBottom:3, marginBottom:2}}>
                                         <Typography title={'Categoria'}>{anterior}</Typography>
@@ -67,7 +68,7 @@ export default function PT(props) {
                                 }
                                 
                                 return(
-                                    <Box>
+                                    <Box key={Generar_id()}>
                                         {titulo}
                                         <Box key={val._id}
                                                 sx={{
