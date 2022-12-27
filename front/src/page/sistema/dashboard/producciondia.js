@@ -69,6 +69,12 @@ export default function ProduccionDia(props) {
                     setDatos({});
                 }
             }
+            props.socket.on(`Actualizar_produccion`, data => {
+                Inicio();
+            })
+            props.socket.on(`Actualizar_inventariopt`, data => {
+                Inicio();  
+            })
         }
         Inicio()
     },[props])

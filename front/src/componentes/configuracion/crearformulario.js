@@ -415,7 +415,7 @@ export default class CrearFormulario extends Component {
       this.setState({formulario_muestra, columnas:columna})
     }
   }
-
+  //Copiar, eliminar formulario
   SeleccionA = async(valores) => {
     const destino= valores.resultados[valores.name].titulo;
     // let Config = Ver_Valores().config;
@@ -471,9 +471,9 @@ export default class CrearFormulario extends Component {
   }
 
   Seleccion = async(valores)=>{
-    const Config = Ver_Valores().config;
-    
-    const formulario=valores.resultados[valores.name]
+    const Config = this.state.Config;//Ver_Valores().config;
+    console.log('Por aqui', Config, valores)
+    const formulario=valores.resultados[valores.name];
     if (formulario.titulo!=='Nuevo'){
       
       const formul=Object.keys(Config.Formularios);
@@ -505,7 +505,7 @@ export default class CrearFormulario extends Component {
       formularios.titulos.apis.onChange= this.SeleccionA
       
       //En muestra de formulario
-      let formulario_muestra = await genera_fromulario({valores:{}, campos: Form_todos(`${formulario.titulo}`) })
+      let formulario_muestra = await genera_fromulario({valores:{}, campos: Form_todos(`${formulario.titulo}`, Config) })
       formulario_muestra.botones=[
         {
           name:'guardar', label:'Guardar', title:'Guardar ',
@@ -518,7 +518,7 @@ export default class CrearFormulario extends Component {
 
       let muestra_entrada=undefined;
       let input_campos=undefined;
-      let formulario_seleccionado = Form_todos(`${formulario.titulo}`).value;
+      let formulario_seleccionado = Form_todos(`${formulario.titulo}`, Config).value;
 
       this.setState({columnas, formularios, formulario_muestra, formulario_seleccionado, muestra_entrada, input_campos, seleccionado:formulario.titulo})
     }else{
@@ -559,7 +559,7 @@ export default class CrearFormulario extends Component {
       }})
     }
   }
-
+  //Crea un nuevo formulario
   Crear = async(valores) =>{
     const nueva= `Form_${valores.nombre}`;
     // let Config = Ver_Valores().config;
@@ -580,7 +580,7 @@ export default class CrearFormulario extends Component {
       database=[]
     }
     // Object.keys(Config.Formularios).map(async v=>{
-      console.log(Config)
+    console.log(Config)
     const formul=Object.keys(Config.Formularios);
     let lista=formul.map((val,i)=>{
       return {_id:i, titulo:val}
@@ -639,6 +639,7 @@ export default class CrearFormulario extends Component {
     let seleccionadoA = data.resultados.apis;
     this.SeleccionAN(seleccionadoA)
   }
+  //Seleccionar api
   SeleccionAN = async(seleccionadoA) =>{
     let Config = Ver_Valores().config;
     let archivo=`data/${seleccionadoA.api}.js`;

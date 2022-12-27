@@ -110,131 +110,6 @@
     ],
     "Menu_iconos": [],
     "Formularios": {
-        "Form_unefa_asignatura": {
-            "columna": 2,
-            "value": [
-                {
-                    "nombre": "codigo",
-                    "tipo": "input",
-                    "label": "Código",
-                    "placeholder": "Código",
-                    "title": "Código",
-                    "required": true,
-                    "mensaje_error": "Debe indicar código de asignatura ",
-                    "disabled": false,
-                    "numberOfLines": "",
-                    "getOptionLabel": [
-                        "titulo"
-                    ],
-                    "key": "codigo",
-                    "name": "codigo"
-                },
-                {
-                    "nombre": "nombre",
-                    "tipo": "input",
-                    "label": "Nombre de Asignatura",
-                    "placeholder": "Nombre de Asignatura",
-                    "title": "Nombre de Asignatura",
-                    "required": true,
-                    "mensaje_error": "Debe indicar nombre de asignatura ",
-                    "disabled": false,
-                    "numberOfLines": "",
-                    "getOptionLabel": [
-                        "titulo"
-                    ],
-                    "key": "nombre",
-                    "name": "nombre"
-                },
-                {
-                    "nombre": "semestre",
-                    "tipo": "lista_multiuso",
-                    "label": "Semestre",
-                    "placeholder": "Semestre",
-                    "title": "Semestre",
-                    "required": true,
-                    "mensaje_error": "Debe indicar semestre de asignatura ",
-                    "disabled": false,
-                    "numberOfLines": "",
-                    "lista": "lista_unefa_semestres",
-                    "getOptionLabel": [
-                        "titulo"
-                    ],
-                    "agregar": false,
-                    "key": "semestre",
-                    "name": "semestre"
-                },
-                {
-                    "nombre": "carrera",
-                    "tipo": "lista_multiuso",
-                    "label": "Carrera",
-                    "placeholder": "Carrera",
-                    "title": "Carrera",
-                    "required": true,
-                    "mensaje_error": "Debe indicar carrera de asignatura ",
-                    "disabled": false,
-                    "numberOfLines": "",
-                    "lista": "unefa_carrera",
-                    "getOptionLabel": [
-                        "nombres"
-                    ],
-                    "agregar": true,
-                    "key": "carrera",
-                    "name": "carrera",
-                    "form": "Form_unefa_carreras"
-                },
-                {
-                    "nombre": "horat",
-                    "tipo": "number",
-                    "label": "Horas Teóricas",
-                    "placeholder": "Horas Teóricas",
-                    "title": "Horas Teóricas",
-                    "required": true,
-                    "mensaje_error": "Debe indicar horas teóricas de la asignatura ",
-                    "disabled": false,
-                    "numberOfLines": "",
-                    "getOptionLabel": [
-                        "titulo"
-                    ],
-                    "key": "horat",
-                    "name": "horat",
-                    "multiline": false
-                },
-                {
-                    "nombre": "horap",
-                    "tipo": "number",
-                    "label": "Horas Practicas",
-                    "placeholder": "Horas Practicas",
-                    "title": "Horas Practicas",
-                    "required": true,
-                    "mensaje_error": "Debe indicar horas practicas de la asignatura ",
-                    "disabled": false,
-                    "numberOfLines": "",
-                    "getOptionLabel": [
-                        "titulo"
-                    ],
-                    "key": "horap",
-                    "name": "horap",
-                    "multiline": false
-                },
-                {
-                    "nombre": "horal",
-                    "tipo": "number",
-                    "label": "Hora de Laboratorio",
-                    "placeholder": "Hora de Laboratorio",
-                    "title": "Hora de Laboratorio",
-                    "required": true,
-                    "mensaje_error": "Debe indicar hora de laboratorio de la asignatura ",
-                    "disabled": false,
-                    "numberOfLines": "",
-                    "getOptionLabel": [
-                        "titulo"
-                    ],
-                    "key": "horal",
-                    "name": "horal",
-                    "multiline": false
-                }
-            ]
-        },
         "Form_materia": {
             "columna": 2,
             "value": [
@@ -560,6 +435,10 @@
                     "name": "periodo"
                 }
             ]
+        },
+        "Form_notas": {
+            "columna": 1,
+            "value": []
         }
     },
     "Listas": {

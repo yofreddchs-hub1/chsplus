@@ -41,6 +41,7 @@ import TipoJson from './tipojson';
 import Video from './video';
 import { Ver_Valores, Titulos_todos } from '../../constantes';
 import Tabla from './tablaeditar';
+
 // import { delete } from 'request-promise';
 // import Lista from './lista';
 // import Listavideo from './lista_video';
@@ -481,91 +482,6 @@ export default function Page(props) {
       <div>
         <div style={{ display: 'flex', flexDirection:'row'}}>
           <Autocomplete valor={valor} values={values} Config={Config}/>
-          {/* <Autocomplete
-            multiple={valor.multiple}
-            
-            sx={{ width:'100%', 
-                // border:0,
-                // borderColor:'transparent',
-                // bgcolor:'#f0f',
-                '.MuiAutocomplete-inputRoot':{
-                    marginLeft:-1,
-                    
-                },
-                '.MuiAutocomplete-input:disabled':{
-                  bgcolor:'#696757',
-                  
-                },
-                '.MuiAutocomplete-input':{
-                    bgcolor: Config.Estilos.Input_fondo ? Config.Estilos.Input_fondo.backgroundColor : '#000',
-                    color: Config.Estilos.Input_input ? Config.Estilos.Input_input.color : '#fff',
-                },
-                '.MuiAutocomplete-popupIndicator':{
-                    color:Config.Estilos.Icon_lista ? Config.Estilos.Icon_lista.color : '#fff'
-                },
-                '.Mui-focused':{
-                },
-                '.MuiAutocomplete-clearIndicator':{
-                    color: Config.Estilos.Icon_lista ? Config.Estilos.Icon_lista.color :  '#fff'
-                },
-                '.MuiAutocomplete-listbox':{
-                    bgcolor:'#0f0'
-                },
-                
-                // '.Mui-focused':{
-                //     borderColor:'transparent'
-                // }
-            }}
-            disabled={valor.disabled}
-            options= {valor.lista ? valor.lista : []}
-            getOptionDisabled= {(option)=> option.disabled}
-            // getoptionselected={valor.getOptionSelected ? valor.getOptionSelected : (option) => option.titulo}
-            getOptionLabel= {valor.getOptionLabel ? valor.getOptionLabel :(option) => option.titulo}
-            id={'select-'+valor.name}
-            autoComplete
-            
-            value={valor.multiple 
-                    ?   valor.value 
-                    ?   valor.value 
-                    :   [] 
-                    :   valor.value=== undefined || valor.value==='' 
-                    ?   null 
-                    :   typeof valor.value ==='string' || typeof valor.value === 'number'
-                    ?   valor.lista[valor.value]
-                    :   valor.value
-            }
-            // inputValue={ valor.value=== undefined ? '' : valor.value.titulo}
-            isOptionEqualToValue={(option, value) => option._id === value._id}
-            noOptionsText='No hay opciones'
-            onChange={(event, newValue) => {
-              // console.log(newValue)
-              // if (newValue!==null){
-                // console.log(newValue)
-                values.Cambio({target:{name:valor.name, value:newValue}})
-              // }
-            }}
-            label={valor.label ? valor.label : valor.placeholder}
-            loading={true}
-            renderInput={(params) =>
-                            <TextField {...params} variant="outlined"
-                                label={valor.label ? valor.label : valor.placeholder}
-                                margin="normal"
-                                // onChange={values.Cambio}
-                                style= {{ margin: 8 , backgrounColor:'#f0f'}}
-                                name={valor.name}
-                                InputProps={{
-                                  ...params.InputProps,
-                                  endAdornment: (
-                                    <React.Fragment>
-                                       {loading ? <CircularProgress color="inherit" size={20} /> : null} 
-                                      {params.InputProps.endAdornment}
-                                    </React.Fragment>
-                                  ),
-                                }}
-                            />
-                        }
-          /> */}
-
           {valor.agregar 
             ? <IconButton title='Agregar sub-titulo'      
                 style={{ marginLeft:10}}
@@ -577,9 +493,9 @@ export default function Page(props) {
             : null
           }
         </div>
-        {valor.error &&(valor.value=== undefined || valor.value==='' || valor.value===null)
+        {valor.error && valor.helperText &&(valor.value=== undefined || valor.value==='' || valor.value===null)
           ? <div style={{paddingLeft:20, marginTop:-5, textAlign:'justify'}}> 
-              <label style={{color:'red', fontSize: 12}}>{valor.mensaje_error}</label>
+              <label style={{color:'red', fontSize: 12}}>{valor.helperText ? valor.helperText : 'Debe indicar datos'}</label>
             </div>
           : null
         }
@@ -664,6 +580,7 @@ export default function Page(props) {
       <Tabla  Titulo={valor.label}
               Config={Config}
               nopaginar={valor.nopaginar}
+              editables={valor.editables}
               noeliminar={valor.noeliminar}
               style={valor.style}
               titulos={Titulos_todos(valor.titulos)}
@@ -671,6 +588,7 @@ export default function Page(props) {
               cantidad={ valor.value ? valor.value.length : 0 }
               cargacompleta={null}
               datos={values.resultados[valor.name]}
+              externos = {values.resultados}
               Accion={null}
               cargaporparte={ null }
               acciones={null}
@@ -839,7 +757,7 @@ export default function Page(props) {
                             }}
                           >
                             <Typography sx={{ p: 2 }}>
-                              {boton.confirmar_mensaje 
+                              {boton.confirmar_mensaje && boton.confirmar_campo
                                 ? `${boton.confirmar_mensaje} "${values.resultados[boton.confirmar_campo] 
                                                                   ? values.resultados[boton.confirmar_campo].value
                                                                   ? values.resultados[boton.confirmar_campo].value
@@ -848,7 +766,9 @@ export default function Page(props) {
                                                                   : values.resultados[boton.confirmar_campo] 
                                                                   : ''
                                                                 }" ?`
-                                : `Confirma operación?`
+                                : boton.confirmar_mensaje
+                                  ? `${boton.confirmar_mensaje}`
+                                  : `Confirma operación?`
                               }
                             </Typography>
                             <ButtonGroup 

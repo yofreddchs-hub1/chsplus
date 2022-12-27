@@ -116,14 +116,18 @@ export default function Produccion(props) {
                                 <Box key={v._id} sx={{padding:1}}>
                                     <Grid container spacing={1}>
                                         <Grid xs={6} md={12}>
-                                            <Item elevation={6} sx={{cursor:'pointer'}} onClick={()=>Open_dialogo(v)}>
+                                            <Item elevation={6} sx={{cursor:'pointer', ...v.producido ? {bgcolor:correcto} : {}}} onClick={()=>Open_dialogo(v)}>
                                                 <Typography variant="h6"  noWrap title={`${v.mezcla} CANT. TROMPO: ${v.cantidad}`}>
-                                                    <IconButton aria-label="delete" 
-                                                                title={"Quitar de lista de producción"} 
-                                                                onClick={()=>QuitardeProduccion(v)}
-                                                    >
-                                                        <DeleteIcon />
-                                                    </IconButton>
+                                                    {v.producido
+                                                        ? null
+                                                        :
+                                                            <IconButton aria-label="delete" 
+                                                                        title={"Quitar de lista de producción"} 
+                                                                        onClick={()=>QuitardeProduccion(v)}
+                                                            >
+                                                                <DeleteIcon />
+                                                            </IconButton>
+                                                    }
                                                     {v.mezcla} CANT. TROMPO: {v.cantidad}
                                                 </Typography>
                                             </Item>
@@ -256,10 +260,10 @@ export default function Produccion(props) {
                                             <Grid container columnSpacing={1} sx={{ order: { xs: 12, sm: 2 } }}>
                                                 
                                                 <Grid>
-                                                <Item>Material Total: {v.total ? v.total.toFixed(3) : '?'}</Item>
+                                                    <Item>Material Total: {v.total ? v.total.toFixed(3) : '?'}</Item>
                                                 </Grid>
                                                 <Grid>
-                                                <Item>Material Restante: {v.resta ? v.resta.toFixed(3): '?'}</Item>
+                                                    <Item>Material Restante: {v.resta ? v.resta.toFixed(3): '?'}</Item>
                                                 </Grid>
                                             </Grid>
                                         </Grid>

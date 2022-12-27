@@ -18,6 +18,12 @@ export default function MP(props) {
                 dat=[...menor,...mayor]
                 setDatos(dat);
             }
+            props.socket.on(`Actualizar_wesi_chs_server_material`, data => {
+                Inicio();
+            })
+            props.socket.on(`Actualizar_inventariomp`, data => {
+                Inicio();     
+            })
         }
         Inicio()
     },[props])

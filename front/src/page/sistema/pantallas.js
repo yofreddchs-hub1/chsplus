@@ -12,6 +12,8 @@ import EProducto from './egresos/egresosproducto';
 import Reportes from './reportes';
 import Formulas from './procesos/formulas';
 import SubMenu from './procesos/submenu';
+import Venta from './venta';
+import Cobrar from './venta/porcobrar';
 export const sistema_pantallas={
     Sistema:Dashboard,
     Planificar: Planificacion,
@@ -23,9 +25,11 @@ export const sistema_pantallas={
         'Ingresar Empaque':Empaques
     },
     Egresos:{
-        Egresos,
+        Egresos: (props)=> <SubMenu {...props} submenu={['Sistema','Egresos']}/>,
         'Egreso Material':EMP,
-        'Egreso Producto Terminado':EProducto
+        'Egreso Producto Terminado':EProducto,
+        Venta,
+        cobrar:Cobrar
     },
     Reportes,
     Nuevos:{

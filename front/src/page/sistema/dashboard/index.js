@@ -35,27 +35,27 @@ export default function Dashboard(props) {
       <Grid container spacing={0.5}>
         <Grid xs={4}>
             <Item elevation={6}>
-                <MP />
+                <MP {...props}/>
             </Item>
         </Grid>
         <Grid xs={8}>
           <Item elevation={6}>
-            <ProduccionDia />
+            <ProduccionDia {...props}/>
           </Item>
         </Grid>
         <Grid xs={4}>
           <Item elevation={6}>
-            <Empaques />
+            <Empaques {...props}/>
           </Item>
         </Grid>
         <Grid xs={8}>
           <Item elevation={6}>
-            <PT />
+            <PT {...props}/>
           </Item>
         </Grid>
         <Grid xs={12}>
           <Item elevation={6}>
-            <ProduccionObrero/>
+            <ProduccionObrero {...props}/>
           </Item>
         </Grid>
         

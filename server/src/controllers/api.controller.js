@@ -735,6 +735,7 @@ serverCtrl.Valor_Dolar = async (req, res) =>{
     const {valor_dolar} = require('../servicios/leerHTML');
     if(global.global_tiempo_dolar) clearTimeout(global.global_tiempo_dolar)
     valor_dolar();
+    console.log(global.global_cambio);
     res.json({Respuesta:'Ok', valor: global.global_cambio});
   }else{
     res.json({Respuesta:'Error', mensaje:'hash invalido'});
@@ -796,7 +797,30 @@ serverCtrl.Posicion_geo = async (req, res) =>{
 
 }
 
-//Para SistemaCHS
+//Para SistemaCHS>>>>>>>>>>>>>>>>>>>>>
+Generar_codigo = (valor, id='', cantidad=5)=>{
+  let nuevo = String(Number(valor) + 1);
+  let cero = cantidad-nuevo.length;
+  for (var i=0; i<cero; i++){
+    nuevo='0'+nuevo;
+  }
+  return `${id!=='' ? id+'-' : ''}${nuevo}`
+}
+
+Serie = async(dato)=>{
+  await serverCtrl.Tablas(dato.tabla);
+  const DB = require(`../models/${dato.tabla}`);
+  let total = await DB.estimatedDocumentCount();
+  const Recibo = Generar_codigo(total,`${dato.id ? dato.id : 'S'}`, dato.cantidad ? dato.cantidad : 6);
+  return Recibo;
+}
+
+Movimiento = (dato)=>{
+  return{
+    _id: dato._id, codigo:dato.codigo, unidad:dato.unidad, descripcion: dato.descripcion,
+    cantidad: dato.cantidad
+  }
+}
 
 serverCtrl.Guardar_produccion = async (req, res)=>{
     let {User, Api, datos, hash} = req.body;
@@ -831,10 +855,12 @@ serverCtrl.Guardar_produccion = async (req, res)=>{
           prima.actual = Number(prima.actual && prima.actual!=='' ? prima.actual : 0) - Number(mp.cantidadr);
           await MP.updateOne({_id:mp._id},{valores:{...prima}, actualizado:User.username},{ upsert: true });
           //movimiento de egreso de materia prima
-          movimiento = [...movimiento,{
-            _id: mp._id, codigo:mp.codigo, unidad:mp.unidad, descripcion: mp.descripcion,
-            cantidad: mp.cantidadr
-          }]
+          movimiento = [...movimiento, Movimiento({...mp, cantidad: mp.cantidadr})
+            // {
+            // _id: mp._id, codigo:mp.codigo, unidad:mp.unidad, descripcion: mp.descripcion,
+            // cantidad: mp.cantidadr
+            // }
+          ]
         }
 
         //Producto terminado
@@ -846,10 +872,12 @@ serverCtrl.Guardar_produccion = async (req, res)=>{
           producto = producto.valores ? producto.valores : producto;
           producto.actual = Number(producto.actual && producto.actual!=='' ? producto.actual : 0) + Number(pt.cantidadFinalr);
           //movimiento de ingreso de producto terminado
-          movimiento_pt=[...movimiento_pt,{
-            _id: producto._id, codigo:producto.codigo, unidad:producto.unidad, descripcion: producto.descripcion,
-            cantidad: Number(pt.cantidadFinalr)
-          }]
+          movimiento_pt=[...movimiento_pt, Movimiento({...producto, cantidad: Number(pt.cantidadFinalr)})
+            // {
+            // _id: producto._id, codigo:producto.codigo, unidad:producto.unidad, descripcion: producto.descripcion,
+            // cantidad: Number(pt.cantidadFinalr)
+            // }
+          ]
           // Actualizar empaques 
           if (producto.empaque){
             let empaque = await EMPAQUE.findOne({_id:producto.empaque._id});
@@ -858,10 +886,12 @@ serverCtrl.Guardar_produccion = async (req, res)=>{
             await EMPAQUE.updateOne({_id:producto.empaque._id}, {valores:{...empaque}, actualizado:User.username},{ upsert: true });
             // movimiento de egreso de empaque
             if (Number(pt.cantidadFinalr)!==0){
-              movimiento_em=[...movimiento_em,{
-                _id: empaque._id, codigo:empaque.codigo, unidad:empaque.unidad, descripcion: empaque.descripcion,
-                cantidad: Number(pt.cantidadFinalr)
-              }]
+              movimiento_em=[...movimiento_em, Movimiento({...empaque, cantidad: Number(pt.cantidadFinalr)})
+                // {
+                // _id: empaque._id, codigo:empaque.codigo, unidad:empaque.unidad, descripcion: empaque.descripcion,
+                // cantidad: Number(pt.cantidadFinalr)
+                // }
+              ]
             }
           }
           //Actualizar la materia prima adicional
@@ -871,10 +901,11 @@ serverCtrl.Guardar_produccion = async (req, res)=>{
             materia.actual = Number(materia.actual ? materia.actual : 0) - Number(producto.cantidadm)
             await MP.updateOne({_id:producto.madicional._id},{valores:{...materia}, actualizado:User.username},{ upsert: true });
             //movimiento de egreso de materia prima
-            movimiento = [...movimiento,{
-              _id: materia._id, codigo:materia.codigo, unidad:materia.unidad, descripcion: materia.descripcion,
-              cantidad: producto.cantidadm
-            }]
+            movimiento = [...movimiento,Movimiento({...materia, cantidad:producto.cantidadm})//{
+              // _id: materia._id, codigo:materia.codigo, unidad:materia.unidad, descripcion: materia.descripcion,
+              // cantidad: producto.cantidadm
+            // }
+            ]
           }
           await PT.updateOne({_id:pt._id},{valores:{...producto}, actualizado:User.username},{ upsert: true });
         }
@@ -887,45 +918,38 @@ serverCtrl.Guardar_produccion = async (req, res)=>{
       await Produccion.updateOne({_id:datos._id},{valores:{...datos}, actualizado:User.username},{ upsert: true });
 
       //Guardar el egreso de materia prima
-      let total = await EM.estimatedDocumentCount();
-      let codigo = Generar_codigo(total,'EMP')
+      // let total = await EM.estimatedDocumentCount();
+      let codigo = await Serie({tabla:'egresomp',id:'EMP', cantidad:6});//Generar_codigo(total,'EMP')
       let valores = {codigo, fecha, movimiento};
       let cod_chs = await Codigo_chs({...valores});
       let hash_chs = await Hash_chs({...valores, cod_chs})
-      const Nuevo = new EM({valores, cod_chs, hash_chs, actualizado:'Sistema'});
+      const Nuevo = new EM({valores, cod_chs, hash_chs, actualizado:`Referencia: ${datos.referencia ? datos.referencia : datos._id} - ${User.username}`});
       await Nuevo.save();
 
       //Guardar el egreso de empaque
-      total = await EEM.estimatedDocumentCount();
-      codigo = Generar_codigo(total,'EEM')
+      // total = await EEM.estimatedDocumentCount();
+      codigo =  await Serie({tabla:'egresoem',id:'EEM', cantidad:6});//Generar_codigo(total,'EEM')
       valores = {codigo, fecha, movimiento: movimiento_em};
       cod_chs = await Codigo_chs({...valores});
       hash_chs = await Hash_chs({...valores, cod_chs})
-      const NuevoE = new EEM({valores, cod_chs, hash_chs, actualizado:'Sistema'});
+      const NuevoE = new EEM({valores, cod_chs, hash_chs, actualizado:`Referencia: ${datos.referencia ? datos.referencia : datos._id} - ${User.username}`});
       await NuevoE.save();
       
       //Guardar el ingreso producto terminado
-      total = await IPT.estimatedDocumentCount();
-      codigo = Generar_codigo(total,'IPT')
+      // total = await IPT.estimatedDocumentCount();
+      codigo =  await Serie({tabla:'ingresopt',id:'IPT', cantidad:6});//Generar_codigo(total,'IPT')
       valores = {fecha, movimiento:movimiento_pt};
       cod_chs = await Codigo_chs({...valores});
       hash_chs = await Hash_chs({...valores, cod_chs})
-      const NuevoI = new IPT({valores, cod_chs, hash_chs, actualizado:'Sistema'});
+      const NuevoI = new IPT({valores, cod_chs, hash_chs, actualizado:`Referencia: ${datos.referencia ? datos.referencia : datos._id} - ${User.username}`});
       await NuevoI.save();
-
+      global.io.emit(`Actualizar_empaque`);
+      global.io.emit(`Actualizar_inventariomp`); 
+      global.io.emit(`Actualizar_produccion`); 
       res.json({Respuesta:'Ok', datos});
     }else{
         res.json({Respuesta:'Error', mensaje:'hash invalido'});
     }
-}
-
-Generar_codigo = (valor, id='', cantidad=5)=>{
-  let nuevo = String(Number(valor) + 1);
-  let cero = cantidad-nuevo.length;
-  for (var i=0; i<cero; i++){
-    nuevo='0'+nuevo;
-  }
-  return `${id!=='' ? id+'-' : ''}${nuevo}`
 }
 
 //Ingresos de Materia Prima
@@ -941,24 +965,23 @@ serverCtrl.Ingresar_material = async (req, res)=>{
       const IM = require(`../models/ingresomp`);
       datos = JSON.parse(datos);
       let movimiento = [];
-      
+      // let total = await IM.estimatedDocumentCount();
+      const codigo = await Serie({tabla:'ingresomp',id:'IMP', cantidad:6});//Generar_codigo(total,'IMP');
+
       for (var i=0; i<datos.length; i++){
         let material =  datos[i];
         let Mat = await MP.findOne({_id:material._id});
         Mat.valores.actual= Number(Mat.valores.actual) + Number(material.cantidad);
-        await MP.updateOne({_id:material._id},{valores:Mat.valores, actualizado:User.username},{ upsert: true });
-        movimiento=[...movimiento,{
-          _id: material._id, codigo:material.codigo, unidad:material.unidad, descripcion: material.descripcion,
-          cantidad: material.cantidad
-        }]
+        await MP.updateOne({_id:material._id},{valores:Mat.valores, actualizado:`Referencia: ${codigo} - ${User.username}`},{ upsert: true });
+        movimiento=[...movimiento,Movimiento(material)];
       }
-      let total = await IM.estimatedDocumentCount();
-      const codigo = Generar_codigo(total,'IMP');
+      
       let valores = {codigo, fecha, movimiento};
       let cod_chs = await Codigo_chs({...valores});
       const hash_chs = await Hash_chs({...valores, cod_chs})
-      const Nuevo = new IM({valores, cod_chs, hash_chs, actualizado:'Sistema'});
+      const Nuevo = new IM({valores, cod_chs, hash_chs, actualizado:User.username});
       await Nuevo.save();
+      global.io.emit(`Actualizar_${Api.api}_material`,datos); 
       res.json({Respuesta:'Ok', datos});
     }else{
       res.json({Respuesta:'Error', mensaje:'hash invalido'});
@@ -977,25 +1000,24 @@ serverCtrl.Ingresar_empaque = async (req, res)=>{
     const IE = require(`../models/ingresoem`);
     datos = JSON.parse(datos);
     let movimiento = [];
+    // let total = await IE.estimatedDocumentCount();
+    const codigo =  await Serie({tabla:'ingresoem',id:'IEM', cantidad:6});//Generar_codigo(total,'IEM')
 
     for (var i=0; i<datos.length; i++){
       let material =  datos[i];
       let Mat = await EM.findOne({_id:material._id});
       Mat.valores.actual= Number(Mat.valores.actual) + Number(material.cantidad);
-      await EM.updateOne({_id:material._id},{valores:Mat.valores, actualizado:User.username},{ upsert: true });
-      movimiento=[...movimiento,{
-        _id: material._id, codigo:material.codigo, unidad:material.unidad, descripcion: material.descripcion,
-        cantidad: material.cantidad
-      }]
+      await EM.updateOne({_id:material._id},{valores:Mat.valores, actualizado:`Referencia: ${codigo} - ${User.username}`},{ upsert: true });
+      movimiento=[...movimiento, Movimiento(material)]
       
     }
-    let total = await IM.estimatedDocumentCount();
-    const codigo = Generar_codigo(total,'IEM')
+    
     let valores = {codigo, fecha, movimiento};
     let cod_chs = await Codigo_chs({...valores});
     const hash_chs = await Hash_chs({...valores, cod_chs})
-    const Nuevo = new IE({valores, cod_chs, hash_chs, actualizado:'Sistema'});
+    const Nuevo = new IE({valores, cod_chs, hash_chs, actualizado:User.username});
     await Nuevo.save();
+    global.io.emit(`Actualizar_${Api.api}_empaque`,datos); 
     res.json({Respuesta:'Ok', datos});
   }else{
     res.json({Respuesta:'Error', mensaje:'hash invalido'});
@@ -1048,10 +1070,10 @@ serverCtrl.Ingreso_Egreso = async (req, res)=>{
     for (var i=0; i<datos.meses.length;i++){
       const mes = datos.meses[i];
       let ingreso = await Ingreso.find({$text: {$search: mes, $caseSensitive: false}});
-      ingreso= ingreso.filter(f=>f.valores.fecha===mes).map(val=>{return{_id: val._id, ...val.valores}});
+      ingreso= ingreso.filter(f=>f.valores.fecha===mes).map(val=>{return{_id: val._id, actualizado: val.actualizado, ...val.valores}});
       ingresos=[...ingresos,...ingreso];
       let egreso = await Egreso.find({$text: {$search: mes, $caseSensitive: false}});
-      egreso= egreso.filter(f=>f.valores.fecha===mes).map(val=>{return{_id: val._id, ...val.valores}});
+      egreso= egreso.filter(f=>f.valores.fecha===mes).map(val=>{return{_id: val._id, actualizado: val.actualizado, ...val.valores}});
       egresos=[...egresos,...egreso];
     }
 
@@ -1098,7 +1120,128 @@ serverCtrl.Ingreso_Egreso = async (req, res)=>{
     res.json({Respuesta:'Ok', inventario, ingresos, egresos});
   }else{
     res.json({Respuesta:'Error', mensaje:'hash invalido'});
+  }
 }
+// En ventas..
+serverCtrl.Serial= async(req,res)=>{
+  let {User, Api, dato, hash} = req.body;
+  User= typeof User==='string' ? JSON.parse(User) : User;
+  const hashn = await Hash_texto(JSON.stringify({User, Api, dato}));
+  const igual= await serverCtrl.Verifica_api(Api, true);
+  if (hashn===hash && igual) {
+    if (dato.tabla===undefined){
+      res.json({Respuesta:'Error', mensaje: `no existe ${dato.tabla}`});
+    }else{
+      // await serverCtrl.Tablas(dato.tabla);
+      // const DB = require(`../models/${dato.tabla}`);
+      // let total = await DB.estimatedDocumentCount();
+      // const Recibo = Generar_codigo(total,`${dato.id ? dato.id : 'S'}`, dato.cantidad ? dato.cantidad : 6);
+      const Recibo = await Serie(dato);
+      res.json({Respuesta:'Ok', Recibo});
+    }
+    
+  }else{
+    res.json({Respuesta:'Error', mensaje:'hash invalido'});
+  }
+}
+serverCtrl.Recibo_venta = async(req, res)=>{
+  await serverCtrl.Tablas('venta');
+  const Venta = require(`../models/venta`);
+  let total = await Venta.estimatedDocumentCount();
+  const Recibo = Generar_codigo(total,'V', 6);
+  res.json({Respuesta:'Ok', Recibo});
+}
+serverCtrl.Egreso_Venta = async (req, res)=>{
+  let {User, Api, datos, hash} = req.body;
+  User= typeof User==='string' ? JSON.parse(User) : User;
+  const hashn = await Hash_texto(JSON.stringify({User, Api, datos}));
+  const igual= await serverCtrl.Verifica_api(Api, true);
+  if (hashn===hash && igual) {
+    const fecha = moment(new Date()).format('YYYY-MM-DD');
+    await serverCtrl.Tablas('egresopt');
+    await serverCtrl.Tablas('inventariopt');
+    const PT = require(`../models/inventariopt`);
+    const EPT= require(`../models/egresopt`);
+    const VENTA = require(`../models/venta`);
+    datos = JSON.parse(datos);
+    if (datos.formapago['formapago-subtotal'].restan>0){
+      datos.pendiente=true;
+      datos.estado='pendiente';
+    }else{
+      datos.pendiente=false;
+      datos.estado='cancelado';
+    }
+    if (datos._id){
+      await VENTA.updateOne({_id:datos._id},{valores:datos, actualizado:`${User.username}`},{ upsert: true });
+    }else{
+      //Recibo
+      let Recibo = await Serie({tabla:'venta', cantidad:6, id:'V'});//Generar_codigo(total,'V', 6);
+      datos.orden_venta.recibo=Recibo;
+      datos={recibo:Recibo, fecha, ...datos};
+
+      let movimiento = [];
+      for (var i=0; i< datos.orden_venta.producto.length; i++){
+          let producto = datos.orden_venta.producto[i];
+          movimiento = [...movimiento, Movimiento({...producto, cantidad: producto.cantidad ? producto.cantidad : 1})]
+      }
+    
+      for (var i=0; i< movimiento.length; i++){
+          let producto = movimiento[i];
+          let Prod = await PT.findOne({_id:producto._id});
+          Prod.valores.actual-= producto.cantidad;
+          await PT.updateOne({_id:Prod._id},{valores:Prod.valores, actualizado:`Referencia: ${Recibo} - ${User.username}`},{ upsert: true });
+          
+      }
+      //Guardar el egreso producto terminado
+      let codigo = await Serie({tabla:'egresopt', id:'EPT', cantidad:6});
+      let valores = {codigo, fecha, movimiento};
+      let cod_chs = await Codigo_chs({...valores});
+      let hash_chs = await Hash_chs({...valores, cod_chs})
+      const NuevoI = new EPT({valores, cod_chs, hash_chs, actualizado:`Referencia: ${Recibo} - ${User.username}`});
+      await NuevoI.save();
+
+      //Guardar venta
+      cod_chs = await Codigo_chs({...datos});
+      hash_chs = await Hash_chs({...datos, cod_chs})
+      const NuevoV = new VENTA({valores:datos, cod_chs, hash_chs, actualizado:`${User.username}`});
+      await NuevoV.save();
+    }
+    global.io.emit(`Actualizar_inventariopt`);
+    global.io.emit(`Actualizar_venta`); 
+    res.json({Respuesta:'Ok', datos});
+  }else{
+      res.json({Respuesta:'Error', mensaje:'hash invalido'});
+  }
+}
+serverCtrl.Ventas = async (req, res)=>{
+  let {User, Api, datos, hash} = req.body;
+  User= typeof User==='string' ? JSON.parse(User) : User;
+  const hashn = await Hash_texto(JSON.stringify({User, Api, datos}));
+  const igual= await serverCtrl.Verifica_api(Api, true);
+  if (hashn===hash && igual) {
+    datos = datos ? JSON.parse(datos) : {};
+    const VENTA = require(`../models/venta`);
+    let ventas = datos && datos.estado 
+          ? await VENTA.find({$text: {$search: datos.estado, $caseSensitive: false}})
+          : await VENTA.find();
+    
+    let ventas_p= ventas.filter(f=>f.valores.pendiente);
+    let ventas_c= ventas.filter(f=>!f.valores.pendiente);
+    let total=0;
+    let pendiente = 0;
+    let facturado = 0;
+    ventas.map(val=>{
+      let valor = val.valores.formapago['formapago-subtotal'];
+      total+= Number(valor.total);
+      pendiente+= Number(valor.restan);
+      facturado+= Number(valor.cancelar);
+      return val
+    })
+
+    res.json({Respuesta:'Ok', ventas, ventas_p, ventas_c, total, pendiente, facturado});
+  }else{
+    res.json({Respuesta:'Error', mensaje:'hash invalido'});
+  }
 }
 // para egew
 // Cuentas de wesipay

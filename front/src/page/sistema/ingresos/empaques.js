@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import Box from '@mui/material/Box';
 // import Grid from '@mui/material/Grid';
 // import Typography from '@mui/material/Typography';
@@ -14,7 +14,7 @@ export default function Empaques(props) {
     
     const Guardar= async(valores)=>{
         console.log(valores)
-        const Resp = await conexiones.Ingresar_empaque(valores.empaque);
+        await conexiones.Ingresar_empaque(valores.empaque);
         // setFormulario(formulario);
         Inicio();
     }

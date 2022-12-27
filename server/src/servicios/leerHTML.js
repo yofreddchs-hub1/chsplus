@@ -23,7 +23,7 @@ paginaCtrl.valor_dolar = async() =>{
   // global.global_actualizando=true
   
   try{
-    let resultado = await rp('http://www.bcv.org.ve').then(html => {
+    let resultado = await rp({uri: 'http://www.bcv.org.ve/tasas-informativas-sistema-bancario', rejectUnauthorized: false}).then(html => {
       // Generar DOM a partir de HTML
       const dom = new JSDOM(html);
 
@@ -44,6 +44,7 @@ paginaCtrl.valor_dolar = async() =>{
         // console.log(array);
         // console.log(array)
         array[1]=array[1].replace(',','.')
+        console.log('>>>>>>>',array);
         global.global_cambio={
           [array[0]]:Number(array[1]), 
           dolartoday:valor.data.USD,
@@ -54,17 +55,30 @@ paginaCtrl.valor_dolar = async() =>{
           'USD > wesi': Number(array[1]),
           'USD > VED': Number(array[1]),
         }
-        global.global_actualizando=false
+        global.global_actualizando=false;
         return {[array[0]]:array[1]};
       })
       
     });
   }catch(error) {
-    console.log('Error-BCV')//,error);
+    console.log('Error-BCV',error)//,error);
+    global.global_cambio=valor.data.USD.sicad2;
+    global.global_cambio={
+      'USD':'error', 
+      dolartoday:valor.data.USD,
+      'wesi > wesi':1,
+      'VED > VED':1,
+      'wesi > USD': 1 / Number(valor.data.USD.sicad2),
+      'VED > USD': 1 / Number(valor.data.USD.sicad2),
+      'USD > wesi': Number(valor.data.USD.sicad2),
+      'USD > VED': Number(valor.data.USD.sicad2),
+    }
+    global.global_actualizando=false
     
   }
 
-  console.log('Cambio actualizado....')
+  console.log('Cambio actualizado....', )
+  global.io.emit('Actualizar_tasa',{tasa:global.global_cambio});
   if(global.global_tiempo_dolar) clearTimeout(global.global_tiempo_dolar)
 
   global.global_tiempo_dolar=setTimeout(()=>{

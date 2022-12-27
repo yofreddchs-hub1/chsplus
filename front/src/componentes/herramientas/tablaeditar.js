@@ -26,8 +26,8 @@ import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import Formulario from './formulario';
-import {Form_todos} from '../../constantes';
-import {genera_fromulario} from '../../procesos/servicios';
+import {Form_todos, Ver_Valores} from '../../constantes';
+import {conexiones, genera_fromulario} from '../../procesos/servicios';
 
 function customCheckbox(theme) {
   return {
@@ -163,7 +163,9 @@ function CustomPagination() {
 // ];
 
 export default function AntDesignGrid(props) {
-  const {Titulo, titulos, datos, Subtotalvalor, nopaginar, noeliminar, style, poderseleccionar, Config}= props
+  
+  const {Titulo, titulos, datos, externos, nopaginar, editables, noeliminar, style, poderseleccionar, Config}= props;
+  let Subtotalvalor= externos[props.name+'-subtotal'] ?  externos[props.name+'-subtotal'] : props.Subtotalvalor;
   // const { data } = useDemoData({
   //   dataSet: 'Commodity',
   //   rowLength: 10,
@@ -173,6 +175,7 @@ export default function AntDesignGrid(props) {
   const [Seleccion, setSeleccion] = React.useState(null);
   const [rows, setRows] = React.useState([]);
   const [columns, setColumns] = React.useState([]);
+  const [tasa, setTasa] = React.useState(0);
   const seleccion = async()=>{
     if (props.enformulario.Form===undefined && props.enformulario.form===undefined){
       setSeleccion(
@@ -189,7 +192,7 @@ export default function AntDesignGrid(props) {
       ...nuevos,
     }
     setSeleccion(
-      <div style={{marginTop:-25, marginBottom:-50}}>
+      <div style={{marginTop:-25, marginBottom:-35}}>
         <Formulario {...formulario}/>
       </div>
     )
@@ -204,7 +207,6 @@ export default function AntDesignGrid(props) {
 
   
   const InicarColumnas=(rows)=>{
-    console.log('>>>>', rows)
     let width= titulos ? window.innerWidth * 0.50 / titulos.length : window.innerWidth;
     const columnas= titulos 
       ? titulos.map(titulo=>{
@@ -219,10 +221,11 @@ export default function AntDesignGrid(props) {
             // console.log(dato)
             let valor =titulo.formato ? titulo.formato(dato) : dato.value; 
             if (!valor || valor==='NaN')
-              valor=titulo.formato ? titulo.formato(dato.row) : dato.row[titulo.field] 
+              valor=titulo.formato ? titulo.formato(dato.row): dato.row[titulo.field] ;
             if (!valor || valor==='NaN')
-              valor=titulo.formato ? titulo.formato(rows[dato.id]) : null
-
+              valor=titulo.formato && rows[dato.id]!==undefined ? titulo.formato(rows[dato.id]) : null
+            if (valor===null)
+              valor= titulo.default ? titulo.default : '';
             if (typeof valor==='object')
               valor = valor.value ? valor.value : valor.titulo;
             
@@ -244,7 +247,7 @@ export default function AntDesignGrid(props) {
             
             // if (dato.field==='total')
             // console.log(valor, typeof valor, rows[dato.id]) 
-            return titulo.type==='number' ? Number(['NaN',NaN].indexOf(String(valor))===-1 ? valor : 0).toLocaleString() : valor
+            return titulo.type==='number' ? Number(['NaN',NaN].indexOf(String(valor))===-1 ? valor : 0).toFixed(2).toLocaleString() : valor
           }//titulo.formato ? titulo.formato : null
         }
       })
@@ -274,9 +277,20 @@ export default function AntDesignGrid(props) {
     }
   }
 
-  useEffect(() => {
-      
-      let nuevo = datos 
+  const Tasa_cambio = async() =>{
+    let valores = Ver_Valores();
+    if (valores.tasa===undefined){
+      let resp = await conexiones.ValorCambio();
+    
+      if (resp.Respuesta==='Ok'){
+        setTasa(resp.valor.USD!=='error' ? resp.valor.USD : resp.valor.dolartoday.sicad2);
+      }
+    }else{
+      setTasa(valores.tasa.USD!=='error' ? valores.tasa.USD : valores.tasadolartoday.sicad2);
+    }
+    
+    
+    let nuevo = datos 
         ? datos.map((data,i)=>{
           let resultado={...data, id: data.id ? data.id : i}
           if (titulos){
@@ -295,11 +309,17 @@ export default function AntDesignGrid(props) {
           return resultado
         })
         : []
-      setRows(nuevo)
-      InicarColumnas(nuevo)
-      if (props.enformulario){
-        seleccion()
-      }
+    setRows(nuevo);
+    InicarColumnas(nuevo);
+    if (props.enformulario){
+      seleccion()
+    }
+  }
+
+  useEffect(() => {
+      
+      
+      Tasa_cambio();
   }, [props]);
 
   const handleEditRowsModelChange = (model) => {
@@ -312,7 +332,7 @@ export default function AntDesignGrid(props) {
 
   const Cambio =(model)=>{
     const {name}=props;
-    const row= Object.keys(model)[0]
+    const row= Object.keys(model)[0];
     if (row){
       const colmn=Object.keys(model[row])[0]
       let nuevo=[...rows]
@@ -326,14 +346,20 @@ export default function AntDesignGrid(props) {
       }
       setRows(nuevo)
       
+      if(props.Cambio){
       
+        props.Cambio({target:{name, value:rows}})
+      }
       // InicarColumnas(nuevo)
     }else if(props.Cambio){
       
       props.Cambio({target:{name, value:rows}})
     }
+  };
+  const Cambio_Sub= (dato)=>{
+    console.log(dato);
+    //props.Cambio
   }
-
   const StyledGridOverlay = styled(GridOverlay)(({ theme }) => ({
     flexDirection: 'column',
     '& .ant-empty-img-1': {
@@ -425,7 +451,7 @@ export default function AntDesignGrid(props) {
           Pagination: !nopaginar ? CustomPagination : null,
           NoRowsOverlay: CustomNoRowsOverlay,
           Footer: props.Subtotal 
-                    ? () =>SubTotales({name:props.name, Subtotal:props.Subtotal, Cambio:props.Cambio, Subtotalvalor ,rows, Config}) 
+                    ? () =>SubTotales({name:props.name, Subtotal:props.Subtotal, Cambio:props.Cambio, Subtotalvalor, rows, Config, tasa, externos}) 
                     : undefined
         }}
         hideFooter= {props.Subtotal ? false : true}
@@ -435,12 +461,24 @@ export default function AntDesignGrid(props) {
         editRowsModel={editRowsModel}
         onEditRowsModelChange={handleEditRowsModelChange}
         disableSelectionOnClick={!poderseleccionar}
+        isCellEditable={(params) => {
+          if (editables){
+            const formato = eval(editables);
+            return formato(params);
+          }else{
+            return true;
+          }
+        }}
         sx={{
           boxShadow: 2,
           border: 2,
           borderColor: 'primary.light',
           '& .MuiDataGrid-cell:hover': {
             color: 'primary.main',
+          },
+          '& .MuiDataGrid-cell--editable': {
+            bgcolor: (theme) =>
+              theme.palette.mode === 'dark' ? '#068E17' : 'rgb(217 243 190)',
           },
           ...style ? style : {}
         }}
@@ -450,15 +488,24 @@ export default function AntDesignGrid(props) {
 }
 
 const SubTotales= (props) =>{
-  const {Subtotalvalor, Cambio, name}=props;
+  const {Subtotalvalor, Cambio, name, tasa, externos}=props;
+  const [resultado, setResultado] = React.useState(()=>{
+    return Subtotalvalor ? Subtotalvalor : {}
   
-  const [resultado, setResultado] = React.useState({});
-  const [modificado, setModificado] = React.useState(Subtotalvalor ? Subtotalvalor : {});
+  });
+  const [modificado, setModificado] = React.useState(()=>{
+    return Subtotalvalor ? Subtotalvalor : {}
+  
+  });
   const {rows}=props;
+  // const [rows, setRows] = React.useState(props.rows);
   // const height=40;
   // const width=150;
   const igual =(primero, segundo)=>{
     let ig=true;
+    if (Object.keys(segundo).length===0){
+      return false;
+    }
     Object.keys(primero).map(val=>{
       if(primero[val]!==segundo[val]) ig=false;
       return val
@@ -466,20 +513,23 @@ const SubTotales= (props) =>{
     return ig
   }
   const Calcular =(valor)=>{
+    // console.log('Por calcular>>>>>>>>', valor, modificado,externos[name+'-subtotal'])
     
-    if (!igual(valor,modificado)){
-      setModificado({...valor})
-      Cambio({target:{name: name+'-subtotal', value:valor}})
-    }
     props.Subtotal.map(val=>{
       val.map(col=>{
         if (col.field && (valor[col.field]===undefined || col.tipo!=='input')){
-          valor[col.field]= col.default ? col.default : 0
+          if (col.defaultf){
+            const formato = eval(col.defaultf)
+            valor[col.field]= formato(valor);
+          }else{
+            valor[col.field]= col.default ? col.default : 0;
+          }
         }
         return col;
       })
       return val
     })
+    
     
     rows.map(r=>{
       props.Subtotal.map(val=>{
@@ -494,16 +544,24 @@ const SubTotales= (props) =>{
       })
       return r;
     })
-    setResultado(valor)
+    
+    setResultado(valor);
+    
+    if (!igual(valor,modificado)){
+      
+      // setModificado({...valor})
+      Cambio({target:{name: name+'-subtotal', value:valor}})
+    }
+    
   }
 
   useEffect(() => {
-    
-    Calcular({...modificado})
-    
-  }, [rows]);
+    // console.log('Refrescar subtotales');
+    Calcular({...resultado})
+  }, []);
   
   const {Config} = props;
+  
   
   return(
     <Stack sx={{padding:1, backgroundColor:'#1D1D1D',
@@ -529,6 +587,7 @@ const SubTotales= (props) =>{
           <Stack key={i+'-'+j} direction="row" justifyContent="flex-end" sx={{}}>
             {col.tipo==='input'
               ? <Stack direction="row">
+                <Typography variant="h6" gutterBottom component="div">{col.titled ? col.titled : ''}</Typography>
                   <TextField
                     hiddenLabel
                     name={col.field}
@@ -536,26 +595,27 @@ const SubTotales= (props) =>{
                     value= {resultado[col.field]}
                     variant="filled"
                     size="small"
-                    style={{width:60}}
+                    style={{width:col.width ? col.width : 60}}
                     type={'number'}
                     onChange={(event)=>{
                       const {name, value}=event.target;
-                      
+                      // console.log(value, !isNaN(value));
                       let nuevo={...modificado, [name]:value};
                       
                       setModificado(nuevo)
+                      console.log(nuevo)
                       Calcular({...nuevo})
                     }}
                   />
-                  <Typography variant="h6" gutterBottom component="div">%</Typography>
+                  <Typography variant="h6" gutterBottom component="div">{col.title ? col.title : ''}</Typography>
                 </Stack>
               : <Typography variant="h6" gutterBottom component="div">
                   {col.title && !col.field
                     ? col.title 
                     : col.field && col.title
-                    ? `${col.title} ${Number(resultado[col.field]).toLocaleString()}`
+                    ? `${col.title} ${Number(resultado[col.field]).toFixed(2).toLocaleString()}`
                     : col.field
-                    ? `${Number(resultado[col.field]).toLocaleString()}`
+                    ? `${Number(resultado[col.field]).toFixed(2).toLocaleString()}`
                     : 'nada' 
                   }
                 </Typography>

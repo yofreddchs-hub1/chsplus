@@ -1,21 +1,21 @@
 import * as React from 'react';
-import { styled } from '@mui/material/styles';
+// import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Unstable_Grid2';
-import Typography from '@mui/material/Typography';
+// import Paper from '@mui/material/Paper';
+// import Grid from '@mui/material/Unstable_Grid2';
+// import Typography from '@mui/material/Typography';
 import moment from 'moment';
 import MostrarProduccion from '../planificacion/mostrar';
-import Logo from '../../../imagenes/trompo.png';
+// import Logo from '../../../imagenes/trompo.png';
 import { conexiones } from '../../../procesos/servicios';
 
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-}));
+// const Item = styled(Paper)(({ theme }) => ({
+//   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+//   ...theme.typography.body2,
+//   padding: theme.spacing(1),
+//   textAlign: 'center',
+//   color: theme.palette.text.secondary,
+// }));
 
 export default function ProduccionObrero(props) {
     const [datos,setDatos]=React.useState();
@@ -49,9 +49,13 @@ export default function ProduccionObrero(props) {
                         })
                         valor.pt = valor.pt.map(val=>{
                             const pos = empaques.findIndex(f=>val.empaque && f._id===val.empaque._id);
-                            console.log(pos)
-                            // val.cantidadE= Number(empaques[pos].valores.actual);
-                            // empaques[pos].valores.actual = Number(empaques[pos].valores.actual) - Number(val.cantidadFinal);
+                            
+                            if (pos!==-1){
+                                val.cantidadE= Number(empaques[pos].valores.actual);
+                                empaques[pos].valores.actual = Number(empaques[pos].valores.actual) - Number(val.cantidadFinal);
+                            }else{
+                                val.cantidadE=0;
+                            }
                             // console.log(val.descripcion, val.cantidadE, pos, empaques[pos].valores.actual)
                             return val;
                         })
@@ -62,6 +66,12 @@ export default function ProduccionObrero(props) {
                 }
                 
                 setDatos(datosn);
+                props.socket.on(`Actualizar_produccion`, data => {
+                    Inicio();  
+                })
+                props.socket.on(`Actualizar_inventariomp`, data => {
+                    Inicio();  
+                })
             }
         }
         Inicio()

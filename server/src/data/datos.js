@@ -51,6 +51,16 @@
                     "icon": "folder_delete",
                     "childen": [
                         {
+                            "value": "Venta",
+                            "primary": "Venta",
+                            "icon": "shopping_bag"
+                        },
+                        {
+                            "value": "cobrar",
+                            "primary": "Por Cobrar",
+                            "icon": "local_mall"
+                        },
+                        {
                             "value": "Egreso Material",
                             "primary": "Egreso Material",
                             "icon": "remove"
@@ -879,9 +889,7 @@
                 "_id": 3,
                 "titulo": "Efectivo Dolar",
                 "value": "efectivodolar",
-                "permisos": "",
-                "id": 4,
-                "otro": ""
+                "permisos": ""
             },
             {
                 "_id": 4,
@@ -4962,25 +4970,38 @@
                 }
             ]
         },
+        "Form_Select_formapago": {
+            "columna": 1,
+            "value": [
+                {
+                    "key": "select_a",
+                    "name": "select_a",
+                    "label": "Selecciona forma de pago",
+                    "tipo": "lista_multiuso",
+                    "lista": "lista_Forma_Pago",
+                    "multiple": false,
+                    "getOptionLabel": [
+                        "titulo"
+                    ]
+                }
+            ]
+        },
         "Form_FormasPago": {
             "columna": 1,
             "value": [
                 {
-                    "nombre": "formaspago",
+                    "key": "formapago",
+                    "name": "formapago",
+                    "label": "Forma de Pago",
                     "tipo": "Tabla",
-                    "label": "Forma(s) de Pago",
-                    "placeholder": "Forma(s) de Pago",
-                    "title": "Forma(s) de Pago",
-                    "mensaje_error": "",
-                    "disabled": false,
-                    "numberOfLines": "",
-                    "getOptionLabel": [
-                        "titulo"
-                    ],
-                    "key": "formaspago",
-                    "name": "formaspago",
-                    "multiline": false,
-                    "titulos": "Titulos_Formaspago"
+                    "titulos": "Titulos_Formaspago",
+                    "Form": "Form_Select_formapago",
+                    "nopaginar": true,
+                    "style": {
+                        "height": 350
+                    },
+                    "editables": "(params) => {let editable=true;if ((params.row.titulo==='Debito' && ['bancod'].indexOf(params.field)!==-1) || ((params.row.titulo==='Efectivo Bolívar' || params.row.titulo==='Efectivo Dolar') && ['fecha','bancoo','bancod'].indexOf(params.field)!==-1)){ editable=false;} return editable; }",
+                    "Subtotal": "Subtotal_formapago"
                 }
             ]
         },
@@ -6187,6 +6208,22 @@
                     "key": "categoria",
                     "name": "categoria",
                     "multiline": false
+                },
+                {
+                    "nombre": "precio",
+                    "tipo": "number",
+                    "label": "Precio de Venta",
+                    "placeholder": "Precio de Venta",
+                    "title": "Precio de Venta",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "precio",
+                    "name": "precio",
+                    "multiline": false
                 }
             ]
         },
@@ -6697,6 +6734,58 @@
                     ],
                     "key": "termino",
                     "name": "termino"
+                }
+            ]
+        },
+        "Form_venta": {
+            "columna": 2,
+            "value": [
+                {
+                    "nombre": "recibo",
+                    "label": "Referencia",
+                    "placeholder": "Referencia",
+                    "title": "Recibo",
+                    "mensaje_error": "",
+                    "disabled": true,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "recibo",
+                    "name": "recibo"
+                },
+                {
+                    "nombre": "cliente",
+                    "tipo": "lista_multiuso",
+                    "label": "Cliente",
+                    "placeholder": "Cliente",
+                    "title": "Cliente",
+                    "required": true,
+                    "mensaje_error": "Debe seleccionar cliente",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "lista": "Cliente",
+                    "getOptionLabel": [
+                        "rif",
+                        "nombre"
+                    ],
+                    "agregar": true,
+                    "key": "cliente",
+                    "name": "cliente",
+                    "form": "Form_Cliente"
+                },
+                {
+                    "key": "producto",
+                    "name": "producto",
+                    "label": "Productos",
+                    "tipo": "Tabla",
+                    "titulos": "Titulos_venta",
+                    "Form": "Form_formula_ept",
+                    "nopaginar": false,
+                    "Subtotal": "Subtotal_venta",
+                    "style": {
+                        "height": 250
+                    }
                 }
             ]
         }
@@ -7311,44 +7400,39 @@
         ],
         "Titulos_Formaspago": [
             {
-                "title": "Id",
-                "field": "id",
+                "title": "Forma de Pago",
+                "field": "titulo",
                 "tipo": "",
                 "formato": "",
                 "default": "",
-                "type": "",
-                "width": 60,
-                "flex": 0.2
+                "type": ""
             },
             {
-                "title": "Forma de Pago",
-                "field": "formapago",
+                "title": "Fecha",
+                "field": "fecha",
                 "tipo": "",
                 "formato": "",
                 "default": "",
-                "type": "",
-                "width": 200,
-                "flex": 1
+                "type": "date",
+                "editable": true
             },
             {
                 "title": "Banco Origen",
-                "field": "bancoorigen",
+                "field": "bancoo",
                 "tipo": "",
                 "formato": "",
                 "default": "",
                 "type": "",
-                "width": 200,
-                "flex": 1
+                "editable": true
             },
             {
                 "title": "Banco Destino",
-                "field": "bancodestino",
+                "field": "bancod",
                 "tipo": "",
                 "formato": "",
                 "default": "",
                 "type": "",
-                "width": 200,
-                "flex": 1
+                "editable": true
             },
             {
                 "title": "Referencia",
@@ -7357,18 +7441,7 @@
                 "formato": "",
                 "default": "",
                 "type": "",
-                "width": 200,
-                "flex": 1
-            },
-            {
-                "title": "Cedula del Titular",
-                "field": "cedula",
-                "tipo": "",
-                "formato": "",
-                "default": "",
-                "type": "",
-                "width": 200,
-                "flex": 1
+                "editable": true
             },
             {
                 "title": "Monto",
@@ -7377,8 +7450,7 @@
                 "formato": "",
                 "default": "",
                 "type": "number",
-                "width": 100,
-                "flex": 0.5
+                "editable": true
             }
         ],
         "Titulos_Recibo": [
@@ -7781,11 +7853,19 @@
                 "type": ""
             },
             {
+                "title": "Cantidad Actual",
+                "field": "actual",
+                "tipo": "",
+                "formato": "(dato)=> {\nreturn `${Number(dato.actual && dato.actual!=='' ? dato.actual : dato.row && dato.row.actual ? dato.row.actual :  0)}`\n}",
+                "default": "",
+                "type": "number"
+            },
+            {
                 "title": "Cantidad",
                 "field": "cantidad",
                 "tipo": "",
                 "formato": "(dato)=> Number(`${dato.cantidad ? dato.cantidad : 0}`)",
-                "default": "0",
+                "default": "",
                 "type": "number",
                 "editable": true
             }
@@ -7915,9 +7995,9 @@
                 "title": "Cantidad Actual",
                 "field": "actual",
                 "tipo": "",
-                "formato": "(dato)=> `${Number(dato.actual && dato.actual!=='' ? dato.actual : 0)}`",
+                "formato": "(dato)=> {\nreturn `${Number(dato.actual && dato.actual!=='' ? dato.actual : dato.row && dato.row.actual ? dato.row.actual :  0)}`\n}",
                 "default": "",
-                "type": ""
+                "type": "number"
             },
             {
                 "title": "Cantidad",
@@ -7925,7 +8005,7 @@
                 "tipo": "",
                 "formato": "(dato)=> Number(`${dato.cantidad}`)",
                 "default": "",
-                "type": "",
+                "type": "number",
                 "editable": true
             }
         ],
@@ -7954,6 +8034,117 @@
                 "default": "",
                 "type": ""
             }
+        ],
+        "Titulos_venta": [
+            {
+                "title": "Código",
+                "field": "codigo",
+                "tipo": "",
+                "formato": "",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Descripción",
+                "field": "descripcion",
+                "tipo": "",
+                "formato": "",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Precio Venta",
+                "field": "precio",
+                "tipo": "",
+                "formato": "",
+                "default": "",
+                "type": "number"
+            },
+            {
+                "title": "Cantidad",
+                "field": "cantidad",
+                "tipo": "",
+                "formato": "(dato)=> Number(`${dato.cantidad}`)",
+                "default": "1",
+                "type": "number",
+                "editable": true
+            },
+            {
+                "title": "Total",
+                "field": "total",
+                "tipo": "",
+                "formato": "(dato)=> {\nlet precio = dato.precio ? Number(dato.precio) : 0;\nlet cantidad = dato.cantidad ? Number(dato.cantidad) : 1;\nlet total = precio * cantidad;\nreturn Number(`${total}`)\n}",
+                "default": "",
+                "type": "number"
+            }
+        ],
+        "Titulos_porcobrar": [
+            {
+                "title": "Referencia",
+                "field": "recibo",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.valores ? dato.valores.recibo : dato.recibo}`",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Fecha",
+                "field": "fecha",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.valores ? dato.valores.fecha : dato.fecha}`",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Cliente",
+                "field": "cliente",
+                "tipo": "",
+                "formato": "(dato)=> {\nreturn `${dato.valores && dato.valores.orden_venta && dato.valores && dato.valores.orden_venta.cliente ? dato.valores.orden_venta.cliente.rif + ' ' +dato.valores.orden_venta.cliente.nombre : ''}`\n}",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Deuda",
+                "field": "deuda",
+                "tipo": "",
+                "formato": "(dato)=> {\nreturn `$ ${Number(dato.valores && dato.valores.formapago && dato.valores.formapago['formapago-subtotal'] ? dato.valores.formapago['formapago-subtotal'].restan : 0)}`\n}",
+                "default": "",
+                "type": "number"
+            }
+        ],
+        "Titulos_formula_mp_d": [
+            {
+                "title": "Código",
+                "field": "codigo",
+                "tipo": "",
+                "formato": "",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Descripción",
+                "field": "descripcion",
+                "tipo": "",
+                "formato": "",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Unidad",
+                "field": "unidad",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.unidad && dato.unidad.value ? dato.unidad.value : ''}`",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Cantidad",
+                "field": "cantidad",
+                "tipo": "",
+                "formato": "(dato)=> Number(`${dato.cantidad ? dato.cantidad : 0}`)",
+                "default": "",
+                "type": "number"
+            }
         ]
     },
     "Funciones": {
@@ -7971,7 +8162,7 @@
                 {
                     "field": "subtotal",
                     "default": 0,
-                    "formato": "(dato, resultado)=> (Number(dato.costo) * Number(dato.cantidad)) + Number(resultado.subtotal)"
+                    "formato": "(dato, resultado)=> Number((Number(dato.costo) * Number(dato.cantidad)).toFixed(2)) + Number(resultado.subtotal)"
                 }
             ],
             [
@@ -7987,7 +8178,7 @@
                 {
                     "default": 0,
                     "field": "subiva",
-                    "formato": "(dato,resultado)=> Number(resultado.subtotal) * Number(resultado.iva)/100"
+                    "formato": "(dato,resultado)=> Number((Number(resultado.subtotal) * Number(resultado.iva)/100).toFixed(2))"
                 }
             ],
             [
@@ -8001,6 +8192,160 @@
                     "default": 0,
                     "field": "total",
                     "formato": "(dato,resultado)=> Number(resultado.subtotal) + Number(resultado.subiva)"
+                }
+            ]
+        ],
+        "Subtotal_venta": [
+            [
+                {
+                    "title": "Tasa de Cambio"
+                },
+                {
+                    "field": "Tasa",
+                    "default": 0,
+                    "defaultf": "(dato, resultado)=> tasa"
+                },
+                {
+                    "title": "Subtotal"
+                },
+                {
+                    "title": "$"
+                },
+                {
+                    "field": "subtotal",
+                    "default": 0,
+                    "formato": "(dato, resultado)=> Number((Number(dato.precio) * Number(dato.cantidad)).toFixed(2)) + Number(resultado.subtotal)"
+                },
+                {
+                    "title": "Bs."
+                },
+                {
+                    "field": "subtotalb",
+                    "default": 0,
+                    "formato": "(dato, resultado)=> Number((Number(dato.precio) * tasa * Number(dato.cantidad)).toFixed(2)) + Number(resultado.subtotalb)"
+                }
+            ],
+            [
+                {
+                    "title": "Iva"
+                },
+                {
+                    "default": 0,
+                    "tipo": "input",
+                    "title": "%",
+                    "field": "iva"
+                },
+                {
+                    "title": "$"
+                },
+                {
+                    "default": 0,
+                    "field": "subiva",
+                    "formato": "(dato,resultado)=> Number((Number(resultado.subtotal) * Number(resultado.iva)/100).toFixed(2))"
+                },
+                {
+                    "title": "Bs."
+                },
+                {
+                    "field": "subivab",
+                    "default": 0,
+                    "formato": "(dato,resultado)=> Number((Number(resultado.subtotalb) * Number(resultado.iva )/100).toFixed(2))"
+                }
+            ],
+            [
+                {
+                    "title": "Total"
+                },
+                {
+                    "title": "$"
+                },
+                {
+                    "default": 0,
+                    "field": "total",
+                    "formato": "(dato,resultado)=> Number((Number(resultado.subtotal) + Number(resultado.subiva)).toFixed(2))"
+                },
+                {
+                    "title": "Bs."
+                },
+                {
+                    "field": "totalb",
+                    "default": 0,
+                    "formato": "(dato,resultado)=> Number((Number(resultado.subtotalb) + Number(resultado.subivab)).toFixed(2))"
+                }
+            ]
+        ],
+        "Subtotal_formapago": [
+            [
+                {
+                    "title": "Tasa de Cambio"
+                },
+                {
+                    "field": "Tasa",
+                    "default": 0,
+                    "defaultf": "(dato, resultado)=> tasa"
+                },
+                {
+                    "title": "Total a Cancelar"
+                },
+                {
+                    "title": "$"
+                },
+                {
+                    "field": "cancelar",
+                    "default": 0,
+                    "defaultf": "(dato, resultado)=> externos && externos.totales ? externos.totales.total : 0"
+                },
+                {
+                    "title": "Bs."
+                },
+                {
+                    "field": "cancelarb",
+                    "default": 0,
+                    "defaultf": "(dato, resultado)=> externos && externos.totales ? externos.totales.totalb : 0"
+                }
+            ],
+            [
+                {
+                    "title": "Total"
+                },
+                {
+                    "title": "$"
+                },
+                {
+                    "field": "total",
+                    "default": 0,
+                    "formato": "(dato, resultado)=> {let monto = Number(dato.monto ? dato.monto : 0); if (dato.titulo!=='Efectivo Dolar'){monto=0;}return monto + Number(resultado.total)}"
+                },
+                {
+                    "title": "Bs."
+                },
+                {
+                    "field": "totalb",
+                    "default": 0,
+                    "formato": "(dato, resultado)=> {let monto = Number(dato.monto); if (dato.titulo==='Efectivo Dolar'){monto=0;}return monto + Number(resultado.totalb)}"
+                }
+            ],
+            [
+                {
+                    "title": "Restan"
+                },
+                {
+                    "title": "$"
+                },
+                {
+                    "defaultf": "(resultado)=> {let cancel= Number(resultado.total ? resultado.total : 0); if(cancel===0) {return resultado.cancelar;} return 0}",
+                    "field": "restan",
+                    "default": 0,
+                    "formato": "(dato,resultado)=> {let total = Number(resultado.cancelar); let totalb = Number(resultado.cancelarb); let  cancel= Number(resultado.total ? resultado.total : 0); let cancelb= Number(resultado.totalb ? resultado.totalb : 0);let resul = Number((total-cancel).toFixed(2)); let resulb = Number((totalb-cancelb).toFixed(2)); resul-=Number((cancelb/tasa).toFixed(2)); resulb-= Number((cancel*tasa).toFixed(2)); return resul}"
+                },
+                {
+                    "title": "Bs."
+                },
+                {
+                    "defaultf": "(resultado)=> {let cancel= Number(resultado.totalb ? resultado.totalb : 0); if(cancel===0) {return resultado.cancelarb;} return 0}",
+                    "field": "restanb",
+                    "default": 0,
+                    "formato": "(dato,resultado)=> {let total = Number(resultado.cancelar); let totalb = Number(resultado.cancelarb); let  cancel= Number(resultado.total ? resultado.total : 0); let cancelb= Number(resultado.totalb ? resultado.totalb : 0);let resul = Number((total-cancel).toFixed(2)); let resulb = Number((totalb-cancelb).toFixed(2)); resul-=Number((cancelb/tasa).toFixed(2)); resulb-= Number((cancel*tasa).toFixed(2)); return resulb}"
                 }
             ]
         ],

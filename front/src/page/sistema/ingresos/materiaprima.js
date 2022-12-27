@@ -1,9 +1,6 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
 
-import Cargando from '../../../componentes/esperar/cargar';
 import { conexiones} from '../../../procesos/servicios';
 import { genera_fromulario } from '../../../procesos/servicios';
 import { Form_todos } from '../../../constantes';
@@ -14,7 +11,7 @@ export default function IMP(props) {
     
     const Guardar= async(valores)=>{
         
-        const Resp = await conexiones.Ingresar_material(valores.mp);
+        await conexiones.Ingresar_material(valores.mp);
         // setFormulario(formulario);
         Inicio()
     }

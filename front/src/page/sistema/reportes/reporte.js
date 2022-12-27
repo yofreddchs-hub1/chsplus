@@ -32,27 +32,41 @@ export default class Reporte extends Component {
     console.log(item, this.state.Titulos[item])
     this.Abrir1(this.state.Titulos[item].field);
   }
-  async componentDidMount(){
+  Inicio = async() =>{
     let fecha=new Date();
     var ultimoDia = new Date(fecha.getFullYear(), fecha.getMonth() + 1, 0).getUTCDate();
     var mes = moment(fecha).format('MM');
     var ano = moment(fecha).format('YYYY');
     let titulos = Titulos_todos('Titulos_ingresos_egresos');
     let meses = [];
+    const ingreso='#138E04';
+    const egreso='#A30E02';
+    const ambos ='#AA9309';
     const Titulos_dia=[...titulos,{
         field:moment(fecha).format('YYYY-MM-DD'),
         default:'',
         title:`${moment(fecha).format('DD-MM-YYYY')} \n Ingresos/Egresos`,
+        tipo:'html',
         formato: (dato)=>{
           if (dato[moment(fecha).format('YYYY-MM-DD')]){
-            return `${dato[moment(fecha).format('YYYY-MM-DD')].ingreso} / ${dato[moment(fecha).format('YYYY-MM-DD')].egreso} `
+            const valor = dato[moment(fecha).format('YYYY-MM-DD')];
+            return <Typography variant="h6" 
+                          sx={{
+                                color:valor.ingreso!==0 && valor.egreso===0 
+                                  ? ingreso 
+                                  : valor.ingreso===0 && valor.egreso!==0
+                                  ? egreso
+                                  : ambos
+                              }} 
+                    >
+                      {`${Number(valor.ingreso).toFixed(2)} / ${Number(valor.egreso).toFixed(2)} `}
+                    </Typography>
+                    
           }
-          return `0 / 0 `
+          return (<Typography variant="h6" >{`0 / 0`}</Typography>)
         }
     }];
-    const ingreso='#138E04';
-    const egreso='#A30E02';
-    const ambos ='#AA9309';
+    
     for (var dia=1; dia<=ultimoDia;dia++){
       const campo = `${ano}-${mes}-${dia<10 ? '0' + dia : dia}`;
         titulos=[...titulos,{
@@ -75,7 +89,7 @@ export default class Reporte extends Component {
                                       : ambos
                                   }} 
                         >
-                          {`${dato[campo].ingreso} / ${dato[campo].egreso}`} 
+                          {`${Number(dato[campo].ingreso).toFixed(2)} / ${Number(dato[campo].egreso).toFixed(2)}`} 
                         </Typography>
               }
               return (<Typography variant="h6" >{`0 / 0`}</Typography>)
@@ -94,6 +108,17 @@ export default class Reporte extends Component {
       egresos = res.egresos;
     }
     this.setState({cargando:false, Titulos:titulos, Titulos_dia, datos, ingresos, egresos})
+  }
+  async componentDidMount(){
+    this.Inicio();
+    if (this.state.props.Actualizar && this.state.props.socket){
+      this.state.props.Actualizar.map(val=>{
+        this.state.props.socket.on(val, data => {
+          this.Inicio();     
+      })
+        return val
+      })
+    }
    
   }
 

@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
-import RMP from './materiaprima';
+// import RMP from './materiaprima';
 import Reporte from './reporte';
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -19,9 +19,8 @@ const Item = styled(Paper)(({ theme }) => ({
 
 export default function Reportes(props) {
     const {Config} = props;
-    
+    console.log(props);
     const Muestra = (data)=>{
-        console.log(data)
         return (
             <Item sx={{...Config.Estilos.Dialogo_cuerpo}} elevation={6}>
                 <Item sx={{height:50}}>
@@ -65,17 +64,23 @@ export default function Reportes(props) {
             <Grid container spacing={0.5}>
                 <Grid xs={6} md={6}>
                     <Muestra Titulo={'Ingresos-Egresos Materia Prima'}>
-                        <Reporte {...props} Titulo={'Materia Prima'} TituloDetalle={'Movimientos en el Mes'}/>
+                        <Reporte {...props} Titulo={'Materia Prima'} TituloDetalle={'Movimientos en el Mes'} 
+                                    Actualizar={['Actualizar_wesi_chs_server_material','Actualizar_inventariomp']}
+                        />
                     </Muestra>
                 </Grid>
                 <Grid xs={6} md={6}>
                     <Muestra Titulo={'Ingresos-Egresos Empaques'}>
-                        <Reporte {...props} Titulo={'Empaque'} TituloDetalle={'Movimientos en el Mes'}/>
+                        <Reporte {...props} Titulo={'Empaque'} TituloDetalle={'Movimientos en el Mes'}
+                                    Actualizar={['Actualizar_wesi_chs_server_empaque','Actualizar_empaque']}
+                        />
                     </Muestra>
                 </Grid>
                 <Grid xs={6} md={6}>
                     <Muestra Titulo={'Ingresos-Egresos Productos Terminados'}>
-                        <Reporte {...props} Titulo={'Producto Terminado'} TituloDetalle={'Movimientos en el Mes'}/>
+                        <Reporte {...props} Titulo={'Producto Terminado'} TituloDetalle={'Movimientos en el Mes'}
+                                    Actualizar={['Actualizar_produccion','Actualizar_inventariopt']}
+                        />
                     </Muestra>
                 </Grid>
                 <Grid xs={6} md={6}>

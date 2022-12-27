@@ -48,7 +48,7 @@ LinearProgressWithLabel.propTypes = {
 };
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
+  [`&.${tableCellClasses.footer}`]: {
     backgroundColor: theme.palette.common.black,
     color: theme.palette.common.white,
   },

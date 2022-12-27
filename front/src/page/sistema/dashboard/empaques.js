@@ -9,6 +9,7 @@ import { Generar_id } from '../../../procesos/servicios';
 
 export default function Empaques(props) {
     const [datos,setDatos]=React.useState([]);
+    
     React.useEffect(()=>{
         const Inicio= async()=>{
             let resp = await conexiones.Leer_C(['empaque'],{empaque:{}});
@@ -20,6 +21,12 @@ export default function Empaques(props) {
                 // console.log(dat)
                 setDatos(dat);
             }
+            props.socket.on(`Actualizar_wesi_chs_server_empaque`, data => {
+                Inicio();     
+            })
+            props.socket.on(`Actualizar_empaque`, () => {
+                Inicio();     
+            })
         }
         Inicio()
     },[props])

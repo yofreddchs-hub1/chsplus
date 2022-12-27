@@ -19,6 +19,12 @@ export default function PT(props) {
                 // dat=[...menor,...mayor]
                 setDatos(dat);
             }
+            props.socket.on(`Actualizar_produccion`, data => {
+                Inicio();  
+            })
+            props.socket.on(`Actualizar_inventariopt`, data => {
+                Inicio();  
+            })
         }
         Inicio()
     },[props])

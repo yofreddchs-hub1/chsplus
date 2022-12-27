@@ -357,6 +357,11 @@ class Formulario extends Component {
             
             if (respuesta)
               Mensaje= {tipo:respuesta.Respuesta, ...respuesta}
+        }else{
+          Mensaje={
+            tipo:'Error',
+            mensaje:'Debe indicar los datos solicitados'
+          }
         }
         botones[pos].esperar=undefined;
         this.setState({Cambios:true, botones, Mensaje}) 

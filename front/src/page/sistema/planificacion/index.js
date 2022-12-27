@@ -200,14 +200,25 @@ export default class Planificacion extends React.Component {
     }
     
     QuitardeProduccion = async(valores) =>{
-        let {datos}= this.state;
-        let produccion = datos.produccion ? datos.produccion : [];
-        produccion = produccion.filter(f=>f._id!==valores._id);
-        this.setState({datos:{...datos, produccion}})
+        if (!valores.producido){
+            let {datos}= this.state;
+            console.log(valores,datos)
+            let produccion = datos.produccion ? datos.produccion : [];
+            produccion = produccion.filter(f=>f._id!==valores._id);
+            this.setState({datos:{...datos, produccion}})
+        }
     }
     GuardarProduccion = async()=>{
         let {datos} = this.state;
-        let nuevos= await conexiones.Guardar({_id:datos._id ,valores:{...datos, dia: moment(datos.dia).format('MM/DD/YYYY')}, multiples_valores:true},'produccion');
+        let referencia=datos.referencia;
+        if (datos._id===undefined){
+            const resp= await conexiones.Serial({tabla:'produccion', id:'P', cantidad:6})
+            if (resp.Respuesta==='Ok'){
+                referencia= resp.Recibo;
+            }
+        }
+        console.log(referencia)
+        let nuevos= await conexiones.Guardar({_id:datos._id ,valores:{...datos, referencia, dia: moment(datos.dia).format('MM/DD/YYYY')}, multiples_valores:true},'produccion');
         this.Inicio(datos.dia);
     }
     EliminarProduccion = async()=>{

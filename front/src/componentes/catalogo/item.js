@@ -13,9 +13,8 @@ const Img = styled('img')({
 });
 
 export default function Item(props) {
-    console.log(props)
-    const alto = 250;
-    const altoImagen = alto * 0.85;
+  const alto = 250;
+  const altoImagen = alto * 0.85;
   return (
     <Paper
       sx={{

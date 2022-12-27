@@ -356,7 +356,7 @@ const item_form = async(val, valores, _id)=>{
     let cod = 'S';
     let numeracion = 10;
     let cant = 6;
-    console.log(valores[val.name])
+    
     if (val.mensaje_error){
       let dat = val.mensaje_error.split(';');
       if (dat.length===1){

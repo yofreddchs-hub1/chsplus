@@ -120,13 +120,14 @@ class InicioPrincipal extends Component {
       this.setState({Config})
     })
     socket.on("Refrescar-datos", data => {
-      // this.Refrescar()
-      try{
-        let Config = JSON.parse(data)
-        this.setState({Config})
-      }catch(error) {
-        console.log('El dato no es JSON en Refrescar')
-      }
+      this.Refrescar()
+      console.log('Refrescar data config, realizar cambios en codigo')
+      // try{
+      //   let Config = JSON.parse(data)
+      //   this.setState({Config})
+      // }catch(error) {
+      //   console.log('El dato no es JSON en Refrescar')
+      // }
     })
     socket.on("Usuario_presentes", datos =>{
       // console.log('Usuarios presentes',datos)
@@ -135,7 +136,10 @@ class InicioPrincipal extends Component {
       //  console.log('Actualizar Portada',datos);
        this.Publicidades();
     })
-    
+    socket.on("Actualizar_tasa", datos =>{
+       console.log('Actualizar tasa',datos);
+       nuevo_Valores(datos);
+    })
     this.setState({socket})
     nuevo_Valores({socket})
   }

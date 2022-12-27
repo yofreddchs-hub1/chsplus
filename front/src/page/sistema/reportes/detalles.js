@@ -97,13 +97,15 @@ export default function Detalles(props) {
                             }}
                         >
                             {formulario.Ingresos ? formulario.Ingresos.map(val=>{
+                                
                                 let formu = {...formulario.ingreso};
-                                formu.titulos.mp.label=`Ingresos ${val.codigo ? val.codigo : ''}`;
+                                formu.titulos.mp.label=`Ingresos ${val.codigo ? val.codigo : ''} - ${val.actualizado ? val.actualizado : ''}`;
                                 formu.titulos.mp.value=val.movimiento;
+                                formu.titulos.mp.titulos='Titulos_formula_mp_d';
                                 formu.datos = val;
                                 formu.titulos.mp.style={height:200};
                                 return moment(Fecha).format('YYYY-MM-DD')===val.fecha ? (
-                                    <div key={Generar_id()} >    
+                                    <div key={Generar_id()} style={{marginBottom:40}}>    
                                         <TablaMostrar {...formu}  {...formu.titulos.mp}/>     
                                     </div>
                                 ):null
@@ -127,12 +129,12 @@ export default function Detalles(props) {
                         >
                             {formulario.Egresos ? formulario.Egresos.map(val=>{
                                 let formu = {...formulario.ingreso};
-                                formu.titulos.mp.label=`Egresos ${val.codigo ? val.codigo : ''}`;
+                                formu.titulos.mp.label=`Egresos ${val.codigo ? val.codigo : ''} - ${val.actualizado ? val.actualizado : ''}`;
                                 formu.titulos.mp.value=val.movimiento;
                                 formu.datos = val;
                                 formu.titulos.mp.style={height:200};
                                 return moment(Fecha).format('YYYY-MM-DD')===val.fecha ? (
-                                    <div key={Generar_id()} >    
+                                    <div key={Generar_id()} style={{marginBottom:40}}>    
                                         <TablaMostrar {...formu}  {...formu.titulos.mp}/>     
                                     </div>
                                 ):null

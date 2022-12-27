@@ -35,6 +35,10 @@ export const conexiones = {
   Ingresar_material,
   Ingresar_empaque,
   Ingreso_Egreso,
+  Recibo_Venta,
+  Egreso_venta,
+  Ventas,
+  Serial,
   //unefa
   MisDatos,
   LeerHorario,
@@ -286,6 +290,24 @@ async function Guardar_Pago(dato, mensaje='Guardando datos...'){
 }
 //SistemasCHS
 //Guardar los la produccion del dia
+async function Recibo_Venta(){
+  const resultados= await Enviar({
+    datos:{User, Api},
+    http_destino:'/api/reciboventa',
+    method:'GET',
+    destino:'archivos/imagenes',
+  });
+  return resultados
+}
+async function Serial(dato){
+  const resultados= await Enviar({
+    datos:{User, Api, dato},
+    http_destino:'/api/serial',
+    method:'POST',
+    destino:'archivos/imagenes',
+  });
+  return resultados
+}
 async function Guardar_produccion(datos, mensaje='Guardando datos...'){
   
   const resultados= await Enviar({
@@ -330,6 +352,27 @@ async function Ingreso_Egreso(datos, mensaje='Guardando datos...'){
                           });
   return resultados
 }
+async function Egreso_venta(datos){
+  
+  const resultados= await Enviar({
+                            datos:{User, Api, datos:JSON.stringify(datos)},
+                            http_destino:'/api/egresoventa',
+                            method:'POST',
+                            destino:'archivos/imagenes'
+                          });
+  return resultados
+}
+async function Ventas(datos){
+  //datos.estado='pendiente', por cobrar
+  const resultados= await Enviar({
+                            datos:{User, Api, datos:JSON.stringify(datos)},
+                            http_destino:'/api/ventas',
+                            method:'POST',
+                            destino:'archivos/imagenes'
+                          });
+  return resultados
+}
+
 //Unefa
 //Leer Horario
 async function MisDatos(user, api, mensaje='Guardando datos...'){

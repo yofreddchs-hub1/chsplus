@@ -24,11 +24,12 @@ export default function MostrarProduccion(props) {
     const {datos}= props;
     const alto = window.innerHeight * 0.30;
     const error='#A30E02';
+    const correcto='#138E04';
     return (
         <Box sx={{ flexGrow: 1, padding:1 }}>
             <Grid container spacing={1}>
                 <Grid xs={12} md={3} lg={2}>
-                    <Item elevation={12} sx={{height:alto}}>
+                    <Item elevation={12} sx={{height:alto , ...datos && datos.producido ? {bgcolor:correcto}: {}}}>
                         <img
                                 src={ Logo}
                                 alt={'Trompo'}
@@ -50,7 +51,7 @@ export default function MostrarProduccion(props) {
                 </Grid>
                 <Grid container xs={12} md={9} lg={10} spacing={1}>
                     <Grid xs={6} lg={6}>
-                        <Item elevation={12}>
+                        <Item elevation={12} sx={{...datos && datos.producido ? {bgcolor:correcto}: {}}}>
                             <Box
                                 id="category-a"
                                 sx={{ fontSize: '16px', textTransform: 'uppercase', textAlign:'center' }}
@@ -112,7 +113,7 @@ export default function MostrarProduccion(props) {
                                                                 </React.Fragment>
                                                             }
                                                         >
-                                                            <Item sx={{backgroundColor: v.cantidad>v.actual ? error : '', textTransform: 'uppercase', textAlign:'left', }} 
+                                                            <Item sx={{backgroundColor: v.cantidad>v.actual && !datos.producido ? error : '', textTransform: 'uppercase', textAlign:'left', }} 
                                                                     
                                                             >
                                                                 <Typography variant="body2"  noWrap >
@@ -129,7 +130,7 @@ export default function MostrarProduccion(props) {
                                                                 </React.Fragment>
                                                             }
                                                         >
-                                                            <Item sx={{backgroundColor: v.cantidad>v.actual ? error : '', textAlign:'right'}} 
+                                                            <Item sx={{backgroundColor: v.cantidad>v.actual && !datos.producido ? error : '', textAlign:'right'}} 
                                                             >
                                                                 <Typography variant="body2"  noWrap >
                                                                     {v.cantidad} {v.unidad.value}
@@ -146,7 +147,7 @@ export default function MostrarProduccion(props) {
                                                                 </React.Fragment>
                                                             }
                                                         >
-                                                            <Item sx={{backgroundColor: v.cantidad>v.actual ? error : '', textAlign:'right'}} 
+                                                            <Item sx={{backgroundColor: v.cantidad>v.actual && !datos.producido ? error : '', textAlign:'right'}} 
                                                             >
                                                                 <Typography variant="body2"  noWrap >
                                                                     {v.cantidadT} {v.unidad.value}
@@ -164,7 +165,7 @@ export default function MostrarProduccion(props) {
                         </Item>
                     </Grid>
                     <Grid xs={6} lg={6}>
-                        <Item elevation={12}>
+                        <Item elevation={12} sx={{...datos && datos.producido ? {bgcolor:correcto}: {}}}>
                             <Box
                                 id="category-a"
                                 sx={{ fontSize: '16px', textTransform: 'uppercase', textAlign:'center' }}
@@ -263,14 +264,14 @@ export default function MostrarProduccion(props) {
                     sx={{ fontSize: '12px', marginTop:1}}
                 >
                     <Grid sx={{ order: { xs: 2, sm: 1 } }}>
-                        <Item>{datos && datos.mezcla ? datos.mezcla : '?'}</Item>
+                        <Item sx={{...datos && datos.producido ? {bgcolor:correcto}: {}}}>{datos && datos.mezcla ? datos.mezcla : '?'}</Item>
                     </Grid>
                     <Grid container columnSpacing={1} sx={{ order: { xs: 1, sm: 2 } }}>
                         <Grid>
-                            <Item>Material Total: {datos && datos.total ? datos.total.toFixed(3) : '?'}</Item>
+                            <Item sx={{...datos && datos.producido ? {bgcolor:correcto}: {}}}>Material Total: {datos && datos.total ? datos.total.toFixed(3) : '?'}</Item>
                         </Grid>
                         <Grid>
-                            <Item>Material Restante: {datos && datos.resta ? datos.resta.toFixed(3): '?'}</Item>
+                            <Item sx={{...datos && datos.producido ? {bgcolor:correcto}: {}}}>Material Restante: {datos && datos.resta ? datos.resta.toFixed(3): '?'}</Item>
                         </Grid>
                         
                     </Grid>
