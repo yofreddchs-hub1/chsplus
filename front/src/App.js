@@ -81,8 +81,13 @@ class InicioPrincipal extends Component {
   Login = async()=>{
     const {Config, User}= this.state;
     let nuevos= await genera_fromulario({valores:{}, campos: Form_todos('Form_login') },1)
+    console.log(nuevos)
     if(User!==null){
         nuevos.titulos= {username:{...nuevos.titulos['username'], value:User.username, disabled:true}}
+    }else {
+      nuevos.titulos.password.onKeyPress=this.Iniciar
+      nuevos.titulos.password.pos=0;
+      nuevos.titulos.password.validar=true;
     }
     const formulario ={
       ...nuevos,
@@ -154,10 +159,18 @@ class InicioPrincipal extends Component {
   }
 
   async componentDidMount(){
+    const respuesta = await conexiones.Leer_data(`data/Apis.js`,'wesi_chs_server');
+    if (respuesta.Respuesta==='Ok'){
+      let Config_Apis=JSON.parse(respuesta.datos);
+      this.setState({Config_Apis})
+    }
     this.Inicio_Socket();
     this.Refrescar();
+    
     this.Publicidad();
     this.Publicidades();
+    
+    
 
   }
   
@@ -274,11 +287,25 @@ class InicioPrincipal extends Component {
       <Cuerpo Bloques={Bloques}/>
     )
   }
+  Buscar_link=(link)=>{
+    const {Config_Apis}=this.state;
+    let resultado = undefined;
+    if (Config_Apis!==undefined){
+      Object.keys(Config_Apis).map(val=>{
+        if (Config_Apis[val].link===link){
+          resultado= Config_Apis[val];
+        }
+        return val;
+      })
+    }
+    return resultado;
+  }
   
   render(){
-    const {esperar, seleccion, pantalla}=this.state;
+    const {esperar, seleccion, pantalla, Config_Apis}=this.state;
     const Pantalla = seleccion ? seleccion : <Home {...this.state} />
     let dir = window.location.pathname.split('/');
+    const mostrar_publicidad = this.Buscar_link(window.location.pathname);
     if (dir[1]!=='' && Apis[dir[1]]===undefined) window.location.pathname='';
     if (dir[1]==='' ){
       return esperar ? <Esperar/> : (
@@ -299,36 +326,40 @@ class InicioPrincipal extends Component {
       return esperar ? <Esperar/> :(
         <div>
           <Api/>
-          <Snackbar open={this.state.publicidad} autoHideDuration={6000} >
-            <div style={{ width:230, backgroundColor:'#fff', borderRadius:10, borderColor:'#000'}}>
-              <div style={{width:'100%', height:30, backgroundColor:'gray', borderTopLeftRadius:10, borderTopRightRadius:10, flexDirection:'row', display:'flex'}}>
-                <div style={{width:'20%', height:30, borderTopLeftRadius:10, color:'#fff'}}>
-                  <img
-                          src={Logo}
-                          alt={'Logo'}
-                          loading="lazy"
-                          style={{height:25}}
-                  />
-                </div>
-                <div style={{width:'60%', height:30, color:'#fff', padding:5}}>Publicidad</div>
-                <div style={{width:'20%', height:30, borderTopRightRadius:10, cursor:'pointer', color:'#fff'}}
-                      onClick={()=>{
-                        this.Publicidad(false);
-                      }}
-                >
-                  <IconButton onClick={()=>{
-                        this.Publicidad(false);
-                      }}
+          { mostrar_publicidad && !mostrar_publicidad.sinpublicidad
+            ?
+            <Snackbar open={this.state.publicidad} autoHideDuration={6000} >
+              <div style={{ width:230, backgroundColor:'#fff', borderRadius:10, borderColor:'#000'}}>
+                <div style={{width:'100%', height:30, backgroundColor:'gray', borderTopLeftRadius:10, borderTopRightRadius:10, flexDirection:'row', display:'flex'}}>
+                  <div style={{width:'20%', height:30, borderTopLeftRadius:10, color:'#fff'}}>
+                    <img
+                            src={Logo}
+                            alt={'Logo'}
+                            loading="lazy"
+                            style={{height:25}}
+                    />
+                  </div>
+                  <div style={{width:'60%', height:30, color:'#fff', padding:5}}>Publicidad</div>
+                  <div style={{width:'20%', height:30, borderTopRightRadius:10, cursor:'pointer', color:'#fff'}}
+                        onClick={()=>{
+                          this.Publicidad(false);
+                        }}
                   >
-                      <CloseIcon fontSize="small"/>
-                  </IconButton>
+                    <IconButton onClick={()=>{
+                          this.Publicidad(false);
+                        }}
+                    >
+                        <CloseIcon fontSize="small"/>
+                    </IconButton>
+                  </div>
+                </div>
+                <div onClick={()=>window.location.pathname=''}>
+                  <Carrusel datos={this.state.portadas} height={200}/>
                 </div>
               </div>
-              <div onClick={()=>window.location.pathname=''}>
-                <Carrusel datos={this.state.portadas} height={200}/>
-              </div>
-            </div>
-          </Snackbar>
+            </Snackbar>
+            : null
+          }
         </div>
       )
       

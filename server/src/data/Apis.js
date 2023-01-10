@@ -2,9 +2,10 @@
     "Sistema": {
         "label": "Sistema CHS",
         "logo": "/api/imagen/logo.png",
-        "link": "/",
-        "data": "datos",
-        "app": "sistema"
+        "link": "/sistema",
+        "data": "Api_sistemachs",
+        "app": "sistemachs",
+        "sinpublicidad": true
     },
     "Colegio": {
         "label": "Colegio",

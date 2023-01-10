@@ -225,6 +225,7 @@ Ver_conexion= async(datos, hash)=>{
 // verifica si el usuario sigue conectado, si a iniciado desde otro dispositivo o el token expiro
 serverCtrl.Verificar = async (req, res) =>{
  const {User, hash} = req.body;
+ console.log('Por verificar',User);
  let resultado = await serverCtrl.Verificar_autenticidad(User, hash);
  res.json(resultado);
 }
@@ -242,6 +243,8 @@ serverCtrl.Ver_datos = async (tablas, cantidad=20) =>{
   let datos={};
   try{
     return Promise.all(tablas.map(async(data)=>{
+      if (data==='' || data===' ' || data===null ||data===undefined)
+        return data
       await serverCtrl.Tablas(data);
       const DB = require(`../models/${data}`);
       const count = await DB.estimatedDocumentCount();
@@ -276,6 +279,9 @@ serverCtrl.Ver_datos_C = async (tablas, condicion) =>{
   let datos={};
   try{
     return Promise.all(tablas.map(async(data)=>{
+      if (['', ' ', undefined, null ].indexOf(data)!==-1){
+        return data
+      }
       await serverCtrl.Tablas(data)
       const DB = require(`../models/${data}`);
       let dbs;
@@ -396,6 +402,8 @@ serverCtrl.Tablas = async(tabla)=>{
     const DB = require(`../models/${tabla}`);
     return
   }catch(error) {
+      if (tabla==='' || tabla===' ' || tabla===null || tabla===undefined)
+        return 
       const direct= __dirname.replace('controllers',`models${path.sep}${tabla}.js`);
       fs.stat(direct, (err) => {
         if (!err) {
@@ -462,7 +470,7 @@ serverCtrl.Setall = async (req, res) =>{
       const DB = require(`../models/${tabla}`);
       if (newdatos['unico'] && newdatos._id===undefined){
         let datos = await DB.find(
-            {$text: {$search: newdatos['multiples_valores'] ? newdatos.valores[newdatos['unico']] : newdatos[newdato['unico']] , 
+            {$text: {$search: newdatos['multiples_valores'] ? newdatos.valores[newdatos['unico']] : newdatos[newdatos['unico']] , 
             $caseSensitive: false}});
         
         let continuar = true;
@@ -538,7 +546,8 @@ serverCtrl.Setall = async (req, res) =>{
       }
       const resultado=await DB.find()
       console.log('Actualizar_'+tabla)
-      global.io.emit('Actualizar_'+tabla,{tabla}) //datos:resultado})
+      // global.io.emit('Actualizar_'+tabla,{tabla}) //datos:resultado})
+      global.io.emit('Actualizar',{tabla}) //datos:resultado})
       res.json({Respuesta:'Ok', resultado});
     }catch(error) {
       console.log('Error-Setall',error, error.keyValue);
@@ -829,17 +838,17 @@ serverCtrl.Guardar_produccion = async (req, res)=>{
     const igual= await serverCtrl.Verifica_api(Api, true);
     if (hashn===hash && igual) {
       const fecha = moment(new Date()).format('YYYY-MM-DD');
-      await serverCtrl.Tablas('egresomp');
-      await serverCtrl.Tablas('egresoem');
-      await serverCtrl.Tablas('ingresopt');
-      const Produccion = require(`../models/produccion`);
-      const MP = require(`../models/inventariomp`);
-      const PT = require(`../models/inventariopt`);
-      const EMPAQUE = require(`../models/empaque`);
-      const FORMULA = require(`../models/formula`);
-      const EM = require(`../models/egresomp`);
-      const EEM= require(`../models/egresoem`);
-      const IPT= require(`../models/ingresopt`);
+      await serverCtrl.Tablas('sistemachs_Egresomp');
+      await serverCtrl.Tablas('sistemachs_Egresoem');
+      await serverCtrl.Tablas('sistemachs_Ingresopt');
+      const Produccion = require(`../models/sistemachs_Produccion`);
+      const MP = require(`../models/sistemachs_Inventariomp`);
+      const PT = require(`../models/sistemachs_Inventariopt`);
+      const EMPAQUE = require(`../models/sistemachs_Empaque`);
+      const FORMULA = require(`../models/sistemachs_Formula`);
+      const EM = require(`../models/sistemachs_Egresomp`);
+      const EEM= require(`../models/sistemachs_Egresoem`);
+      const IPT= require(`../models/sistemachs_Ingresopt`);
       datos = JSON.parse(datos);
       let movimiento = [];
       let movimiento_pt = [];
@@ -919,7 +928,7 @@ serverCtrl.Guardar_produccion = async (req, res)=>{
 
       //Guardar el egreso de materia prima
       // let total = await EM.estimatedDocumentCount();
-      let codigo = await Serie({tabla:'egresomp',id:'EMP', cantidad:6});//Generar_codigo(total,'EMP')
+      let codigo = await Serie({tabla:'sistemachs_Egresomp',id:'EMP', cantidad:6});//Generar_codigo(total,'EMP')
       let valores = {codigo, fecha, movimiento};
       let cod_chs = await Codigo_chs({...valores});
       let hash_chs = await Hash_chs({...valores, cod_chs})
@@ -928,7 +937,7 @@ serverCtrl.Guardar_produccion = async (req, res)=>{
 
       //Guardar el egreso de empaque
       // total = await EEM.estimatedDocumentCount();
-      codigo =  await Serie({tabla:'egresoem',id:'EEM', cantidad:6});//Generar_codigo(total,'EEM')
+      codigo =  await Serie({tabla:'sistemachs_Egresoem',id:'EEM', cantidad:6});//Generar_codigo(total,'EEM')
       valores = {codigo, fecha, movimiento: movimiento_em};
       cod_chs = await Codigo_chs({...valores});
       hash_chs = await Hash_chs({...valores, cod_chs})
@@ -937,7 +946,7 @@ serverCtrl.Guardar_produccion = async (req, res)=>{
       
       //Guardar el ingreso producto terminado
       // total = await IPT.estimatedDocumentCount();
-      codigo =  await Serie({tabla:'ingresopt',id:'IPT', cantidad:6});//Generar_codigo(total,'IPT')
+      codigo =  await Serie({tabla:'sistemachs_Ingresopt',id:'IPT', cantidad:6});//Generar_codigo(total,'IPT')
       valores = {fecha, movimiento:movimiento_pt};
       cod_chs = await Codigo_chs({...valores});
       hash_chs = await Hash_chs({...valores, cod_chs})
@@ -952,6 +961,57 @@ serverCtrl.Guardar_produccion = async (req, res)=>{
     }
 }
 
+//Ingresar 
+serverCtrl.Ingresar = async (req, res)=>{
+  let {User, Api, datos, tabla_inv, tabla_ing, id, hash} = req.body;
+  User= typeof User==='string' ? JSON.parse(User) : User;
+  const hashn = await Hash_texto(JSON.stringify({User, Api, datos, tabla_inv, tabla_ing, id}));
+  const igual= await serverCtrl.Verifica_api(Api, true);
+  if (hashn===hash && igual) {
+    await serverCtrl.Tablas(`${tabla_ing}`);
+    const MP = require(`../models/${tabla_inv}`);
+    const IM = require(`../models/${tabla_ing}`);
+    datos = JSON.parse(datos);
+    if (datos._id){
+      
+      let anterior = await IM.findOne({_id:datos._id});
+      console.log(datos);
+      for (var i=0; i< anterior.valores.movimiento.length; i++){
+        let material =  anterior.valores.movimiento[i];
+        let Mat = await MP.findOne({_id:material._id});
+        Mat.valores.actual= Number(Mat.valores.actual) - Number(material.cantidad);
+        await MP.updateOne({_id:material._id},{valores:Mat.valores, actualizado:`Referencia: ${anterior.valores.codigo} - ${User.username}`},{ upsert: true });
+        
+      }
+    }
+    const fecha = datos.fecha; //moment(new Date()).format('YYYY-MM-DD');
+    let movimiento = [];
+    // let total = await IM.estimatedDocumentCount();
+    const codigo = datos.codigo ? datos.codigo : await Serie({tabla:`${tabla_ing}`,id, cantidad:6});//Generar_codigo(total,'IMP');
+
+    for (var i=0; i<datos.movimiento.length; i++){
+      let material =  datos.movimiento[i];
+      let Mat = await MP.findOne({_id:material._id});
+      Mat.valores.actual= Number(Mat.valores.actual) + Number(material.cantidad);
+      await MP.updateOne({_id:material._id},{valores:Mat.valores, actualizado:`Referencia: ${codigo} - ${User.username}`},{ upsert: true });
+      movimiento=[...movimiento,Movimiento(material)];
+    }
+    if (datos._id){
+      await IM.updateOne({_id:datos._id},{valores:datos, actualizado:`${User.username}`},{ upsert: true });
+      res.json({Respuesta:'Ok', datos}); 
+      return 
+    }
+    let valores = {codigo, fecha, movimiento};
+    let cod_chs = await Codigo_chs({...valores});
+    const hash_chs = await Hash_chs({...valores, cod_chs})
+    const Nuevo = new IM({valores, cod_chs, hash_chs, actualizado:User.username});
+    await Nuevo.save();
+    global.io.emit(`Actualizar`,datos); 
+    res.json({Respuesta:'Ok', datos});
+  }else{
+    res.json({Respuesta:'Error', mensaje:'hash invalido'});
+  }
+}
 //Ingresos de Materia Prima
 serverCtrl.Ingresar_material = async (req, res)=>{
     let {User, Api, datos, hash} = req.body;
@@ -960,13 +1020,13 @@ serverCtrl.Ingresar_material = async (req, res)=>{
     const igual= await serverCtrl.Verifica_api(Api, true);
     if (hashn===hash && igual) {
       const fecha = moment(new Date()).format('YYYY-MM-DD');
-      await serverCtrl.Tablas('ingresomp');
-      const MP = require(`../models/inventariomp`);
-      const IM = require(`../models/ingresomp`);
+      await serverCtrl.Tablas('sistemachs_Ingresomp');
+      const MP = require(`../models/sistemachs_Inventariomp`);
+      const IM = require(`../models/sistemachs_Ingresomp`);
       datos = JSON.parse(datos);
       let movimiento = [];
       // let total = await IM.estimatedDocumentCount();
-      const codigo = await Serie({tabla:'ingresomp',id:'IMP', cantidad:6});//Generar_codigo(total,'IMP');
+      const codigo = await Serie({tabla:'sistemachs_Ingresomp',id:'IMP', cantidad:6});//Generar_codigo(total,'IMP');
 
       for (var i=0; i<datos.length; i++){
         let material =  datos[i];
@@ -995,13 +1055,13 @@ serverCtrl.Ingresar_empaque = async (req, res)=>{
   const igual= await serverCtrl.Verifica_api(Api, true);
   if (hashn===hash && igual) {
     const fecha = moment(new Date()).format('YYYY-MM-DD');
-    await serverCtrl.Tablas('ingresoem');
-    const EM = require(`../models/empaque`);
-    const IE = require(`../models/ingresoem`);
+    await serverCtrl.Tablas('sistemachs_Ingresoem');
+    const EM = require(`../models/sistemachs_Empaque`);
+    const IE = require(`../models/sistemachs_Ingresoem`);
     datos = JSON.parse(datos);
     let movimiento = [];
     // let total = await IE.estimatedDocumentCount();
-    const codigo =  await Serie({tabla:'ingresoem',id:'IEM', cantidad:6});//Generar_codigo(total,'IEM')
+    const codigo =  await Serie({tabla:'sistemachs_Ingresoem',id:'IEM', cantidad:6});//Generar_codigo(total,'IEM')
 
     for (var i=0; i<datos.length; i++){
       let material =  datos[i];
@@ -1038,26 +1098,26 @@ serverCtrl.Ingreso_Egreso = async (req, res)=>{
       res.json({Respuesta:'Ok', inventario:[], mensaje:'Tipo de ingreso y egresos no conocidos'});
     }
     if (datos.tipo==='Materia Prima'){
-      await serverCtrl.Tablas('ingresomp');
-      await serverCtrl.Tablas('egresomp');
-      await serverCtrl.Tablas('inventariomp');
-      Ingreso=require(`../models/ingresomp`);
-      Egreso=require(`../models/egresomp`);
-      Inventario = require(`../models/inventariomp`);
+      await serverCtrl.Tablas('sistemachs_Ingresomp');
+      await serverCtrl.Tablas('sistemachs_Egresomp');
+      await serverCtrl.Tablas('sistemachs_Inventariomp');
+      Ingreso=require(`../models/sistemachs_Ingresomp`);
+      Egreso=require(`../models/sistemachs_Egresomp`);
+      Inventario = require(`../models/sistemachs_Inventariomp`);
     }else if (datos.tipo==='Empaque'){
-      await serverCtrl.Tablas('ingresoem');
-      await serverCtrl.Tablas('egresoem');
-      await serverCtrl.Tablas('empaque');
-      Ingreso=require(`../models/ingresoem`);
-      Egreso=require(`../models/egresoem`);
-      Inventario = require(`../models/empaque`);
+      await serverCtrl.Tablas('sistemachs_Ingresoem');
+      await serverCtrl.Tablas('sistemachs_Egresoem');
+      await serverCtrl.Tablas('sistemachs_Empaque');
+      Ingreso=require(`../models/sistemachs_Ingresoem`);
+      Egreso=require(`../models/sistemachs_Egresoem`);
+      Inventario = require(`../models/sistemachs_Empaque`);
     }else if (datos.tipo==='Producto Terminado'){
-      await serverCtrl.Tablas('ingresopt');
-      await serverCtrl.Tablas('egresopt');
-      await serverCtrl.Tablas('inventariopt');
-      Ingreso=require(`../models/ingresopt`);
-      Egreso=require(`../models/egresopt`);
-      Inventario = require(`../models/inventariopt`);
+      await serverCtrl.Tablas('sistemachs_Ingresopt');
+      await serverCtrl.Tablas('sistemachs_Egresopt');
+      await serverCtrl.Tablas('sistemachs_Inventariopt');
+      Ingreso=require(`../models/sistemachs_Ingresopt`);
+      Egreso=require(`../models/sistemachs_Egresopt`);
+      Inventario = require(`../models/sistemachs_Inventariopt`);
     }else{
       res.json({Respuesta:'Ok', inventario:[], mensaje:'Tipo de ingreso y egresos no conocidos'});
       return
@@ -1145,8 +1205,8 @@ serverCtrl.Serial= async(req,res)=>{
   }
 }
 serverCtrl.Recibo_venta = async(req, res)=>{
-  await serverCtrl.Tablas('venta');
-  const Venta = require(`../models/venta`);
+  await serverCtrl.Tablas('sistemachs_Venta');
+  const Venta = require(`../models/sistemachs_Venta`);
   let total = await Venta.estimatedDocumentCount();
   const Recibo = Generar_codigo(total,'V', 6);
   res.json({Respuesta:'Ok', Recibo});
@@ -1159,10 +1219,10 @@ serverCtrl.Egreso_Venta = async (req, res)=>{
   if (hashn===hash && igual) {
     const fecha = moment(new Date()).format('YYYY-MM-DD');
     await serverCtrl.Tablas('egresopt');
-    await serverCtrl.Tablas('inventariopt');
-    const PT = require(`../models/inventariopt`);
-    const EPT= require(`../models/egresopt`);
-    const VENTA = require(`../models/venta`);
+    await serverCtrl.Tablas('sistemachs_Inventariopt');
+    const PT = require(`../models/sistemachs_Inventariopt`);
+    const EPT= require(`../models/sistemachs_Egresopt`);
+    const VENTA = require(`../models/sistemachs_Venta`);
     datos = JSON.parse(datos);
     if (datos.formapago['formapago-subtotal'].restan>0){
       datos.pendiente=true;
@@ -1175,7 +1235,7 @@ serverCtrl.Egreso_Venta = async (req, res)=>{
       await VENTA.updateOne({_id:datos._id},{valores:datos, actualizado:`${User.username}`},{ upsert: true });
     }else{
       //Recibo
-      let Recibo = await Serie({tabla:'venta', cantidad:6, id:'V'});//Generar_codigo(total,'V', 6);
+      let Recibo = await Serie({tabla:'sistemachs_Venta', cantidad:6, id:'V'});//Generar_codigo(total,'V', 6);
       datos.orden_venta.recibo=Recibo;
       datos={recibo:Recibo, fecha, ...datos};
 
@@ -1193,7 +1253,7 @@ serverCtrl.Egreso_Venta = async (req, res)=>{
           
       }
       //Guardar el egreso producto terminado
-      let codigo = await Serie({tabla:'egresopt', id:'EPT', cantidad:6});
+      let codigo = await Serie({tabla:'sistemachs_Egresopt', id:'EPT', cantidad:6});
       let valores = {codigo, fecha, movimiento};
       let cod_chs = await Codigo_chs({...valores});
       let hash_chs = await Hash_chs({...valores, cod_chs})
@@ -1220,9 +1280,11 @@ serverCtrl.Ventas = async (req, res)=>{
   const igual= await serverCtrl.Verifica_api(Api, true);
   if (hashn===hash && igual) {
     datos = datos ? JSON.parse(datos) : {};
-    const VENTA = require(`../models/venta`);
+    const VENTA = require(`../models/sistemachs_Venta`);
     let ventas = datos && datos.estado 
           ? await VENTA.find({$text: {$search: datos.estado, $caseSensitive: false}})
+          : datos && datos.fecha
+          ? await VENTA.find({"valores.fecha":{$gte:datos.fecha.dia,$lte:datos.fecha.diaf}})
           : await VENTA.find();
     
     let ventas_p= ventas.filter(f=>f.valores.pendiente);
@@ -1232,7 +1294,7 @@ serverCtrl.Ventas = async (req, res)=>{
     let facturado = 0;
     ventas.map(val=>{
       let valor = val.valores.formapago['formapago-subtotal'];
-      total+= Number(valor.total);
+      total+= Number(valor.total + valor.totalb / valor.Tasa);
       pendiente+= Number(valor.restan);
       facturado+= Number(valor.cancelar);
       return val
@@ -1772,6 +1834,71 @@ serverCtrl.Egew_userAdmin = async (req, res) =>{
     res.json({Respuesta:'Error', mensaje:'hash invalido'});
   }
 }
+// =============== codigo para la sincronizacion =============
+serverCtrl.Sincronizar = async (req, res) =>{
+  let {tablas, datos,Api, hash} = req.body;
+  
+  const hashn = await Hash_texto(JSON.stringify({tablas, datos, Api}));
+  const igual= await serverCtrl.Verifica_api(Api, true);
+  if (hashn===hash && igual){
+    const data = tablas;
+    console.log('Sincronizando >>>', data, datos.fecha);
+    await serverCtrl.Tablas(data);
+    const DB = require(`../models/${data}`);
+    for (let i=0; i<datos.datos.length;i++){
+      const newdatos=datos.datos[i];
+      await DB.updateOne({_id:newdatos._id},{...newdatos},{ upsert: true });
+      
+      if (data.indexOf('Eliminados')!==-1){
+        console.log('Elimninar>>>>',newdatos.tabla)
+        const DBE = require(`../models/${newdatos.tabla}`);
+        await DBE.deleteOne({_id:newdatos.valores._id});
+      }
+    }
+    // let resultados = {};
+    // await Promise.all(tablas.map(async(data)=>{
+    //   await serverCtrl.Tablas(data);
+    //   const DB = require(`../models/${data}`);
+    //   for (let i=0; i<datos[data].length;i++){
+    //     const newdatos=datos[data][i];
+    //     console.log(newdatos);
+    //     await DB.updateOne({_id:newdatos._id},{...newdatos},{ upsert: true });
+        
+    //     if (data.indexOf('Eliminados')!==-1){
+    //       console.log('Elimninar>>>>',newdatos.tabla)
+    //       const DBE = require(`../models/${newdatos.tabla}`);
+    //       await DBE.deleteOne({_id:newdatos.valores._id});
+    //     }
+    //   }
+    //   global.io.timeout(1000).emit('Actualizar_'+data,{tabla:data})
+    // }))
+    // .then(()=>{
+    // });
+    // const resultado = await Promise.all(tablas.map(async(data)=>{
+    //   await serverCtrl.Tablas(data);
+    //   const DB = require(`../models/${data}`);
+    //   const dbs = await DB.find();
+    //   resultados[data]=dbs;
+      
+    // }))
+    // .then(()=>{
+    //   return {Respuesta:'Ok', resultados, dia: new Date()};
+    // });
+    console.log('Sincronizado >>>>>>...', data);
+    let dbs=[]
+    if (datos.fecha===null){
+      console.log('Enviar todos...............');
+      dbs = await DB.find();
+    }else{
+      console.log('Enviar despues de ', datos.fecha);
+      dbs = await DB.find({updatedAt:{$gte:datos.fecha}});
 
+    }
+     
+    res.json({Respuesta:'Ok', resultados:dbs, fecha:new Date()});
+  }else{
+    res.json({Respuesta:'Error', mensaje:'hash invalido'});
+  }
 
+}
 module.exports = serverCtrl;

@@ -233,8 +233,10 @@ export default class Configuracion extends Component {
     a.click();
   }
   Descargar = async(datos)=>{
+    const {seleccionado}=this.state;
     const hoy = new Date();
     const fecha=moment(hoy).format('DD-MM-YYYY HH:mm');
+    datos.archivo = seleccionado.api;
     var file = new File(
       [JSON.stringify(datos.data, null, 2)],
       datos.archivo+'-'+fecha+".json",

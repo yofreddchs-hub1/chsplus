@@ -516,7 +516,7 @@ export default function Page(props) {
           valor.onKeyPress ? 
           (event) =>{
             if (event.key==='Enter')
-              values.Responder(valor.onKeyPress,values.resultados, valor.validar)
+              values.Responder(valor.onKeyPress,values.resultados, valor.validar, valor.pos ? valor.pos : 0)
           } : null 
         }
        onChange={values.Cambio}
@@ -675,7 +675,7 @@ export default function Page(props) {
   Inicio()
 
   return form.length===0 && !values.botones ? (
-    <div className={[classes.root]}>
+    <div className={[classes.root, classes.item]}>
       <Skeleton />
       <Skeleton animation={false} />
       <Skeleton animation="wave" />
@@ -709,12 +709,14 @@ export default function Page(props) {
             </div>
           : null
       }
-      {props.datos.Mensaje.tipo && props.datos.Mensaje
-        ? props.datos.Mensaje.tipo==='Error' 
-        ? <Alert severity="error" >{props.datos.Mensaje.mensaje ? props.datos.Mensaje.mensaje : props.datos.Mensaje.Mensaje}</Alert>
-        : <Alert severity="success">Proceso realizado con exito</Alert>
-        : null
-      }
+      <div className={classes.item}>
+        {props.datos.Mensaje.tipo && props.datos.Mensaje
+          ? props.datos.Mensaje.tipo==='Error' 
+          ? <Alert severity="error" >{props.datos.Mensaje.mensaje ? props.datos.Mensaje.mensaje : props.datos.Mensaje.Mensaje}</Alert>
+          : <Alert severity="success">Proceso realizado con exito</Alert>
+          : null
+        }
+      </div>
       {values.botones ? (
         <div className={classes.barra_botones}>
           {values.botones.map((boton,i)=>{

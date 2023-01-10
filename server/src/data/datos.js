@@ -13,9 +13,7 @@
             "value": "Aplicaciones",
             "primary": "Aplicaciones",
             "icon": "apps",
-            "libre": true,
-            "app_chs": true,
-            "childen": []
+            "libre": true
         },
         {
             "value": "Sistema",
@@ -39,9 +37,19 @@
                             "icon": "post_add"
                         },
                         {
+                            "value": "Modificar Ingreso Material",
+                            "primary": "Modificar Ingreso Material",
+                            "icon": "edit"
+                        },
+                        {
                             "value": "Ingresar Empaque",
                             "primary": "Ingresar Empaque",
                             "icon": "assignment_add"
+                        },
+                        {
+                            "value": "Modificar Ingreso Empaque",
+                            "primary": "Modificar Ingreso Empaque",
+                            "icon": "edit"
                         }
                     ]
                 },
