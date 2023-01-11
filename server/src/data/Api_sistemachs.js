@@ -248,6 +248,13 @@
                     "numberOfLines": 4
                 },
                 {
+                    "key": "contacto",
+                    "name": "contacto",
+                    "label": "Contacto",
+                    "multiline": true,
+                    "numberOfLines": 2
+                },
+                {
                     "nombre": "codigo",
                     "tipo": "auto-codigo",
                     "label": "Código",
@@ -311,6 +318,13 @@
                     "key": "direcion",
                     "name": "direccion",
                     "label": "Dirección",
+                    "multiline": true,
+                    "numberOfLines": 4
+                },
+                {
+                    "key": "descripcion",
+                    "name": "descripcion",
+                    "label": "Descripción",
                     "multiline": true,
                     "numberOfLines": 4
                 },
@@ -588,7 +602,7 @@
                     "name": "formulas",
                     "label": "Formula",
                     "tipo": "Tabla",
-                    "titulos": "Titulos_formula_mp",
+                    "titulos": "Titulos_formula_mp_d",
                     "Form": "Form_formula_mp",
                     "nopaginar": true,
                     "style": {

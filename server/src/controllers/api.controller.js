@@ -1847,7 +1847,9 @@ serverCtrl.Sincronizar = async (req, res) =>{
     const DB = require(`../models/${data}`);
     for (let i=0; i<datos.datos.length;i++){
       const newdatos=datos.datos[i];
-      await DB.updateOne({_id:newdatos._id},{...newdatos},{ upsert: true });
+      let cod_chs = await Codigo_chs({...newdatos.valores});
+      const hash_chs = await Hash_chs({...newdatos, cod_chs})
+      await DB.updateOne({_id:newdatos._id},{...newdatos, cod_chs, hash_chs},{ upsert: true });
       
       if (data.indexOf('Eliminados')!==-1){
         console.log('Elimninar>>>>',newdatos.tabla)

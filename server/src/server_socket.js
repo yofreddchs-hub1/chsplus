@@ -73,6 +73,9 @@ global.io.on('connection', (socket) =>{
         socket.broadcast.emit('Actualizar', data);
         socket.emit('Sincronizado', data);
     })
+    socket.on('Elimniar', (data)=>{
+        socket.broadcast.emit('Eliminar', data);
+    })
     
 });
 
