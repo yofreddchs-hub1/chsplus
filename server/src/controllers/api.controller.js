@@ -1847,10 +1847,13 @@ serverCtrl.Sincronizar = async (req, res) =>{
     const DB = require(`../models/${data}`);
     for (let i=0; i<datos.datos.length;i++){
       const newdatos=datos.datos[i];
-      let cod_chs = await Codigo_chs({...newdatos.valores});
-      const hash_chs = await Hash_chs({...newdatos, cod_chs})
-      await DB.updateOne({_id:newdatos._id},{...newdatos, cod_chs, hash_chs},{ upsert: true });
-      
+      try{
+        let cod_chs = await Codigo_chs({...newdatos.valores});
+        const hash_chs = await Hash_chs({...newdatos, cod_chs})
+        await DB.updateOne({_id:newdatos._id},{...newdatos, cod_chs, hash_chs},{ upsert: true });
+      }catch(error) {
+        console.log('Error, al amacenar datos en',data, newdatos.valores);    
+      }
       if (data.indexOf('Eliminados')!==-1){
         console.log('Elimninar>>>>',newdatos.tabla)
         const DBE = require(`../models/${newdatos.tabla}`);
