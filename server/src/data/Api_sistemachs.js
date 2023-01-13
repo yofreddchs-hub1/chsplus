@@ -114,19 +114,9 @@
                     "icon": "post_add"
                 },
                 {
-                    "value": "Modificar Ingreso Material",
-                    "primary": "Modificar Ingreso Material",
-                    "icon": "edit"
-                },
-                {
                     "value": "Ingresar Empaque",
                     "primary": "Ingresar Empaque",
                     "icon": "assignment_add"
-                },
-                {
-                    "value": "Modificar Ingreso Empaque",
-                    "primary": "Modificar Ingreso Empaque",
-                    "icon": "edit"
                 }
             ]
         },
@@ -1160,6 +1150,23 @@
                 }
             ]
         },
+        "Form_venta_mostrar": {
+            "columna": 1,
+            "value": [
+                {
+                    "key": "producto",
+                    "name": "producto",
+                    "label": "Productos",
+                    "tipo": "Tabla",
+                    "titulos": "Titulos_venta_mostrar",
+                    "nopaginar": false,
+                    "Subtotal": "Subtotal_venta",
+                    "style": {
+                        "height": 250
+                    }
+                }
+            ]
+        },
         "Form_FormasPago": {
             "columna": 1,
             "value": [
@@ -1259,6 +1266,61 @@
                     "placeholder": "Nombre de la lista",
                     "required": true,
                     "mensaje_error": "Debe indicar el nombre de la lista a crear"
+                }
+            ]
+        },
+        "Form_reporte_venta": {
+            "columna": 2,
+            "value": [
+                {
+                    "nombre": "moneda",
+                    "tipo": "lista_multiuso",
+                    "label": "Moneda",
+                    "placeholder": "Moneda",
+                    "title": "Moneda",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "lista": "lista_moneda",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "moneda",
+                    "name": "moneda",
+                    "multiline": false
+                },
+                {
+                    "nombre": "tasa",
+                    "tipo": "number",
+                    "label": "Tasa Cambio",
+                    "placeholder": "Tasa Cambio",
+                    "title": "Tasa Cambio",
+                    "required": true,
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "tasa",
+                    "name": "tasa",
+                    "multiline": false
+                },
+                {
+                    "nombre": "destino",
+                    "tipo": "input",
+                    "label": "Destino",
+                    "placeholder": "Destino",
+                    "title": "Destino",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "destino",
+                    "name": "destino",
+                    "multiline": false
                 }
             ]
         }
@@ -1453,6 +1515,20 @@
                 "_id": 5,
                 "titulo": "Otro",
                 "value": "otro",
+                "permisos": ""
+            }
+        ],
+        "lista_moneda": [
+            {
+                "_id": 0,
+                "titulo": "Bs",
+                "value": "bs",
+                "permisos": ""
+            },
+            {
+                "_id": 1,
+                "titulo": "USD",
+                "value": "usd",
                 "permisos": ""
             }
         ]
@@ -1789,7 +1865,8 @@
                 "tipo": "",
                 "formato": "",
                 "default": "",
-                "type": ""
+                "type": "",
+                "flex": 3
             },
             {
                 "title": "Precio Venta",
@@ -1974,6 +2051,44 @@
                 "default": "",
                 "type": "number"
             }
+        ],
+        "Titulos_venta_mostrar": [
+            {
+                "title": "Cantidad",
+                "field": "cantidad",
+                "tipo": "",
+                "formato": "",
+                "default": "",
+                "type": "number",
+                "flex": 1.5
+            },
+            {
+                "title": "Concepto o Descripción",
+                "field": "descripcion",
+                "tipo": "",
+                "formato": "",
+                "default": "",
+                "type": "",
+                "flex": 6
+            },
+            {
+                "title": "Precio Unitario ",
+                "field": "precio",
+                "tipo": "",
+                "formato": "",
+                "default": "",
+                "type": "number",
+                "flex": 2.5
+            },
+            {
+                "title": "Total",
+                "field": "total",
+                "tipo": "",
+                "formato": "",
+                "default": "",
+                "type": "number",
+                "flex": 2
+            }
         ]
     },
     "Funciones": {},
@@ -2056,6 +2171,15 @@
             ],
             [
                 {
+                    "title": "Descuento"
+                },
+                {
+                    "default": 0,
+                    "tipo": "input",
+                    "title": "%",
+                    "field": "desc"
+                },
+                {
                     "title": "Iva"
                 },
                 {
@@ -2070,7 +2194,7 @@
                 {
                     "default": 0,
                     "field": "subiva",
-                    "formato": "(dato,resultado)=> Number((Number(resultado.subtotal) * Number(resultado.iva)/100).toFixed(2))"
+                    "formato": "(dato,resultado)=> Number(((Number(resultado.subtotal) * Number(resultado.iva)/100) - (Number(resultado.subtotal) * Number(resultado.desc)/100)).toFixed(2))"
                 },
                 {
                     "title": "Bs."
@@ -2078,7 +2202,7 @@
                 {
                     "field": "subivab",
                     "default": 0,
-                    "formato": "(dato,resultado)=> Number((Number(resultado.subtotalb) * Number(resultado.iva )/100).toFixed(2))"
+                    "formato": "(dato,resultado)=> Number(((Number(resultado.subtotalb) * Number(resultado.iva )/100) - (Number(resultado.subtotalb) * Number(resultado.desc )/100)).toFixed(2))"
                 }
             ],
             [

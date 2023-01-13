@@ -14,7 +14,7 @@ global.io.on('connection', (socket) =>{
     //socket.handshake.auth: se pueden enviar datos 
     console.log('Usuario conectado', socket.handshake.auth.username, socket.handshake.auth.api, socket.handshake.auth.tipo);
     Enviar_usuario(socket);
-    socket.emit('conectado',{Saludo:'hola',id: socket.id})
+    socket.emit('conectado',{Saludo:'hola',id: socket.id, tasa: global.global_cambio})
     // console.log(global.io.engine.clientsCount)
     socket.on('disconnect',  async()=> {
         console.log('Usuario navegador cerrado', socket.id, socket.handshake.auth.username, socket.handshake.auth.api, socket.handshake.auth.tipo);
