@@ -1,5 +1,5 @@
 {
-    "http":"http://192.168.80.133:5000",
+    "http":"https://chs-plus.onrender.com",
     "models":[
                 "sistemachs_Eliminados",
                 "sistemachs_Cliente","sistemachs_Proveedor",
