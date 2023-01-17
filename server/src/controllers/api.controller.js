@@ -1218,7 +1218,7 @@ serverCtrl.Egreso_Venta = async (req, res)=>{
   const igual= await serverCtrl.Verifica_api(Api, true);
   if (hashn===hash && igual) {
     const fecha = moment(new Date()).format('YYYY-MM-DD');
-    await serverCtrl.Tablas('egresopt');
+    await serverCtrl.Tablas('sistemachs_Egresopt');
     await serverCtrl.Tablas('sistemachs_Inventariopt');
     const PT = require(`../models/sistemachs_Inventariopt`);
     const EPT= require(`../models/sistemachs_Egresopt`);

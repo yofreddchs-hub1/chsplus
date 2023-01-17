@@ -126,19 +126,14 @@
             "icon": "folder_delete",
             "childen": [
                 {
-                    "value": "Venta",
-                    "primary": "Venta",
-                    "icon": "shopping_bag"
+                    "value": "Ventas",
+                    "primary": "Ventas",
+                    "icon": "table_view"
                 },
                 {
                     "value": "cobrar",
                     "primary": "Por Cobrar",
                     "icon": "local_mall"
-                },
-                {
-                    "value": "Ventas",
-                    "primary": "Ventas",
-                    "icon": "table_view"
                 },
                 {
                     "value": "Egreso Material",
@@ -1107,7 +1102,7 @@
                     "placeholder": "Referencia",
                     "title": "Recibo",
                     "mensaje_error": "",
-                    "disabled": true,
+                    "disabled": false,
                     "numberOfLines": "",
                     "getOptionLabel": [
                         "titulo"
