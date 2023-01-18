@@ -1,4 +1,5 @@
 {
+    "app":"sistemachs",
     "http":"https://chs-plus.onrender.com",
     "models":[
                 "sistemachs_Eliminados",

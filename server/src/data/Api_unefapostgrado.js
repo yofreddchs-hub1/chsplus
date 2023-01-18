@@ -439,6 +439,26 @@
         "Form_notas": {
             "columna": 1,
             "value": []
+        },
+        "Form_login": {
+            "columna": 1,
+            "value": [
+                {
+                    "key": "username",
+                    "name": "username",
+                    "placeholder": "Username",
+                    "mensaje_error": "Indique username",
+                    "required": true
+                },
+                {
+                    "key": "password",
+                    "name": "password",
+                    "label": "Contraseña",
+                    "tipo": "password",
+                    "mensaje_error": "Indique contraseña",
+                    "required": true
+                }
+            ]
         }
     },
     "Listas": {
@@ -502,6 +522,44 @@
                 "titulo": "Femenino",
                 "value": "femenino",
                 "permisos": ""
+            }
+        ],
+        "lista_categoria": [
+            {
+                "_id": 0,
+                "titulo": "AdministradorCHS",
+                "permisos": [
+                    "*",
+                    "**",
+                    "*CHS"
+                ]
+            },
+            {
+                "_id": 1,
+                "titulo": "Administrador",
+                "permisos": [
+                    "*"
+                ]
+            },
+            {
+                "_id": 2,
+                "titulo": "personal",
+                "permisos": []
+            },
+            {
+                "_id": 3,
+                "titulo": "usuario",
+                "permisos": []
+            },
+            {
+                "_id": 4,
+                "titulo": "Operador",
+                "permisos": []
+            },
+            {
+                "_id": 5,
+                "titulo": "Personal indirecto",
+                "permisos": []
             }
         ]
     },
