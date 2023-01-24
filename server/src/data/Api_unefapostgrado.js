@@ -3,8 +3,8 @@
     "Logo": "/api/imagen/logo.png",
     "Estilos": {
         "Logo": {
-            "height": 60,
-            "width": 60
+            "height": 40,
+            "width": 40
         },
         "Input_label": {
             "color": "#000000",
@@ -106,6 +106,11 @@
             "value": "Notas",
             "primary": "Notas",
             "icon": "edit_note"
+        },
+        {
+            "value": "Registros",
+            "primary": "Registos",
+            "icon": "dataset"
         }
     ],
     "Menu_iconos": [],
@@ -114,7 +119,7 @@
             "columna": 2,
             "value": [
                 {
-                    "nombre": "codmateria",
+                    "nombre": "codmat",
                     "label": "Código de Materia",
                     "placeholder": "Código de Materia",
                     "title": "Código de Materia",
@@ -125,85 +130,26 @@
                     "getOptionLabel": [
                         "titulo"
                     ],
-                    "key": "codmateria",
-                    "name": "codmateria"
+                    "key": "codmat",
+                    "name": "codmat"
                 },
                 {
-                    "nombre": "nombre",
-                    "label": "Nombre",
-                    "placeholder": "Nombre",
-                    "title": "Nombre de Materia",
-                    "required": true,
-                    "mensaje_error": "Debe indicar Nombre de Materia",
-                    "disabled": false,
-                    "numberOfLines": "",
-                    "getOptionLabel": [
-                        "titulo"
-                    ],
-                    "key": "nombre",
-                    "name": "nombre"
-                },
-                {
-                    "nombre": "unidadcredito",
-                    "tipo": "number",
-                    "label": "Unidades de Crédito",
-                    "placeholder": "Unidades de Crédito",
-                    "title": "Unidades de Crédito",
+                    "nombre": "codesp",
+                    "label": "Código de Especialidad",
+                    "placeholder": "Código de Especialidad",
+                    "title": "Código de Especialidad",
                     "required": false,
-                    "mensaje_error": "",
+                    "mensaje_error": "Debe indicar Código de Materia",
                     "disabled": false,
                     "numberOfLines": "",
                     "getOptionLabel": [
                         "titulo"
                     ],
-                    "key": "unidadcredito",
-                    "name": "unidadcredito",
-                    "multiline": false
+                    "key": "codesp",
+                    "name": "codesp"
                 },
                 {
-                    "nombre": "prelaciones",
-                    "label": "Prelaciones",
-                    "placeholder": "Prelaciones",
-                    "title": "Prelaciones",
-                    "mensaje_error": "",
-                    "disabled": false,
-                    "numberOfLines": "",
-                    "getOptionLabel": [
-                        "titulo"
-                    ],
-                    "key": "prelaciones",
-                    "name": "prelaciones"
-                },
-                {
-                    "nombre": "electivas",
-                    "label": "Electivas",
-                    "placeholder": "Electivas",
-                    "title": "Electivas",
-                    "mensaje_error": "",
-                    "disabled": false,
-                    "numberOfLines": "",
-                    "getOptionLabel": [
-                        "titulo"
-                    ],
-                    "key": "electivas",
-                    "name": "electivas"
-                },
-                {
-                    "nombre": "periodo",
-                    "label": "Periodo",
-                    "placeholder": "Periodo",
-                    "title": "Periodo",
-                    "mensaje_error": "",
-                    "disabled": false,
-                    "numberOfLines": "",
-                    "getOptionLabel": [
-                        "titulo"
-                    ],
-                    "key": "periodo",
-                    "name": "periodo"
-                },
-                {
-                    "nombre": "codprograma",
+                    "nombre": "codopcion",
                     "label": "Código Programa",
                     "placeholder": "Código Programa",
                     "title": "Código Programa",
@@ -214,8 +160,8 @@
                     "getOptionLabel": [
                         "titulo"
                     ],
-                    "key": "codprograma",
-                    "name": "codprograma"
+                    "key": "codopcion",
+                    "name": "codopcion"
                 },
                 {
                     "nombre": "termino",
@@ -231,6 +177,168 @@
                     ],
                     "key": "termino",
                     "name": "termino"
+                },
+                {
+                    "nombre": "credito",
+                    "tipo": "number",
+                    "label": "Unidades de Crédito",
+                    "placeholder": "Unidades de Crédito",
+                    "title": "Unidades de Crédito",
+                    "required": false,
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "credito",
+                    "name": "credito",
+                    "multiline": false
+                },
+                {
+                    "nombre": "nommat",
+                    "label": "Nombre Materia",
+                    "placeholder": "Nombre Materia",
+                    "title": "Nombre de Materia",
+                    "required": true,
+                    "mensaje_error": "Debe indicar Nombre de Materia",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "nommat",
+                    "name": "nommat"
+                },
+                {
+                    "nombre": "horteo",
+                    "tipo": "number",
+                    "label": "Hora Teorica",
+                    "placeholder": "Hora Teorica",
+                    "title": "Hora Teorica",
+                    "required": false,
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "horteo",
+                    "name": "horteo",
+                    "multiline": false
+                },
+                {
+                    "nombre": "horpra",
+                    "tipo": "number",
+                    "label": "Hora Practica",
+                    "placeholder": "Hora Practica",
+                    "title": "Hora Practica",
+                    "required": false,
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "horpra",
+                    "name": "horpra",
+                    "multiline": false
+                },
+                {
+                    "nombre": "horlab",
+                    "tipo": "number",
+                    "label": "Hora Laboratorio",
+                    "placeholder": "Hora Laboratorio",
+                    "title": "Hora Laboratorio",
+                    "required": false,
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "horlab",
+                    "name": "horlab",
+                    "multiline": false
+                },
+                {
+                    "nombre": "prela1",
+                    "tipo": "number",
+                    "label": "Prelación 1",
+                    "placeholder": "Prelación 1",
+                    "title": "Prelación 1",
+                    "required": false,
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "prela1",
+                    "name": "prela1",
+                    "multiline": false
+                },
+                {
+                    "nombre": "prela2",
+                    "tipo": "number",
+                    "label": "Prelación 2",
+                    "placeholder": "Prelación 2",
+                    "title": "Prelación 2",
+                    "required": false,
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "prela2",
+                    "name": "prela2",
+                    "multiline": false
+                },
+                {
+                    "nombre": "prela3",
+                    "tipo": "number",
+                    "label": "Prelación 3",
+                    "placeholder": "Prelación 3",
+                    "title": "Prelación 3",
+                    "required": false,
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "prela3",
+                    "name": "prela3",
+                    "multiline": false
+                },
+                {
+                    "nombre": "electiva",
+                    "label": "Electiva",
+                    "placeholder": "Electiva",
+                    "title": "Electiva",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "electiva",
+                    "name": "electiva"
+                },
+                {
+                    "nombre": "peraca",
+                    "label": "Periodo Academico",
+                    "placeholder": "Periodo Academico",
+                    "title": "Periodo Academico",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "peraca",
+                    "name": "peraca"
                 }
             ]
         },
@@ -253,22 +361,52 @@
                     "name": "cedula"
                 },
                 {
-                    "nombre": "nombres",
-                    "label": "Nombres",
-                    "placeholder": "Nombres",
-                    "title": "Nombres",
+                    "nombre": "codesp",
+                    "label": "Codigó Especialidad",
+                    "placeholder": "Codigó Especialidad",
+                    "title": "Codigó Especialidad",
                     "required": true,
-                    "mensaje_error": "Debe indicar Nombres",
+                    "mensaje_error": "Debe indicar Codigó Especialidad",
                     "disabled": false,
                     "numberOfLines": "",
                     "getOptionLabel": [
                         "titulo"
                     ],
-                    "key": "nombres",
-                    "name": "nombres"
+                    "key": "codesp",
+                    "name": "codesp"
                 },
                 {
-                    "nombre": "apellidos",
+                    "nombre": "codopcion",
+                    "label": "Codigó Programa",
+                    "placeholder": "Codigó Programa",
+                    "title": "Codigó Programa",
+                    "required": true,
+                    "mensaje_error": "Debe indicar Codigó de programa",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "codopcion",
+                    "name": "codopcion"
+                },
+                {
+                    "nombre": "teract",
+                    "label": "Termino Actual",
+                    "placeholder": "Termino Actual",
+                    "title": "Termino Actual",
+                    "required": false,
+                    "mensaje_error": "Debe indicar Termino actual",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "teract",
+                    "name": "teract"
+                },
+                {
+                    "nombre": "apelli",
                     "label": "Apellidos",
                     "placeholder": "Apellidos",
                     "title": "Apellidos",
@@ -279,38 +417,38 @@
                     "getOptionLabel": [
                         "titulo"
                     ],
-                    "key": "apellidos",
-                    "name": "apellidos"
+                    "key": "apelli",
+                    "name": "apelli"
                 },
                 {
-                    "nombre": "fecha_ingreso",
-                    "tipo": "Fecha",
-                    "label": "Fecha de Ingreso",
-                    "placeholder": "Fecha de Ingreso",
-                    "title": "Fecha de Ingreso",
+                    "nombre": "nombre",
+                    "label": "Nombres",
+                    "placeholder": "Nombres",
+                    "title": "Nombres",
+                    "required": true,
+                    "mensaje_error": "Debe indicar Nombres",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "nombre",
+                    "name": "nombre"
+                },
+                {
+                    "nombre": "telefo",
+                    "label": "Telefono",
+                    "placeholder": "Telefono",
+                    "title": "Telefono de contacto",
                     "mensaje_error": "",
                     "disabled": false,
                     "numberOfLines": "",
                     "getOptionLabel": [
                         "titulo"
                     ],
-                    "key": "fecha_ingreso",
-                    "name": "fecha_ingreso",
+                    "key": "telefo",
+                    "name": "telefo",
                     "multiline": false
-                },
-                {
-                    "nombre": "cohorte",
-                    "label": "Cohorte",
-                    "placeholder": "Cohorte",
-                    "title": "Cohorte",
-                    "mensaje_error": "",
-                    "disabled": false,
-                    "numberOfLines": "",
-                    "getOptionLabel": [
-                        "titulo"
-                    ],
-                    "key": "cohorte",
-                    "name": "cohorte"
                 },
                 {
                     "nombre": "correo",
@@ -327,7 +465,7 @@
                     "name": "correo"
                 },
                 {
-                    "nombre": "direccion",
+                    "nombre": "adress",
                     "tipo": "multiline",
                     "label": "Dirección",
                     "placeholder": "Dirección",
@@ -338,41 +476,39 @@
                     "getOptionLabel": [
                         "titulo"
                     ],
-                    "key": "direccion",
-                    "name": "direccion",
+                    "key": "adress",
+                    "name": "adress",
                     "multiline": true
                 },
                 {
-                    "nombre": "status",
-                    "tipo": "lista_multiuso",
-                    "label": "Estatus",
-                    "placeholder": "Estatus",
-                    "title": "Estatus",
+                    "nombre": "añoingreso",
+                    "label": "Año de ingreso",
+                    "placeholder": "Año de ingreso",
+                    "title": "Dirección",
                     "mensaje_error": "",
                     "disabled": false,
                     "numberOfLines": "",
-                    "lista": "lista_unefaprosgrado_status",
                     "getOptionLabel": [
                         "titulo"
                     ],
-                    "agregar": false,
-                    "key": "status",
-                    "name": "status",
-                    "multiline": false
+                    "key": "añoingreso",
+                    "name": "añoingreso"
                 },
                 {
-                    "nombre": "codigoprograma",
-                    "label": "Código Programa",
-                    "placeholder": "Código Programa",
-                    "title": "Código Programa",
+                    "nombre": "fecing",
+                    "tipo": "Fecha",
+                    "label": "Fecha de Ingreso",
+                    "placeholder": "Fecha de Ingreso",
+                    "title": "Fecha de Ingreso",
                     "mensaje_error": "",
                     "disabled": false,
                     "numberOfLines": "",
                     "getOptionLabel": [
                         "titulo"
                     ],
-                    "key": "codigoprograma",
-                    "name": "codigoprograma"
+                    "key": "fecing",
+                    "name": "fecing",
+                    "multiline": false
                 },
                 {
                     "nombre": "seccion",
@@ -389,50 +525,46 @@
                     "name": "seccion"
                 },
                 {
-                    "nombre": "termino",
-                    "label": "Termino",
-                    "placeholder": "Termino",
-                    "title": "Termino",
+                    "nombre": "ativo",
+                    "label": "Activo",
+                    "placeholder": "Activo",
+                    "title": "Activo",
                     "mensaje_error": "",
                     "disabled": false,
                     "numberOfLines": "",
                     "getOptionLabel": [
                         "titulo"
                     ],
-                    "key": "termino",
-                    "name": "termino"
+                    "key": "activo",
+                    "name": "activo"
                 },
                 {
-                    "nombre": "sexo",
-                    "tipo": "lista_multiuso",
-                    "label": "Sexo",
-                    "placeholder": "Sexo",
-                    "title": "Sexo",
+                    "nombre": "gradu",
+                    "label": "Graduado",
+                    "placeholder": "Graduado",
+                    "title": "Graduado",
                     "mensaje_error": "",
                     "disabled": false,
                     "numberOfLines": "",
-                    "lista": "lista_unefaprosgrado_sexo",
                     "getOptionLabel": [
                         "titulo"
                     ],
-                    "agregar": false,
-                    "key": "sexo",
-                    "name": "sexo",
-                    "multiline": false
+                    "key": "gradu",
+                    "name": "gradu"
                 },
                 {
-                    "nombre": "periodo",
-                    "label": "Periodo Activo",
-                    "placeholder": "Periodo Activo",
-                    "title": "Periodo Activo",
+                    "nombre": "observa",
+                    "label": "Observación",
+                    "placeholder": "Observación",
+                    "title": "Observación",
                     "mensaje_error": "",
                     "disabled": false,
                     "numberOfLines": "",
                     "getOptionLabel": [
                         "titulo"
                     ],
-                    "key": "periodo",
-                    "name": "periodo"
+                    "key": "observa",
+                    "name": "observa"
                 }
             ]
         },
@@ -457,6 +589,60 @@
                     "tipo": "password",
                     "mensaje_error": "Indique contraseña",
                     "required": true
+                }
+            ]
+        },
+        "Form_User_api": {
+            "columna": 2,
+            "value": [
+                {
+                    "key": "foto",
+                    "name": "foto",
+                    "label": "Foto",
+                    "tipo": "Avatar"
+                },
+                {
+                    "key": "username",
+                    "name": "username",
+                    "placeholder": "Username",
+                    "mensaje_error": "Indique username",
+                    "required": true,
+                    "no_modificar": true
+                },
+                {
+                    "key": "categoria",
+                    "name": "categoria",
+                    "label": "Categoria Usuario",
+                    "tipo": "lista_multiuso",
+                    "lista": "lista_categoria",
+                    "multiple": false,
+                    "getOptionLabel": [
+                        "titulo"
+                    ]
+                },
+                {
+                    "key": "password",
+                    "name": "password",
+                    "label": "Contraseña",
+                    "tipo": "password",
+                    "comparar": "true",
+                    "con": "passwordc",
+                    "mensaje_error": "Contraseñas no son iguales",
+                    "no_mostrar": true
+                },
+                {
+                    "key": "passwordc",
+                    "name": "passwordc",
+                    "label": "Contraseña Confirmar",
+                    "tipo": "password",
+                    "comparar": "true",
+                    "con": "password",
+                    "mensaje_error": "Contraseñas no son iguales"
+                },
+                {
+                    "key": "nombre",
+                    "name": "nombre",
+                    "placeholder": "Nombre y Apellido"
                 }
             ]
         }
@@ -566,10 +752,26 @@
     "Titulos": {
         "Titulos_unefa_asignatura": [
             {
-                "title": "Nombre",
-                "field": "nombre",
+                "title": "Código Programa",
+                "field": "codopcion",
                 "tipo": "",
-                "formato": "(dato)=> `${dato.valores.nombre}`",
+                "formato": "(dato)=> `${dato.valores.codopcion}`",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Código",
+                "field": "codmat",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.valores.codmat}`",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Nombre",
+                "field": "nommat",
+                "tipo": "",
+                "formato": "(dato)=> `${dato.valores.nommat}`",
                 "default": "",
                 "type": ""
             },
@@ -583,9 +785,9 @@
             },
             {
                 "title": "Unidades de Crédito",
-                "field": "unidadcredito",
+                "field": "credito",
                 "tipo": "",
-                "formato": "(dato)=> `${dato.valores.unidadcredito}`",
+                "formato": "(dato)=> `${dato.valores.credito}`",
                 "default": "",
                 "type": ""
             }
@@ -654,6 +856,34 @@
                 "field": "notdef",
                 "tipo": "",
                 "formato": "(dato)=> `${dato.valores.notdef}`",
+                "default": "",
+                "type": ""
+            }
+        ],
+        "Titulos_User_api": [
+            {
+                "title": "Foto",
+                "field": "foto",
+                "tipo": "foto"
+            },
+            {
+                "title": "Username",
+                "field": "username",
+                "tipo": "",
+                "formato": "(dato)=> {\nreturn `${dato.valores.username}`\n}",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Categoria",
+                "field": "categoria",
+                "tipo": "lista_categoria"
+            },
+            {
+                "title": "Nombres",
+                "field": "nombres",
+                "tipo": "",
+                "formato": "(dato)=> {\nreturn `${dato.valores.nombre}`\n}",
                 "default": "",
                 "type": ""
             }

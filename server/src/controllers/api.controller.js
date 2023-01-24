@@ -961,11 +961,11 @@ serverCtrl.Guardar_produccion = async (req, res)=>{
     }
 }
 
-//Ingresar 
+//Ingresar y egresar
 serverCtrl.Ingresar = async (req, res)=>{
-  let {User, Api, datos, tabla_inv, tabla_ing, id, hash} = req.body;
+  let {User, Api, datos, tabla_inv, tabla_ing, id, egresar, hash} = req.body;
   User= typeof User==='string' ? JSON.parse(User) : User;
-  const hashn = await Hash_texto(JSON.stringify({User, Api, datos, tabla_inv, tabla_ing, id}));
+  const hashn = await Hash_texto(JSON.stringify({User, Api, datos, tabla_inv, tabla_ing, id, egresar}));
   const igual= await serverCtrl.Verifica_api(Api, true);
   if (hashn===hash && igual) {
     await serverCtrl.Tablas(`${tabla_ing}`);
@@ -979,7 +979,11 @@ serverCtrl.Ingresar = async (req, res)=>{
       for (var i=0; i< anterior.valores.movimiento.length; i++){
         let material =  anterior.valores.movimiento[i];
         let Mat = await MP.findOne({_id:material._id});
-        Mat.valores.actual= Number(Mat.valores.actual) - Number(material.cantidad);
+        if (egresar){
+          Mat.valores.actual= Number(Mat.valores.actual) + Number(material.cantidad);  
+        }else{
+          Mat.valores.actual= Number(Mat.valores.actual)===0 ? 0 : Number(Mat.valores.actual) - Number(material.cantidad);
+        }
         await MP.updateOne({_id:material._id},{valores:Mat.valores, actualizado:`Referencia: ${anterior.valores.codigo} - ${User.username}`},{ upsert: true });
         
       }
@@ -992,7 +996,11 @@ serverCtrl.Ingresar = async (req, res)=>{
     for (var i=0; i<datos.movimiento.length; i++){
       let material =  datos.movimiento[i];
       let Mat = await MP.findOne({_id:material._id});
-      Mat.valores.actual= Number(Mat.valores.actual) + Number(material.cantidad);
+      if (egresar){
+        Mat.valores.actual= Number(Mat.valores.actual) - Number(material.cantidad);
+      }else{
+        Mat.valores.actual= Number(Mat.valores.actual) + Number(material.cantidad);
+      }
       await MP.updateOne({_id:material._id},{valores:Mat.valores, actualizado:`Referencia: ${codigo} - ${User.username}`},{ upsert: true });
       movimiento=[...movimiento,Movimiento(material)];
     }
@@ -1006,6 +1014,8 @@ serverCtrl.Ingresar = async (req, res)=>{
     const hash_chs = await Hash_chs({...valores, cod_chs})
     const Nuevo = new IM({valores, cod_chs, hash_chs, actualizado:User.username});
     await Nuevo.save();
+    let nuevo = await IM.find();
+    nuevo=nuevo[nuevo.length-1]
     global.io.emit(`Actualizar`,datos); 
     res.json({Respuesta:'Ok', datos});
   }else{

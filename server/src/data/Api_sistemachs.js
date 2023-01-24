@@ -110,12 +110,17 @@
             "childen": [
                 {
                     "value": "Ingreso Material",
-                    "primary": "Ingreso Material",
+                    "primary": "Ingresar Materia Prima",
                     "icon": "post_add"
                 },
                 {
                     "value": "Ingresar Empaque",
-                    "primary": "Ingresar Empaque",
+                    "primary": "Ingresar Empaque Terminado",
+                    "icon": "assignment_add"
+                },
+                {
+                    "value": "Ingresar Producto",
+                    "primary": "Ingresar Producto Terminado",
                     "icon": "assignment_add"
                 }
             ]
@@ -137,7 +142,12 @@
                 },
                 {
                     "value": "Egreso Material",
-                    "primary": "Egreso Material",
+                    "primary": "Egreso Materia Prima",
+                    "icon": "remove"
+                },
+                {
+                    "value": "Egreso Empaque",
+                    "primary": "Egreso Empaque Terminado",
                     "icon": "remove"
                 },
                 {
@@ -235,7 +245,7 @@
                 {
                     "key": "contacto",
                     "name": "contacto",
-                    "label": "Contacto",
+                    "label": "Contactos",
                     "multiline": true,
                     "numberOfLines": 2
                 },
@@ -429,7 +439,7 @@
                     "placeholder": "Inventario Actual",
                     "title": "Inventario Actual en almacén",
                     "mensaje_error": "",
-                    "disabled": false,
+                    "disabled": true,
                     "numberOfLines": "",
                     "getOptionLabel": [
                         "titulo"
@@ -1067,6 +1077,28 @@
                     "disabled": false,
                     "numberOfLines": "",
                     "lista": "sistemachs_Empaque",
+                    "getOptionLabel": [
+                        "codigo",
+                        "descripcion"
+                    ],
+                    "key": "select_a",
+                    "name": "select_a"
+                }
+            ]
+        },
+        "Form_formula_pt": {
+            "columna": 1,
+            "value": [
+                {
+                    "nombre": "select_a",
+                    "tipo": "lista_multiuso",
+                    "label": "Selecciona producto terminado",
+                    "placeholder": "",
+                    "title": "",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "lista": "sistemachs_Inventariopt",
                     "getOptionLabel": [
                         "codigo",
                         "descripcion"
@@ -1785,6 +1817,33 @@
             }
         ],
         "Titulos_formula_em": [
+            {
+                "title": "Código",
+                "field": "codigo",
+                "tipo": "",
+                "formato": "",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Descripción",
+                "field": "descripcion",
+                "tipo": "",
+                "formato": "",
+                "default": "",
+                "type": ""
+            },
+            {
+                "title": "Cantidad",
+                "field": "cantidad",
+                "tipo": "",
+                "formato": "(dato)=> Number(`${dato.cantidad}`)",
+                "default": "",
+                "type": "number",
+                "editable": true
+            }
+        ],
+        "Titulos_formula_pt": [
             {
                 "title": "Código",
                 "field": "codigo",
