@@ -465,6 +465,20 @@
                     "name": "correo"
                 },
                 {
+                    "nombre": "sexalu",
+                    "label": "Sexo del Estudiante",
+                    "placeholder": "Sexo del Estudiante",
+                    "title": "Sexo del Estudiantes",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "sexalu",
+                    "name": "sexalu"
+                },
+                {
                     "nombre": "adress",
                     "tipo": "multiline",
                     "label": "Dirección",
@@ -484,7 +498,7 @@
                     "nombre": "añoingreso",
                     "label": "Año de ingreso",
                     "placeholder": "Año de ingreso",
-                    "title": "Dirección",
+                    "title": "Año de ingreso",
                     "mensaje_error": "",
                     "disabled": false,
                     "numberOfLines": "",
@@ -496,7 +510,6 @@
                 },
                 {
                     "nombre": "fecing",
-                    "tipo": "Fecha",
                     "label": "Fecha de Ingreso",
                     "placeholder": "Fecha de Ingreso",
                     "title": "Fecha de Ingreso",
@@ -553,6 +566,48 @@
                     "name": "gradu"
                 },
                 {
+                    "nombre": "desfasado",
+                    "label": "Desfasado",
+                    "placeholder": "Desfasado",
+                    "title": "Desfasado",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "desfasado",
+                    "name": "desfasado"
+                },
+                {
+                    "nombre": "inscrito",
+                    "label": "Inscrito",
+                    "placeholder": "Inscrito",
+                    "title": "Inscrito",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "inscrito",
+                    "name": "inscrito"
+                },
+                {
+                    "nombre": "reingreso",
+                    "label": "Reingreso",
+                    "placeholder": "Reingreso",
+                    "title": "Reingreso",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "reingreso",
+                    "name": "reingreso"
+                },
+                {
                     "nombre": "observa",
                     "label": "Observación",
                     "placeholder": "Observación",
@@ -570,7 +625,190 @@
         },
         "Form_notas": {
             "columna": 1,
-            "value": []
+            "value": [
+              {
+                "nombre": "cedula",
+                "label": "Cedula",
+                "placeholder": "Cedula",
+                "title": "Cedula",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "cedula",
+                "name": "cedula"
+            },
+            {
+                "nombre": "codmat",
+                "label": "Código Materia",
+                "placeholder": "Código Materia",
+                "title": "Código Materia",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "codmat",
+                "name": "codmat"
+            },
+            {
+                "nombre": "seccion",
+                "label": "Sección",
+                "placeholder": "Sección",
+                "title": "Sección",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "seccion",
+                "name": "seccion"
+            },
+            {
+                "nombre": "termino",
+                "label": "Termino",
+                "placeholder": "Termino",
+                "title": "Termino",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "termino",
+                "name": "termino"
+            },
+            {
+                "nombre": "peraca",
+                "label": "Periodo Academico",
+                "placeholder": "Periodo Academico",
+                "title": "Periodo Academico",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "peraca",
+                "name": "peraca"
+            },
+            {
+                "nombre": "condic",
+                "label": "Condición",
+                "placeholder": "Condición",
+                "title": "Condición",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "condic",
+                "name": "condic"
+            },
+            {
+                "nombre": "notrep",
+                "label": "Nota Reparación",
+                "placeholder": "Nota Reparación",
+                "title": "Nota Reparación",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "notrep",
+                "name": "notrep"
+            },
+            {
+                "nombre": "notdef",
+                "label": "Nota Definitiva",
+                "placeholder": "Nota Definitiva",
+                "title": "Nota Definitiva",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "notdef",
+                "name": "notdef"
+            },
+            {
+                "nombre": "porina",
+                "label": "Por Inasistencia",
+                "placeholder": "Por Inasistencia",
+                "title": "Por Inasistencia",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "porina",
+                "name": "porina"
+            },
+            {
+                "nombre": "codesp",
+                "label": "Código Especialidad",
+                "placeholder": "Código Especialidad",
+                "title": "Código Especialidad",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "codesp",
+                "name": "codesp"
+            },
+            {
+                "nombre": "codopcion",
+                "label": "Código Programa",
+                "placeholder": "Código Programa",
+                "title": "Código Programa",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "codopcion",
+                "name": "codopcion"
+            },
+            {
+                "nombre": "credi",
+                "label": "Credito",
+                "placeholder": "Credito",
+                "title": "Credito",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "credi",
+                "name": "credi"
+            },
+            {
+                "nombre": "observació",
+                "label": "Observación",
+                "placeholder": "Observación",
+                "title": "Observación",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "observació",
+                "name": "observació"
+            }
+            ]
         },
         "Form_login": {
             "columna": 1,
@@ -590,7 +828,7 @@
                     "mensaje_error": "Indique contraseña",
                     "required": true
                 }
-            ]
+          ]
         },
         "Form_User_api": {
             "columna": 2,
@@ -803,17 +1041,17 @@
             },
             {
                 "title": "Nombres",
-                "field": "nombres",
+                "field": "nombre",
                 "tipo": "",
-                "formato": "(dato)=> `${dato.valores.nombres}`",
+                "formato": "(dato)=> `${dato.valores.nombre}`",
                 "default": "",
                 "type": ""
             },
             {
                 "title": "Apellidos",
-                "field": "apellidos",
+                "field": "apelli",
                 "tipo": "",
-                "formato": "(dato)=> `${dato.valores.apellidos}`",
+                "formato": "(dato)=> `${dato.valores.apelli}`",
                 "default": "",
                 "type": ""
             }
@@ -837,9 +1075,9 @@
             },
             {
                 "title": "Periodo",
-                "field": "periaca",
+                "field": "peraca",
                 "tipo": "",
-                "formato": "(dato)=> `${dato.valores.periaca}`",
+                "formato": "(dato)=> `${dato.valores.peraca}`",
                 "default": "",
                 "type": ""
             },
@@ -891,4 +1129,4 @@
     },
     "Funciones": {},
     "Subtotales": {}
-}
+  }

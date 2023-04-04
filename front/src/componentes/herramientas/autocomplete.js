@@ -124,7 +124,7 @@ export default function Listados(props) {
       isOptionEqualToValue={(option, value) => option._id === value._id}
       noOptionsText='No hay opciones'
       onChange={(event, newValue) => {
-        // console.log(newValue)
+        console.log(newValue)
         // if (newValue!==null){
           // console.log(newValue)
           values.Cambio({target:{name:valor.name, value:newValue}})

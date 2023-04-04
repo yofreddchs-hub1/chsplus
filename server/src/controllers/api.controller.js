@@ -1221,6 +1221,32 @@ serverCtrl.Recibo_venta = async(req, res)=>{
   const Recibo = Generar_codigo(total,'V', 6);
   res.json({Respuesta:'Ok', Recibo});
 }
+Procesar_Entrega = async(User, fecha, Recibo, datos)=>{
+  const PT = require(`../models/sistemachs_Inventariopt`);
+    const EPT= require(`../models/sistemachs_Egresopt`);
+  let movimiento = [];
+  for (var i=0; i< datos.orden_venta.producto.length; i++){
+      let producto = datos.orden_venta.producto[i];
+      movimiento = [...movimiento, Movimiento({...producto, cantidad: producto.cantidad ? producto.cantidad : 1})]
+  }
+
+  for (var i=0; i< movimiento.length; i++){
+      let producto = movimiento[i];
+      let Prod = await PT.findOne({_id:producto._id});
+      Prod.valores.actual-= producto.cantidad;
+      await PT.updateOne({_id:Prod._id},{valores:Prod.valores, actualizado:`Referencia: ${Recibo} - ${User.username}`},{ upsert: true });
+      
+  }
+  //Guardar el egreso producto terminado
+  let codigo = await Serie({tabla:'sistemachs_Egresopt', id:'EPT', cantidad:6});
+  let valores = {codigo, fecha, movimiento};
+  let cod_chs = await Codigo_chs({...valores});
+  let hash_chs = await Hash_chs({...valores, cod_chs})
+  const NuevoI = new EPT({valores, cod_chs, hash_chs, actualizado:`Referencia: ${Recibo} - ${User.username}`});
+  await NuevoI.save();
+  return
+}
+
 serverCtrl.Egreso_Venta = async (req, res)=>{
   let {User, Api, datos, hash} = req.body;
   User= typeof User==='string' ? JSON.parse(User) : User;
@@ -1249,26 +1275,26 @@ serverCtrl.Egreso_Venta = async (req, res)=>{
       datos.orden_venta.recibo=Recibo;
       datos={recibo:Recibo, fecha, ...datos};
 
-      let movimiento = [];
-      for (var i=0; i< datos.orden_venta.producto.length; i++){
-          let producto = datos.orden_venta.producto[i];
-          movimiento = [...movimiento, Movimiento({...producto, cantidad: producto.cantidad ? producto.cantidad : 1})]
-      }
+      // let movimiento = [];
+      // for (var i=0; i< datos.orden_venta.producto.length; i++){
+      //     let producto = datos.orden_venta.producto[i];
+      //     movimiento = [...movimiento, Movimiento({...producto, cantidad: producto.cantidad ? producto.cantidad : 1})]
+      // }
     
-      for (var i=0; i< movimiento.length; i++){
-          let producto = movimiento[i];
-          let Prod = await PT.findOne({_id:producto._id});
-          Prod.valores.actual-= producto.cantidad;
-          await PT.updateOne({_id:Prod._id},{valores:Prod.valores, actualizado:`Referencia: ${Recibo} - ${User.username}`},{ upsert: true });
+      // for (var i=0; i< movimiento.length; i++){
+      //     let producto = movimiento[i];
+      //     let Prod = await PT.findOne({_id:producto._id});
+      //     Prod.valores.actual-= producto.cantidad;
+      //     await PT.updateOne({_id:Prod._id},{valores:Prod.valores, actualizado:`Referencia: ${Recibo} - ${User.username}`},{ upsert: true });
           
-      }
-      //Guardar el egreso producto terminado
-      let codigo = await Serie({tabla:'sistemachs_Egresopt', id:'EPT', cantidad:6});
-      let valores = {codigo, fecha, movimiento};
-      let cod_chs = await Codigo_chs({...valores});
-      let hash_chs = await Hash_chs({...valores, cod_chs})
-      const NuevoI = new EPT({valores, cod_chs, hash_chs, actualizado:`Referencia: ${Recibo} - ${User.username}`});
-      await NuevoI.save();
+      // }
+      // //Guardar el egreso producto terminado
+      // let codigo = await Serie({tabla:'sistemachs_Egresopt', id:'EPT', cantidad:6});
+      // let valores = {codigo, fecha, movimiento};
+      // let cod_chs = await Codigo_chs({...valores});
+      // let hash_chs = await Hash_chs({...valores, cod_chs})
+      // const NuevoI = new EPT({valores, cod_chs, hash_chs, actualizado:`Referencia: ${Recibo} - ${User.username}`});
+      // await NuevoI.save();
 
       //Guardar venta
       cod_chs = await Codigo_chs({...datos});
@@ -1304,7 +1330,8 @@ serverCtrl.Ventas = async (req, res)=>{
     let facturado = 0;
     ventas.map(val=>{
       let valor = val.valores.formapago['formapago-subtotal'];
-      total+= Number(valor.total + valor.totalb / valor.Tasa);
+      total= Number(valor.total);
+      total= valor.Tasa !==0  ? Number(total + valor.totalb / valor.Tasa) : total;
       pendiente+= Number(valor.restan);
       facturado+= Number(valor.cancelar);
       return val
