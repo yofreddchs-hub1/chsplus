@@ -6,6 +6,7 @@ import Subtotales from './subtotales';
 import Titulos from './titulostabla'
 import Estilos from './estilos';
 import Crear_App from './crearapp';
+import Sincronizar from './Sincronizar';
 
 export const configuracion_pantallas={
     Configuracion:Datos,
@@ -16,5 +17,6 @@ export const configuracion_pantallas={
     Listas,
     Titulos,
     Subtotales,
-    Estilos
+    Estilos,
+    Sincronizar
 }

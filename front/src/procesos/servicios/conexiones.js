@@ -43,7 +43,10 @@ export const conexiones = {
   MisDatos,
   LeerHorario,
   GuardarHorario,
-  DisponibilidadHorario
+  DisponibilidadHorario,
+  //Sincronizar
+  Infodatabase,
+  InfodatabaseD
 }
 
 //Ver codigo de api
@@ -416,6 +419,24 @@ async function DisponibilidadHorario(dato, user, api, table='unefa_horario', men
                             method:'POST',
                             destino:'archivos/imagenes',
                             mensaje_esperar:mensaje,
+                          });
+  return resultados
+}
+
+//Sincronizar
+async function Infodatabase(){
+  const resultados= await Enviar({
+                            datos:{User, Api},
+                            http_destino:'/api/infodatabase',
+                            method:'POST',
+                          });
+  return resultados
+}
+async function InfodatabaseD(destino){
+  const resultados= await Enviar({
+                            datos:{destino},
+                            http_destino:'/api/infodatabased',
+                            method:'POST',
                           });
   return resultados
 }

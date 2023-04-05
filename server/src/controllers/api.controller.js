@@ -1,6 +1,7 @@
 const serverCtrl = {};
 const moment = require('moment');
 const mongoose = require('mongoose');
+const axios = require('axios');
 const path = require('path');
 const { Hash_texto, Hash_password } = require('../servicios/encriptado');
 const { Token, VerificarToken, Codigo_chs, Hash_chs
@@ -1942,5 +1943,34 @@ serverCtrl.Sincronizar = async (req, res) =>{
     res.json({Respuesta:'Error', mensaje:'hash invalido'});
   }
 
+}
+serverCtrl.Infor_database = async (req, res) =>{
+  require('dotenv').config({path:'../server/variables.env'})
+  const URI = process.env.DB_URL;
+  res.json({Respuesta:'Ok', URI, fecha:new Date()});
+}
+serverCtrl.Infor_databaseD = async (req, res) =>{
+  let {destino} = req.body;
+  console.log('>>>>>>>>>>>>>',destino)
+  let options = {
+    url: destino+'/api/infodatabase',
+    method: 'POST',
+    timeout: 10000,
+    headers: {
+      'Accept': 'application/json',
+      'Content-type': 'application/json;charset=UTF-8',
+      'destino':destino
+    }
+  };
+  const resultado = await axios(options)
+    .then((res) => {
+      return res.data
+    })
+    .catch(err => {
+      console.log(err);
+      // this.setState({cargando:false, progreso:0})
+      return {Respuesta:'Error_c', mensaje:'Error en conexión, intente nuevamente'}
+    } );
+  res.json({...resultado, fecha:new Date()});
 }
 module.exports = serverCtrl;

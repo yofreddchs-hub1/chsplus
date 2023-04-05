@@ -10,106 +10,6 @@
             "libre": true
         },
         {
-            "value": "Aplicaciones",
-            "primary": "Aplicaciones",
-            "icon": "apps",
-            "libre": true
-        },
-        {
-            "value": "Sistema",
-            "primary": "Sistema CHS",
-            "icon": "dataset",
-            "libre": false,
-            "childen": [
-                {
-                    "value": "Reportes",
-                    "primary": "Reportes",
-                    "icon": "content_paste_search"
-                },
-                {
-                    "value": "Ingresos",
-                    "primary": "Ingresos",
-                    "icon": "create_new_folder",
-                    "childen": [
-                        {
-                            "value": "Ingreso Material",
-                            "primary": "Ingreso Material",
-                            "icon": "post_add"
-                        },
-                        {
-                            "value": "Modificar Ingreso Material",
-                            "primary": "Modificar Ingreso Material",
-                            "icon": "edit"
-                        },
-                        {
-                            "value": "Ingresar Empaque",
-                            "primary": "Ingresar Empaque",
-                            "icon": "assignment_add"
-                        },
-                        {
-                            "value": "Modificar Ingreso Empaque",
-                            "primary": "Modificar Ingreso Empaque",
-                            "icon": "edit"
-                        }
-                    ]
-                },
-                {
-                    "value": "Egresos",
-                    "primary": "Egresos",
-                    "icon": "folder_delete",
-                    "childen": [
-                        {
-                            "value": "Venta",
-                            "primary": "Venta",
-                            "icon": "shopping_bag"
-                        },
-                        {
-                            "value": "cobrar",
-                            "primary": "Por Cobrar",
-                            "icon": "local_mall"
-                        },
-                        {
-                            "value": "Egreso Material",
-                            "primary": "Egreso Material",
-                            "icon": "remove"
-                        },
-                        {
-                            "value": "Egreso Producto Terminado",
-                            "primary": "Egreso Producto Terminado",
-                            "icon": "remove"
-                        }
-                    ]
-                },
-                {
-                    "value": "Planificar",
-                    "primary": "Planificar",
-                    "icon": "event_note"
-                },
-                {
-                    "value": "Produccion",
-                    "primary": "Produccion",
-                    "icon": "fact_check"
-                },
-                {
-                    "value": "Registros",
-                    "primary": "Registos",
-                    "icon": "dataset"
-                },
-                {
-                    "value": "Nuevos",
-                    "primary": "Nuevos",
-                    "icon": "note_add",
-                    "childen": [
-                        {
-                            "value": "Formulas",
-                            "primary": "Formulas",
-                            "icon": "shopping_cart_checkout"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
             "value": "Configuracion",
             "primary": "Configuración",
             "icon": "settings",
@@ -148,6 +48,11 @@
                     "value": "CrearFormulario",
                     "primary": "Crear Formulario",
                     "icon": "article"
+                },
+                {
+                    "value": "Sincronizar",
+                    "primary": "Sincronizar",
+                    "icon": "pending_actions"
                 }
             ],
             "libre": false

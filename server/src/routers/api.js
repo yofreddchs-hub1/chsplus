@@ -34,7 +34,8 @@ const { Ver_api, Login,Verificar, Getall, Getall_C, Setall, Delall, Leer_data, G
         VerApis,
         Guardar_produccion, Ingresar_material, Ingresar_empaque, Ingreso_Egreso, Recibo_venta, Serial, Egreso_Venta, Ventas,
         Sincronizar,
-        Ingresar
+        Ingresar,
+        Infor_database,Infor_databaseD,
       } = require('../controllers/api.controller');
 
 const {Mensualidades, EnviarPago, Solvencias, Resumen} = require('../controllers/colegio.controller');
@@ -61,6 +62,8 @@ router.delete('/delall',Delall);
 router.delete('/eliminar_data',Eliminar_data);
 // sincronizacion
 router.post('/sincronizar', Sincronizar);
+router.post('/infodatabase', Infor_database);
+router.post('/infodatabased', Infor_databaseD);
 // SistemaCHS
 router.get('/reciboventa',Recibo_venta);
 router.post('/serial', Serial);
