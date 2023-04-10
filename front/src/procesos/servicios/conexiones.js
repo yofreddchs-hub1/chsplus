@@ -46,7 +46,8 @@ export const conexiones = {
   DisponibilidadHorario,
   //Sincronizar
   Infodatabase,
-  InfodatabaseD
+  InfodatabaseD,
+  Infodatos
 }
 
 //Ver codigo de api
@@ -436,6 +437,14 @@ async function InfodatabaseD(destino){
   const resultados= await Enviar({
                             datos:{destino},
                             http_destino:'/api/infodatabased',
+                            method:'POST',
+                          });
+  return resultados
+}
+async function Infodatos(tabla, destino){
+  const resultados= await Enviar({
+                            datos:{tabla, destino},
+                            http_destino:'/api/infodatos',
                             method:'POST',
                           });
   return resultados

@@ -1973,4 +1973,38 @@ serverCtrl.Infor_databaseD = async (req, res) =>{
     } );
   res.json({...resultado, fecha:new Date()});
 }
+serverCtrl.Infor_datos = async (req, res) =>{
+  let {tabla, destino} = req.body;
+  console.log('>>>>>>>>>>>>>',tabla, destino)
+  const DB = require(`../models/${tabla}`);
+  let ultimo= await DB.find().sort({$natural:-1}).limit(1);
+  let total = await DB.estimatedDocumentCount();
+  let datoorigen = {ultimo, total};
+  let datodestino ={};
+  console.log('>>>>>>>>',tabla,destino, total);
+  if (destino && destino !==''){
+    let options = {
+      url: destino+'/api/infodatos',
+      method: 'POST',
+      timeout: 10000,
+      headers: {
+        'Accept': 'application/json',
+        'Content-type': 'application/json;charset=UTF-8',
+        'destino':destino
+      },
+      data:{tabla}
+    };
+    const resultado = await axios(options)
+      .then((res) => {
+        return res.data
+      })
+      .catch(err => {
+        console.log(err);
+        // this.setState({cargando:false, progreso:0})
+        return {Respuesta:'Error_c', mensaje:'Error en conexión, intente nuevamente'}
+      } );
+    datodestino = {...resultado}
+  }
+  res.json({Respuesta:'Ok', datoorigen, datodestino, fecha:new Date()});
+}
 module.exports = serverCtrl;
