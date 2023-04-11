@@ -1977,11 +1977,10 @@ serverCtrl.Infor_datos = async (req, res) =>{
   let {tabla, destino} = req.body;
   console.log('>>>>>>>>>>>>>',tabla, destino)
   const DB = require(`../models/${tabla}`);
-  let ultimo= await DB.find().sort({$natural:-1}).limit(1);
+  let ultimo= await DB.find().sort({updatedAt:-1}).limit(1); //await DB.find().sort({$natural:-1}).limit(1);
   let total = await DB.estimatedDocumentCount();
   let datoorigen = {ultimo, total};
   let datodestino ={};
-  console.log('>>>>>>>>',tabla,destino, total);
   if (destino && destino !==''){
     let options = {
       url: destino+'/api/infodatos',
@@ -2001,10 +2000,11 @@ serverCtrl.Infor_datos = async (req, res) =>{
       .catch(err => {
         console.log(err);
         // this.setState({cargando:false, progreso:0})
-        return {Respuesta:'Error_c', mensaje:'Error en conexión, intente nuevamente'}
+        return {Respuesta:'Error_c', mensaje:'Error en conexión, intente nuevamente', datoorigen:{}}
       } );
-    datodestino = {...resultado}
+    datodestino = {...resultado.datoorigen}
   }
+  
   res.json({Respuesta:'Ok', datoorigen, datodestino, fecha:new Date()});
 }
 module.exports = serverCtrl;
