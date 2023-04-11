@@ -94,7 +94,7 @@ export default function Sincronizar() {
                         </Item>
                         <Item sx={{p: 2, width:'50%'}}>
                             <Typography noWrap>DESTINO</Typography>
-                            <Typography noWrap>Registros {datos.destino && datos.destino.total ? datos.origen.total : 0}</Typography>
+                            <Typography noWrap>Registros {datos.destino && datos.destino.total ? datos.destino.total : 0}</Typography>
                             <Typography noWrap>Actualizado {datos.destino && datos.destino.ultimo && datos.destino.ultimo.length!==0 ? moment(datos.destino.ultimo[0].updatedAt).format('DD/MM/YYYY HH:mm') : ''}</Typography>
                         </Item>
                         
