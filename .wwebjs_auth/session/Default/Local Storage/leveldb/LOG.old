@@ -1,0 +1,9 @@
+2023/04/24-07:40:10.514 8ea4 Reusing MANIFEST C:\codigos\2023\chs-plus\.wwebjs_auth\session\Default\Local Storage\leveldb/MANIFEST-000001
+2023/04/24-07:40:10.533 8ea4 Recovering log #19
+2023/04/24-07:40:10.534 8ea4 Reusing old log C:\codigos\2023\chs-plus\.wwebjs_auth\session\Default\Local Storage\leveldb/000019.log 
+2023/04/24-15:56:12.712 a5b4 Level-0 table #23: started
+2023/04/24-15:56:12.722 a5b4 Level-0 table #23: 18910 bytes OK
+2023/04/24-15:56:12.725 a5b4 Delete type=0 #19
+2023/04/25-03:09:26.985 8904 Level-0 table #25: started
+2023/04/25-03:09:26.990 8904 Level-0 table #25: 18133 bytes OK
+2023/04/25-03:09:26.995 8904 Delete type=0 #22

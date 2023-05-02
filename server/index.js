@@ -18,6 +18,7 @@ global.global_http= http;
 global.actualizar_mes=false
 require('./src/database');
 require('./src/server_socket');
+require('./src/whatsapp');
 
 const {valor_dolar} = require('./src/servicios/leerHTML');
 

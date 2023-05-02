@@ -53,6 +53,11 @@
                     "value": "Sincronizar",
                     "primary": "Sincronizar",
                     "icon": "pending_actions"
+                },
+                {
+                    "value": "WhatsApp",
+                    "primary": "WhatsApp",
+                    "icon": "smart_toy"
                 }
             ],
             "libre": false

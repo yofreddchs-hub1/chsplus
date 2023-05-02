@@ -47,7 +47,9 @@ export const conexiones = {
   //Sincronizar
   Infodatabase,
   InfodatabaseD,
-  Infodatos
+  Infodatos,
+  //whatsapp
+  WhatsappQR
 }
 
 //Ver codigo de api
@@ -449,6 +451,17 @@ async function Infodatos(tabla, destino){
                           });
   return resultados
 }
+
+//Whatsapp
+async function WhatsappQR(){
+  const resultados= await Enviar({
+                            datos:{Api},
+                            http_destino:'/api/whatsappqr',
+                            method:'POST',
+                          });
+  return resultados
+}
+
 async function Enviar(props){
   // console.log('Enviar ====>',props);
   //Datos de props necesarios

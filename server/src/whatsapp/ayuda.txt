@@ -1,0 +1,8 @@
+SISTEMA BOT WhatsApp 2023
+Autor: Ing. Yofredd R. Chirino Soto
+Comandos permitidos:
+INFORMACION: Informacion del sistema
+TASACAMBIO: Tasa de cambio de BCV y Dolar Today
+MATERIA PRIMA o 📌: Inventario materia prima
+PRODUCTO TERMINADO  o 📦: Inventario de productos perminados
+PLANIFICACION o 📝 dia/mes/año: Envia los datos de la planificación del dia

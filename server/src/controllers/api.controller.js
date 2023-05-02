@@ -1254,6 +1254,7 @@ serverCtrl.Egreso_Venta = async (req, res)=>{
   const hashn = await Hash_texto(JSON.stringify({User, Api, datos}));
   const igual= await serverCtrl.Verifica_api(Api, true);
   if (hashn===hash && igual) {
+    //actualizar codigos
     const fecha = moment(new Date()).format('YYYY-MM-DD');
     await serverCtrl.Tablas('sistemachs_Egresopt');
     await serverCtrl.Tablas('sistemachs_Inventariopt');
@@ -2006,5 +2007,10 @@ serverCtrl.Infor_datos = async (req, res) =>{
   }
   
   res.json({Respuesta:'Ok', datoorigen, datodestino, fecha:new Date()});
+}
+serverCtrl.WhatsAppQR = async (req, res) =>{
+  let {Api} = req.body;
+  
+  res.json({Respuesta:'Ok', QR: global.whatsappqr, fecha:new Date()});
 }
 module.exports = serverCtrl;
