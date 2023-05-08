@@ -1,37 +1,5 @@
-2023/05/05-18:49:04.853 23c4 Reusing MANIFEST C:\codigos\2023\chs-plus\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
-2023/05/05-18:49:04.854 23c4 Recovering log #52
-2023/05/05-18:49:04.894 23c4 Reusing old log C:\codigos\2023\chs-plus\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000052.log 
-2023/05/05-18:49:04.894 23c4 Delete type=2 #51
-2023/05/05-18:49:04.955 52c4 Manual compaction at level-0 from '\x00\x1f\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00 \x00\x00\x00' @ 0 : 0; will stop at (end)
-2023/05/05-18:49:04.963 52c4 Level-0 table #57: started
-2023/05/05-18:49:04.980 52c4 Level-0 table #57: 74798 bytes OK
-2023/05/05-18:49:04.986 52c4 Delete type=0 #52
-2023/05/05-18:49:04.987 52c4 Manual compaction at level-0 from '\x00\x1e\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x1f\x00\x00\x00' @ 0 : 0; will stop at '\x00\x1f.\x02\x01\x0e\x00W\x00A\x00A\x00D\x00V\x00S\x00e\x00c\x00r\x00e\x00t\x00K\x00e\x00y' @ 37986 : 1
-2023/05/05-18:49:04.987 52c4 Compacting 1@0 + 1@1 files
-2023/05/05-18:49:05.006 52c4 Generated table #58@0: 2575 keys, 39092 bytes
-2023/05/05-18:49:05.006 52c4 Compacted 1@0 + 1@1 files => 39092 bytes
-2023/05/05-18:49:05.009 52c4 compacted to: files[ 0 1 1 0 0 0 0 ]
-2023/05/05-18:49:05.010 52c4 Delete type=2 #57
-2023/05/05-18:49:05.011 52c4 Manual compaction at level-0 from '\x00\x1f.\x02\x01\x0e\x00W\x00A\x00A\x00D\x00V\x00S\x00e\x00c\x00r\x00e\x00t\x00K\x00e\x00y' @ 37986 : 1 .. '\x00\x1f\x00\x00\x00' @ 0 : 0; will stop at (end)
-2023/05/05-18:49:05.016 52c4 Level-0 table #60: started
-2023/05/05-18:49:05.023 52c4 Level-0 table #60: 4956 bytes OK
-2023/05/05-18:49:05.026 52c4 Delete type=2 #54
-2023/05/05-18:49:05.026 52c4 Delete type=0 #56
-2023/05/05-18:49:05.027 4fd4 Manual compaction at level-0 from '\x00\x1d\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x1e\x00\x00\x00' @ 0 : 0; will stop at '\x00 \x00\x00\xc8\x08\x00w\x00a\x00m\x00_\x00m\x00e\x00t\x00a' @ 39637 : 1
-2023/05/05-18:49:05.027 4fd4 Compacting 1@0 + 1@1 files
-2023/05/05-18:49:05.043 4fd4 Generated table #61@0: 2682 keys, 41185 bytes
-2023/05/05-18:49:05.043 4fd4 Compacted 1@0 + 1@1 files => 41185 bytes
-2023/05/05-18:49:05.046 4fd4 compacted to: files[ 0 1 1 0 0 0 0 ]
-2023/05/05-18:49:05.046 4fd4 Delete type=2 #60
-2023/05/05-18:49:05.047 5538 Manual compaction at level-0 from '\x00 \x00\x00\xc8\x08\x00w\x00a\x00m\x00_\x00m\x00e\x00t\x00a' @ 39637 : 1 .. '\x00\x1e\x00\x00\x00' @ 0 : 0; will stop at (end)
-2023/05/05-18:49:05.052 5538 Level-0 table #63: started
-2023/05/05-18:49:05.061 5538 Level-0 table #63: 11787 bytes OK
-2023/05/05-18:49:05.064 5538 Delete type=2 #58
-2023/05/05-18:49:05.064 5538 Delete type=0 #59
-2023/05/05-18:49:05.066 5538 Manual compaction at level-0 from '\x00\x1c\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x1d\x00\x00\x00' @ 0 : 0; will stop at '\x00 \x00\x00\xc8\x11\x00w\x00o\x00r\x00k\x00e\x00r\x00_\x00w\x00a\x00m\x00_\x00e\x00v\x00e\x00n\x00t\x00s' @ 39816 : 1
-2023/05/05-18:49:05.066 5538 Compacting 1@0 + 1@1 files
-2023/05/05-18:49:05.080 5538 Generated table #64@0: 2329 keys, 22951 bytes
-2023/05/05-18:49:05.080 5538 Compacted 1@0 + 1@1 files => 22951 bytes
-2023/05/05-18:49:05.084 5538 compacted to: files[ 0 1 1 0 0 0 0 ]
-2023/05/05-18:49:05.085 5538 Delete type=2 #63
-2023/05/05-18:49:05.085 5538 Manual compaction at level-0 from '\x00 \x00\x00\xc8\x11\x00w\x00o\x00r\x00k\x00e\x00r\x00_\x00w\x00a\x00m\x00_\x00e\x00v\x00e\x00n\x00t\x00s' @ 39816 : 1 .. '\x00\x1d\x00\x00\x00' @ 0 : 0; will stop at (end)
+2023/05/08-17:47:21.966 7d4c Reusing MANIFEST C:\codigos\2023\chs-plus\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2023/05/08-17:47:21.967 7d4c Recovering log #106
+2023/05/08-17:47:21.968 7d4c Reusing old log C:\codigos\2023\chs-plus\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000106.log 
+2023/05/08-17:47:21.969 7d4c Delete type=2 #105
+2023/05/08-17:47:22.427 7d4c Manual compaction at level-0 from '\x004\x00\x00\x00' @ 72057594037927935 : 1 .. '\x005\x00\x00\x00' @ 0 : 0; will stop at (end)
