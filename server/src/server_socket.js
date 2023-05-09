@@ -4,8 +4,6 @@ global.io = require("socket.io")(global.global_http,
        cors:{origin:"*"} 
     }    
 );
-const conexiones = require('./servicios/conexiones');
-const  {Ver_datos}= require('./controllers/api.controller');
 const tiempo= 5 * (1000)
 let usuario = {}
 

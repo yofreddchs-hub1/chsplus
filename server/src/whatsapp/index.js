@@ -9,7 +9,7 @@ const client = new Client({
  
 client.on('qr', (qr) => {
     global.whatsappqr = qr;
-    console.log(qr)
+    console.log('En espera de whatsapp...')
     global.io.emit('whatsappqr',{qr}) //datos:resultado})
     // qrcode.generate(qr, {small:true});
 });
