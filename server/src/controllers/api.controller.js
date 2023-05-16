@@ -684,7 +684,7 @@ serverCtrl.DataBase = async (req, res) =>{
     let models=data.map(valor =>  valor.replace('.js', ''));
     const DB = require(`../models/${models[0]}`);
     const datos = await DB.find();
-    res.json({Respuesta:'Ok', models, datos});
+    res.json({Respuesta:'Ok', models, datos, database: global.models});
   }else{
     res.json({Respuesta:'Error', mensaje:'hash invalido'});
   }

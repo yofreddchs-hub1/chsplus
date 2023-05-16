@@ -13,8 +13,11 @@ mongoose.connect(URI, {
 });
 
 const connection = mongoose.connection;
-
-connection.once('open', () => {
+connection.once('open', async() => {
     console.log('Base de datos conectada : ' ,URI);
+    let lista =await connection.db.listCollections().toArray()
+    lista=lista.map(val=> val.name)
+    global.models= lista;
     require('./server_socket');
 });
+
