@@ -47,7 +47,7 @@ paginaCtrl.valor_dolar = async() =>{
         console.log('>>>>>>>',array, valor);
         global.global_cambio={
           [array[0]]:Number(array[1]), 
-          dolartoday:valor ? valor.data.USD : 0,
+          dolartoday:valor && valor.data ? valor.data.USD : 0,
           'wesi > wesi':1,
           'VED > VED':1,
           'wesi > USD': 1 / Number(array[1]),
