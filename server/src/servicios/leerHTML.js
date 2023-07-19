@@ -44,10 +44,10 @@ paginaCtrl.valor_dolar = async() =>{
         // console.log(array);
         // console.log(array)
         array[1]=array[1].replace(',','.')
-        console.log('>>>>>>>',array);
+        console.log('>>>>>>>',array, valor);
         global.global_cambio={
           [array[0]]:Number(array[1]), 
-          dolartoday:valor.data.USD,
+          dolartoday:valor ? valor.data.USD : 0,
           'wesi > wesi':1,
           'VED > VED':1,
           'wesi > USD': 1 / Number(array[1]),
@@ -62,16 +62,16 @@ paginaCtrl.valor_dolar = async() =>{
     });
   }catch(error) {
     console.log('Error-BCV',error)//,error);
-    global.global_cambio=valor.data.USD.sicad2;
+    // global.global_cambio=valor && valor.data && valor.data.USD ? valor.data.USD.sicad2 : global.global_cambio;
     global.global_cambio={
       'USD':'error', 
-      dolartoday:valor.data.USD,
+      dolartoday:valor && valor.data ? valor.data.USD : global.global_cambio.dolartoday ? global.global_cambio.dolartoday : 0 ,
       'wesi > wesi':1,
       'VED > VED':1,
-      'wesi > USD': 1 / Number(valor.data.USD.sicad2),
-      'VED > USD': 1 / Number(valor.data.USD.sicad2),
-      'USD > wesi': Number(valor.data.USD.sicad2),
-      'USD > VED': Number(valor.data.USD.sicad2),
+      'wesi > USD': valor && valor.data ? 1 / Number(valor.data.USD.sicad2) : global.global_cambio['wesi > USD'] ? global.global_cambio['wesi > USD'] : 0,
+      'VED > USD': valor && valor.data ? 1 / Number(valor.data.USD.sicad2) : global.global_cambio['VED > USD'] ? global.global_cambio['VED > USD'] : 0,
+      'USD > wesi': valor && valor.data ? Number(valor.data.USD.sicad2) : global.global_cambio['USD > wesi'] ? global.global_cambio['USD > wesi'] : 0,
+      'USD > VED': valor && valor.data ? Number(valor.data.USD.sicad2) : global.global_cambio['USD > VED'] ? global.global_cambio['USD > VED'] : 0,
     }
     global.global_actualizando=false
     
