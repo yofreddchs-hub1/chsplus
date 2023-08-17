@@ -401,7 +401,7 @@ Eliminar_imagen =(imagen)=>{
 serverCtrl.Tablas = async(tabla)=>{
   try{
     const DB = require(`../models/${tabla}`);
-    return
+    return DB
   }catch(error) {
       if (tabla==='' || tabla===' ' || tabla===null || tabla===undefined)
         return 
@@ -440,9 +440,12 @@ serverCtrl.Tablas = async(tabla)=>{
               module.exports = model('${campo}', ${campo1}Schema);`
             
             fs.writeFileSync(direct, codigo);
+            console.log('Creada tabla >>>>>>', tabla)
+            return require(`../models/${tabla}`);
         }
       });
-      return
+
+      return 
       
   }
 }
@@ -1882,8 +1885,15 @@ serverCtrl.Sincronizar = async (req, res) =>{
   if (hashn===hash && igual){
     const data = tablas;
     console.log('Sincronizando >>>', data, datos.fecha);
-    await serverCtrl.Tablas(data);
-    const DB = require(`../models/${data}`);
+    let DB = await serverCtrl.Tablas(data);
+    try{
+      DB = require(`../models/${data}`);
+    }catch(error) {
+      console.error(`Error en sincronizar >>>> (${data})`);
+      res.json({Respuesta:'Error', code: error.code});
+      return
+    }
+    
     for (let i=0; i<datos.datos.length;i++){
       const newdatos=datos.datos[i];
       try{
@@ -1934,12 +1944,13 @@ serverCtrl.Sincronizar = async (req, res) =>{
       console.log('Enviar todos...............');
       dbs = await DB.find();
     }else{
-      console.log('Enviar despues de ', datos.fecha);
+      let fecha = new Date(datos.fecha);
+      fecha.setDate(fecha.getDate()-1);
       dbs = await DB.find({updatedAt:{$gte:datos.fecha}});
-
+      console.log('Enviar despues de ', fecha, dbs.length, data);
     }
      
-    res.json({Respuesta:'Ok', resultados:dbs, fecha:new Date()});
+    res.json({Respuesta:'Ok', data, resultados:dbs, fecha:new Date()});
   }else{
     res.json({Respuesta:'Error', mensaje:'hash invalido'});
   }

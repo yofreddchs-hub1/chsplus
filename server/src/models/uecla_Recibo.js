@@ -16,7 +16,8 @@ const { Schema, model } = require('mongoose');
                         type:String,
                         unique:true
                       },
-                      hash_chs:String
+                      hash_chs:String,
+                      fecha:Date
                   }, {
                       timestamps: true
                   });

@@ -4,8 +4,27 @@ const rp = require('request-promise');
 const JSDOM = require('jsdom').JSDOM;
 // const fs = require('fs');
 const axios = require('axios');
+const {bcvDolar} = require('bcv-divisas');
 
 paginaCtrl.valor_dolar = async() =>{
+  //console.log(valornuevo);
+  // try{
+  //   bcvDolar().then(valor1=>{
+  //     global.global_cambio={
+  //       'USD':valor1['_dolar'], 
+  //       dolartoday:'error' ,
+  //       'wesi > wesi':1,
+  //       'VED > VED':1,
+  //       'wesi > USD': valor1 && valor1['_dolar'] ? 1 / Number(valor1['_dolar']) : global.global_cambio['wesi > USD'] ? global.global_cambio['wesi > USD'] : 0,
+  //       'VED > USD': valor1 && valor1['_dolar'] ? 1 / Number(valor1['_dolar']) : global.global_cambio['VED > USD'] ? global.global_cambio['VED > USD'] : 0,
+  //       'USD > wesi': valor1 && valor1['_dolar'] ? Number(valor1['_dolar']) : global.global_cambio['USD > wesi'] ? global.global_cambio['USD > wesi'] : 0,
+  //       'USD > VED': valor1 && valor1['_dolar'] ? Number(valor1['_dolar']) : global.global_cambio['USD > VED'] ? global.global_cambio['USD > VED'] : 0,
+  //     }
+  //     global.io.emit('Actualizar_tasa',{tasa:global.global_cambio});
+  //   })
+  // }catch(error) {
+  //   console.log('>>>>>>>>>>>>>>.Error con bcv-divisas.<<<<<<<<<<<<')
+  // }
   const valor = await axios.get('https://s3.amazonaws.com/dolartoday/data.json')
   .then(function (response) {
     // handle success
@@ -16,12 +35,8 @@ paginaCtrl.valor_dolar = async() =>{
     // handle error
     console.log('Error con dolartoday')//,error);
   })
-  // .then(function () {
-  //   // always executed
-  // });
-  // console.log(valor.data._timestamp, valor.data.USD.sicad1);
-  // global.global_actualizando=true
   
+  console.log('por banco de venezuela')
   try{
     let resultado = await rp({uri: 'http://www.bcv.org.ve/tasas-informativas-sistema-bancario', rejectUnauthorized: false}).then(html => {
       // Generar DOM a partir de HTML
