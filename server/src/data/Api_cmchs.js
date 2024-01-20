@@ -90,7 +90,29 @@
         }
     ],
     "Menu_iconos": [],
-    "Formularios": {},
+    "Formularios": {
+        "Form_ejemplos": {
+            "columna": 1,
+            "value": [
+                {
+                    "nombre": "imagen",
+                    "tipo": "Imagen",
+                    "label": "",
+                    "placeholder": "",
+                    "title": "",
+                    "mensaje_error": "",
+                    "disabled": true,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "imagen",
+                    "name": "imagen",
+                    "multiline": false
+                }
+            ]
+        }
+    },
     "Listas": {},
     "Titulos": {},
     "Funciones": {},

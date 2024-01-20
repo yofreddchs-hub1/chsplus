@@ -1,12 +1,21 @@
 // Cargar módulos de request-promise y JSDOM
 const paginaCtrl = {};
 const rp = require('request-promise');
+const {Model} = require('../database/model')
 const JSDOM = require('jsdom').JSDOM;
+const { Hash_chs, Codigo_chs } =require('../servicios/conexiones')
 // const fs = require('fs');
 const axios = require('axios');
 const {bcvDolar} = require('bcv-divisas');
 
 paginaCtrl.valor_dolar = async() =>{
+  const Tasa = await Model(global.Principal,'tasacambios');
+  const ultimo = await Tasa.find().sort({$natural:-1}).limit(1);
+  let anterior = {};
+  if (ultimo.length!==0){
+    global.global_cambio=ultimo[0].valores;
+    anterior= ultimo[0].valores;
+  }
   //console.log(valornuevo);
   // try{
   //   bcvDolar().then(valor1=>{
@@ -36,7 +45,7 @@ paginaCtrl.valor_dolar = async() =>{
     console.log('Error con dolartoday')//,error);
   })
   
-  console.log('por banco de venezuela')
+  // console.log('por banco de venezuela')
   try{
     let resultado = await rp({uri: 'http://www.bcv.org.ve/tasas-informativas-sistema-bancario', rejectUnauthorized: false}).then(html => {
       // Generar DOM a partir de HTML
@@ -59,7 +68,7 @@ paginaCtrl.valor_dolar = async() =>{
         // console.log(array);
         // console.log(array)
         array[1]=array[1].replace(',','.')
-        console.log('>>>>>>>',array, valor);
+        // console.log('>>>>>>>',array, valor);
         global.global_cambio={
           [array[0]]:Number(array[1]), 
           dolartoday:valor && valor.data ? valor.data.USD : 0,
@@ -76,29 +85,36 @@ paginaCtrl.valor_dolar = async() =>{
       
     });
   }catch(error) {
-    console.log('Error-BCV',error)//,error);
+    console.log('Error-BCV')//,error);
     // global.global_cambio=valor && valor.data && valor.data.USD ? valor.data.USD.sicad2 : global.global_cambio;
-    global.global_cambio={
-      'USD':'error', 
-      dolartoday:valor && valor.data ? valor.data.USD : global.global_cambio.dolartoday ? global.global_cambio.dolartoday : 0 ,
-      'wesi > wesi':1,
-      'VED > VED':1,
-      'wesi > USD': valor && valor.data ? 1 / Number(valor.data.USD.sicad2) : global.global_cambio['wesi > USD'] ? global.global_cambio['wesi > USD'] : 0,
-      'VED > USD': valor && valor.data ? 1 / Number(valor.data.USD.sicad2) : global.global_cambio['VED > USD'] ? global.global_cambio['VED > USD'] : 0,
-      'USD > wesi': valor && valor.data ? Number(valor.data.USD.sicad2) : global.global_cambio['USD > wesi'] ? global.global_cambio['USD > wesi'] : 0,
-      'USD > VED': valor && valor.data ? Number(valor.data.USD.sicad2) : global.global_cambio['USD > VED'] ? global.global_cambio['USD > VED'] : 0,
-    }
+    // global.global_cambio={
+    //   'USD':'error', 
+    //   dolartoday:valor && valor.data ? valor.data.USD : global.global_cambio.dolartoday ? global.global_cambio.dolartoday : 0 ,
+    //   'wesi > wesi':1,
+    //   'VED > VED':1,
+    //   'wesi > USD': valor && valor.data ? 1 / Number(valor.data.USD.sicad2) : global.global_cambio['wesi > USD'] ? global.global_cambio['wesi > USD'] : 0,
+    //   'VED > USD': valor && valor.data ? 1 / Number(valor.data.USD.sicad2) : global.global_cambio['VED > USD'] ? global.global_cambio['VED > USD'] : 0,
+    //   'USD > wesi': valor && valor.data ? Number(valor.data.USD.sicad2) : global.global_cambio['USD > wesi'] ? global.global_cambio['USD > wesi'] : 0,
+    //   'USD > VED': valor && valor.data ? Number(valor.data.USD.sicad2) : global.global_cambio['USD > VED'] ? global.global_cambio['USD > VED'] : 0,
+    // }
     global.global_actualizando=false
     
   }
-
+  console.log('Tasa de cambio>>>>>>', global.global_cambio.USD)
+  if ((global.global_cambio.USD!==anterior.USD || global.global_cambio.dolartoday!==anterior.dolartoday) && global.global_cambio.USD!==0 ){
+    console.log('Cambiar la tasa de cambio>>>>>>', global.global_cambio.USD!==anterior.USD , global.global_cambio.USD, anterior.USD)
+    const cod_chs = await Codigo_chs({...global.global_cambio});
+    const hash_chs = await Hash_chs({cod_chs, valores:global.global_cambio});
+    const nuevo = new Tasa({valores:global.global_cambio, cod_chs, hash_chs});
+    await nuevo.save();
+  }
   console.log('Cambio actualizado....', )
   global.io.emit('Actualizar_tasa',{tasa:global.global_cambio});
   if(global.global_tiempo_dolar) clearTimeout(global.global_tiempo_dolar)
 
   global.global_tiempo_dolar=setTimeout(()=>{
     paginaCtrl.valor_dolar()
-  }, 5 * 60000)
+  }, 30 * 60000)
 }
 
 // paginaCtrl.valor_dolar = async() =>{

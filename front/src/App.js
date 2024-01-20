@@ -159,7 +159,7 @@ class InicioPrincipal extends Component {
   }
 
   async componentDidMount(){
-    const respuesta = await conexiones.Leer_data(`data/Apis.js`,'wesi_chs_server');
+    const respuesta = await conexiones.Leer_data(`data/Apis.js`,'ChsPrincipal');
     if (respuesta.Respuesta==='Ok'){
       let Config_Apis=JSON.parse(respuesta.datos);
       this.setState({Config_Apis})
@@ -320,7 +320,8 @@ class InicioPrincipal extends Component {
           <Dialogo {...this.state.dialogo} config={this.state.Config}/>
         </div>
       )
-    }else{
+    }
+    else{
       const Api = Apis[dir[1]];
       window.document.title= `CHS+ ${dir[1].toUpperCase()}`
       return esperar ? <Esperar/> :(

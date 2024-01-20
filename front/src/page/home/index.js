@@ -67,15 +67,15 @@ export default class Home extends React.Component {
         
         }}>
             <Grid container spacing={0}>
-                <Grid item xs={12}>
+                {/*<Grid item xs={12}>
                     <Carrusel datos={portada}/>
-                </Grid>
+                </Grid>*/}
                 <Grid item xs={12}>
                     <CarruselPdf datos={portada}/>
                 </Grid>
-                <Grid item xs={12}>
+                {/*<Grid item xs={12}>
                     <Catalogo datos={producto} titulo={'Productos'} {...this.state}/>
-                </Grid>
+                </Grid>*/}
             </Grid>
         </Scrollbars>
     )

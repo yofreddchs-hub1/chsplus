@@ -1,7 +1,3 @@
-// var Parse = require('parse/node');
-// Parse.initialize("KybeAcWWDXFPO0LSZXxGWMOqWvnAcgLn1VzoIQuK","6iSkcT98R1SJCpTWYfTgG4tMnscDCYFiKbdVzh7O"); //PASTE HERE YOUR Back4App APPLICATION ID AND YOUR JavaScript KEY
-// Parse.serverURL = 'https://parseapi.back4app.com/'
-
 const path = require('path');
 const express= require('express');
 const app = express();
@@ -16,10 +12,10 @@ const http = require('http').Server(app);
 // const {Verificar_bonos_mes, Enviar} = require('./src/servicios/conexiones')
 global.global_http= http;
 global.actualizar_mes=false
-require('./src/database');
+require('./src/database/inicio');
 require('./src/server_socket');
-require('./src/whatsapp');
-
+// require('./src/whatsapp');
+const {Model} = require('./src/database/model')
 const {valor_dolar} = require('./src/servicios/leerHTML');
 
 require('dotenv').config({path:'./server/variables.env'})
@@ -30,9 +26,22 @@ const port = process.env.PORT || 3500;
 // settings
 app.set('port', port );
 // console.log(__dirname);
-app.use(express.static(path.join(__dirname,`build`)));
+app.use(express.static(path.join(__dirname,`build`, 'principal')));
+// app.use('/uecla',express.static(path.join(__dirname,`build`, 'uecla')));
 
-// middlewares
+
+const Inicio = async()=>{
+  const Apis = await Model(global.Principal,'Api')
+  const apis = await Apis.find();
+  console.log('Apis>>>>>>>>>>>>',apis.length);
+  apis.map(api=>{
+    if (api.valores.direccion){
+      console.log(api.valores.direccion)
+      app.use(`/${api.valores.direccion}`,express.static(path.join(__dirname,`build`, api.valores.direccion)));
+    }
+    return
+  })
+  // middlewares
 app.use(cors());
 
 // app.use(express.json());
@@ -45,36 +54,52 @@ app.use('/api/imagen',express.static(`${dir_arch}`))
 
 app.use('/api', require('./src/routers/api'));
 
-app.get('*',(req,res) =>{
-  res.sendFile(path.join(__dirname,'build','index.html'));
+app.get('*',async(req,res) =>{
+  
+  const direccion = req.originalUrl.split('/')[1];
+  console.log('<<<<<',direccion)
+  const Apis = await Model(global.Principal,'Api')
+  const api = await Apis.findOne({'valores.direccion':direccion});
+  if (api!==null){
+    res.sendFile(path.join(__dirname,'build',direccion,'index.html'));
+    return
+  }else{
+    res.sendFile(path.join(__dirname,'build','principal','index.html'));
+  }
+  
+  // var options = {
+  //   root: path.join(__dirname, `build`, 'principal'),
+  //   dotfiles: 'deny',
+  //   headers: {
+  //     'x-timestamp': Date.now(),
+  //     'x-sent': true
+  //   }
+  // }
+  // var filename= 'index.html';
+  // res.sendFile(filename, options, function (err) {
+  //   if (err) {
+  //     next(err)
+  //   } else {
+  //     console.log('Sent:', filename)
+  //   }
+  // })
+  // res.json(Object.keys(req))
+  // res.sendFile(path.join(__dirname,'build','principal','index.html'));
 });
 
-// async function run(){
-//   const blockchain = new Blockchain();
-//   // const bloque1 = new Block_wesi({data:'Bloque 1 '});
-//   // const bloque2 = new Block_wesi({data:'Bloque 1 '});
-//   // const bloque3 = new Block_wesi({data:'Bloque 3 '});
+  http.listen(port, ()=>{
+    // http.listen(port, ()=>{
+      console.log('Servidor iniciado nueva version', port, host);
+      // setTimeout(()=>{
+        valor_dolar()
+      //   // run()
+      // }, 1 * 10000)
+    
+    })
+}
 
-//   // await blockchain.addBlock(bloque1);
-//   // await blockchain.addBlock(bloque2);
-//   // await blockchain.addBlock(bloque3);
-  
-//   // blockchain.print();
-//   for (let i = 0; i < 10; i++){
-//     const block = await blockchain.addBlock({bloque:`Bloque ${i}`, informacion:'to'});
-//     console.log(block.toString());
-//   }
+Inicio()
 
-// }
-http.listen(port, ()=>{
-// http.listen(port, ()=>{
-  console.log('Servidor iniciado', port, host);
-  // setTimeout(()=>{
-    valor_dolar()
-    // run()
-  // }, 1 * 60000)
-
-})
 
 // const { createServer } = require("http");
 // const { Server } = require("socket.io");

@@ -43,24 +43,6 @@ export default class Crear_app extends Component {
 
   }
 
-  Editores = (campo)=>{
-    let multiples_valores= ['User_api'].indexOf(campo)===-1 
-    return <TablaMultiple
-                {...this.state.props}
-                multiples_valores={multiples_valores}
-                Agregar_mas={multiples_valores}
-                Condiciones={this.Condiciones}
-                Columnas={2} 
-                Form_origen = {Form_todos(`Form_${campo}`)}
-                Titulo_tabla={campo}
-                Table = {campo}
-                Eliminar_props={(dato)=>{
-                    return `Desea eliminar de ${campo} ${dato._id}`
-                }}
-                Titulo_dialogo ={(dato)=> dato._id ? `Registro ${dato._id}`: `Nuevo Registro en ${campo}`}
-                Titulos_tabla = {Titulos_todos(`Titulos_${campo}`)}
-            />
-  }
   
   Guardar_codigo = async(valores)=>{
     let Config = Ver_Valores().config;
@@ -158,22 +140,22 @@ export default class Crear_app extends Component {
   }
   async componentDidMount(){
       
-    let nuevos = await genera_fromulario({valores:{}, campos: Form_todos(`Form_nuevodatabase`) })
-    nuevos.titulos.archivo.onChange= this.Nuevo_archivo
-    nuevos.titulos.codigo.maxRows=15;
-    const formulario ={
-      ...nuevos,
-      botones:[
-      ]
-    }
+    // let nuevos = await genera_fromulario({valores:{}, campos: Form_todos(`Form_nuevodatabase`) })
+    // nuevos.titulos.archivo.onChange= this.Nuevo_archivo
+    // nuevos.titulos.codigo.maxRows=15;
+    // const formulario ={
+    //   ...nuevos,
+    //   botones:[
+    //   ]
+    // }
 
-    let formulario_lista= await genera_fromulario({valores:{}, campos: Form_todos(`Form_api`) }, 2)
+    // let formulario_lista= await genera_fromulario({valores:{}, campos: Form_todos(`Form_api`) }, 2)
     
-    const seleccionado = formulario_lista.titulos.apis.lista[0]
-    formulario_lista.titulos.apis.value= seleccionado
-    // formulario_lista.titulos.apis.onChange= this.SeleccionA
+    // const seleccionado = formulario_lista.titulos.apis.lista[0]
+    // formulario_lista.titulos.apis.value= seleccionado
+    // // formulario_lista.titulos.apis.onChange= this.SeleccionA
 
-    this.setState({formulario, formulario_lista, seleccionado, cargando:false})
+    // this.setState({formulario, formulario_lista, seleccionado, cargando:false})
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -228,9 +210,21 @@ export default class Crear_app extends Component {
     const {formulario, formulario_lista, Config, cargando}=this.state;
     return (
       <div style={{width:'100%', position: "relative", height:'100%'}}>
-        
-        {/* <div style={{marginTop:-30}}/> */}
-            <Formulario {...formulario} config={Config}/>
+        <TablaMultiple
+              {...this.state.props}
+              multiples_valores={true}
+              Agregar_mas={false}
+              // Condiciones={this.Condiciones}
+              Columnas={2} 
+              Form_origen = {Form_todos(`Form_${'Api'}`)}
+              Titulo_tabla={'Apis'}
+              Table = {'Api'}
+              Eliminar_props={(dato)=>{
+                  return `Desea eliminar de ${'Api'} ${dato._id}`
+              }}
+              Titulo_dialogo ={(dato)=> dato._id ? `Registro "${dato.api}"`: `Nuevo Registro en ${'Api'}`}
+              Titulos_tabla = {Titulos_todos(`Titulos_${'Api'}`)}
+        />
       </div>
     )
   }

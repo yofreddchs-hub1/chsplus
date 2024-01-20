@@ -31,7 +31,7 @@ export const Inicio_api=async(nombre)=>{
 }
 export const Inicio=async()=>{
   //si se cambia wesi_chs_server hay que cambiarlo en conexiones
-  const api= await conexiones.Ver_api('wesi_chs_server');
+  const api= await conexiones.Ver_api('ChsPrincipal');
   let archivo='data/datos.js';
   
   let config = {}

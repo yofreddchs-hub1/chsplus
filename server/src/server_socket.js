@@ -1,7 +1,10 @@
 
-const {Codigo_chs} = require('./servicios/conexiones');
+const chalk = require('chalk');
+const {Hash_chs, Codigo_chs} = require('./servicios/conexiones');
 const { Hash_texto, Hash_password } = require('./servicios/encriptado');
 const {Tablas} = require('./controllers/api.controller');
+const {Model} = require('./database/model');
+
 global.io = require("socket.io")(global.global_http,
     {
        cors:{origin:"*"} 
@@ -71,22 +74,27 @@ global.io.on('connection', (socket) =>{
         Enviar_usuario(socket);
     })
     socket.on('Sincronizado', (data)=>{
-        socket.broadcast.emit('Actualizar', data);
-        socket.emit('Sincronizado', data);
+        socket.broadcast.emit('Actualizar', {tablas:data.tablase});
+        socket.emit('Sincronizado', data.fechaf);
     })
     socket.on('Elimniar', (data)=>{
         socket.broadcast.emit('Eliminar', data);
     })
+    socket.on('ActualizarPago', (data)=>{
+        socket.emit('ActualizarPago', data);
+    })
     socket.on('Sincronizar', async(data)=>{
-        const {tabla, datos, fecha, fechaa} = data;
-        console.log('Sincronizando >>>', tabla, fecha);
+        const {tabla, datos, fecha, fechaa, Api} = data;
         const cantidades = 25;
         const pag = data.pag ? data.pag : 0;
-        let DB = await Tablas(tabla);
+        console.log(chalk.blue(`Sincronizando >>> ${tabla} ${fecha} ${Api}, Pagina: ${pag}`));
+        let cantidad;
+        let dbs=[]
+        let DB ;//= await Model(Api, tabla);
         try{
-            DB = require(`./models/${tabla}`);
+            DB = await Model(Api, tabla);//require(`./models/${tabla}`);
         }catch(error) {
-            console.error(`Error en sincronizar >>>> (${tabla})`);
+            console.log(chalk.inverse.red(`Error en sincronizar >>>> (${tabla})`));
             global.io.to(socket.id).emit('Sincronizando', {Respuesta:'Error', ...data, cantidad, datos:dbs})
             return
         }
@@ -97,37 +105,40 @@ global.io.on('connection', (socket) =>{
               const hash_chs = await Hash_chs({...newdatos, cod_chs})
               await DB.updateOne({_id:newdatos._id},{...newdatos, cod_chs, hash_chs},{ upsert: true });
             }catch(error) {
-              console.log('Error, al amacenar datos en',table, newdatos.valores);    
+                
+              console.log(chalk.inverse.red(`Error, al amacenar datos en ${tabla} ${newdatos} ${error}`));    
+              await DB.updateOne({_id:newdatos._id},{...newdatos},{ upsert: true });
             }
-            if (data.indexOf('Eliminados')!==-1){
+            // console.log('data', data)
+            if (data.tabla.indexOf('Eliminados')!==-1){
               console.log('Elimninar>>>>',newdatos.tabla)
-              const DBE = require(`./models/${newdatos.tabla}`);
+              const DBE = await Model(Api, newdatos.tabla);//require(`./models/${newdatos.tabla}`);
               await DBE.deleteOne({_id:newdatos.valores._id});
             }
         }
-        console.log('Sincronizado >>>>>>...', tabla, fecha);
-        let dbs=[]
-        let cantidad;
+        console.log(chalk.green(`Sincronizado >>>>>>... ${tabla} ${fecha}`));
+        cantidad = await DB.estimatedDocumentCount();
         if (fecha===null || fecha===undefined){
-            console.log('Enviar todos...............');
-            cantidad = await DB.estimatedDocumentCount();
+            // cantidad = await DB.estimatedDocumentCount();
             dbs = await DB.find()
                 // .sort({createdAt:-1})
                 .limit(cantidades)
                 .skip(pag*cantidades).exec();
+            console.log(chalk.inverse.yellow(`Enviar ${tabla}, Pagina: ${pag}/${cantidad/cantidades}.......`));
         }else{
             let fechan = new Date(fecha);
             // fechan.setDate(fechan.getDate()-1);
             let fechana = new Date(fechaa);
             // fechana.setDate(fechana.getDate()-1);
-            cantidad = await DB.estimatedDocumentCount()
+            // cantidad = await DB.estimatedDocumentCount()
             console.log(fechan,fechana);
             dbs = await DB.find({$or:[{createdAt:{$gte:fechan}}, {updatedAt:{$gte:fechana}}]})
                         //   .sort({createdAt:-1})
                           .limit(cantidades)
                           .skip(pag*cantidades).exec();
             // cantidad = dbs.length
-            console.log('Enviar despues de ', tabla ,fechan, dbs.length, data.fechaa);
+            
+            console.log(chalk.inverse.yellow(`Enviar despues de  ${tabla} , Pagina: ${pag}/${cantidad/cantidades}....... ${fechan}, ${dbs.length}, ${fechana}`));
         }
 
         global.io.to(socket.id).emit('Sincronizando', {Respuesta:'Ok', ...data, cantidad, datos:dbs, cantidades, pag, fecha, fechaa, fechaf:new Date()})

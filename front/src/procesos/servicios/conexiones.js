@@ -60,7 +60,7 @@ async function Ver_api(api){
     method:'POST',
   });
   
-  if (resultados.Respuesta==='Ok' && api==='wesi_chs_server'){
+  if (resultados.Respuesta==='Ok' && api==='ChsPrincipal'){
     Api= resultados.api;
     return Api
   }else if (resultados.Respuesta==='Ok'){
@@ -90,7 +90,7 @@ async function Leer_data(archivo, api, valord=Valord){
 //Guardar archivo
 async function Guardar_data(archivo, valor){
   const resultados= await Enviar({
-                            datos:{User, Api, archivo, valor},
+                            datos:{User, Api: Api ? Api : 'ChsPrincipal', archivo, valor},
                             http_destino:'/api/guardar_data',
                             method:'POST',
                           });
@@ -99,7 +99,7 @@ async function Guardar_data(archivo, valor){
 //Elimina archivo
 async function Eliminar_data(archivo){
   const resultados= await Enviar({
-                            datos:{User, Api, archivo},
+                            datos:{User, Api: Api ? Api : 'ChsPrincipal', archivo},
                             http_destino:'/api/eliminar_data',
                             method:'DELETE',
                           });
@@ -108,7 +108,7 @@ async function Eliminar_data(archivo){
 //Ver bases de datos del sistema
 async function DataBase(){
   const resultados= await Enviar({
-                            datos:{User},
+                            datos:{User, Api:Api ? Api : 'ChsPrincipal'},
                             http_destino:'/api/database',
                             method:'POST',
                           });
@@ -128,7 +128,7 @@ async function VerApis(){
 async function Leer(tablas, mensaje='Solicitando datos...'){
 
   const resultados= await Enviar({
-                            datos:{User,tablas},
+                            datos:{User,tablas, Api:Api ? Api : 'ChsPrincipal'},
                             http_destino:'/api/getall',
                             method:'POST',
                             mensaje_esperar:mensaje
@@ -138,7 +138,7 @@ async function Leer(tablas, mensaje='Solicitando datos...'){
 async function Leer_C(tablas, condicion, timeout=50000,mensaje='Solicitando datos...'){
   tablas=Object.keys(condicion)
   const resultados= await Enviar({
-                            datos:{User,tablas, condicion},
+                            datos:{User,tablas, condicion, Api: Api ? Api : 'ChsPrincipal'},
                             http_destino:'/api/getallc',
                             method:'POST',
                             timeout,
@@ -184,7 +184,7 @@ async function Guardar(dato, tabla, user=undefined, mensaje='Guardando datos...'
   }
   console.log(files)
   const resultados= await Enviar({
-                            datos:{User: user ? user : User , Api, datos:JSON.stringify(dato), tabla},
+                            datos:{User: user ? user : User , Api: Api ? Api : 'ChsPrincipal', datos:JSON.stringify(dato), tabla},
                             http_destino:'/api/setall',
                             method:'POST',
                             destino:'imagenes',
@@ -198,7 +198,7 @@ async function Guardar(dato, tabla, user=undefined, mensaje='Guardando datos...'
 //eliminar
 async function Eliminar(dato, tablas, mensaje='Eliminar datos...'){
   const resultados= await Enviar({
-                            datos:{dato, Api, tablas},
+                            datos:{dato, Api: Api ? Api : 'ChsPrincipal', tablas},
                             http_destino:'/api/delall',
                             method:'DELETE',
                             mensaje_esperar:mensaje
@@ -238,7 +238,7 @@ async function ValorCambio(){
 //Solicitar Mensualidades
 async function Mensualidades(dato, mensaje='Guardando datos...'){
   const resultados= await Enviar({
-                            datos:{User, Api, datos:JSON.stringify(dato)},
+                            datos:{User, Api: Api ? Api : 'ChsPrincipal', datos:JSON.stringify(dato)},
                             http_destino:'/api/colegio/mensualidades',
                             method:'POST',
                             destino:'archivos/imagenes',
@@ -250,7 +250,7 @@ async function Mensualidades(dato, mensaje='Guardando datos...'){
 async function Solvencias(dato, mensaje='Guardando datos...'){
   
   const resultados= await Enviar({
-                            datos:{User, Api, datos:JSON.stringify(dato)},
+                            datos:{User, Api: Api ? Api : 'ChsPrincipal', datos:JSON.stringify(dato)},
                             http_destino:'/api/colegio/solvencias',
                             method:'POST',
                             destino:'archivos/imagenes',
@@ -262,7 +262,7 @@ async function Solvencias(dato, mensaje='Guardando datos...'){
 async function Resumen(dato, mensaje='Guardando datos...'){
   
   const resultados= await Enviar({
-                            datos:{User, Api, datos:JSON.stringify(dato)},
+                            datos:{User, Api: Api ? Api : 'ChsPrincipal', datos:JSON.stringify(dato)},
                             http_destino:'/api/colegio/resumen',
                             method:'POST',
                             destino:'archivos/imagenes',
@@ -274,7 +274,7 @@ async function Resumen(dato, mensaje='Guardando datos...'){
 async function Enviar_pago(dato, mensaje='Guardando datos...'){
   
   const resultados= await Enviar({
-                            datos:{User, Api, datos:JSON.stringify(dato)},
+                            datos:{User, Api: Api ? Api : 'ChsPrincipal', datos:JSON.stringify(dato)},
                             http_destino:'/api/colegio/enviarpago',
                             method:'POST',
                             destino:'archivos/imagenes',
@@ -307,7 +307,7 @@ async function Recibo_Venta(){
 }
 async function Serial(dato){
   const resultados= await Enviar({
-    datos:{User, Api, dato},
+    datos:{User, Api: Api ? Api : 'ChsPrincipal', dato},
     http_destino:'/api/serial',
     method:'POST',
     destino:'archivos/imagenes',
@@ -317,7 +317,7 @@ async function Serial(dato){
 async function Guardar_produccion(datos, mensaje='Guardando datos...'){
   
   const resultados= await Enviar({
-                            datos:{User, Api, datos:JSON.stringify(datos)},
+                            datos:{User, Api: Api ? Api : 'ChsPrincipal', datos:JSON.stringify(datos)},
                             http_destino:'/api/guardarproduccion',
                             method:'POST',
                             destino:'archivos/imagenes',
@@ -328,7 +328,7 @@ async function Guardar_produccion(datos, mensaje='Guardando datos...'){
 async function Ingresar_material(datos, mensaje='Guardando datos...'){
   
   const resultados= await Enviar({
-                            datos:{User, Api, datos:JSON.stringify(datos)},
+                            datos:{User, Api: Api ? Api : 'ChsPrincipal', datos:JSON.stringify(datos)},
                             http_destino:'/api/ingresarmaterial',
                             method:'POST',
                             destino:'archivos/imagenes',
@@ -339,7 +339,7 @@ async function Ingresar_material(datos, mensaje='Guardando datos...'){
 async function Ingresar_empaque(datos, mensaje='Guardando datos...'){
   
   const resultados= await Enviar({
-                            datos:{User, Api, datos:JSON.stringify(datos)},
+                            datos:{User, Api: Api ? Api : 'ChsPrincipal', datos:JSON.stringify(datos)},
                             http_destino:'/api/ingresarempaque',
                             method:'POST',
                             destino:'archivos/imagenes',
@@ -350,7 +350,7 @@ async function Ingresar_empaque(datos, mensaje='Guardando datos...'){
 async function Ingreso_Egreso(datos, mensaje='Guardando datos...'){
   
   const resultados= await Enviar({
-                            datos:{User, Api, datos:JSON.stringify(datos)},
+                            datos:{User, Api: Api ? Api : 'ChsPrincipal', datos:JSON.stringify(datos)},
                             http_destino:'/api/ingresoegreso',
                             method:'POST',
                             destino:'archivos/imagenes',
@@ -361,7 +361,7 @@ async function Ingreso_Egreso(datos, mensaje='Guardando datos...'){
 async function Egreso_venta(datos){
   
   const resultados= await Enviar({
-                            datos:{User, Api, datos:JSON.stringify(datos)},
+                            datos:{User, Api: Api ? Api : 'ChsPrincipal', datos:JSON.stringify(datos)},
                             http_destino:'/api/egresoventa',
                             method:'POST',
                             destino:'archivos/imagenes'
@@ -371,7 +371,7 @@ async function Egreso_venta(datos){
 async function Ventas(datos){
   //datos.estado='pendiente', por cobrar
   const resultados= await Enviar({
-                            datos:{User, Api, datos:JSON.stringify(datos)},
+                            datos:{User, Api: Api ? Api : 'ChsPrincipal', datos:JSON.stringify(datos)},
                             http_destino:'/api/ventas',
                             method:'POST',
                             destino:'archivos/imagenes'
@@ -384,7 +384,7 @@ async function Ventas(datos){
 async function MisDatos(user, api, mensaje='Guardando datos...'){
   
   const resultados= await Enviar({
-                            datos:{user, api},
+                            datos:{user, Api: api ? api : 'ChsPrincipal'},
                             http_destino:'/api/unefa/misdatos',
                             method:'POST',
                             destino:'archivos/imagenes',
@@ -395,7 +395,7 @@ async function MisDatos(user, api, mensaje='Guardando datos...'){
 async function LeerHorario(dato, user, api, table='unefa_horario', mensaje='Guardando datos...'){
   
   const resultados= await Enviar({
-                            datos:{user, api, table, datos:JSON.stringify(dato)},
+                            datos:{user, Api: api ? api : 'ChsPrincipal', table, datos:JSON.stringify(dato)},
                             http_destino:'/api/unefa/leerhorario',
                             method:'POST',
                             destino:'archivos/imagenes',
@@ -406,7 +406,7 @@ async function LeerHorario(dato, user, api, table='unefa_horario', mensaje='Guar
 async function GuardarHorario(dato, user, api, table='unefa_horario', mensaje='Guardando datos...'){
   
   const resultados= await Enviar({
-                            datos:{user, api, table, datos:JSON.stringify(dato)},
+                            datos:{user, Api: api ? api : 'ChsPrincipal', table, datos:JSON.stringify(dato)},
                             http_destino:'/api/unefa/guardarhorario',
                             method:'POST',
                             destino:'archivos/imagenes',
@@ -417,7 +417,7 @@ async function GuardarHorario(dato, user, api, table='unefa_horario', mensaje='G
 async function DisponibilidadHorario(dato, user, api, table='unefa_horario', mensaje='Guardando datos...'){
   
   const resultados= await Enviar({
-                            datos:{user, api, table, datos:JSON.stringify(dato)},
+                            datos:{user, Api: api ? api : 'ChsPrincipal', table, datos:JSON.stringify(dato)},
                             http_destino:'/api/unefa/disponibilidadhorario',
                             method:'POST',
                             destino:'archivos/imagenes',

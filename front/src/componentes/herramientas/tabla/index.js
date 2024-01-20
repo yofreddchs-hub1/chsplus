@@ -87,7 +87,7 @@ class Tabla extends Component {
 
   Iniciar_descarga = async(table,Titulo, ordenar, items, cargacompleta, cargaporparte, condicion)=>{
     this.setState({actualizando:true})
-    let respuesta = await conexiones.Leer([table])
+    let respuesta = await conexiones.Leer([table]);
     if (cargaporparte){
       let cantidad= respuesta.datos[table+'_cantidad']
       respuesta= await conexiones.Leer_C([table], 

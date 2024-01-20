@@ -38,7 +38,7 @@ const { Ver_api, Login,Verificar, Getall, Getall_C, Setall, Delall, Leer_data, G
         Infor_database,Infor_databaseD, Infor_datos, WhatsAppQR,
       } = require('../controllers/api.controller');
 
-const {Mensualidades, EnviarPago, Solvencias, Resumen, Sincronizar_uecla} = require('../controllers/colegio.controller');
+const {Mensualidades, EnviarPago, Solvencias, Resumen, Sincronizar_uecla, Recibos, Verificar_Inscripcion, Actualizar_Referencia} = require('../controllers/colegio.controller');
 const { LeerHorario, GuardarHorario, DisponibilidadHorario, MisDatos } = require('../controllers/unefa.controller');
 
 router.post('/ver_api', Ver_api);
@@ -94,10 +94,13 @@ router.post('/cambiarstatuscompra',Egew_cambiar_status_compra);
 
 // Para colegio
 router.post('/colegio/mensualidades',Mensualidades);
+router.post('/colegio/verificarinscripcion',Verificar_Inscripcion);
 router.post('/colegio/solvencias',Solvencias);
 router.post('/colegio/enviarpago',EnviarPago);
 router.post('/colegio/resumen',Resumen);
+router.post('/colegio/recibo',Recibos);
 router.post('/colegio/sincronizar',Sincronizar_uecla);
+router.post('/colegio/actualizarreferencia',Actualizar_Referencia);
 // router.get('/imagen/:filename',Ver_Imagen);
 
 //Para Unefa

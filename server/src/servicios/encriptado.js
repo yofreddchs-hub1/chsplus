@@ -1,7 +1,7 @@
 const encriptadoCtrl = {};
 const crypto = require('crypto-js');
 const key='W3S1-Ch5_4p15@53RvEr';
-
+const key1='CHS_W3S1P4Y_InG.Y0Fr3dD';
 
 encriptadoCtrl.Hash_texto = async(texto) =>{
   // const hash = crypto.createHash('sha512');
@@ -21,6 +21,13 @@ encriptadoCtrl.Hash_password = async(texto) =>{
   // const resultado = await hash.digest('hex');
   // return resultado;
   let resultado = crypto.SHA256(key + texto);
+  resultado = resultado.toString(crypto.enc.Hex)
+  return resultado;
+
+}
+
+encriptadoCtrl.Hash_passwordA = async(texto) =>{
+  let resultado = crypto.SHA256(key1 + texto);
   resultado = resultado.toString(crypto.enc.Hex)
   return resultado;
 

@@ -10,6 +10,12 @@
             "libre": true
         },
         {
+            "value": "Aplicaciones",
+            "primary": "Aplicaciones",
+            "icon": "apps",
+            "libre": true
+        },
+        {
             "value": "Configuracion",
             "primary": "Configuración",
             "icon": "settings",
@@ -6706,6 +6712,125 @@
                     }
                 }
             ]
+        },
+        "Form_Api": {
+            "columna": 3,
+            "value": [
+                {
+                    "nombre": "api",
+                    "tipo": "input",
+                    "label": "Nombre Api",
+                    "placeholder": "Nombre Api",
+                    "title": "Nombre de la Api",
+                    "required": true,
+                    "mensaje_error": "Debe colocar nombre de la api",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": false,
+                    "key": "api",
+                    "name": "api"
+                },
+                {
+                    "nombre": "nombredb",
+                    "tipo": "input",
+                    "label": "Nombre DataBase",
+                    "placeholder": "Nombre DataBase",
+                    "title": "Nombre de la DataBase",
+                    "required": true,
+                    "mensaje_error": "Debe colocar nombre de la DataBase",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": false,
+                    "key": "nombredb",
+                    "name": "nombredb"
+                },
+                {
+                    "nombre": "master",
+                    "tipo": "Checkbox",
+                    "label": "Master/No master",
+                    "placeholder": "Master/No master",
+                    "title": "",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "agregar": false,
+                    "key": "master",
+                    "name": "master"
+                },
+                {
+                    "nombre": "url",
+                    "tipo": "input",
+                    "label": "URL",
+                    "placeholder": "URL",
+                    "title": "URL de mongodb para la api",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "url",
+                    "name": "url",
+                    "multiline": false
+                },
+                {
+                    "nombre": "urlc",
+                    "tipo": "input",
+                    "label": "URL COPIA",
+                    "placeholder": "URL COPIA",
+                    "title": "URL de mongodb para la api respaldo",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "urlc",
+                    "name": "urlc",
+                    "multiline": false
+                },
+                {
+                    "nombre": "direccion",
+                    "tipo": "input",
+                    "label": "Dirección HTTP",
+                    "placeholder": "Dirección HTTP",
+                    "title": "Dirección HTTP de la api",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "direccion",
+                    "name": "direccion",
+                    "multiline": false
+                },
+                {
+                    "nombre": "icono",
+                    "tipo": "Imagen",
+                    "label": "Icono",
+                    "placeholder": "Icono",
+                    "title": "Icono de la app",
+                    "mensaje_error": "",
+                    "disabled": false,
+                    "numberOfLines": "",
+                    "getOptionLabel": [
+                        "titulo"
+                    ],
+                    "key": "icono",
+                    "name": "icono",
+                    "multiline": false
+                }
+            ]
         }
     },
     "Titulos": {
@@ -6959,7 +7084,7 @@
                 "title": "Api",
                 "field": "api",
                 "tipo": "",
-                "formato": "",
+                "formato": "(dato)=> `${dato.valores.api }`",
                 "default": "",
                 "type": ""
             },
@@ -6967,7 +7092,7 @@
                 "title": "Master",
                 "field": "master",
                 "tipo": "",
-                "formato": "(dato)=> `${dato.master ? \"SI\" : \"NO\"}`",
+                "formato": "(dato)=> `${dato.valores.master ? \"SI\" : \"NO\"}`",
                 "default": "",
                 "type": ""
             }

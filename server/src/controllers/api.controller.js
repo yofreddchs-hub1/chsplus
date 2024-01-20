@@ -1,14 +1,15 @@
 const serverCtrl = {};
+const chalk = require('chalk');
 const moment = require('moment');
+const {Model} = require('../database/model');
 const mongoose = require('mongoose');
 const axios = require('axios');
 const path = require('path');
-const { Hash_texto, Hash_password } = require('../servicios/encriptado');
+const { Hash_texto, Hash_password, Hash_passwordA } = require('../servicios/encriptado');
 const { Token, VerificarToken, Codigo_chs, Hash_chs
       } = require('../servicios/conexiones');
 // const {valor_dolar} = require('../servicios/leerHTML');
 // const User = require('../models/User_api');
-const Apid = require('../models/Api');
 const cloudinary = require("../servicios/api_cloudinary");
 const fs = require('fs');
 
@@ -17,32 +18,33 @@ const admininicio= 'adminchs';
 const claveinicio= 'CHS19824./'
 const claveinicioapi= '4p1-';
 const categoria= 0;
-const dapi= 'wesi_chs_server';
+const dapi= global.Principal;
 const sistema_api='chs';
 
 NameAdmin = (Api)=>{
-  return `admin-${Api.api}-wesichs`
+  return `admin-${Api}-wesichs`
 }
 General_referencia = () =>{
   return moment().format('x');
 }
 // Verifica el api
 serverCtrl.Verifica_api = async (api, comparar=false) =>{
-  const apis = await Apid.findOne({api:dapi});
+  const Apis = await Model(global.Principal,'Api')
+  const apis = await Apis.findOne({'valores.api':dapi});
   if (apis===null){
     const key= await Codigo_chs({api:dapi});
-    const hash_chs = await Hash_chs({cod_chs:key, api:dapi, key});
-    const newapi = new Apid({api, key, cod_chs:key, master:true, hash_chs});
+    const hash_chs = await Hash_chs({cod_chs:key, valores:{api:dapi, key, master:true}});
+    const newapi = new Apis({valores:{api, key, master:true}, cod_chs:key, hash_chs});
     await newapi.save();
   }
   
-  let datos= await Apid.findOne({api: comparar ? typeof api==='object' ? api.api : api : api});
+  let datos= await Apis.findOne({'valores.api': comparar ? typeof api==='object' ? api.api : api : api});
   if (datos===null){
     const key= await Codigo_chs({api});
-    const hash_chs = await Hash_chs({cod_chs:key, api:dapi, key});
-    const newapi = new Apid({api, key, cod_chs:key, master:false, hash_chs});
+    const hash_chs = await Hash_chs({cod_chs:key, valores:{api:dapi, key, master:false}});
+    const newapi = new Apis({valores:{api, key, master:false}, cod_chs:key, hash_chs});
     await newapi.save();
-    datos= await Apid.findOne({api});
+    datos= await Apis.findOne({api});
   }
   return comparar ? datos.api===api.api || datos.api===api : datos;
 }
@@ -63,8 +65,12 @@ serverCtrl.Ver_api = async (req, res) =>{
 serverCtrl.Verificar_autenticidad = async ( datos, hash, token=false, inicia=false) =>{
   
    let {username, Api, password, mantener, crear}=datos;
-   await serverCtrl.Tablas(`${Api.master ? '' : Api.api+'_'}User_api`);
-   const User = require(`../models/${Api.master ? '' : Api.api+'_'}User_api`);
+  //  await serverCtrl.Tablas(`${Api.master ? '' : Api.api+'_'}User_api`);
+    console.log('verificar autenticidad ',Api.valores && Api.valores.api ? Api.valores.api : Api)
+    Api = Api.valores && Api.valores.api ? Api.valores.api : Api;
+   const User = await Model(Api, Api && Api!==global.Principal 
+                    ? Api+'_User_api' 
+                    : 'User_api');//require(`../models/${Api.master ? '' : Api.api+'_'}User_api`);
    password=!inicia ? password : await Hash_password(password);
    const tokenN = await Token({username, password, fecha: new Date()});
    const hashn = await Hash_texto(JSON.stringify(datos));
@@ -80,16 +86,16 @@ serverCtrl.Verificar_autenticidad = async ( datos, hash, token=false, inicia=fal
                                        token:tokenA, actualizado:'Sistema',
                                       //  cod_chs:codigo 
                                       });
-     const newAdmin = new User({username:admininicio,
+     const newAdmin = new User({valores:{username:admininicio,
                                 password:clave,
                                 token:tokenN,
                                 categoria:'0',
                                 apis:[sistema_api],
-                                actualizado:'Sistema',
                                 foto:'/api/imagen/adminchs.png',
-                                // cod_chs: codigo, 
                                 api:dapi,
-                                master:true,
+                                master:true},
+                                actualizado:'Sistema',
+                                // cod_chs: codigo, 
                                 hash_chs:hash_admin});
      await newAdmin.save();
    }
@@ -233,35 +239,84 @@ serverCtrl.Verificar = async (req, res) =>{
 //Login del sistema
 serverCtrl.Login= async (req, res) => {
   const {username, Api, password, mantener, crear, hash} = req.body;
+  console.log('login....',Api.valores && Api.valores.api ? Api.valores.api : Api)
   const datos= {username, Api, password, mantener, crear};
   let resultado = await serverCtrl.Verificar_autenticidad(datos, hash,false,inicia=true);
-  // if (resultado.Respuesta==='OK'){
-    res.json(resultado);
-  // }
+  console.log('<<<<<<<<<<',resultado)
+  if (resultado.Respuesta==='Error' && Api==='uecla'){
+    //========================Para acceoso en uecla==================
+    const tabla=['Docente','Representante','Estudiante'];
+    const categoria={Docente: 3, Representante: 4, Estudiante:5};
+    for (var i =0; i<tabla.length; i++){
+      const DB = await Model(Api,`${Api}_${tabla[i]}`);
+      let user= await DB.findOne({"valores.cedula":username});
+      if (user===null){
+        user= await DB.findOne({"valores.correo":username});
+      }
+      // console.log('...... ver si es representante, estudiante, docente', tabla[i], user)
+      const nuevapassword= await Hash_password(password);
+      const nuevapasswordA= await Hash_passwordA(password);
+      
+      if (user !== null 
+          &&  (((user.valores.password===null || user.valores.password===undefined) && user.valores.cedula===password) 
+                || String(user.valores.password).toLowerCase()===String(nuevapassword).toLowerCase()
+                || String(user.valores.password).toLowerCase()===String(nuevapasswordA).toLowerCase()
+            ) 
+        ) {
+        
+        const tokenN = await Token({username, password, fecha: new Date()});     
+        let newuser={
+                      username, password, categoria: categoria[tabla[i]],
+                      _id:user._id, token:tokenN,
+                      valores:user.valores
+                    }
+
+        if (resultado.Respuesta!=='OK'){
+          resultado={
+                      Respuesta:'OK', 
+                      user:newuser, 
+                      tipo: tabla[i], 
+                      cambio:user.valores.password===null || user.valores.password===undefined 
+                              ? 'Cambiar contraseña' 
+                              : '' 
+                    };
+        }
+        break;
+      }else if(user!==null){
+        
+        resultado.Mensaje= 'Contraseña invalida';
+        break
+      }
+    }
+  }
+  
+  res.json(resultado);
 }
 //Leer valores
-serverCtrl.Ver_datos = async (tablas, cantidad=20) =>{
+serverCtrl.Ver_datos = async (tablas, Api, cantidad=20, eliminados=false) =>{
   let datos={};
   try{
     return Promise.all(tablas.map(async(data)=>{
       if (data==='' || data===' ' || data===null ||data===undefined)
         return data
-      await serverCtrl.Tablas(data);
-      const DB = require(`../models/${data}`);
-      const count = await DB.estimatedDocumentCount();
+      // await serverCtrl.Tablas(data);
+      const DB = await Model(Api,data); //require(`../models/${data}`);
+      let count = await DB.estimatedDocumentCount();
+      const menos = await DB.find({eliminado:true});
+      count -= menos.length;
       // console.log('peticion>>>', data, count);
       if (count>=cantidad){
         // console.log(count)
         let pagina= 0;
         datos[data]=[];
         // while (pagina*cantidad<= count){
-          const dbs = await DB.find().limit(cantidad).skip(pagina*cantidad).exec();
+          const dbs = await DB.find({$or:[{eliminado:eliminados},{eliminado:undefined}]}).limit(cantidad).skip(pagina*cantidad).exec();
           datos[data]=[...datos[data],...dbs];
           pagina+=1;
         // }
         // console.log('Cargados>>>>>',data, datos[data].length, datos[data].length)
       }else{
-        const dbs = await DB.find();
+        const dbs = await DB.find({$or:[{eliminado:eliminados},{eliminado:undefined}]});
         datos[data]=dbs;
       }
       
@@ -276,20 +331,22 @@ serverCtrl.Ver_datos = async (tablas, cantidad=20) =>{
   }
 }
 //Leer valores por condicion 
-serverCtrl.Ver_datos_C = async (tablas, condicion) =>{
+serverCtrl.Ver_datos_C = async (tablas, Api, condicion, eliminados=false) =>{
   let datos={};
   try{
     return Promise.all(tablas.map(async(data)=>{
       if (['', ' ', undefined, null ].indexOf(data)!==-1){
         return data
       }
-      await serverCtrl.Tablas(data)
-      const DB = require(`../models/${data}`);
+      // await serverCtrl.Tablas(data)
+      const DB = await Model(Api, data); //require(`../models/${data}`);
       let dbs;
       if (['Ultimo', 'ultimo'].indexOf(condicion[data])!==-1 ){
         dbs = await DB.find().sort({$natural:-1}).limit(1);
       }else if(['cantidad', 'Cantidad'].indexOf(condicion[data])!==-1 ){
         dbs = await DB.estimatedDocumentCount();
+        const menos = await DB.find({eliminado:true});
+      count -= menos.length;
       }else if( condicion[data] !==undefined && Object.keys(condicion[data]).indexOf('pagina')!==-1 && Object.keys(condicion[data]).indexOf('condicion')!==-1){
         dbs = await DB.find(condicion[data].condicion)
                             .sort(condicion[data].sort ? condicion[data].sort : {$natural:-1})//'-createdAt')
@@ -297,18 +354,18 @@ serverCtrl.Ver_datos_C = async (tablas, condicion) =>{
                             .skip(condicion[data].pag*condicion[data].cantidad).exec();
         // console.log('Paginando', condicion[data].pag,condicion[data].cantidad, data, condicion[data].condicion)
       }else if( Object.keys(condicion[data] !==undefined && condicion[data]).indexOf('pagina')!==-1){
-        dbs = await DB.find()
+        dbs = await DB.find({$or:[{eliminado:eliminados},{eliminado:undefined}]})
                             .limit(condicion[data].cantidad)
                             .skip(condicion[data].pag*condicion[data].cantidad).exec();
         // console.log('Paginando', condicion[data].pag,condicion[data].cantidad, data)
-      }else if (Object.keys(condicion[data]).length===0){
-        dbs = await DB.find();
       }else if (Object.keys(condicion[data]).length!==0 && Object.keys(condicion[data]).indexOf('condicion')!==-1 && Object.keys(condicion[data]).indexOf('sort')!==-1){
+        console.log('.......',condicion[data])
         dbs = await DB.find(condicion[data].condicion).sort(condicion[data].sort);
+      }else if (Object.keys(condicion[data]).length===0){
+        dbs = await DB.find({$or:[{eliminado:eliminados},{eliminado:undefined}]});
       }else{
         await DB.createIndexes()
         dbs = await DB.find(condicion[data]);
-        
       }
 
       datos[data]=dbs;
@@ -323,11 +380,11 @@ serverCtrl.Ver_datos_C = async (tablas, condicion) =>{
   }
 }
 //Leer valores por pagina
-serverCtrl.Ver_datos_pagina = async (tablas, pagina, cantidad) =>{
+serverCtrl.Ver_datos_pagina = async (tablas, Api, pagina, cantidad) =>{
   let datos={};
   try{
     return Promise.all(tablas.map(async(data)=>{
-      const DB = require(`../models/${data}`);
+      const DB = await Model(Api,tabla);//require(`../models/${data}`);
       const dbs = await DB.find();
       datos[data]=dbs;
       return data;
@@ -341,15 +398,15 @@ serverCtrl.Ver_datos_pagina = async (tablas, pagina, cantidad) =>{
 }
 //Leer todos los datos de distintas tablas
 serverCtrl.Getall = async (req, res) =>{
-  const {User, tablas, cantidad, hash} = req.body;
-  const hashn = await Hash_texto(JSON.stringify({User, tablas}));
+  const {User, tablas, Api, cantidad, hash} = req.body;
+  const hashn = await Hash_texto(JSON.stringify({User, tablas, Api}));
   
   // const responder = await Ver_conexion(User, hash)
   // if (responder.Respuesta!=='OK'){
   //   res.json({Respuesta:'Error', mensaje:'no autorizado'});
   // }else 
   if (hash===hashn) {
-    let datos= await serverCtrl.Ver_datos(tablas, cantidad);
+    let datos= await serverCtrl.Ver_datos(tablas, Api, cantidad);
     res.json(datos);
   }else{
     res.json({Respuesta:'Error', mensaje:'hash invalido'});
@@ -358,14 +415,14 @@ serverCtrl.Getall = async (req, res) =>{
 }
 //Leer datos con condiciones 
 serverCtrl.Getall_C = async (req, res) =>{
-  const {User, tablas, condicion, hash} = req.body;
-  const hashn = await Hash_texto(JSON.stringify({User, tablas, condicion}));
+  const {User, tablas, Api, condicion, hash} = req.body;
+  const hashn = await Hash_texto(JSON.stringify({User, tablas, condicion, Api}));
   // const responder = await Ver_conexion(User, hash)
   // if (responder.Respuesta!=='OK'){
   //   res.json({Respuesta:'Error', mensaje:'no autorizado'});
   // }else 
   if (hash===hashn) {
-    let datos= await serverCtrl.Ver_datos_C(tablas, condicion);
+    let datos= await serverCtrl.Ver_datos_C(tablas, Api, condicion);
     res.json(datos);
   }else{
     res.json({Respuesta:'Error', mensaje:'hash invalido'});
@@ -377,7 +434,7 @@ serverCtrl.Getall_pagina = async (req, res) =>{
   const {User, tablas, pagina, cantidad, hash} = req.body;
   const hashn = await Hash_texto(JSON.stringify({User, tablas, pagina, cantidad}));
   if (hash===hashn) {
-    let datos= await serverCtrl.Ver_datos_pagina(tablas,pagina);
+    let datos= await serverCtrl.Ver_datos_pagina(tablas, Api, pagina);
     res.json(datos);
   }else{
     res.json({Respuesta:'Error', mensaje:'hash invalido'});
@@ -398,9 +455,9 @@ Eliminar_imagen =(imagen)=>{
 
 }
 //Guardar datos en tabla
-serverCtrl.Tablas = async(tabla)=>{
+serverCtrl.Tablas = async(tabla, Api)=>{
   try{
-    const DB = require(`../models/${tabla}`);
+    const DB = await Model(Api, tabla)//require(`../models/${tabla}`);
     return DB
   }catch(error) {
       if (tabla==='' || tabla===' ' || tabla===null || tabla===undefined)
@@ -408,7 +465,7 @@ serverCtrl.Tablas = async(tabla)=>{
       const direct= __dirname.replace('controllers',`models${path.sep}${tabla}.js`);
       fs.stat(direct, (err) => {
         if (!err) {
-            console.log('Existe>', direct);
+            console.log('Existe>>>', direct);
         }else if (err.code === 'ENOENT') {
             console.log('No existe');
             let campo= tabla.toLowerCase();
@@ -452,11 +509,12 @@ serverCtrl.Tablas = async(tabla)=>{
 serverCtrl.Setall = async (req, res) =>{
   let {User, Api, datos, tabla, hash} = req.body;
   User= typeof User==='string' ? JSON.parse(User) : User;
-  Api= typeof Api==='string' ? JSON.parse(Api) : Api;
+  console.log('>>>>>>>>>',typeof Api==='string' ? Api : Api.valores.api)
+  // Api= typeof Api==='string' ? JSON.parse(Api) : Api;
   const hashn = await Hash_texto(JSON.stringify({User, Api, datos, tabla}));
-  const igual= await serverCtrl.Verifica_api(Api, true);
+  // const igual= await serverCtrl.Verifica_api(Api, true);
 
-  if (hashn===hash && igual) {
+  if (hashn===hash){ //&& igual) {
     let newdatos= JSON.parse(datos);
     // newdatos['filename']= newdatos['filename'] && newdatos['filename']!==undefined?newdatos['filename']:[];
     // newdatos['fileid']=newdatos['fileid'] && newdatos['fileid']!==undefined ? newdatos['fileid'] :[];
@@ -470,8 +528,8 @@ serverCtrl.Setall = async (req, res) =>{
         
         res.json({Respuesta:'Ok', newdatos});
       }
-      await serverCtrl.Tablas(tabla)
-      const DB = require(`../models/${tabla}`);
+      // await serverCtrl.Tablas(tabla)
+      const DB = await Model(Api, tabla);//require(`../models/${tabla}`);
       if (newdatos['unico'] && newdatos._id===undefined){
         let datos = await DB.find(
             {$text: {$search: newdatos['multiples_valores'] ? newdatos.valores[newdatos['unico']] : newdatos[newdatos['unico']] , 
@@ -568,25 +626,37 @@ serverCtrl.Setall = async (req, res) =>{
 serverCtrl.Delall = async (req, res) =>{
   const {dato, Api, tablas, hash} = req.body;
   const hashn = await Hash_texto(JSON.stringify({dato, Api, tablas}));
-  const igual= await serverCtrl.Verifica_api(Api, true);
-  if (hash===hashn && igual) {
+  // const igual= await serverCtrl.Verifica_api(Api, true);
+  console.log('Eliminar en ', Api)
+  if (hash===hashn){ // && igual) {
     try{
       Promise.all(tablas.map(async(data)=>{
-        const DB = require(`../models/${data}`);
+        const DB = await Model(Api, data);//require(`../models/${data}`);
         const valor_verificar = await DB.findOne({_id:dato._id})
-        let imagenes= Object.keys(valor_verificar.valores).filter(f=>f.indexOf('-id')!==-1)
+        
+        let imagenes= Object.keys(valor_verificar.valores).filter(f=>f.indexOf('-id')!==-1);
         imagenes.map(val=>{
           Eliminar_imagen(valor_verificar.valores[val])
         })
-        await DB.deleteOne({_id:dato._id});
-        const resultado=await DB.find()
-        global.io.emit('Actualizar_'+data,{data})//, datos:resultado})
+        // await DB.deleteOne({_id:dato._id});
+        // const anterior = await DB.findOne({_id:dato._id});
+        console.log(dato)
+        await DB.updateOne({_id:dato._id},{eliminado:true, actualizado:dato.user},{ upsert: true });
+        // const resultado=await DB.find()
+        global.io.emit('Actualizar',{data})//, datos:resultado})
         try{
           // const direct = __dirname.replace('/src/controllers','/archivos/imagenes/');
           // dato.filename.map(img=>
           //   fs.unlinkSync(direct+img)  
           // )
           await cloudinary.uploader.destroy(dato.fileid[0]);
+          if (valor_verificar.valores.files){
+            for (var i =0; i<valor_verificar.valores.files.length ; i++){
+              let img=valor_verificar.valores.files[i].split('/');
+              console.log(img, img[img.length-1], img[img.length-1].split('.'));
+
+            }
+          }
         }catch (err) {
           
         }
@@ -599,7 +669,7 @@ serverCtrl.Delall = async (req, res) =>{
         // }
         return data;
       })).then(async()=>{
-        let datos= await serverCtrl.Ver_datos(tablas);
+        let datos= await serverCtrl.Ver_datos(tablas, Api);
         // console.log('Despues de eliminar',datos);
         res.json(datos);
       });
@@ -617,9 +687,9 @@ serverCtrl.Delall = async (req, res) =>{
 serverCtrl.Leer_data = async (req, res) =>{
   const {User, Api, archivo, valord, hash} = req.body;
   const hashn = await Hash_texto(JSON.stringify({User, Api, archivo, valord}));
-  const igual= await serverCtrl.Verifica_api(Api, true);
+  // const igual= await serverCtrl.Verifica_api(Api, true);
   
-  if (hashn===hash && igual) {
+  if (hashn===hash){ // && igual) {
     const direct= __dirname.replace('controllers',archivo);
     let datos;
     try{
@@ -649,8 +719,8 @@ serverCtrl.Leer_data = async (req, res) =>{
 serverCtrl.Guardar_data = async (req, res) =>{
   const {User, Api, archivo, valor, hash} = req.body;
   const hashn = await Hash_texto(JSON.stringify({User, Api, archivo, valor}));
-  const igual= await serverCtrl.Verifica_api(Api, true);
-  if (hash===hashn && igual) {
+  // const igual= await serverCtrl.Verifica_api(Api, true);
+  if (hash===hashn){ // && igual) {
     const direct= __dirname.replace('controllers',archivo);
     fs.writeFileSync(direct, valor);
     let api= archivo.replace('data/','').replace('.js','');
@@ -667,8 +737,8 @@ serverCtrl.Guardar_data = async (req, res) =>{
 serverCtrl.Eliminar_data = async (req, res) =>{
   const {User,Api, archivo, hash} = req.body;
   const hashn = await Hash_texto(JSON.stringify({User, Api, archivo}));
-  const igual= await serverCtrl.Verifica_api(Api, true);
-  if (hash===hashn && igual) {
+  // const igual= await serverCtrl.Verifica_api(Api, true);
+  if (hash===hashn){ // && igual) {
     const direct= __dirname.replace('controllers',archivo);
     fs.unlinkSync(direct);
     res.json({Respuesta:'Ok'});
@@ -679,15 +749,20 @@ serverCtrl.Eliminar_data = async (req, res) =>{
 }
 // ver bases de datos existentes
 serverCtrl.DataBase = async (req, res) =>{
-  const {User, hash} = req.body;
-  const hashn = await Hash_texto(JSON.stringify({User}));
+  const {User, Api, hash} = req.body;
+  const hashn = await Hash_texto(JSON.stringify({User, Api}));
   if (hash===hashn) {
-    const direct= __dirname.replace('controllers','models');
-    let data = fs.readdirSync(direct, 'utf8');
-    let models=data.map(valor =>  valor.replace('.js', ''));
-    const DB = require(`../models/${models[0]}`);
+    // const direct= __dirname.replace('controllers','models');
+    // let data = fs.readdirSync(direct, 'utf8');
+    // let models=data.map(valor =>  valor.replace('.js', ''));
+    await Model(Api,'databasechs', true);
+    const api = typeof Api==='string' ? Api : Api.valores.api
+    let models = await global.DataBase[api].db.listCollections().toArray();
+    models = models.map(v=> v.name).sort((a,b)=> a>b ? 1 : -1);
+    const database = models;
+    const DB = await Model(Api,models[0][models[0].length-1] ==='s' ? models[0].slice(0, -1) : models[0]);//require(`../models/${models[0]}`);
     const datos = await DB.find();
-    res.json({Respuesta:'Ok', models, datos, database: global.models});
+    res.json({Respuesta:'Ok', models, datos, database});
   }else{
     res.json({Respuesta:'Error', mensaje:'hash invalido'});
   }
@@ -820,9 +895,9 @@ Generar_codigo = (valor, id='', cantidad=5)=>{
   return `${id!=='' ? id+'-' : ''}${nuevo}`
 }
 
-Serie = async(dato)=>{
-  await serverCtrl.Tablas(dato.tabla);
-  const DB = require(`../models/${dato.tabla}`);
+Serie = async(dato, Api)=>{
+  // await serverCtrl.Tablas(dato.tabla);
+  const DB = await Model(Api, dato.tabla);//require(`../models/${dato.tabla}`);
   let total = await DB.estimatedDocumentCount();
   const Recibo = Generar_codigo(total,`${dato.id ? dato.id : 'S'}`, dato.cantidad ? dato.cantidad : 6);
   return Recibo;
@@ -839,20 +914,20 @@ serverCtrl.Guardar_produccion = async (req, res)=>{
     let {User, Api, datos, hash} = req.body;
     User= typeof User==='string' ? JSON.parse(User) : User;
     const hashn = await Hash_texto(JSON.stringify({User, Api, datos}));
-    const igual= await serverCtrl.Verifica_api(Api, true);
-    if (hashn===hash && igual) {
+    // const igual= await serverCtrl.Verifica_api(Api, true);
+    if (hashn===hash){ // && igual) {
       const fecha = moment(new Date()).format('YYYY-MM-DD');
-      await serverCtrl.Tablas('sistemachs_Egresomp');
-      await serverCtrl.Tablas('sistemachs_Egresoem');
-      await serverCtrl.Tablas('sistemachs_Ingresopt');
-      const Produccion = require(`../models/sistemachs_Produccion`);
-      const MP = require(`../models/sistemachs_Inventariomp`);
-      const PT = require(`../models/sistemachs_Inventariopt`);
-      const EMPAQUE = require(`../models/sistemachs_Empaque`);
-      const FORMULA = require(`../models/sistemachs_Formula`);
-      const EM = require(`../models/sistemachs_Egresomp`);
-      const EEM= require(`../models/sistemachs_Egresoem`);
-      const IPT= require(`../models/sistemachs_Ingresopt`);
+      // await serverCtrl.Tablas('sistemachs_Egresomp');
+      // await serverCtrl.Tablas('sistemachs_Egresoem');
+      // await serverCtrl.Tablas('sistemachs_Ingresopt');
+      const Produccion = await Model(Api,'sistemachs_Produccion')//require(`../models/sistemachs_Produccion`);
+      const MP = await Model(Api, 'sistemachs_Inventariomp'); //require(`../models/sistemachs_Inventariomp`);
+      const PT = await Model(Api,'sistemachs_Inventariopt');//require(`../models/sistemachs_Inventariopt`);
+      const EMPAQUE = await Model(Api,'sistemachs_Empaque');//require(`../models/sistemachs_Empaque`);
+      const FORMULA = await Model(Api,'sistemachs_Formula');//require(`../models/sistemachs_Formula`);
+      const EM = await Model(Api,'sistemachs_Egresomp');//require(`../models/sistemachs_Egresomp`);
+      const EEM= await Model(Api,'sistemachs_Egresoem');//require(`../models/sistemachs_Egresoem`);
+      const IPT= await Model(Api,'sistemachs_Ingresopt');//require(`../models/sistemachs_Ingresopt`);
       datos = JSON.parse(datos);
       let movimiento = [];
       let movimiento_pt = [];
@@ -932,7 +1007,7 @@ serverCtrl.Guardar_produccion = async (req, res)=>{
 
       //Guardar el egreso de materia prima
       // let total = await EM.estimatedDocumentCount();
-      let codigo = await Serie({tabla:'sistemachs_Egresomp',id:'EMP', cantidad:6});//Generar_codigo(total,'EMP')
+      let codigo = await Serie({tabla:'sistemachs_Egresomp',id:'EMP', cantidad:6}, Api);//Generar_codigo(total,'EMP')
       let valores = {codigo, fecha, movimiento};
       let cod_chs = await Codigo_chs({...valores});
       let hash_chs = await Hash_chs({...valores, cod_chs})
@@ -941,7 +1016,7 @@ serverCtrl.Guardar_produccion = async (req, res)=>{
 
       //Guardar el egreso de empaque
       // total = await EEM.estimatedDocumentCount();
-      codigo =  await Serie({tabla:'sistemachs_Egresoem',id:'EEM', cantidad:6});//Generar_codigo(total,'EEM')
+      codigo =  await Serie({tabla:'sistemachs_Egresoem',id:'EEM', cantidad:6}, Api);//Generar_codigo(total,'EEM')
       valores = {codigo, fecha, movimiento: movimiento_em};
       cod_chs = await Codigo_chs({...valores});
       hash_chs = await Hash_chs({...valores, cod_chs})
@@ -950,7 +1025,7 @@ serverCtrl.Guardar_produccion = async (req, res)=>{
       
       //Guardar el ingreso producto terminado
       // total = await IPT.estimatedDocumentCount();
-      codigo =  await Serie({tabla:'sistemachs_Ingresopt',id:'IPT', cantidad:6});//Generar_codigo(total,'IPT')
+      codigo =  await Serie({tabla:'sistemachs_Ingresopt',id:'IPT', cantidad:6}, Api);//Generar_codigo(total,'IPT')
       valores = {fecha, movimiento:movimiento_pt};
       cod_chs = await Codigo_chs({...valores});
       hash_chs = await Hash_chs({...valores, cod_chs})
@@ -970,11 +1045,11 @@ serverCtrl.Ingresar = async (req, res)=>{
   let {User, Api, datos, tabla_inv, tabla_ing, id, egresar, hash} = req.body;
   User= typeof User==='string' ? JSON.parse(User) : User;
   const hashn = await Hash_texto(JSON.stringify({User, Api, datos, tabla_inv, tabla_ing, id, egresar}));
-  const igual= await serverCtrl.Verifica_api(Api, true);
-  if (hashn===hash && igual) {
-    await serverCtrl.Tablas(`${tabla_ing}`);
-    const MP = require(`../models/${tabla_inv}`);
-    const IM = require(`../models/${tabla_ing}`);
+  // const igual= await serverCtrl.Verifica_api(Api, true);
+  if (hashn===hash){ // && igual) {
+    // await serverCtrl.Tablas(`${tabla_ing}`);
+    const MP = await Model(Api, tabla_inv);//require(`../models/${tabla_inv}`);
+    const IM = await Model(Api, tabla_ing);//require(`../models/${tabla_ing}`);
     datos = JSON.parse(datos);
     if (datos._id){
       
@@ -995,7 +1070,7 @@ serverCtrl.Ingresar = async (req, res)=>{
     const fecha = datos.fecha; //moment(new Date()).format('YYYY-MM-DD');
     let movimiento = [];
     // let total = await IM.estimatedDocumentCount();
-    const codigo = datos.codigo ? datos.codigo : await Serie({tabla:`${tabla_ing}`,id, cantidad:6});//Generar_codigo(total,'IMP');
+    const codigo = datos.codigo ? datos.codigo : await Serie({tabla:`${tabla_ing}`,id, cantidad:6}, Api);//Generar_codigo(total,'IMP');
 
     for (var i=0; i<datos.movimiento.length; i++){
       let material =  datos.movimiento[i];
@@ -1031,16 +1106,16 @@ serverCtrl.Ingresar_material = async (req, res)=>{
     let {User, Api, datos, hash} = req.body;
     User= typeof User==='string' ? JSON.parse(User) : User;
     const hashn = await Hash_texto(JSON.stringify({User, Api, datos}));
-    const igual= await serverCtrl.Verifica_api(Api, true);
-    if (hashn===hash && igual) {
+    // const igual= await serverCtrl.Verifica_api(Api, true);
+    if (hashn===hash){ // && igual) {
       const fecha = moment(new Date()).format('YYYY-MM-DD');
-      await serverCtrl.Tablas('sistemachs_Ingresomp');
-      const MP = require(`../models/sistemachs_Inventariomp`);
-      const IM = require(`../models/sistemachs_Ingresomp`);
+      // await serverCtrl.Tablas('sistemachs_Ingresomp');
+      const MP = await Model(Api,'sistemachs_Inventariomp');//require(`../models/sistemachs_Inventariomp`);
+      const IM = await Model(Api,'sistemachs_Ingresomp');//require(`../models/sistemachs_Ingresomp`);
       datos = JSON.parse(datos);
       let movimiento = [];
       // let total = await IM.estimatedDocumentCount();
-      const codigo = await Serie({tabla:'sistemachs_Ingresomp',id:'IMP', cantidad:6});//Generar_codigo(total,'IMP');
+      const codigo = await Serie({tabla:'sistemachs_Ingresomp',id:'IMP', cantidad:6}, Api);//Generar_codigo(total,'IMP');
 
       for (var i=0; i<datos.length; i++){
         let material =  datos[i];
@@ -1066,16 +1141,16 @@ serverCtrl.Ingresar_empaque = async (req, res)=>{
   let {User, Api, datos, hash} = req.body;
   User= typeof User==='string' ? JSON.parse(User) : User;
   const hashn = await Hash_texto(JSON.stringify({User, Api, datos}));
-  const igual= await serverCtrl.Verifica_api(Api, true);
-  if (hashn===hash && igual) {
+  // const igual= await serverCtrl.Verifica_api(Api, true);
+  if (hashn===hash){ // && igual) {
     const fecha = moment(new Date()).format('YYYY-MM-DD');
-    await serverCtrl.Tablas('sistemachs_Ingresoem');
-    const EM = require(`../models/sistemachs_Empaque`);
-    const IE = require(`../models/sistemachs_Ingresoem`);
+    // await serverCtrl.Tablas('sistemachs_Ingresoem');
+    const EM = await Model(Api,'sistemachs_Empaque');//require(`../models/sistemachs_Empaque`);
+    const IE = await Model(Api,'sistemachs_Ingresoem');//require(`../models/sistemachs_Ingresoem`);
     datos = JSON.parse(datos);
     let movimiento = [];
     // let total = await IE.estimatedDocumentCount();
-    const codigo =  await Serie({tabla:'sistemachs_Ingresoem',id:'IEM', cantidad:6});//Generar_codigo(total,'IEM')
+    const codigo =  await Serie({tabla:'sistemachs_Ingresoem',id:'IEM', cantidad:6}, Api);//Generar_codigo(total,'IEM')
 
     for (var i=0; i<datos.length; i++){
       let material =  datos[i];
@@ -1101,8 +1176,8 @@ serverCtrl.Ingreso_Egreso = async (req, res)=>{
   let {User, Api, datos, hash} = req.body;
   User= typeof User==='string' ? JSON.parse(User) : User;
   const hashn = await Hash_texto(JSON.stringify({User, Api, datos}));
-  const igual= await serverCtrl.Verifica_api(Api, true);
-  if (hashn===hash && igual) {
+  // const igual= await serverCtrl.Verifica_api(Api, true);
+  if (hashn===hash){ // && igual) {
     
     datos = JSON.parse(datos);
     let Ingreso;
@@ -1112,26 +1187,26 @@ serverCtrl.Ingreso_Egreso = async (req, res)=>{
       res.json({Respuesta:'Ok', inventario:[], mensaje:'Tipo de ingreso y egresos no conocidos'});
     }
     if (datos.tipo==='Materia Prima'){
-      await serverCtrl.Tablas('sistemachs_Ingresomp');
-      await serverCtrl.Tablas('sistemachs_Egresomp');
-      await serverCtrl.Tablas('sistemachs_Inventariomp');
-      Ingreso=require(`../models/sistemachs_Ingresomp`);
-      Egreso=require(`../models/sistemachs_Egresomp`);
-      Inventario = require(`../models/sistemachs_Inventariomp`);
+      // await serverCtrl.Tablas('sistemachs_Ingresomp');
+      // await serverCtrl.Tablas('sistemachs_Egresomp');
+      // await serverCtrl.Tablas('sistemachs_Inventariomp');
+      Ingreso=await Model(Api,'sistemachs_Ingresomp');//require(`../models/sistemachs_Ingresomp`);
+      Egreso=await Model(Api,'sistemachs_Inventariomp');//require(`../models/sistemachs_Egresomp`);
+      Inventario = await Model(Api,'sistemachs_Inventariomp');//require(`../models/sistemachs_Inventariomp`);
     }else if (datos.tipo==='Empaque'){
-      await serverCtrl.Tablas('sistemachs_Ingresoem');
-      await serverCtrl.Tablas('sistemachs_Egresoem');
-      await serverCtrl.Tablas('sistemachs_Empaque');
-      Ingreso=require(`../models/sistemachs_Ingresoem`);
-      Egreso=require(`../models/sistemachs_Egresoem`);
-      Inventario = require(`../models/sistemachs_Empaque`);
+      // await serverCtrl.Tablas('sistemachs_Ingresoem');
+      // await serverCtrl.Tablas('sistemachs_Egresoem');
+      // await serverCtrl.Tablas('sistemachs_Empaque');
+      Ingreso= await Model(Api,'sistemachs_Ingresoem');//require(`../models/sistemachs_Ingresoem`);
+      Egreso= await Model(Api,'sistemachs_Egresoem');//require(`../models/sistemachs_Egresoem`);
+      Inventario = await Model(Api,'sistemachs_Empaque');//require(`../models/sistemachs_Empaque`);
     }else if (datos.tipo==='Producto Terminado'){
-      await serverCtrl.Tablas('sistemachs_Ingresopt');
-      await serverCtrl.Tablas('sistemachs_Egresopt');
-      await serverCtrl.Tablas('sistemachs_Inventariopt');
-      Ingreso=require(`../models/sistemachs_Ingresopt`);
-      Egreso=require(`../models/sistemachs_Egresopt`);
-      Inventario = require(`../models/sistemachs_Inventariopt`);
+      // await serverCtrl.Tablas('sistemachs_Ingresopt');
+      // await serverCtrl.Tablas('sistemachs_Egresopt');
+      // await serverCtrl.Tablas('sistemachs_Inventariopt');
+      Ingreso= await Model(Api,'sistemachs_Ingresopt');//require(`../models/sistemachs_Ingresopt`);
+      Egreso= await Model(Api,'sistemachs_Egresopt');//require(`../models/sistemachs_Egresopt`);
+      Inventario = await Model(Api,'sistemachs_Inventariopt');//require(`../models/sistemachs_Inventariopt`);
     }else{
       res.json({Respuesta:'Ok', inventario:[], mensaje:'Tipo de ingreso y egresos no conocidos'});
       return
@@ -1201,8 +1276,8 @@ serverCtrl.Serial= async(req,res)=>{
   let {User, Api, dato, hash} = req.body;
   User= typeof User==='string' ? JSON.parse(User) : User;
   const hashn = await Hash_texto(JSON.stringify({User, Api, dato}));
-  const igual= await serverCtrl.Verifica_api(Api, true);
-  if (hashn===hash && igual) {
+  // const igual= await serverCtrl.Verifica_api(Api, true);
+  if (hashn===hash){ // && igual) {
     if (dato.tabla===undefined){
       res.json({Respuesta:'Error', mensaje: `no existe ${dato.tabla}`});
     }else{
@@ -1210,7 +1285,7 @@ serverCtrl.Serial= async(req,res)=>{
       // const DB = require(`../models/${dato.tabla}`);
       // let total = await DB.estimatedDocumentCount();
       // const Recibo = Generar_codigo(total,`${dato.id ? dato.id : 'S'}`, dato.cantidad ? dato.cantidad : 6);
-      const Recibo = await Serie(dato);
+      const Recibo = await Serie(dato, Api);
       res.json({Respuesta:'Ok', Recibo});
     }
     
@@ -1219,15 +1294,15 @@ serverCtrl.Serial= async(req,res)=>{
   }
 }
 serverCtrl.Recibo_venta = async(req, res)=>{
-  await serverCtrl.Tablas('sistemachs_Venta');
-  const Venta = require(`../models/sistemachs_Venta`);
+  // await serverCtrl.Tablas('sistemachs_Venta');
+  const Venta = await Model('sistemachs','sistemachs_Venta');//require(`../models/sistemachs_Venta`);
   let total = await Venta.estimatedDocumentCount();
   const Recibo = Generar_codigo(total,'V', 6);
   res.json({Respuesta:'Ok', Recibo});
 }
 Procesar_Entrega = async(User, fecha, Recibo, datos)=>{
-  const PT = require(`../models/sistemachs_Inventariopt`);
-    const EPT= require(`../models/sistemachs_Egresopt`);
+  const PT = await Model('sistemachs','sistemachs_Inventariopt');//require(`../models/sistemachs_Inventariopt`);
+  const EPT= await Model('sistemachs','sistemachs_Egresopt');//require(`../models/sistemachs_Egresopt`);
   let movimiento = [];
   for (var i=0; i< datos.orden_venta.producto.length; i++){
       let producto = datos.orden_venta.producto[i];
@@ -1242,7 +1317,7 @@ Procesar_Entrega = async(User, fecha, Recibo, datos)=>{
       
   }
   //Guardar el egreso producto terminado
-  let codigo = await Serie({tabla:'sistemachs_Egresopt', id:'EPT', cantidad:6});
+  let codigo = await Serie({tabla:'sistemachs_Egresopt', id:'EPT', cantidad:6}, Api);
   let valores = {codigo, fecha, movimiento};
   let cod_chs = await Codigo_chs({...valores});
   let hash_chs = await Hash_chs({...valores, cod_chs})
@@ -1255,15 +1330,15 @@ serverCtrl.Egreso_Venta = async (req, res)=>{
   let {User, Api, datos, hash} = req.body;
   User= typeof User==='string' ? JSON.parse(User) : User;
   const hashn = await Hash_texto(JSON.stringify({User, Api, datos}));
-  const igual= await serverCtrl.Verifica_api(Api, true);
-  if (hashn===hash && igual) {
+  // const igual= await serverCtrl.Verifica_api(Api, true);
+  if (hashn===hash){ // && igual) {
     //actualizar codigos
     const fecha = moment(new Date()).format('YYYY-MM-DD');
-    await serverCtrl.Tablas('sistemachs_Egresopt');
-    await serverCtrl.Tablas('sistemachs_Inventariopt');
-    const PT = require(`../models/sistemachs_Inventariopt`);
-    const EPT= require(`../models/sistemachs_Egresopt`);
-    const VENTA = require(`../models/sistemachs_Venta`);
+    // await serverCtrl.Tablas('sistemachs_Egresopt');
+    // await serverCtrl.Tablas('sistemachs_Inventariopt');
+    const PT = await Model(Api,'sistemachs_Inventariopt');//require(`../models/sistemachs_Inventariopt`);
+    const EPT= await Model(Api,'sistemachs_Egresopt');//require(`../models/sistemachs_Egresopt`);
+    const VENTA = await Model(Api,'sistemachs_Venta');//require(`../models/sistemachs_Venta`);
     datos = JSON.parse(datos);
     if (datos.formapago['formapago-subtotal'].restan>0){
       datos.pendiente=true;
@@ -1276,7 +1351,7 @@ serverCtrl.Egreso_Venta = async (req, res)=>{
       await VENTA.updateOne({_id:datos._id},{valores:datos, actualizado:`${User.username}`},{ upsert: true });
     }else{
       //Recibo
-      let Recibo = await Serie({tabla:'sistemachs_Venta', cantidad:6, id:'V'});//Generar_codigo(total,'V', 6);
+      let Recibo = await Serie({tabla:'sistemachs_Venta', cantidad:6, id:'V'}, Api);//Generar_codigo(total,'V', 6);
       datos.orden_venta.recibo=Recibo;
       datos={recibo:Recibo, fecha, ...datos};
 
@@ -1318,8 +1393,8 @@ serverCtrl.Ventas = async (req, res)=>{
   let {User, Api, datos, hash} = req.body;
   User= typeof User==='string' ? JSON.parse(User) : User;
   const hashn = await Hash_texto(JSON.stringify({User, Api, datos}));
-  const igual= await serverCtrl.Verifica_api(Api, true);
-  if (hashn===hash && igual) {
+  // const igual= await serverCtrl.Verifica_api(Api, true);
+  if (hashn===hash){ // && igual) {
     datos = datos ? JSON.parse(datos) : {};
     const VENTA = require(`../models/sistemachs_Venta`);
     let ventas = datos && datos.estado 
@@ -1392,9 +1467,9 @@ serverCtrl.Egew_cuentas_wesi = async (req, res) =>{
   let {User, Api, hash} = req.body;
   User= typeof User==='string' ? JSON.parse(User) : User;
   const hashn = await Hash_texto(JSON.stringify({User, Api}));
-  const igual= await serverCtrl.Verifica_api(Api, true);
+  // const igual= await serverCtrl.Verifica_api(Api, true);
 
-  if (hashn===hash && igual) {
+  if (hashn===hash){ // && igual) {
     const DB = require(`../models/egew_cuenta_wesi`);
     
     let datos = await Buscar_data(DB,User)
@@ -1413,9 +1488,9 @@ serverCtrl.Egew_cuentas_banco = async (req, res) =>{
   let {User, Api, hash} = req.body;
   User= typeof User==='string' ? JSON.parse(User) : User;
   const hashn = await Hash_texto(JSON.stringify({User, Api}));
-  const igual= await serverCtrl.Verifica_api(Api, true);
+  // const igual= await serverCtrl.Verifica_api(Api, true);
 
-  if (hashn===hash && igual) {
+  if (hashn===hash){ // && igual) {
     const DB = require(`../models/egew_cuenta_banco`);
     console.log('buscar cuenta banco')
     let datos = await Buscar_data(DB,User)
@@ -1429,9 +1504,9 @@ serverCtrl.Egew_cuentas_sistema = async (req, res) =>{
   let {User, Api, hash} = req.body;
   User= typeof User==='string' ? JSON.parse(User) : User;
   const hashn = await Hash_texto(JSON.stringify({User, Api}));
-  const igual= await serverCtrl.Verifica_api(Api, true);
+  // const igual= await serverCtrl.Verifica_api(Api, true);
 
-  if (hashn===hash && igual) {
+  if (hashn===hash){ // && igual) {
     const DB = require(`../models/egew_cuenta_banco`);
     const nameAdmin = NameAdmin(Api)
     console.log('buscar cuenta banco admin')
@@ -1446,11 +1521,11 @@ serverCtrl.Egew_movimientos = async (req, res) =>{
   let {User, Api, cod_cuenta, hash} = req.body;
   User= typeof User==='string' ? JSON.parse(User) : User;
   const hashn = await Hash_texto(JSON.stringify({User, Api, cod_cuenta}));
-  const igual= await serverCtrl.Verifica_api(Api, true);
+  // const igual= await serverCtrl.Verifica_api(Api, true);
 
-  if (hashn===hash && igual) {
-    await serverCtrl.Tablas('egew_movimiento')
-    const DB = require(`../models/egew_movimiento`);
+  if (hashn===hash){ // && igual) {
+    // await serverCtrl.Tablas('egew_movimiento')
+    const DB = await Model(Api, 'egew_movimiento');//require(`../models/egew_movimiento`);
     console.log('movimientos>>>>', cod_cuenta)
     if (cod_cuenta===undefined){
       res.json({Respuesta:'Ok', datos:[]});
@@ -1476,16 +1551,16 @@ serverCtrl.Egew_comprarWesi = async (req, res) =>{
   let {User, Api, datos, hash} = req.body;
   User= typeof User==='string' ? JSON.parse(User) : User;
   const hashn = await Hash_texto(JSON.stringify({User, Api, datos}));
-  const igual= await serverCtrl.Verifica_api(Api, true);
+  // const igual= await serverCtrl.Verifica_api(Api, true);
 
-  if (hashn===hash && igual) {
-    await serverCtrl.Tablas('egew_compra_wesi');
-    await serverCtrl.Tablas('egew_movimiento');
+  if (hashn===hash){ // && igual) {
+    // await serverCtrl.Tablas('egew_compra_wesi');
+    // await serverCtrl.Tablas('egew_movimiento');
 
-    const DB = require(`../models/egew_compra_wesi`);
-    const Cuenta = require(`../models/egew_cuenta_banco`);
-    const  Movimiento= require(`../models/egew_movimiento`);
-    const Monedero = require(`../models/egew_cuenta_wesi`);
+    const DB = await Model(Api, 'egew_compra_wesi');//require(`../models/egew_compra_wesi`);
+    const Cuenta = await Model(Api, 'egew_cuenta_banco');//require(`../models/egew_cuenta_banco`);
+    const  Movimiento= await Model(Api, 'egew_movimiento');//require(`../models/egew_movimiento`);
+    const Monedero = await Model(Api, 'egew_cuenta_wesi');//require(`../models/egew_cuenta_wesi`);
     const cuenta =  await Cuenta.findOne({_id: datos.cuenta})
     try{
       //Guarda los datos de la compra
@@ -1530,14 +1605,14 @@ serverCtrl.Egew_pagarWesi = async (req, res) =>{
   let {User, Api, datos, hash} = req.body;
   User= typeof User==='string' ? JSON.parse(User) : User;
   const hashn = await Hash_texto(JSON.stringify({User, Api, datos}));
-  const igual= await serverCtrl.Verifica_api(Api, true);
+  // const igual= await serverCtrl.Verifica_api(Api, true);
 
-  if (hashn===hash && igual) {
-    await serverCtrl.Tablas('egew_cuenta_wesi');
-    await serverCtrl.Tablas('egew_movimiento');
+  if (hashn===hash){ // && igual) {
+    // await serverCtrl.Tablas('egew_cuenta_wesi');
+    // await serverCtrl.Tablas('egew_movimiento');
 
-    const  Movimiento= require(`../models/egew_movimiento`);
-    const Monedero = require(`../models/egew_cuenta_wesi`);
+    const  Movimiento= await Model(Api, 'egew_movimiento');//require(`../models/egew_movimiento`);
+    const Monedero = await Model(Api, 'egew_cuenta_wesi');//require(`../models/egew_cuenta_wesi`);
     try{
       const DB = require(`../models/${Api.master ? '' : Api.api+'_'}User_api`);
       let user = await DB.findOne({_id:User._id});
@@ -1651,16 +1726,16 @@ serverCtrl.Egew_transferirWesi = async (req, res) =>{
   let {User, Api, datos, hash} = req.body;
   User= typeof User==='string' ? JSON.parse(User) : User;
   const hashn = await Hash_texto(JSON.stringify({User, Api, datos}));
-  const igual= await serverCtrl.Verifica_api(Api, true);
+  // const igual= await serverCtrl.Verifica_api(Api, true);
 
-  if (hashn===hash && igual) {
-    await serverCtrl.Tablas('egew_cuenta_wesi');
-    await serverCtrl.Tablas('egew_movimiento');
+  if (hashn===hash){ // && igual) {
+    // await serverCtrl.Tablas('egew_cuenta_wesi');
+    // await serverCtrl.Tablas('egew_movimiento');
 
-    const  Movimiento= require(`../models/egew_movimiento`);
-    const Monedero = require(`../models/egew_cuenta_wesi`);
+    const  Movimiento= await Model(Api, 'egew_movimiento');//require(`../models/egew_movimiento`);
+    const Monedero = await Model(Api, 'egew_cuenta_wesi');//require(`../models/egew_cuenta_wesi`);
     try{
-      const DB = require(`../models/${Api.master ? '' : Api.api+'_'}User_api`);
+      const DB = await Model(Api, `${Api.master ? '' : Api.api+'_'}User_api`);//require(`../models/${Api.master ? '' : Api.api+'_'}User_api`);
       
       const cod_referencia = General_referencia();
       const comision = 0.01;
@@ -1770,15 +1845,15 @@ serverCtrl.Egew_cambiar_status_compra = async (req, res) =>{
   let {User, Api, datos, hash} = req.body;
   User= typeof User==='string' ? JSON.parse(User) : User;
   const hashn = await Hash_texto(JSON.stringify({User, Api, datos}));
-  const igual= await serverCtrl.Verifica_api(Api, true);
+  // const igual= await serverCtrl.Verifica_api(Api, true);
 
-  if (hashn===hash && igual) {
-    await serverCtrl.Tablas('egew_compra_wesi');
-    await serverCtrl.Tablas('egew_movimiento');
+  if (hashn===hash){ // && igual) {
+    // await serverCtrl.Tablas('egew_compra_wesi');
+    // await serverCtrl.Tablas('egew_movimiento');
 
-    const DB = require(`../models/egew_compra_wesi`);
-    const  Movimiento= require(`../models/egew_movimiento`);
-    const Monedero = require(`../models/egew_cuenta_wesi`);
+    const DB = await Model(Api, 'egew_compra_wesi');//require(`../models/egew_compra_wesi`);
+    const  Movimiento= await Model(Api, 'egew_movimiento');//require(`../models/egew_movimiento`);
+    const Monedero = await Model(Api, 'egew_cuenta_wesi');//require(`../models/egew_cuenta_wesi`);
     
     try{
       //Guarda los datos de la compra
@@ -1824,9 +1899,9 @@ serverCtrl.Egew_statusComprarWesi = async (req, res) =>{
   let {User, Api, status, hash} = req.body;
   User= typeof User==='string' ? JSON.parse(User) : User;
   const hashn = await Hash_texto(JSON.stringify({User, Api, status}));
-  const igual= await serverCtrl.Verifica_api(Api, true);
+  // const igual= await serverCtrl.Verifica_api(Api, true);
 
-  if (hashn===hash && igual) {
+  if (hashn===hash){ // && igual) {
     const DB = require(`../models/egew_compra_wesi`);
     
     let datos = status === ''
@@ -1847,9 +1922,9 @@ serverCtrl.Egew_cambiar_password = async (req, res) =>{
   let {User, Api, password, hash} = req.body;
   User= typeof User==='string' ? JSON.parse(User) : User;
   const hashn = await Hash_texto(JSON.stringify({User, Api, password}));
-  const igual= await serverCtrl.Verifica_api(Api, true);
+  // const igual= await serverCtrl.Verifica_api(Api, true);
 
-  if (hashn===hash && igual) {
+  if (hashn===hash){ // && igual) {
     const DB = require(`../models/${Api.master ? '' : Api.api+'_'}User_api`);
     
     let datos = await DB.findOne({_id:User._id})
@@ -1867,9 +1942,9 @@ serverCtrl.Egew_userAdmin = async (req, res) =>{
   let {password, Api, hash} = req.body;
   
   const hashn = await Hash_texto(JSON.stringify({password, Api}));
-  const igual= await serverCtrl.Verifica_api(Api, true);
+  // const igual= await serverCtrl.Verifica_api(Api, true);
 
-  if (hashn===hash && igual && password===claveinicio) {
+  if (hashn===hash && password===claveinicio) {
     const nameAdmin = NameAdmin(Api);//`admin-${Api.api}-wesichs`
     res.json({Respuesta:'Ok', nameAdmin});
   }else{
@@ -1878,22 +1953,23 @@ serverCtrl.Egew_userAdmin = async (req, res) =>{
 }
 // =============== codigo para la sincronizacion =============
 serverCtrl.Sincronizar = async (req, res) =>{
-  let {tablas, datos,Api, hash} = req.body;
+  let {tablas, datos, Api, hash} = req.body;
   
   const hashn = await Hash_texto(JSON.stringify({tablas, datos, Api}));
-  const igual= await serverCtrl.Verifica_api(Api, true);
-  if (hashn===hash && igual){
+  // const igual= await serverCtrl.Verifica_api(Api, true);
+  if (hashn===hash){ // && igual){
     const data = tablas;
-    console.log('Sincronizando >>>', data, datos.fecha);
-    let DB = await serverCtrl.Tablas(data);
+    let DB //= await Model(Api, data);//await serverCtrl.Tablas(data);
     try{
-      DB = require(`../models/${data}`);
+      DB = await Model(Api, data);//require(`../models/${data}`);
     }catch(error) {
       console.error(`Error en sincronizar >>>> (${data})`);
       res.json({Respuesta:'Error', code: error.code});
       return
     }
-    
+    if (datos.datos.length>0){
+      console.log(chalk.inverse.red('Sincronizando >>>', data, datos.fecha));
+    }
     for (let i=0; i<datos.datos.length;i++){
       const newdatos=datos.datos[i];
       try{
@@ -1903,9 +1979,9 @@ serverCtrl.Sincronizar = async (req, res) =>{
       }catch(error) {
         console.log('Error, al amacenar datos en',data, newdatos.valores);    
       }
-      if (data.indexOf('Eliminados')!==-1){
+      if (data.indexOf('eliminados')!==-1 ){
         console.log('Elimninar>>>>',newdatos.tabla)
-        const DBE = require(`../models/${newdatos.tabla}`);
+        const DBE = await Model(Api, newdatos.tabla);//require(`../models/${newdatos.tabla}`);
         await DBE.deleteOne({_id:newdatos.valores._id});
       }
     }
@@ -1938,18 +2014,18 @@ serverCtrl.Sincronizar = async (req, res) =>{
     // .then(()=>{
     //   return {Respuesta:'Ok', resultados, dia: new Date()};
     // });
-    console.log('Sincronizado >>>>>>...', data);
+    console.log(chalk.inverse.green('Sincronizado >>>>>>...', data));
     let dbs=[]
-    if (datos.fecha===null){
-      console.log('Enviar todos...............');
-      dbs = await DB.find();
-    }else{
-      let fecha = new Date(datos.fecha);
-      fecha.setDate(fecha.getDate()-1);
-      dbs = await DB.find({updatedAt:{$gte:datos.fecha}});
-      console.log('Enviar despues de ', fecha, dbs.length, data);
-    }
-     
+    // if (datos.fecha===null){
+    //   console.log('Enviar todos...............', data);
+    //   dbs = await DB.find();
+    // }else{
+    //   let fecha = new Date(datos.fecha);
+    //   fecha.setDate(fecha.getDate()-1);
+    //   dbs = await DB.find({updatedAt:{$gte:datos.fecha}});
+    //   console.log('Enviar despues de ', fecha, dbs.length, data);
+    // }
+    global.io.emit('Actualizar',data)
     res.json({Respuesta:'Ok', data, resultados:dbs, fecha:new Date()});
   }else{
     res.json({Respuesta:'Error', mensaje:'hash invalido'});
