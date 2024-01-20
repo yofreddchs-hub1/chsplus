@@ -33,7 +33,7 @@ dataSchema.index({'$**': 'text'});
 const Model = async(api, tabla, borrar=false) =>{
     api = typeof api==='string' ? api : api.valores.api
     tabla = tabla.toLowerCase()+'s';
-    console.log('Tabla a abrir con model.......',tabla);
+    console.log('Tabla a abrir con model.......',api, tabla);
     let resultado
     try {
         resultado= global.DataBase[api].model(tabla,dataSchema,tabla);
