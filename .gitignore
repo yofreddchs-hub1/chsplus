@@ -1,5 +1,6 @@
 node_modules
 variables.env
+.variables.env
 .DS_Store
 ._.DS_Store
 
