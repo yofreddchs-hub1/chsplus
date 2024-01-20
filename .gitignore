@@ -4,6 +4,7 @@ variables.env
 .DS_Store
 ._.DS_Store
 
+/server/variables.env
 # dependencies
 /node_modules
 .pnp
