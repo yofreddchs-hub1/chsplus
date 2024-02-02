@@ -468,11 +468,12 @@ Realizar_Sincronizacion = async(datos, User, Api)=>{
             const Estudiante = await Model(Api, tabla_estudiante);//require('../models/uecla_Estudiante');
             sincronizado[i].titulo=data.destino;
             // global.io.emit('Sincronizando_uecla',{tabla:data.destino, guardar:'Calculando...', guardado:0, sincronizado}) //datos:resultado})
-            console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+            console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', data.origen)
             const cantidad = await Origen.estimatedDocumentCount();
             global.io.emit('Sincronizando_uecla',{tabla:data.destino, guardar:cantidad, guardado:0, sincronizado}) //datos:resultado})
-            const Valores = await Origen.find()//.sort({createdAt:-1})//.limit(1000);
+            // const Valores = await Origen.find()//.sort({createdAt:-1})//.limit(1000);
             if (data.origen==='Recibo'){
+                const Valores = await Origen.find().sort({createdAt:-1});
                 for (var j=0; j < Valores.length; j++){
                     const valor= {...Valores[j]._doc ? Valores[j]._doc : Valores[j] };
                     let representante = await Representante.find({'valores.cedula':valor.cedula});
@@ -627,7 +628,7 @@ Realizar_Sincronizacion = async(datos, User, Api)=>{
                 }
 
             }else{
-                
+                const Valores = await Origen.find();
                 for (var j=0; j < Valores.length; j++){
                     const valor= {...Valores[j]._doc ? Valores[j]._doc : Valores[j] };
                     let nuevo = {};
