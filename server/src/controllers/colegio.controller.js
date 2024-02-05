@@ -601,11 +601,11 @@ Realizar_Sincronizacion = async(datos, User, Api)=>{
                                 abono:valor.abono,
                                 abonod:valor.abono_dolar,
                                 totald:valor.total_dolar,
-                                total:valor.total
+                                total:valor.bolivar
                             },
                             totales:{
-                                bolivar:valor.monto,
-                                total:valor.bolivar,
+                                bolivar:valor.bolivar,
+                                total:valor.total,
                                 abono:valor.abono,
                                 restan:valor.abono,
                                 dolar:valor.dolar,
