@@ -600,7 +600,7 @@ Realizar_Sincronizacion = async(datos, User, Api)=>{
                             subtotalvalor:{
                                 abono:valor.abono,
                                 abonod:valor.abono_dolar,
-                                totald:valor.total_dolar,
+                                totald:valor.dolar,
                                 total:valor.bolivar
                             },
                             totales:{
