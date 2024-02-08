@@ -354,6 +354,8 @@ colegioCtrl.EnviarPago = async (req, res) =>{
         const Nuevo = new Recibo({valores:recibo, fecha: moment(fecha).format('YYYY-MM-DD'), cod_chs, hash_chs, actualizado:User.username});
         await Nuevo.save();
         global.io.emit('ActualizarPago','Pagado')
+        //Si verificar
+        Act_Referencia(User,Api)
         res.json({Respuesta:'Ok', dato:Nuevo});
     }else{
         res.json({Respuesta:'Error', mensaje:'hash invalido'});
