@@ -45,10 +45,12 @@ const Model = async(api, tabla, borrar=false) =>{
             const pos = apis.findIndex(f=> f.valores.api===api);
             if (pos!==-1){
                 apis= apis[pos].valores;
-                global.DataBase[api] =database(apis.url,api).useDb( apis.nombredb, { useCache: true } ) 
+                global.DataBase[api] = apis.url!==undefined 
+                    ? database(apis.url,api).useDb( apis.nombredb, { useCache: true } ) 
+                    : undefined
             }
 
-            resultado = global.DataBase[api].model(tabla,dataSchema,tabla);
+            resultado = global.DataBase[api]===undefined ? null : global.DataBase[api].model(tabla,dataSchema,tabla);
         }catch(error){
             console.log('Error........',api, tabla)
             resultado = null

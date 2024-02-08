@@ -11,7 +11,8 @@ const basedate=(URI, nombre) => {
         }
     )
     db.on( 'open', () => console.log( `Mongoose ${nombre} conectado...` ) )
-    db.on( 'error', err => console.log( `Mongoose error en conexión con ${nombre}`) )
+    db.on( 'error', err => console.log( `Mongoose error en conexión con ${nombre} ${URI}`) )
+    // console.log(db)
     return db
 }
 module.exports.database = basedate; 

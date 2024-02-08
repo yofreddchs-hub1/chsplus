@@ -64,24 +64,27 @@ serverCtrl.Ver_api = async (req, res) =>{
 // utilizado para la verificacion de los datos
 serverCtrl.Verificar_autenticidad = async ( datos, hash, token=false, inicia=false) =>{
   
-   let {username, Api, password, mantener, crear}=datos;
+  let {username, Api, password, mantener, crear}=datos;
   //  await serverCtrl.Tablas(`${Api.master ? '' : Api.api+'_'}User_api`);
-    console.log('verificar autenticidad ',Api.valores && Api.valores.api ? Api.valores.api : Api)
-    Api = Api.valores && Api.valores.api ? Api.valores.api : Api;
-   const User = await Model(Api, Api && Api!==global.Principal 
-                    ? Api+'_User_api' 
-                    : 'User_api');//require(`../models/${Api.master ? '' : Api.api+'_'}User_api`);
-   password=!inicia ? password : await Hash_password(password);
-   const tokenN = await Token({username, password, fecha: new Date()});
-   const hashn = await Hash_texto(JSON.stringify(datos));
+  console.log('verificar autenticidad ',Api.valores && Api.valores.api ? Api.valores.api : Api)
+  Api = Api.valores && Api.valores.api ? Api.valores.api : Api;
+  const User = await Model(Api, Api && Api!==global.Principal 
+                  ? Api+'_User_api' 
+                  : 'User_api');//require(`../models/${Api.master ? '' : Api.api+'_'}User_api`);
+  if (User===null){
+    return {Respuesta:'Error', Mensaje:'No tienes acceso a los datos'};
+  }  
+  password=!inicia ? password : await Hash_password(password);
+  const tokenN = await Token({username, password, fecha: new Date()});
+  //  const hashn = await Hash_texto(JSON.stringify(datos));
   //  const cod_chs = await Codigo_chs({username, password, actualizado:username});
    const hash_chs = await Hash_chs({username, password, token:tokenN, actualizado:username});
    const users = await User.find();
    if (users.length===0){
      const clave= await Hash_password(claveinicio);
      const tokenA= await Token({username:admininicio, password: clave, fecha: new Date()});
-     const codigo= await Codigo_chs({username:admininicio, password: clave,
-                                      actualizado:'Sistema'});
+    //  const codigo= await Codigo_chs({username:admininicio, password: clave,
+    //                                   actualizado:'Sistema'});
      const hash_admin= await Hash_chs({username:admininicio, password: clave,
                                        token:tokenA, actualizado:'Sistema',
                                       //  cod_chs:codigo 
