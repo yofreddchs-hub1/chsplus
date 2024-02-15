@@ -304,6 +304,12 @@ serverCtrl.Ver_datos = async (tablas, Api, cantidad=20, eliminados=false) =>{
         return data
       // await serverCtrl.Tablas(data);
       const DB = await Model(Api,data); //require(`../models/${data}`);
+      if (DB===null){
+        console.log(chalk.inverse.red('Ver datos, no puede acceder >>>', data, Api))
+        datos[data+'_cantidad']=0;
+        datos[data]=[];
+        return data
+      }
       let count = await DB.estimatedDocumentCount();
       const menos = await DB.find({eliminado:true});
       count -= menos.length;
@@ -343,6 +349,9 @@ serverCtrl.Ver_datos_C = async (tablas, Api, condicion, eliminados=false) =>{
       }
       // await serverCtrl.Tablas(data)
       const DB = await Model(Api, data); //require(`../models/${data}`);
+      if (DB===null){
+        return data
+      }
       let dbs;
       if (['Ultimo', 'ultimo'].indexOf(condicion[data])!==-1 ){
         dbs = await DB.find().sort({$natural:-1}).limit(1);
