@@ -103,7 +103,7 @@ paginaCtrl.valor_dolar = async() =>{
   console.log('Tasa de cambio>>>>>>', global.global_cambio.USD)
   if ((global.global_cambio.USD!==anterior.USD || global.global_cambio.dolartoday!==anterior.dolartoday) && global.global_cambio.USD!==0 ){
     console.log('Cambiar la tasa de cambio>>>>>>', global.global_cambio.USD!==anterior.USD , global.global_cambio.USD, anterior.USD)
-    const cod_chs = await Codigo_chs({...global.global_cambio});
+    const cod_chs = await Codigo_chs({...global.global_cambio, fecha: new Date()});
     const hash_chs = await Hash_chs({cod_chs, valores:global.global_cambio});
     const nuevo = new Tasa({valores:global.global_cambio, cod_chs, hash_chs});
     await nuevo.save();
