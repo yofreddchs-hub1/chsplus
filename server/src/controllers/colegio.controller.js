@@ -780,7 +780,7 @@ Act_Referencia = async(User, Api)=>{
                     if (anterior!==null){
                         console.log('Referencia repetida...', forma.referencia, recibo, anterior.valores.recibo)
                         continuar=false;
-                        // break;
+                        break;
                     }
                     const cod_chs = await Codigo_chs({...nuevo});
                     const hash_chs = await Hash_chs({...nuevo, cod_chs})
