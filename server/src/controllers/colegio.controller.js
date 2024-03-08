@@ -787,7 +787,7 @@ Act_Referencia = async(User, Api)=>{
                         continuar=false;
                         break;
                     }
-                    const cod_chs = await Codigo_chs({...nuevo});
+                    let cod_chs = await Codigo_chs({...nuevo});
                     cod_chs= cod_chs===null ? new Date() : cod_chs;
                     const hash_chs = await Hash_chs({...nuevo, cod_chs})
                     const Nuevo = new Referencia({valores:nuevo, fecha: moment().format('YYYY-MM-DD'), cod_chs, hash_chs, actualizado:User.username});
