@@ -21,7 +21,7 @@ const dataSchema = new mongoose.Schema(
         },
         cod_chs:{
           type:String,
-          unique:true
+        //   unique:true
         },
         hash_chs:String
     }, {

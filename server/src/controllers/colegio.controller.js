@@ -41,12 +41,12 @@ Guardar_Mensualidades = async(Mensualidades, User, Api) =>{
     const Inscripcion = await Model(Api, 'uecla_Inscripcion');//require(`../models/uecla_Inscripcion`);
     let inscripcion = await Inscripcion.find();
     inscripcion= inscripcion.sort((a,b) => a.valores.periodo> b.valores.periodo ? -1 : 1).filter(f=> f.valores.estatus);
-    console.log(Mensualidades)
+    // console.log(Mensualidades)
     let mensualidades= [];
     for (var i=0; i<Mensualidades.meses.length; i++){
         const mes= Mensualidades.meses[i];
         if (mes.value==='inscripcion' && inscripcion.length!==0 && inscripcion[0].valores.periodo===mes.periodo){
-            console.log('por aqui', mes.value, mes.periodo)
+            // console.log('por aqui', mes.value, mes.periodo)
             let estudiante = await Estudiante.findOne({_id:mes._id});
             estudiante.valores.estatus={
               _id :1,
@@ -54,7 +54,7 @@ Guardar_Mensualidades = async(Mensualidades, User, Api) =>{
               value: "inscrito",
               permisos:""
             }
-            console.log(estudiante);
+            // console.log(estudiante);
             const hash_chs = await Hash_chs({...estudiante.valores, cod_chs: estudiante.cod_chs})
             await Mensualidad.updateOne({_id:estudiante._id},{valores:estudiante.valores, hash_chs, actualizado:User.username},{ upsert: true });
         }
@@ -73,12 +73,12 @@ Guardar_Mensualidades = async(Mensualidades, User, Api) =>{
             }
         }
     }
-    console.log(mensualidades)
+    // console.log(mensualidades)
     for (var i=0; i<mensualidades.length; i++){
         const mensual= mensualidades[i];
         let mensualidad = await Ver_Mensualidades({cedula:mensual.cedula, _id:mensual._id_estudiante}, Api); //await Buscar(tabla_mensualidad, mensual._id_estudiante, Api, '_id_estudiante');
 
-        console.log('........>>>>>>>', mensualidad)
+        // console.log('........>>>>>>>', mensualidad)
         mensualidad= mensualidad.filter(f=> f.valores.periodo===mensual.periodo);
         if (mensualidad.length===0){
             let valores= mensual;
@@ -310,7 +310,7 @@ colegioCtrl.EnviarPago = async (req, res) =>{
             // await Pago.deleteOne({_id:datos.id_pago});
             await Pago.updateOne({_id:datos.id_pago},{eliminado:true, actualizado:User.username},{ upsert: true });
         }else if(datos.id_pago!==undefined && datos.Pendiente==='Rechazar'){
-            console.log('Por aqui por rechazado ..............')
+            // console.log('Por aqui por rechazado ..............')
             datonuevo.estatus = '1';
             let anterior = await Pago.findOne({_id:datonuevo.id_pago})
             let hash_chs = await Hash_chs({...datonuevo, cod_chs: anterior.cod_chs})
@@ -338,7 +338,7 @@ colegioCtrl.EnviarPago = async (req, res) =>{
         }else{
             ultimo=Number(ultimo[0].valores.recibo)+1;
         }
-        console.log(chalk.inverse.red(ultimo))
+        // console.log(chalk.inverse.red(ultimo))
         let recibo={
             recibo:String(ultimo),
             representante:representante.valores,
@@ -400,12 +400,12 @@ Total_Registro = async(BD)=>{
     let pagina = 0;
     while(registros.length<count){
         const dbs = await BD.find().limit(cantidad).skip(pagina*cantidad).sort({fecha:-1}).exec();
-        console.log(dbs[0].fecha, dbs[dbs.length-1].fecha)
+        // console.log(dbs[0].fecha, dbs[dbs.length-1].fecha)
         pagina++;
         registros=[...registros, ...dbs]
     }
     
-    console.log(count, registros.length)
+    // console.log(count, registros.length)
 
 }
 
@@ -470,7 +470,7 @@ Realizar_Sincronizacion = async(datos, User, Api)=>{
             const Estudiante = await Model(Api, tabla_estudiante);//require('../models/uecla_Estudiante');
             sincronizado[i].titulo=data.destino;
             // global.io.emit('Sincronizando_uecla',{tabla:data.destino, guardar:'Calculando...', guardado:0, sincronizado}) //datos:resultado})
-            console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', data.origen)
+            // console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', data.origen)
             const cantidad = await Origen.estimatedDocumentCount();
             global.io.emit('Sincronizando_uecla',{tabla:data.destino, guardar:cantidad, guardado:0, sincronizado}) //datos:resultado})
             // const Valores = await Origen.find()//.sort({createdAt:-1})//.limit(1000);
@@ -748,7 +748,7 @@ colegioCtrl.Sincronizar_uecla = async (req, res)=>{
 }
 
 Act_Referencia = async(User, Api)=>{
-    console.log('por actualizar referencia.....')
+    // console.log('por actualizar referencia.....')
     const cantidad=50;
     const Recibo = await Model(Api, tabla_recibo);
     const Referencia = await Model(Api, tabla_referencia);
@@ -778,7 +778,7 @@ Act_Referencia = async(User, Api)=>{
                 if (nuevo.referencia){
                     const anterior = await Referencia.findOne({'valores.referencia':forma.referencia});
                     if (anterior!==null){
-                        console.log('Referencia repetida...', forma.referencia, recibo, anterior.valores.recibo)
+                        // console.log('Referencia repetida...', forma.referencia, recibo, anterior.valores.recibo)
                         continuar=false;
                         break;
                     }
@@ -786,13 +786,13 @@ Act_Referencia = async(User, Api)=>{
                     const hash_chs = await Hash_chs({...nuevo, cod_chs})
                     const Nuevo = new Referencia({valores:nuevo, fecha: moment().format('YYYY-MM-DD'), cod_chs, hash_chs, actualizado:User.username});
                     await Nuevo.save();
-                    console.log('Guardar referencia recibo...',recibo, pag, i, j)
+                    // console.log('Guardar referencia recibo...',recibo, pag, i, j)
                 }
                 
             }
         }
         pag+=1;
-        console.log('Siguiente pagina....', pag, continuar)
+        // console.log('Siguiente pagina....', pag, continuar)
     }
 
 }
