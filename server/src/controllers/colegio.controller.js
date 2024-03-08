@@ -83,6 +83,7 @@ Guardar_Mensualidades = async(Mensualidades, User, Api) =>{
         if (mensualidad.length===0){
             let valores= mensual;
             let cod_chs = await Codigo_chs({...valores});
+            cod_chs= cod_chs===null ? new Date() : cod_chs;
             const hash_chs = await Hash_chs({...valores, cod_chs})
             const Nuevo = new Mensualidad({valores, cod_chs, hash_chs, actualizado:User.username});
             await Nuevo.save();
@@ -299,6 +300,7 @@ colegioCtrl.EnviarPago = async (req, res) =>{
         if (datos.pago===true){
             datonuevo.estatus = '0';
             let cod_chs = await Codigo_chs({...datonuevo});
+            cod_chs= cod_chs===null ? new Date() : cod_chs;
             let hash_chs = await Hash_chs({...datonuevo, cod_chs})
             const Nuevo = new Pago({valores:datonuevo, fecha:datonuevo.fecha, cod_chs, hash_chs, actualizado:User.username});
             await Nuevo.save();
@@ -350,6 +352,7 @@ colegioCtrl.EnviarPago = async (req, res) =>{
             fecha
         }
         let cod_chs = await Codigo_chs({...recibo});
+        cod_chs= cod_chs===null ? new Date() : cod_chs;
         hash_chs = await Hash_chs({...recibo, cod_chs})
         const Nuevo = new Recibo({valores:recibo, fecha: moment(fecha).format('YYYY-MM-DD'), cod_chs, hash_chs, actualizado:User.username});
         await Nuevo.save();
@@ -621,6 +624,7 @@ Realizar_Sincronizacion = async(datos, User, Api)=>{
                     };
                     // console.log(valor.cedula, representante.length);
                     let cod_chs = await Codigo_chs({...nuevo});
+                    cod_chs= cod_chs===null ? new Date() : cod_chs;
                     let hash_chs = await Hash_chs({...nuevo, cod_chs})
                     await Destino.updateOne({_id:nuevo._id},{...nuevo, cod_chs, hash_chs, actualizado:User.username},{ upsert: true });
                     sincronizado[i].progreso= Number(j+1)*100 / Number(Valores.length);
@@ -715,6 +719,7 @@ Realizar_Sincronizacion = async(datos, User, Api)=>{
                         }//)
                         
                         let cod_chs = await Codigo_chs({...nuevo});
+                        cod_chs= cod_chs===null ? new Date() : cod_chs;
                         let hash_chs = await Hash_chs({...nuevo, cod_chs})
                         await Destino.updateOne({_id:nuevo._id},{...nuevo, cod_chs, hash_chs, actualizado:User.username},{ upsert: true });
 
@@ -783,6 +788,7 @@ Act_Referencia = async(User, Api)=>{
                         break;
                     }
                     const cod_chs = await Codigo_chs({...nuevo});
+                    cod_chs= cod_chs===null ? new Date() : cod_chs;
                     const hash_chs = await Hash_chs({...nuevo, cod_chs})
                     const Nuevo = new Referencia({valores:nuevo, fecha: moment().format('YYYY-MM-DD'), cod_chs, hash_chs, actualizado:User.username});
                     await Nuevo.save();
