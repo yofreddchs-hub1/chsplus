@@ -82,7 +82,7 @@ Guardar_Mensualidades = async(Mensualidades, User, Api) =>{
         mensualidad= mensualidad.filter(f=> f.valores.periodo===mensual.periodo);
         if (mensualidad.length===0){
             let valores= mensual;
-            let cod_chs = await Codigo_chs({...valores});
+            let cod_chs = await Codigo_chs({...valores, fecha: new Date()});
             cod_chs= cod_chs===null ? new Date() : cod_chs;
             const hash_chs = await Hash_chs({...valores, cod_chs})
             const Nuevo = new Mensualidad({valores, cod_chs, hash_chs, actualizado:User.username});
