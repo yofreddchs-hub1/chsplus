@@ -299,7 +299,7 @@ colegioCtrl.EnviarPago = async (req, res) =>{
         // console.log('>>>>>>>>>>>>>>>>>>>',datos);
         if (datos.pago===true){
             datonuevo.estatus = '0';
-            let cod_chs = await Codigo_chs({...datonuevo});
+            let cod_chs = await Codigo_chs({...datonuevo,fecha: new Date() });
             cod_chs= cod_chs===null ? new Date() : cod_chs;
             let hash_chs = await Hash_chs({...datonuevo, cod_chs})
             const Nuevo = new Pago({valores:datonuevo, fecha:datonuevo.fecha, cod_chs, hash_chs, actualizado:User.username});
@@ -351,7 +351,7 @@ colegioCtrl.EnviarPago = async (req, res) =>{
             valorcambio: datos.valorCambio,
             fecha
         }
-        let cod_chs = await Codigo_chs({...recibo});
+        let cod_chs = await Codigo_chs({...recibo, fecha: new Date()});
         cod_chs= cod_chs===null ? new Date() : cod_chs;
         hash_chs = await Hash_chs({...recibo, cod_chs})
         const Nuevo = new Recibo({valores:recibo, fecha: moment(fecha).format('YYYY-MM-DD'), cod_chs, hash_chs, actualizado:User.username});
@@ -623,7 +623,7 @@ Realizar_Sincronizacion = async(datos, User, Api)=>{
                         fecha:moment(valor.createdAt).format('YYYY-MM-DD')
                     };
                     // console.log(valor.cedula, representante.length);
-                    let cod_chs = await Codigo_chs({...nuevo});
+                    let cod_chs = await Codigo_chs({...nuevo, fecha: new Date()});
                     cod_chs= cod_chs===null ? new Date() : cod_chs;
                     let hash_chs = await Hash_chs({...nuevo, cod_chs})
                     await Destino.updateOne({_id:nuevo._id},{...nuevo, cod_chs, hash_chs, actualizado:User.username},{ upsert: true });
@@ -718,7 +718,7 @@ Realizar_Sincronizacion = async(datos, User, Api)=>{
                             
                         }//)
                         
-                        let cod_chs = await Codigo_chs({...nuevo});
+                        let cod_chs = await Codigo_chs({...nuevo, fecha: new Date()});
                         cod_chs= cod_chs===null ? new Date() : cod_chs;
                         let hash_chs = await Hash_chs({...nuevo, cod_chs})
                         await Destino.updateOne({_id:nuevo._id},{...nuevo, cod_chs, hash_chs, actualizado:User.username},{ upsert: true });
@@ -787,7 +787,7 @@ Act_Referencia = async(User, Api)=>{
                         continuar=false;
                         break;
                     }
-                    let cod_chs = await Codigo_chs({...nuevo});
+                    let cod_chs = await Codigo_chs({...nuevo, fecha: new Date()});
                     cod_chs= cod_chs===null ? new Date() : cod_chs;
                     const hash_chs = await Hash_chs({...nuevo, cod_chs})
                     const Nuevo = new Referencia({valores:nuevo, fecha: moment().format('YYYY-MM-DD'), cod_chs, hash_chs, actualizado:User.username});
