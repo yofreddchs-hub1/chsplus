@@ -1,6 +1,6 @@
 const { database } = require( './databasechs' )
 const mongoose = require("mongoose");
-
+const chalk = require('chalk');
 
 const dataSchema = new mongoose.Schema(
     {
@@ -33,13 +33,13 @@ dataSchema.index({'$**': 'text'});
 const Model = async(api, tabla, borrar=false) =>{
     api = typeof api==='string' ? api : api.valores.api
     tabla = tabla.toLowerCase()+'s';
-    console.log('Tabla a abrir con model.......',api, tabla);
+    // console.log('Tabla a abrir con model.......',api, tabla);
     let resultado
     try {
         resultado= global.DataBase[api].model(tabla,dataSchema,tabla);
     }catch(error) {
         try{
-            console.log('Creando........',api, tabla)
+            console.log(chalk.inverse.green('Creando........',api, tabla))
             const Apis =global.DataBase[global.Principal].model('apis',dataSchema, 'apis');
             let apis = await Apis.find();
             const pos = apis.findIndex(f=> f.valores.api===api);
@@ -52,7 +52,7 @@ const Model = async(api, tabla, borrar=false) =>{
 
             resultado = global.DataBase[api]===undefined ? null : global.DataBase[api].model(tabla,dataSchema,tabla);
         }catch(error){
-            console.log('Error........',api, tabla)
+            console.log(chalk.inverse.red('Error........',api, tabla))
             resultado = null
         }
     }

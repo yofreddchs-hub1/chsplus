@@ -16,12 +16,12 @@ let databd = {};
 global.io.on('connection', (socket) =>{
     //socket.handshake.headers: host destino,origen de la peticion
     //socket.handshake.auth: se pueden enviar datos 
-    console.log('Usuario conectado', socket.handshake.auth.username, socket.handshake.auth.api, socket.handshake.auth.tipo);
+    console.log(chalk.green('Usuario conectado', socket.handshake.auth.username, socket.handshake.auth.api, socket.handshake.auth.tipo));
     Enviar_usuario(socket);
     socket.emit('conectado',{Saludo:'hola',id: socket.id, tasa: global.global_cambio})
     // console.log(global.io.engine.clientsCount)
     socket.on('disconnect',  async()=> {
-        console.log('Usuario navegador cerrado', socket.id, socket.handshake.auth.username, socket.handshake.auth.api, socket.handshake.auth.tipo);
+        console.log(chalk.red('Usuario navegador cerrado', socket.id, socket.handshake.auth.username, socket.handshake.auth.api, socket.handshake.auth.tipo));
 
         // const usuario = await User.findOne({id_socket:socket.id})
         // if (usuario){

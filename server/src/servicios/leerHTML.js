@@ -6,6 +6,7 @@ const JSDOM = require('jsdom').JSDOM;
 const { Hash_chs, Codigo_chs } =require('../servicios/conexiones')
 // const fs = require('fs');
 const axios = require('axios');
+const chalk = require('chalk');
 const {bcvDolar} = require('bcv-divisas');
 
 paginaCtrl.valor_dolar = async() =>{
@@ -34,17 +35,33 @@ paginaCtrl.valor_dolar = async() =>{
   // }catch(error) {
   //   console.log('>>>>>>>>>>>>>>.Error con bcv-divisas.<<<<<<<<<<<<')
   // }
-  const valor = await axios.get('https://s3.amazonaws.com/dolartoday/data.json')
-  .then(function (response) {
-    // handle success
-    // console.log(response.data._timestamp, response.data.USD);
-    return response
+  // const valor = await axios.get('https://s3.amazonaws.com/dolartoday/data.json')
+  // .then(function (response) {
+  //   // handle success
+  //   // console.log(response.data._timestamp, response.data.USD);
+  //   return response
+  // })
+  // .catch(function (error) {
+  //   // handle error
+  //   console.log(chalk.inverse.red('Error con dolartoday'))//,error);
+  // })
+  
+  const valor = await axios.post(
+    'https://dolartoday.com/wp-admin/admin-ajax.php',
+    new URLSearchParams({
+      'action': 'dt_currency_calculator_handler',
+      'amount': '1'
+    })
+  )
+  .then((res)=>{
+    let dolar = res.data["Dólar Paralelo"]
+    dolar= Number(dolar.replace('Bs. ', ''))
+    return dolar
   })
   .catch(function (error) {
-    // handle error
-    console.log('Error con dolartoday')//,error);
-  })
-  
+      // handle error
+      console.log(chalk.inverse.red('Error con dolartoday'))//,error);
+  });
   // console.log('por banco de venezuela')
   try{
     let resultado = await rp({uri: 'http://www.bcv.org.ve/tasas-informativas-sistema-bancario', rejectUnauthorized: false}).then(html => {
@@ -71,7 +88,7 @@ paginaCtrl.valor_dolar = async() =>{
         // console.log('>>>>>>>',array, valor);
         global.global_cambio={
           [array[0]]:Number(array[1]), 
-          dolartoday:valor && valor.data ? valor.data.USD : 0,
+          dolartoday:valor ? valor : 0,
           'wesi > wesi':1,
           'VED > VED':1,
           'wesi > USD': 1 / Number(array[1]),
@@ -85,7 +102,7 @@ paginaCtrl.valor_dolar = async() =>{
       
     });
   }catch(error) {
-    console.log('Error-BCV')//,error);
+    console.log(chalk.inverse.red('Error-BCV'))//,error);
     // global.global_cambio=valor && valor.data && valor.data.USD ? valor.data.USD.sicad2 : global.global_cambio;
     // global.global_cambio={
     //   'USD':'error', 
@@ -100,7 +117,7 @@ paginaCtrl.valor_dolar = async() =>{
     global.global_actualizando=false
     
   }
-  console.log('Tasa de cambio>>>>>>', global.global_cambio.USD)
+  console.log('Tasa de cambio>>>>>>', global.global_cambio.USD, global.global_cambio.dolartoday)
   if ((global.global_cambio.USD!==anterior.USD || global.global_cambio.dolartoday!==anterior.dolartoday) && global.global_cambio.USD!==0 ){
     console.log('Cambiar la tasa de cambio>>>>>>', global.global_cambio.USD!==anterior.USD , global.global_cambio.USD, anterior.USD)
     const cod_chs = await Codigo_chs({...global.global_cambio, fecha: new Date()});
@@ -108,7 +125,7 @@ paginaCtrl.valor_dolar = async() =>{
     const nuevo = new Tasa({valores:global.global_cambio, cod_chs, hash_chs});
     await nuevo.save();
   }
-  console.log('Cambio actualizado....', )
+  console.log(chalk.inverse.green('Cambio actualizado....', ))
   global.io.emit('Actualizar_tasa',{tasa:global.global_cambio});
   if(global.global_tiempo_dolar) clearTimeout(global.global_tiempo_dolar)
 
