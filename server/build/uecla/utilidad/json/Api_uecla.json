@@ -1575,6 +1575,23 @@
                 "maxRows": "2"
             },
             {
+                "nombre": "url",
+                "tipo": "input",
+                "label": "Url",
+                "placeholder": "Url",
+                "title": "Url a donde quiere direccionar ",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "lista": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "url",
+                "name": "url",
+                "multiline": false
+            },
+            {
                 "nombre": "filename",
                 "tipo": "Imagen",
                 "label": "Imagen",
