@@ -113,7 +113,7 @@ serverCtrl.Verificar_autenticidad = async ( datos, hash, token=false, inicia=fal
   }
    
    console.log('despues de ver useradmin')
-   if (Api.api!==dapi){
+   if ((Api.api && Api.api!==dapi) || (Api!==dapi)){
     useradmin = useradmin.filter(f=> f.valores.username===nameAdmin);
     if (useradmin.length===0){
       const clave= await Hash_password(`${claveinicioapi}${Api.api}-4891`);
@@ -140,7 +140,6 @@ serverCtrl.Verificar_autenticidad = async ( datos, hash, token=false, inicia=fal
    
    username=username.toLowerCase()
    let userS= await User.find({$text: {$search: username, $caseSensitive: false}});//await User.findOne({username});
-   
    let user=null
    userS.map(d=>{
      if (d.username===username || d.valores.username===username){
@@ -149,7 +148,7 @@ serverCtrl.Verificar_autenticidad = async ( datos, hash, token=false, inicia=fal
        user._id= d._id;
      }
    })
-   
+   console.log(user)
    // if (hashn === hash){
 
      if (inicia)  {
