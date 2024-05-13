@@ -2109,6 +2109,6 @@ serverCtrl.Infor_datos = async (req, res) =>{
 serverCtrl.WhatsAppQR = async (req, res) =>{
   let {Api} = req.body;
   
-  res.json({Respuesta:'Ok', QR: global.whatsappqr, fecha:new Date()});
+  res.json({Respuesta:'Ok', QR: global[Api], fecha:new Date()});
 }
 module.exports = serverCtrl;

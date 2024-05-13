@@ -1,23 +1,37 @@
 const fs = require('fs');
 const qrcode = require('qrcode-terminal');
-const { Client, LegacySessionAuth, LocalAuth  } = require('whatsapp-web.js');
+const { Client, LegacySessionAuth, LocalAuth, Buttons, MessageMedia  } = require('whatsapp-web.js');
 const Condicion = require('./condiciones');
+const CondicionUECLA = require('./condicionesUECLA');
+const MensajeUecla = require('./mensajes');
 
-const client = new Client({
-    authStrategy: new LocalAuth()
+// const client = new Client({
+//     authStrategy: new LocalAuth()
+// });
+/////>>>>>>>>>>>>>>>>>>>>>>>>Whatsapp para SistemaCHS<<<<<<<<<<<<<<<<<<
+const clientCHS = new Client({
+    authStrategy: new LocalAuth({
+        clientId: "client-CHS",
+        dataPath: "sessions", 
+    }),
+    webVersionCache: {
+        type: 'remote',
+        remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.2412.54.html',
+    }
 });
- 
-client.on('qr', (qr) => {
-    global.whatsappqr = qr;
-    console.log('En espera de whatsapp...')
-    global.io.emit('whatsappqr',{qr}) //datos:resultado})
+
+clientCHS.on('qr', (qr) => {
+    global[`whatsappqr-chs`] = qr;
+    console.log('En espera de whatsapp CHS...')
+    global.io.emit('whatsappqr-CHS',{qr}) //datos:resultado})
     // qrcode.generate(qr, {small:true});
 });
-client.on('ready', () => {
-    console.log('Client iniciado!');
+
+clientCHS.on('ready', () => {
+    console.log('Client CHS iniciado!');
 });
 
-client.on('message', message =>{
+clientCHS.on('message_create', message =>{
     let mensaje = message.body.toLowerCase().split(' ')[0];
     console.log('>>>>>>',mensaje);
     if (['📝','planificación'].indexOf(mensaje)!==-1){
@@ -28,16 +42,109 @@ client.on('message', message =>{
         mensaje='productoterminado';
     }  
 
-    Condicion[mensaje](message, client);
+    Condicion[mensaje](message, clientCHS);
     // if(message.body === 'ping'){
     //     client.sendMessage(message.from,'conectado a bot chs');
     // }else if(message.body.toLowerCase() === 'informacion'){
     //     client.sendMessage(message.from,'Sistema CHS 2023');
     // }
 });
-client.initialize()
+clientCHS.initialize()
+
+/////>>>>>>>>>>>>>>>>>>>>>>>>Whatsapp para SistemaCHS<<<<<<<<<<<<<<<<<<
+
+//Emojis de trabajo
+const yo = MensajeUecla.Yo;
+const clientUECLA = new Client({
+    authStrategy: new LocalAuth({
+        clientId: "client-UECLA",
+        dataPath: "sessions",
+    }),
+    
+    webVersionCache: {
+        type: 'remote',
+        remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.2412.54.html',
+    }
+});
 
 
+clientUECLA.on('qr', (qr) => {
+    global[`whatsappqr-uecla`]= qr;
+    console.log('En espera de whatsapp UECLA...')
+    global.io.emit('whatsappqr-UECLA',{qr}) //datos:resultado})
+    // qrcode.generate(qr, {small:true});
+});
+
+clientUECLA.on('ready', () => {
+    console.log('Client UECLA iniciado!');
+});
+
+clientUECLA.on('message_create',async (message) =>{
+    
+    let mensaje = message.body.toLowerCase().trim();
+    // console.log(mensaje)
+    if (mensaje==='boton'){
+        // let button = new Buttons('Button body',[{body:'bt1'},{body:'bt2'},{body:'bt3'}],'title','footer');
+        // const button = new Buttons('!Body', [{id:'1', body:'Aceptar'}, {id:'0', body:'Rechazar'}], 'title', 'footer');
+        // clientUECLA.sendMessage(message.from, button);
+        const media = await MessageMedia.fromUrl('https://via.placeholder.com/350x150.png');
+        await clientUECLA.sendMessage(message.from, media);
+    }
+    if((mensaje.indexOf(yo)!==-1 && mensaje.indexOf(yo)===0) || (mensaje.indexOf('uecla-')!==-1 && mensaje.indexOf('uecla-')===0) || mensaje==='ayuda'){
+        mensaje = mensaje.replace(yo,'').trim();
+        mensaje = mensaje.replace('uecla-','').trim();
+        if (['',' ',yo,'uecla-'].indexOf(mensaje)!==-1){
+            mensaje='ayuda';
+        }else if (['🪙','tasa de cambio','tasa cambio'].indexOf(mensaje)!==-1){
+            mensaje='tasacambio';
+        }else if(['información'].indexOf(mensaje)!==-1){
+            mensaje='informacion';
+        }else if(['mensualidad'].indexOf(mensaje)!==-1){
+            mensaje='mes';
+        }else if(['ℹ️','mis datos','misdatos','md','m d'].indexOf(mensaje)!==-1 
+                || mensaje.indexOf('mis datos')!==-1 
+                || mensaje.indexOf('misdatos')!==-1
+                || mensaje.indexOf('md')!==-1 || mensaje.indexOf('m d')!==-1
+                || mensaje.indexOf('ℹ️')!==-1
+            ){
+            mensaje='misdatos';
+        }else if(['🗓️','mis mensualidades','mismensualidades','mm','m m'].indexOf(mensaje)!==-1 
+            || mensaje.indexOf('mis mensualidades')!==-1 
+            || mensaje.indexOf('mismensualidades')!==-1
+            || mensaje.indexOf('mm')!==-1 || mensaje.indexOf('m m')!==-1
+            || mensaje.indexOf('🗓️')!==-1
+            ){
+            mensaje='mismensualidades';
+        }else if(
+            mensaje.indexOf('actualizar movil')!==-1 
+            || mensaje.indexOf('actualizarmovil')!==-1
+            || mensaje.indexOf('📱')!==-1 
+            || mensaje.indexOf('am')!==-1 
+            || mensaje.indexOf('a m')!==-1
+            || mensaje.indexOf('act. movil')!==-1
+        ){
+            mensaje='actualizarmovil';
+        }else if(['referencia','pago'].indexOf(mensaje)!==-1//mensaje.indexOf('referencia')!==-1 
+        ){
+            mensaje='referencia';
+        }
+        
+        if(CondicionUECLA[mensaje] === undefined){
+            CondicionUECLA['noexiste'](message, clientUECLA);
+        }else{
+            CondicionUECLA[mensaje](message, clientUECLA);
+        }
+        
+    }
+    
+    // if(message.body === 'ping'){
+    //     client.sendMessage(message.from,'conectado a bot chs');
+    // }else if(message.body.toLowerCase() === 'informacion'){
+    //     client.sendMessage(message.from,'Sistema CHS 2023');
+    // }
+});
+clientUECLA.initialize()
+global.clientUECLA=clientUECLA;
 // const SESSION_FILE_PATH = './session.json';
 // let sessionData;
 // let client;

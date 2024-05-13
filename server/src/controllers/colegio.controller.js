@@ -16,6 +16,7 @@ const tabla_estudiante = 'uecla_Estudiante'; //'colegio_estudiante'
 const tabla_representante = 'uecla_Representante'; // 'colegio_representante'
 const tabla_pago = 'uecla_Pago'; // 'colegio_pago'
 const tabla_referencia= 'uecla_Referencia';
+const tabla_whatsapp_referencia = 'uecla_Whatsapp_Capture';
 
 Buscar = async(tabla, dato, Api, campo='_id') =>{
     const BD = await Model(Api, tabla);//require(`../models/${tabla}`);
@@ -332,7 +333,7 @@ colegioCtrl.EnviarPago = async (req, res) =>{
         }
         //En Recibo
         
-        let ultimo = await Recibo.find().limit(1).sort({'valores.recibo':-1});
+        let ultimo = await Recibo.find().limit(1).sort({createdAt:-1});//.sort({'valores.recibo':-1});
         if (ultimo.length===0){
             const direct= __dirname.replace('controllers',`data${path.sep}datos.js`);
             let data = JSON.parse(fs.readFileSync(direct, 'utf8'));
@@ -387,7 +388,7 @@ colegioCtrl.Resumen = async (req, res)=>{
             }
             return val
         })
-        recibos= recibos.sort((a,b)=> a.valores.recibo>b.valores.recibo ? -1 : 1)
+        recibos= recibos.sort((a,b)=> Number(a.valores.recibo)>Number(b.valores.recibo) ? -1 : 1)
         // recibos= recibos.filter(f=> f.valores.mensualidades.meses.filter(fi=> fi._id===datos._id));
 
         res.json({Respuesta:'Ok', datos, mensualidad, recibos});
@@ -451,7 +452,7 @@ colegioCtrl.Recibos = async (req, res)=>{
         }
         recibos=[...nuevo]
         
-        recibos= recibos.sort((a,b)=> a.valores.recibo>b.valores.recibo ? -1 : 1)
+        recibos= recibos.sort((a,b)=> Number(a.valores.recibo)>Number(b.valores.recibo) ? -1 : 1)
         // recibos= recibos.filter(f=> f.valores.mensualidades.meses.filter(fi=> fi._id===datos._id));
 
         res.json({Respuesta:'Ok', datos, recibos});
@@ -757,6 +758,7 @@ Act_Referencia = async(User, Api)=>{
     const cantidad=50;
     const Recibo = await Model(Api, tabla_recibo);
     const Referencia = await Model(Api, tabla_referencia);
+    const ReferenciaW = await Model(Api, tabla_whatsapp_referencia);
     let continuar = true;
     let pag=0;
     while (continuar){

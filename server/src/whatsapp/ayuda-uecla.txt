@@ -1,0 +1,30 @@
+ℹ️ SI NECESITAS MI AYUDA 🤖 
+-------------------------------------------------------
+Debes enviar: 
+    🤖 'Acción'
+    o
+    uecla-'Acción'
+
+    Ej: 
+        🤖 TASACAMBIO
+        o
+        uecla-TASACAMBIO 
+-------------------------------------------------------
+ACCIONES
+-------------------------------------------------------
+Información del sistema:
+    🤖 INFORMACION
+Tasa de cambio de BCV:
+    🤖 TASACAMBIO  
+    🤖 🪙
+Valor de Mensualidad:
+    🤖 MESUALIDAD
+Datos del Representante: 
+    🤖 MIS DATOS
+    🤖 ℹ️
+Mensualidades del Representante:
+    🤖 MIS MENSUALIDADES
+    🤖 🗓️
+Actualizar Telefono movil:
+    🤖 ACTUALIZAR MOVIL "nuevo numero"
+    🤖 📱 "nuevo numero"
