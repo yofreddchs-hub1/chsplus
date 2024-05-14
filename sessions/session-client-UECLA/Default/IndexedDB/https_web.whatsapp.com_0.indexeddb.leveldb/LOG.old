@@ -1,3 +1,19 @@
-2024/05/13-07:00:16.909 3f44 Reusing MANIFEST C:\codigos\2024\chs-plus\sessions\session-client-UECLA\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
-2024/05/13-07:00:16.912 3f44 Recovering log #2583
-2024/05/13-07:00:17.034 3f44 Reusing old log C:\codigos\2024\chs-plus\sessions\session-client-UECLA\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/002583.log 
+2024/05/13-12:31:47.412 5198 Reusing MANIFEST C:\codigos\2024\chs-plus\sessions\session-client-UECLA\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2024/05/13-12:31:47.413 5198 Recovering log #2619
+2024/05/13-12:31:47.415 5198 Reusing old log C:\codigos\2024\chs-plus\sessions\session-client-UECLA\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/002619.log 
+2024/05/13-12:31:49.209 41d8 Compacting 1@1 + 6@2 files
+2024/05/13-12:31:49.672 41d8 Generated table #2622@1: 86472 keys, 2235058 bytes
+2024/05/13-12:31:49.890 41d8 Generated table #2623@1: 57305 keys, 2334490 bytes
+2024/05/13-12:31:49.954 41d8 Generated table #2624@1: 2628 keys, 2158067 bytes
+2024/05/13-12:31:50.037 41d8 Generated table #2625@1: 7139 keys, 2148243 bytes
+2024/05/13-12:31:50.519 41d8 Generated table #2626@1: 43960 keys, 2221232 bytes
+2024/05/13-12:31:50.890 41d8 Generated table #2627@1: 80012 keys, 1629041 bytes
+2024/05/13-12:31:50.890 41d8 Compacted 1@1 + 6@2 files => 12726131 bytes
+2024/05/13-12:31:50.892 41d8 compacted to: files[ 0 0 6 0 0 0 0 ]
+2024/05/13-12:31:50.892 41d8 Delete type=2 #2612
+2024/05/13-12:31:50.892 41d8 Delete type=2 #2613
+2024/05/13-12:31:50.892 41d8 Delete type=2 #2614
+2024/05/13-12:31:50.892 41d8 Delete type=2 #2615
+2024/05/13-12:31:50.893 41d8 Delete type=2 #2616
+2024/05/13-12:31:50.893 41d8 Delete type=2 #2617
+2024/05/13-12:31:50.893 41d8 Delete type=2 #2620

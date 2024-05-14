@@ -1,6 +1,7 @@
 const colegioCtrl = {};
 const path = require('path');
 const chalk = require('chalk');
+const _ = require('lodash');
 const moment = require('moment');
 const fs = require('fs');
 const { Hash_texto, Hash_password } = require('../servicios/encriptado');
@@ -339,7 +340,22 @@ colegioCtrl.EnviarPago = async (req, res) =>{
             let data = JSON.parse(fs.readFileSync(direct, 'utf8'));
             ultimo=data.Recibo
         }else{
-            ultimo=Number(ultimo[0].valores.recibo)+1;
+
+            const ultimo1= ultimo[0].valores;
+            console.log('Comparar...','Representante:',_.isEqual(ultimo1.representante,representante.valores),'Forma de pago:',_.isEqual(ultimo1.Formas_pago, datos.Formas_pago))
+            if (_.isEqual(ultimo1.representante,representante.valores) 
+                && _.isEqual(ultimo1.Formas_pago, datos.Formas_pago) 
+                && _.isEqual(ultimo1.mensualidades,datos.Mensualidades)
+                && _.isEqual(ultimo1.subtotalvalor,datos.Subtotalvalor)
+                && _.isEqual(ultimo1.totales,datos.Totales)){
+                
+                    console.log('El recibo esta repetido........')
+                    res.json({Respuesta:'Ok', Mensaje:'Datos enviado ya fueron procesado con aterioridad', dato:ultimo[0]});
+                    return
+            }
+            
+            ultimo=Number(ultimo1.recibo)+1;
+            // ultimo=Number(ultimo[0].valores.recibo)+1;
         }
         // console.log(chalk.inverse.red(ultimo))
         let recibo={
@@ -763,7 +779,7 @@ Act_Referencia = async(User, Api)=>{
     let pag=0;
     while (continuar){
         let recibos = await Recibo.find()
-                                .sort({'valores.recibo':-1})
+                                .sort({createdAt:-1}) //.sort({'valores.recibo':-1})
                                 .limit(cantidad)
                                 .skip(pag*cantidad).exec();
         for (let i=0; i<recibos.length; i++){
@@ -784,6 +800,13 @@ Act_Referencia = async(User, Api)=>{
                 }
                 if (nuevo.referencia){
                     const anterior = await Referencia.findOne({'valores.referencia':forma.referencia});
+                    const anteriorw= await ReferenciaW.findOne({'valores.referencia':forma.referencia});
+                    if (anteriorw!==null){
+                        let valorw = {...anteriorw.valores, estatus:'1', recibo};
+                        const hash_chs = await Hash_chs({...valorw, cod_chs:anteriorw.cod_chs});
+                        await ReferenciaW.updateOne({_id:anteriorw._id},{valores:valorw, hash_chs, actualizado:User.username},{ upsert: true });
+                    }
+
                     if (anterior!==null){
                         // console.log('Referencia repetida...', forma.referencia, recibo, anterior.valores.recibo)
                         continuar=false;
@@ -794,6 +817,7 @@ Act_Referencia = async(User, Api)=>{
                     const hash_chs = await Hash_chs({...nuevo, cod_chs})
                     const Nuevo = new Referencia({valores:nuevo, fecha: moment().format('YYYY-MM-DD'), cod_chs, hash_chs, actualizado:User.username});
                     await Nuevo.save();
+                    
                     // console.log('Guardar referencia recibo...',recibo, pag, i, j)
                 }
                 

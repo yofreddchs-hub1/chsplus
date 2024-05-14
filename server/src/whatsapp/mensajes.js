@@ -136,7 +136,7 @@ Asignado a: ${representantes.valores.nombres} ${representantes.valores.apellidos
 }
 
 MensajeUecla.ReferenciaEspera = (datos,ref,numero, representantes)=>{
-    return`✔️ Referencia en espera de ser procesada
+    return`${ref.valores.estatus==='0'? '✔️ Referencia en espera de ser procesada' : `✅ Referencia procesada en recibo: ${ref.valores.recibo}`}
 ✅ Referencia: ${datos.referencia}
 ☑️☑️☑️☑️☑️☑️☑️☑️
 Recibida con éxito el:
