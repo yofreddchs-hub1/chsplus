@@ -1,19 +1,22 @@
-2024/05/13-12:31:47.412 5198 Reusing MANIFEST C:\codigos\2024\chs-plus\sessions\session-client-UECLA\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
-2024/05/13-12:31:47.413 5198 Recovering log #2619
-2024/05/13-12:31:47.415 5198 Reusing old log C:\codigos\2024\chs-plus\sessions\session-client-UECLA\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/002619.log 
-2024/05/13-12:31:49.209 41d8 Compacting 1@1 + 6@2 files
-2024/05/13-12:31:49.672 41d8 Generated table #2622@1: 86472 keys, 2235058 bytes
-2024/05/13-12:31:49.890 41d8 Generated table #2623@1: 57305 keys, 2334490 bytes
-2024/05/13-12:31:49.954 41d8 Generated table #2624@1: 2628 keys, 2158067 bytes
-2024/05/13-12:31:50.037 41d8 Generated table #2625@1: 7139 keys, 2148243 bytes
-2024/05/13-12:31:50.519 41d8 Generated table #2626@1: 43960 keys, 2221232 bytes
-2024/05/13-12:31:50.890 41d8 Generated table #2627@1: 80012 keys, 1629041 bytes
-2024/05/13-12:31:50.890 41d8 Compacted 1@1 + 6@2 files => 12726131 bytes
-2024/05/13-12:31:50.892 41d8 compacted to: files[ 0 0 6 0 0 0 0 ]
-2024/05/13-12:31:50.892 41d8 Delete type=2 #2612
-2024/05/13-12:31:50.892 41d8 Delete type=2 #2613
-2024/05/13-12:31:50.892 41d8 Delete type=2 #2614
-2024/05/13-12:31:50.892 41d8 Delete type=2 #2615
-2024/05/13-12:31:50.893 41d8 Delete type=2 #2616
-2024/05/13-12:31:50.893 41d8 Delete type=2 #2617
-2024/05/13-12:31:50.893 41d8 Delete type=2 #2620
+2024/05/14-08:23:04.439 5dc8 Reusing MANIFEST C:\codigos\2024\chs-plus\sessions\session-client-UECLA\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2024/05/14-08:23:04.442 5dc8 Recovering log #2619
+2024/05/14-08:23:04.785 5dc8 Reusing old log C:\codigos\2024\chs-plus\sessions\session-client-UECLA\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/002619.log 
+2024/05/14-08:45:47.353 1688 Level-0 table #2630: started
+2024/05/14-08:45:47.420 1688 Level-0 table #2630: 1170743 bytes OK
+2024/05/14-08:45:47.425 1688 Delete type=0 #2619
+2024/05/14-08:53:22.301 5128 Compacting 1@1 + 6@2 files
+2024/05/14-08:53:22.420 5128 Generated table #2631@1: 86620 keys, 2236067 bytes
+2024/05/14-08:53:22.524 5128 Generated table #2632@1: 59854 keys, 2340588 bytes
+2024/05/14-08:53:22.569 5128 Generated table #2633@1: 2674 keys, 2158301 bytes
+2024/05/14-08:53:22.597 5128 Generated table #2634@1: 5914 keys, 2141406 bytes
+2024/05/14-08:53:22.707 5128 Generated table #2635@1: 39934 keys, 2223809 bytes
+2024/05/14-08:53:22.870 5128 Generated table #2636@1: 85587 keys, 1744395 bytes
+2024/05/14-08:53:22.871 5128 Compacted 1@1 + 6@2 files => 12844566 bytes
+2024/05/14-08:53:22.872 5128 compacted to: files[ 0 0 6 0 0 0 0 ]
+2024/05/14-08:53:22.873 5128 Delete type=2 #2622
+2024/05/14-08:53:22.874 5128 Delete type=2 #2623
+2024/05/14-08:53:22.874 5128 Delete type=2 #2624
+2024/05/14-08:53:22.875 5128 Delete type=2 #2625
+2024/05/14-08:53:22.875 5128 Delete type=2 #2626
+2024/05/14-08:53:22.875 5128 Delete type=2 #2627
+2024/05/14-08:53:22.876 5128 Delete type=2 #2630

@@ -1,0 +1,4 @@
+[0514/133347.565:INFO:CONSOLE(0)] "Uncaught (in promise) Error: Comms::sendIq called before startComms", source: https://web.whatsapp.com/ (0)
+[0514/133347.568:INFO:CONSOLE(0)] "Uncaught (in promise) Error: Comms::sendIq called before startComms", source: https://web.whatsapp.com/ (0)
+[0515/070757.092:WARNING:dns_config_service_win.cc(509)] Failed to read DnsConfig.
+[0515/070757.490:WARNING:dns_config_service_win.cc(509)] Failed to read DnsConfig.

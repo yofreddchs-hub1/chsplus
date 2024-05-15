@@ -1,3 +1,6 @@
-2024/05/14-11:34:49.732 3a98 Reusing MANIFEST C:\codigos\2024\chs-plus\sessions\session-client-CHS\Default\Local Storage\leveldb/MANIFEST-000001
-2024/05/14-11:34:49.733 3a98 Recovering log #55
-2024/05/14-11:34:49.734 3a98 Reusing old log C:\codigos\2024\chs-plus\sessions\session-client-CHS\Default\Local Storage\leveldb/000055.log 
+2024/05/14-11:50:06.356 5c70 Reusing MANIFEST C:\codigos\2024\chs-plus\sessions\session-client-CHS\Default\Local Storage\leveldb/MANIFEST-000001
+2024/05/14-11:50:06.357 5c70 Recovering log #55
+2024/05/14-11:50:06.358 5c70 Reusing old log C:\codigos\2024\chs-plus\sessions\session-client-CHS\Default\Local Storage\leveldb/000055.log 
+2024/05/15-07:38:24.663 3ba0 Level-0 table #60: started
+2024/05/15-07:38:24.672 3ba0 Level-0 table #60: 24695 bytes OK
+2024/05/15-07:38:24.678 3ba0 Delete type=0 #55
