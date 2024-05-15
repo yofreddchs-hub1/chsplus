@@ -16,7 +16,7 @@ require('./src/database/inicio');
 require('./src/server_socket');
 //Quitar whatsapp para raqlan
 // ver como configurar bien
-require('./src/whatsapp');
+// require('./src/whatsapp');
 const {Model} = require('./src/database/model')
 const {valor_dolar} = require('./src/servicios/leerHTML');
 
