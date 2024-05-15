@@ -14,7 +14,9 @@ global.global_http= http;
 global.actualizar_mes=false
 require('./src/database/inicio');
 require('./src/server_socket');
-require('./src/whatsapp');
+//Quitar whatsapp para raqlan
+// ver como configurar bien
+// require('./src/whatsapp');
 const {Model} = require('./src/database/model')
 const {valor_dolar} = require('./src/servicios/leerHTML');
 
