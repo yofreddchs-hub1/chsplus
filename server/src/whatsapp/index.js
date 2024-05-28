@@ -4,7 +4,7 @@ const { Client, LegacySessionAuth, LocalAuth, Buttons, MessageMedia  } = require
 const Condicion = require('./condiciones');
 const CondicionUECLA = require('./condicionesUECLA');
 const MensajeUecla = require('./mensajes');
-
+const MensajeCHS = require('./mensajes-chs');
 // const client = new Client({
 //     authStrategy: new LocalAuth()
 // });
@@ -32,17 +32,27 @@ clientCHS.on('ready', () => {
 });
 
 clientCHS.on('message_create', message =>{
-    let mensaje = message.body.toLowerCase().split(' ')[0];
-    console.log('>>>>>>',mensaje);
-    if (['📝','planificación'].indexOf(mensaje)!==-1){
-        mensaje='planificacion';
-    }else if(['📌','materia prima'].indexOf(mensaje)!==-1){
-        mensaje='materiaprima';
-    }else if(['📦','producto terminado'].indexOf(mensaje)!==-1){
-        mensaje='productoterminado';
+    let mensaje = message.body.toLowerCase().trim()//.split(' ')[0];
+    if((mensaje.indexOf(MensajeCHS.Yo)!==-1 && mensaje.indexOf(MensajeCHS.Yo)===0)){
+        mensaje = mensaje.replace(MensajeCHS.Yo,'').trim();
+        console.log('>>>>>>',mensaje);
+        if (['',MensajeCHS.Yo].indexOf(mensaje)!==-1){
+            mensaje='ayuda';
+        }else if (['📝','planificación'].indexOf(mensaje)!==-1
+                    || mensaje.indexOf('📝')===0
+                    || mensaje.indexOf('planificación')===0
+        ){
+            mensaje='planificacion';
+        }else if(['📌','materia prima'].indexOf(mensaje)!==-1){
+            mensaje='materiaprima';
+        }else if(['📦','producto terminado'].indexOf(mensaje)!==-1){
+            mensaje='productoterminado';
+        }
+        console.log('<<<<<<',mensaje)
+        Condicion[mensaje](message, clientCHS);
     }  
 
-    Condicion[mensaje](message, clientCHS);
+    
     // if(message.body === 'ping'){
     //     client.sendMessage(message.from,'conectado a bot chs');
     // }else if(message.body.toLowerCase() === 'informacion'){

@@ -1,3 +1,2 @@
-2024/05/16-10:32:43.656 8344 Reusing MANIFEST C:\codigos\2024\chs-plus\sessions\session-client-UECLA\Default\File System\Origins/MANIFEST-000001
-2024/05/16-10:32:43.658 8344 Recovering log #3
-2024/05/16-10:32:43.659 8344 Reusing old log C:\codigos\2024\chs-plus\sessions\session-client-UECLA\Default\File System\Origins/000003.log 
+2024/05/28-12:01:13.042 62b8 Creating DB C:\codigos\2024\chs-plus\sessions\session-client-UECLA\Default\File System\Origins since it was missing.
+2024/05/28-12:01:13.059 62b8 Reusing MANIFEST C:\codigos\2024\chs-plus\sessions\session-client-UECLA\Default\File System\Origins/MANIFEST-000001

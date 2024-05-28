@@ -1,6 +1,2 @@
-2024/05/16-10:32:42.646 3bb4 Reusing MANIFEST C:\codigos\2024\chs-plus\sessions\session-client-CHS\Default\Local Storage\leveldb/MANIFEST-000001
-2024/05/16-10:32:42.647 3bb4 Recovering log #59
-2024/05/16-10:32:42.648 3bb4 Reusing old log C:\codigos\2024\chs-plus\sessions\session-client-CHS\Default\Local Storage\leveldb/000059.log 
-2024/05/18-15:51:54.703 5b3c Level-0 table #63: started
-2024/05/18-15:51:54.709 5b3c Level-0 table #63: 18939 bytes OK
-2024/05/18-15:51:54.711 5b3c Delete type=0 #59
+2024/05/28-12:01:07.782 40f4 Creating DB C:\codigos\2024\chs-plus\sessions\session-client-CHS\Default\Local Storage\leveldb since it was missing.
+2024/05/28-12:01:07.946 40f4 Reusing MANIFEST C:\codigos\2024\chs-plus\sessions\session-client-CHS\Default\Local Storage\leveldb/MANIFEST-000001

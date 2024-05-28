@@ -15,7 +15,8 @@ variables.env
 
 # production
 
-
+#session de whatsapp
+/sessions
 # misc
 README.md
 ._.DS_Store

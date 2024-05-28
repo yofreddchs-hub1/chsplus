@@ -7,7 +7,7 @@
           "width": 60
       },
       "Input_label": {
-          "color": "#fff",
+          "color": "#000",
           "textAlign": "left"
       },
       "Input_helper": {
@@ -15,19 +15,25 @@
           "textAlign": "left"
       },
       "Input_fondo": {
-          "backgroundColor": "rgba(0, 0, 0,1)"
+        "backgroundColor": "rgba(218, 201, 197,1)"
       },
       "Input_input": {
-          "color": "#ffffff"
+          "color": "#000"
       },
       "Input_input_disabled": {
-          "color": "#CEBAB6"
+          "color": "#A39C79"
       },
       "Input_icono": {
-          "color": "#ffffff"
+          "color": "#fff"
+      },
+      "Input_icono_t": {
+        "color": "#fff"
+      },
+      "Icon_lista": {
+          "color": "#fff"
       },
       "Barra_menu": {
-          "backgroundColor": "rgba(0, 0, 0)",
+        "backgroundImage": "linear-gradient(180deg, #00ffff 0, #00e5ff 12.5%, #10a6f8 25%, #10a6fa 37.5%, #1e6ca3 50%, #1e6ca5 62.5%, #153959 75%, #15395b 87.5%, #000000 100%)",
           "color": "#ffffff"
       },
       "Lista_menu_fondo": {
@@ -44,13 +50,13 @@
           }
       },
       "Dialogo_cuerpo": {
-          "backgroundColor": "rgb(5, 30, 52)"
+        "backgroundColor": "rgb(255, 255, 250)"
       },
       "Tabla_titulo": {
           "color": "#ffffff"
       },
       "Tabla_cabezera": {
-          "backgroundImage": "linear-gradient(0deg, #080303 0, #524D4D 90% )"
+        "backgroundImage": "linear-gradient(180deg, #00ffff 0, #00e5ff 12.5%, #10a6f8 25%, #10a6fa 37.5%, #1e6ca3 50%, #1e6ca5 62.5%, #153959 75%, #15395b 87.5%, #000000 100%)"
       },
       "Tabla_buscar_fondo": {
           "backgroundColor": "rgba(0, 0, 0,1)"
@@ -67,6 +73,9 @@
       },
       "Tabla_row_colorlocal": {
           "backgroundColor": "#0985CC"
+      },
+      "Tabla_subtotal": {
+        "backgroundColor": "rgba(251, 252, 252, 1)"
       },
       "Botones": {
           "Aceptar": {

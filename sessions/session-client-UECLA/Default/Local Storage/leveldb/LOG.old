@@ -1,6 +1,0 @@
-2024/05/15-08:32:13.712 8494 Reusing MANIFEST C:\codigos\2024\chs-plus\sessions\session-client-UECLA\Default\Local Storage\leveldb/MANIFEST-000001
-2024/05/15-08:32:13.713 8494 Recovering log #179
-2024/05/15-08:32:13.715 8494 Reusing old log C:\codigos\2024\chs-plus\sessions\session-client-UECLA\Default\Local Storage\leveldb/000179.log 
-2024/05/15-08:34:14.162 3cf4 Level-0 table #183: started
-2024/05/15-08:34:14.173 3cf4 Level-0 table #183: 14502 bytes OK
-2024/05/15-08:34:14.175 3cf4 Delete type=0 #179

@@ -1,3 +1,2 @@
-2024/05/16-10:32:42.702 62f8 Reusing MANIFEST C:\codigos\2024\chs-plus\sessions\session-client-UECLA\Default\Service Worker\Database/MANIFEST-000001
-2024/05/16-10:32:42.702 62f8 Recovering log #4
-2024/05/16-10:32:42.708 62f8 Reusing old log C:\codigos\2024\chs-plus\sessions\session-client-UECLA\Default\Service Worker\Database/000004.log 
+2024/05/28-12:01:12.865 62b8 Creating DB C:\codigos\2024\chs-plus\sessions\session-client-UECLA\Default\Service Worker\Database since it was missing.
+2024/05/28-12:01:12.898 62b8 Reusing MANIFEST C:\codigos\2024\chs-plus\sessions\session-client-UECLA\Default\Service Worker\Database/MANIFEST-000001
