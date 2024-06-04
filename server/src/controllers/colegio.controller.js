@@ -323,8 +323,8 @@ colegioCtrl.EnviarPago = async (req, res) =>{
             global.io.emit('ActualizarPago','Pendiente')
             return
         }
-        representante.valores.abono= datos.Totales.abono.toFixed(3);
-        representante.valores.abonod= datos.Totales.abonod.toFixed(2);
+        representante.valores.abono= Number(datos.Totales.abono).toFixed(3);
+        representante.valores.abonod= Number(datos.Totales.abonod).toFixed(2);
 
         let hash_chs = await Hash_chs({...representante.valores, cod_chs: representante.cod_chs})
         await Representante.updateOne({_id:representante._id},{valores:representante.valores, hash_chs, actualizado:User.username},{ upsert: true });
