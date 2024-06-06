@@ -28,14 +28,15 @@ const port = process.env.PORT || 3500;
 // settings
 app.set('port', port );
 // console.log(__dirname);
-app.use(express.static(path.join(__dirname,`build`, 'principal')));
+app.use(express.static(path.join(__dirname,`build`, 'uecla')));
 // app.use('/uecla',express.static(path.join(__dirname,`build`, 'uecla')));
 
+app.use(`/chsplus`,express.static(path.join(__dirname,`build`, 'principal')));
 
 const Inicio = async()=>{
   const Apis = await Model(global.Principal,'Api')
   const apis = await Apis.find();
-  console.log('Apis>>>>>>>>>>>>',apis.length);
+  console.log('Apis>>>>>>>////',apis.length);
   apis.map(api=>{
     if (api.valores.direccion){
       console.log(api.valores.direccion)
@@ -59,14 +60,14 @@ app.use('/api', require('./src/routers/api'));
 app.get('*',async(req,res) =>{
   
   const direccion = req.originalUrl.split('/')[1];
-  console.log('<<<<<',direccion)
+  console.log('<<<<<<<<<<<>>',direccion)
   const Apis = await Model(global.Principal,'Api')
   const api = await Apis.findOne({'valores.direccion':direccion});
   if (api!==null){
     res.sendFile(path.join(__dirname,'build',direccion,'index.html'));
     return
   }else{
-    res.sendFile(path.join(__dirname,'build','principal','index.html'));
+    res.sendFile(path.join(__dirname,'build','uecla','index.html'));
   }
   
   // var options = {
