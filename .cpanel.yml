@@ -3,4 +3,4 @@ deployment:
   tasks:
     - export DEPLOYPATH=/home/uecoleg3/uecla/
     - /bin/rsync -av server/ $DEPLOYPATH
-    - /bin/rsync package.json
+    - /bin/rsync package.json $DEPLOYPATH
