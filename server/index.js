@@ -36,7 +36,7 @@ app.use(`/chsplus`,express.static(path.join(__dirname,`build`, 'principal')));
 const Inicio = async()=>{
   const Apis = await Model(global.Principal,'Api')
   const apis = await Apis.find();
-  console.log('Apis>>>>>>>////',apis.length);
+  console.log('Apis>>>>>>////',apis.length);
   apis.map(api=>{
     if (api.valores.direccion){
       console.log(api.valores.direccion)
