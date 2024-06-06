@@ -6,6 +6,7 @@ const URI = process.env.DB_URL;
 const Principal = 'ChsPrincipal';
 global.Principal = Principal;
 const nombreDB= 'Principal';
+console.log("URI",URI);
 global.DataBase = {
     [Principal] : database(URI,Principal).useDb( nombreDB, { useCache: true } )
 }

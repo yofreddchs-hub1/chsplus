@@ -34,6 +34,7 @@ app.use(express.static(path.join(__dirname,`build`, 'uecla')));
 app.use(`/chsplus`,express.static(path.join(__dirname,`build`, 'principal')));
 
 const Inicio = async()=>{
+  console.log('Inicio...',global.Principal);
   const Apis = await Model(global.Principal,'Api')
   const apis = await Apis.find();
   console.log('Apis>>>>>>////',apis.length);
