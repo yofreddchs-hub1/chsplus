@@ -28,10 +28,10 @@ const port = process.env.PORT || 3500;
 // settings
 app.set('port', port );
 // console.log(__dirname);
-app.use(express.static(path.join(__dirname,`build`, 'uecla')));
+app.use(express.static(path.join(__dirname,`build`, 'principal')));
 // app.use('/uecla',express.static(path.join(__dirname,`build`, 'uecla')));
 
-app.use(`/chsplus`,express.static(path.join(__dirname,`build`, 'principal')));
+// app.use(`/chsplus`,express.static(path.join(__dirname,`build`, 'principal')));
 
 const Inicio = async()=>{
   console.log('Inicio...',global.Principal);
@@ -68,7 +68,7 @@ app.get('*',async(req,res) =>{
     res.sendFile(path.join(__dirname,'build',direccion,'index.html'));
     return
   }else{
-    res.sendFile(path.join(__dirname,'build','uecla','index.html'));
+    res.sendFile(path.join(__dirname,'build','principal','index.html'));
   }
   
   // var options = {
