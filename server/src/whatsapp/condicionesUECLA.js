@@ -39,7 +39,7 @@ CondicionUECLA.mes = async(message, client)=>{
     // client.sendMessage(message.from,`Tasa de cambio:\nBCV: ${global.global_cambio.USD}`);//\nDolar Today: ${global.global_cambio.dolartoday}
     // message.reply(`Mensualidad : Bs. ${(mes*global.global_cambio.USD).toFixed(2)}\nTasa de cambio:\nBCV: ${global.global_cambio.USD}`)
     // client.sendMessage(message.from,`Mensualidad : Bs. ${(mes*global.global_cambio.USD).toFixed(2)}\nTasa de cambio:\nBCV: ${global.global_cambio.USD}`);
-    Respuesta(message,MensajeUecla.Mensualidad(mes));
+    Respuesta(message, client, MensajeUecla.Mensualidad(mes));
 }
 extrae_monto = (texto)=>{
     
@@ -392,11 +392,11 @@ CondicionUECLA.referencia = async(msg, client)=>{
                         const Nuevo = new Referencia({valores, cod_chs, hash_chs, actualizado:`Sistema-${numero}`});
                         await Nuevo.save();
                         // msg.reply(`✅ Referencia: ${datos.referencia}\n${dat}Recibida con éxito\nDesde: ${numero}\nA: ${representantes.valores.nombres} ${representantes.valores.apellidos}`);
-                        Respuesta(msg, MensajeUecla.ReferenciaAceptada(datos,dat,numero, representantes));
+                        Respuesta(msg, client, MensajeUecla.ReferenciaAceptada(datos,dat,numero, representantes));
                         
                     }else{
                         // msg.reply(`✔️ Referencia en espera de ser procesada\n✅ Referencia: ${datos.referencia}\nRecibida con éxito el:\n${moment(ref.createdAt).format("DD/MM/YYYY HH:mm a")}\nDesde: ${numero}\nA:${representantes.valores.nombres} ${representantes.valores.apellidos}`);
-                        Respuesta(msg, MensajeUecla.ReferenciaEspera(datos,ref,numero, representantes));
+                        Respuesta(msg, client, MensajeUecla.ReferenciaEspera(datos,ref,numero, representantes));
                     }
                 }else{
                     msg.reply('❌ no se reconoce referencia\n'+text.data.text);
@@ -422,7 +422,7 @@ CondicionUECLA.misdatos = async(message, client)=>{
         Mensaje_noregistrado(message,client,{numero, cedula},MensajeUecla.ActuliarM());//'🤖 MIS DATOS "su cedula" "su contraseña"'
     }else{
         const repre =representantes.valores; 
-        Respuesta(message, MensajeUecla.Representante(repre))
+        Respuesta(message,client, MensajeUecla.Representante(repre))
     }
     
 }
@@ -448,7 +448,7 @@ CondicionUECLA.actualizarmovil = async(message, client)=>{
             global.io.emit('Actualizar',{tabla:'uecla_Representante'}) //datos:resultado})
         }
         // message.reply(
-        Respuesta(message,MensajeUecla.MoviActualizado(repre, clavec, clave, telefono, number, anterior));
+        Respuesta(message,client, MensajeUecla.MoviActualizado(repre, clavec, clave, telefono, number, anterior));
 //         client.sendMessage(message.from,`ACTUALIZAR TELEFONO MOVIL  
 // ${separado}
 // ${repre.valores.nombres} ${repre.valores.apellidos}
@@ -482,27 +482,46 @@ CondicionUECLA.mismensualidades = async(message, client)=>{
                     }
                 })
             })
+            representa=[...representa, {...val, porpagar}]
+
+        }//)
+        Respuesta(message, client, MensajeUecla.MensualidadesM(repre,representa))
+
+    }
+    
+}
+CondicionUECLA.pendientes = async(message, client)=>{
+    const {cedula}=CondicionUECLA.Parametros(message);
+    const contact = await message.getContact();
+    const {number} = contact;
+    const numero = number.slice(2);
+    let representantes= await Buscar_Representante({numero, cedula});
+    
+    if (representantes===null){
+        Mensaje_noregistrado(message,client,{numero, cedula},MensajeUecla.ActuliarM());//'🤖 MIS MENSUALIDADES "su cedula"');
+    }else{
+        const lista=['inscripcion','septiembre','octubre','noviembre','diciembre','enero','febrero','marzo','abril','mayo','junio','julio','agosto']
+        const repre =representantes.valores; 
+        const Mensualidad = await Model('uecla', 'uecla_Mensualidad');
+        let representa=[]
+        // let representa = await repre.representados.map(async (val)=>{
+        for (var i = 0; i<repre.representados.length;i++){
+            const val = repre.representados[i];
+            let meses = await Mensualidad.find({$or:[{"valores._id_estudiante":val._id},{"valores.cedula":val.cedula}]});
+            let porpagar={};
+            meses.map(v=>{ 
+                lista.map(lis=>{
+                    if(!v.valores[lis]){
+                        porpagar[v.valores.periodo]= porpagar[v.valores.periodo] ? porpagar[v.valores.periodo]+ `, ${lis.toUpperCase()}` : lis.toUpperCase() 
+                    }
+                })
+            })
 
             representa=[...representa, {...val, porpagar}]
 
         }//)
-        Respuesta(message, MensajeUecla.MensualidadesM(repre,representa))
-//         message.reply(`MENSUALIDADES DEL REPRESENTANTE
-// ${separado}
-// ✅ ${repre.nombres} ${repre.apellidos}
-// ✅ REPRESENTADO(S):
-//     ${representa.map(val=>`${separadoc}
-//     ☑️ ${val.nombres} ${val.apellidos}
-//     ☑️ GRADO: ${val.grado.titulo} ${val.seccion.titulo}
-//     ☑️ Mensualidades Pendiente:
-//         ${val.porpagar  ? Object.keys(val.porpagar).map(m=>`${m}:
-//             ${val.porpagar[m]}
-//         `) :''}`)}`)
+        Respuesta(message, client, MensajeUecla.MensualidadesM(repre,representa))
     }
-    // aranceles= aranceles.sort((a,b)=> a.valores.periodo.periodo>b.valores.periodo.periodo ? -1 : 1).map(val=>val.valores)
-    // const mes = Number(aranceles[0].monto);
-    // client.sendMessage(message.from,`Tasa de cambio:\nBCV: ${global.global_cambio.USD}`);//\nDolar Today: ${global.global_cambio.dolartoday}
-    
 }
 CondicionUECLA.noexiste = async(message, client)=>{
     const contact = await message.getContact();
@@ -514,7 +533,7 @@ ${separado}
 ${Ayuda}
 `;
     // client.sendMessage(message.from, informacion);
-    Respuesta(message, informacion);
+    Respuesta(message,client, informacion);
 }
 CondicionUECLA.ayuda = async(message, client)=>{
     const contact = await message.getContact();
@@ -524,7 +543,7 @@ CondicionUECLA.ayuda = async(message, client)=>{
     const informacion = `Hola @${name ? name : pushname ? pushname : number}
 ` + ayudan
     // client.sendMessage(message.from, informacion);
-    Respuesta(message, informacion);
+    Respuesta(message, client, informacion, true);
 }
 CondicionUECLA.informacion = async(message, client)=>{
     const chat = await message.getChat();
@@ -533,20 +552,25 @@ CondicionUECLA.informacion = async(message, client)=>{
     const mediaFile = MessageMedia.fromFilePath(directorio);
     await chat.sendMessage(mediaFile, {
         mentions: [contact],
-        caption:`BOT\n${MensajeUecla.Colegio}\nhttps://ue-libertadores-de-america.onrender.com\n${MensajeUecla.MisDatos}`
+        caption:`BOT\n${MensajeUecla.Colegio}\nhttps://uecolegiolibertadoresdeamerica.com\n${MensajeUecla.MisDatos}`
     });
     // client.sendMessage(message.from,'conectado a bot chs');
 }
-Respuesta = async(message, mensaje)=>{
+Respuesta = async(message, client, mensaje, cabezera=false)=>{
     const chat = await message.getChat();
     const contact = await message.getContact();
     const directorio = `${__dirname}${path.sep}media${path.sep}bot.jpg`
     const mediaFile = MessageMedia.fromFilePath(directorio);
     // console.log(contact)
-    await chat.sendMessage(mediaFile, {
-        // mentions: [contact],
-        caption:`BOT\n${MensajeUecla.Colegio}\nhttps://ue-libertadores-de-america.onrender.com\n${separado}\n${mensaje}`
-    });
+    if (cabezera){
+        await chat.sendMessage(mediaFile, {
+            // mentions: [contact],
+            caption:`BOT\n${MensajeUecla.Colegio}\nhttps://uecolegiolibertadoresdeamerica.com\n${separado}\n${mensaje}`
+        });
+    }else{
+        
+        client.sendMessage(message.from,`${separado}\n${mensaje}`);
+    }
 }
 CondicionUECLA.Parametros = (message)=>{
     let resultado={};
@@ -574,7 +598,7 @@ CondicionUECLA.Parametros = (message)=>{
 Mensaje_noregistrado = async(message, client, datos, ayuda)=>{
     const {numero,cedula}= datos;
 // message.reply(
-    Respuesta(message, MensajeUecla.NoRegistrado(numero, ayuda, cedula))
+    Respuesta(message, client, MensajeUecla.NoRegistrado(numero, ayuda, cedula))
 }
 
 Buscar_Representante = async(dato)=>{

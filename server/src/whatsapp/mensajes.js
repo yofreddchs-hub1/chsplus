@@ -24,7 +24,7 @@ OPERACIONES PERMITIDAS
 ${MensajeUecla.separado}
 Valor de Mensualidad:
 ${MensajeUecla.separadoc}
-${emoji} MESUALIDAD
+${emoji} COSTO
 ${MensajeUecla.separadoc}
 Datos del Representante:
 ${MensajeUecla.separadoc} 
@@ -36,6 +36,8 @@ ${MensajeUecla.separadoc}
 ${emoji} MIS MENSUALIDADES
 ${emoji} ${MensajeUecla.Mensualidades}
 ${MensajeUecla.separadoc}
+Pagos Pendientes:
+${emoji} PENDIENTE
 Reportar pago:
 ${MensajeUecla.separadoc}
 Debe enviar el capture de la operación por Transferencia o Pago Movil seguido de: 
@@ -121,9 +123,9 @@ ${representa.map(val=>`${MensajeUecla.separadoc}
 ☑️ ${val.nombres} ${val.apellidos}
 ☑️ GRADO: ${val.grado.titulo} ${val.seccion.titulo}
 ☑️ MESES PENDIENTES:
-    ${val.porpagar  ? Object.keys(val.porpagar).map(m=>`${m}:
+    ${val.porpagar && Object.keys(val.porpagar).length!==0 ? Object.keys(val.porpagar).map(m=>`${m}:
         ${val.porpagar[m]}
-    `) :''}`)}`
+    `) :'✅ SOLVENTE ✅\n'}`)}`
 }
 
 MensajeUecla.ReferenciaAceptada = (datos,dat,numero, representantes)=>{

@@ -109,7 +109,7 @@ clientUECLA.on('message_create',async (message) =>{
             mensaje='tasacambio';
         }else if(['información'].indexOf(mensaje)!==-1){
             mensaje='informacion';
-        }else if(['mensualidad'].indexOf(mensaje)!==-1){
+        }else if(['costo'].indexOf(mensaje)!==-1){
             mensaje='mes';
         }else if(['ℹ️','mis datos','misdatos','md','m d'].indexOf(mensaje)!==-1 
                 || mensaje.indexOf('mis datos')!==-1 

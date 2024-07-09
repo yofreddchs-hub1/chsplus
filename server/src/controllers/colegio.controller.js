@@ -108,34 +108,72 @@ colegioCtrl.Mensualidades = async (req, res) =>{
     if (hashn===hash && igual) {
         datos= JSON.parse(datos);
         let mensualidades=[];
-        for (var i=0; i<datos.Representados.length; i++){
-            const estu= datos.Representados[i];
-            let mensualidad =await Ver_Mensualidades(estu,Api); // await Buscar(tabla_mensualidad, estu._id, Api, '_id_estudiante');
-            mensualidades=[...mensualidades, ...mensualidad];
-            // mensualidad = await Buscar('uecla_Mensualidad', estu.cedula, Api,'cedula');
-            // mensualidad.map(men=>{
-            //     const pos= mensualidades.findIndex(f=>f.valores.periodo===men.valores.periodo);
-            //     if (pos===-1){
-            //         mensualidades=[...mensualidades, {
-            //             _id:men._id,
-            //             actualizado: men.actualizado,
-            //             cod_chs:men.cod_chs,
-            //             createdAt: men.createdAt,
-            //             hash_chs: men.hash_chs,
-            //             seq_chs:men.seq_chs,
-            //             updatedAt:men.updatedAt, 
-            //             valores:{...men.valores, _id_estudiante:estu._id}
-            //         }];
-            //     }
-            // })
-        }
-        res.json({Respuesta:'Ok', mensualidades});
+        mensualidades= await colegioCtrl.Resumen_Mensualidades(datos.Representados, Api);
+        // for (var i=0; i<datos.Representados.length; i++){
+        //     const estu= datos.Representados[i];
+        //     let mensualidad =await Ver_Mensualidades(estu,Api); // await Buscar(tabla_mensualidad, estu._id, Api, '_id_estudiante');
+        //     mensualidades=[...mensualidades, ...mensualidad];
+        //     // mensualidad = await Buscar('uecla_Mensualidad', estu.cedula, Api,'cedula');
+        //     // mensualidad.map(men=>{
+        //     //     const pos= mensualidades.findIndex(f=>f.valores.periodo===men.valores.periodo);
+        //     //     if (pos===-1){
+        //     //         mensualidades=[...mensualidades, {
+        //     //             _id:men._id,
+        //     //             actualizado: men.actualizado,
+        //     //             cod_chs:men.cod_chs,
+        //     //             createdAt: men.createdAt,
+        //     //             hash_chs: men.hash_chs,
+        //     //             seq_chs:men.seq_chs,
+        //     //             updatedAt:men.updatedAt, 
+        //     //             valores:{...men.valores, _id_estudiante:estu._id}
+        //     //         }];
+        //     //     }
+        //     // })
+        // }
+        
+        res.json({Respuesta:'Ok', ...mensualidades});
     }else{
         res.json({Respuesta:'Error', mensaje:'hash invalido'});
     }
 
 }
 
+colegioCtrl.Resumen_Mensualidades = async (Representados, Api)=>{
+    let mensualidades=[];
+    let solventes={}
+    for (var i=0; i<Representados.length; i++){
+        const estu= Representados[i];
+        if(solventes[estu._id]===undefined){
+            solventes[estu._id]={solvente: true, periodos:[]};
+        }
+        let mensualidad =await Ver_Mensualidades(estu,Api); // await Buscar(tabla_mensualidad, estu._id, Api, '_id_estudiante');
+        // const lista = ['inscripcion','septiembre','octubre','noviembre','diciembre','enero','febrero','marzo','abril','mayo','junio','julio','agosto']
+        const lista = ['inscripcion','enero','febrero','marzo','abril','mayo','junio','julio','agosto', 'septiembre','octubre','noviembre','diciembre'];
+        let solvente = true;
+        for (var j=0; j<mensualidad.length;j++){
+            const ano = mensualidad[j].valores;
+            // console.log(ano)
+            let pendiente = {solvente:true, periodo:ano.periodo, pendiente:[]}
+            for(var k=0;k<lista.length;k++){
+                const val = lista[k];
+                if(!ano[val]){
+                    pendiente.solvente=false;
+                    pendiente.pendiente=[...pendiente.pendiente, val];
+                    solvente=false;
+                }
+                
+            }
+            solventes[estu._id].periodos=[...solventes[estu._id].periodos,pendiente].sort((a,b)=>a.periodo>b.periodo ? 1 : -1)
+
+            if (solventes[estu._id].solvente && !solvente){
+                solventes[estu._id].solvente=false
+            }
+        }
+        mensualidades=[...mensualidades, ...mensualidad];
+    }
+    
+    return {mensualidades, solventes}
+}
 const Ver_Mensualidades = async(estu, Api)=>{
     let mensualidades=[];
     let mensualidad = await Buscar(tabla_mensualidad, estu._id, Api, '_id_estudiante');
@@ -242,7 +280,6 @@ colegioCtrl.Solvencias = async (req, res) =>{
         const Mensualidad = await Model(Api,tabla_mensualidad);
         let Mensualidades = await Mensualidad.find({'valores.periodo':datos.periodo});
         let estudiantes = await Buscar(tabla_estudiante, datos.grado, Api, 'grado.titulo');
-        
         let nuevo=[];
         for (var i=0;i<estudiantes.length; i++){
             let f = estudiantes[i];
@@ -836,6 +873,81 @@ colegioCtrl.Actualizar_Referencia = async (req, res)=>{
     if (hashn===hash) {// && igual) {
         Act_Referencia(User, Api);
         res.json({Respuesta:'Ok'});
+    }else{
+        res.json({Respuesta:'Error', mensaje:'hash invalido'});
+    }
+}
+
+colegioCtrl.Promover = async (req, res) =>{
+    let {User, Api, Periodo, hash} = req.body;
+    User= typeof User==='string' ? JSON.parse(User) : User;
+    const hashn = await Hash_texto(JSON.stringify({User, Api, Periodo}));
+    // const igual= await Verifica_api(Api, true);
+    if (hashn===hash) {// && igual) {
+        console.log(Periodo);
+        const Mensualidad = await Model(Api,tabla_mensualidad);
+        let Mensualidades = await Mensualidad.find({'valores.periodo':Periodo});
+        let estudiantes = await Buscar(tabla_estudiante, '5to año', Api, 'grado.titulo');
+        let nuevo=[];
+        let solventes = [];
+        let nosolventes =[];
+        for (var i=0;i<estudiantes.length; i++){
+            
+            const estu= estudiantes[i];
+            // nuevo=[...nuevo, {_id:estu._id, ...estu.valores}]
+            const meses = await colegioCtrl.Resumen_Mensualidades([{_id:estu._id, ...estu.valores}],Api)
+            // if (f.valores.estatus && f.valores.estatus.value==='inscrito'){
+            //     nuevo=[...nuevo, f]
+            // }else{
+            //     no =[...no,f];
+            // }
+            
+            // const pos = Mensualidades.findIndex(f=>f.valores._id===estu._id || f.valores.cedula===estu.cedula );
+            // const meses = await Ver_Mensualidades(estu, Api);
+            
+            let solven=true;
+            const lista = ['inscripcion','septiembre','octubre','noviembre','diciembre','enero','febrero','marzo','abril','mayo','junio','julio','agosto']
+            let pendientes = [];
+            for (var j=0; j<meses.length;j++){
+                const ano = meses[j].valores;
+                // console.log(ano)
+                let pendiente = {solvente:true, periodo:ano.periodo, pendiente:[]}
+                for(var k=0;k<lista.length;k++){
+                    const val = lista[k];
+                    if(!ano[val]){
+                        pendiente.solvente=false;
+                        pendiente.pendiente=[...pendiente.pendiente, val];
+                        solven=false;
+                    }
+                    
+                }
+                pendientes=[...pendientes, pendiente]
+                               
+            }
+            if (solven){
+                solventes=[...solventes, 
+                            {
+                                _id_estudiante: estu._id, 
+                                nombres:estu.valores.nombres, 
+                                apellidos:estu.valores.apellidos,
+                                pendientes
+                            }
+                ];
+            }else{
+                nosolventes=[...nosolventes, 
+                            {
+                                _id_estudiante: estu._id, 
+                                nombres:estu.valores.nombres, 
+                                apellidos:estu.valores.apellidos,
+                                pendientes
+                            }
+                ];
+            }
+
+        }
+        
+        
+        res.json({Respuesta:'Ok', solventes, nosolventes});
     }else{
         res.json({Respuesta:'Error', mensaje:'hash invalido'});
     }
