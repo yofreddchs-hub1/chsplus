@@ -58,13 +58,15 @@ Guardar_Mensualidades = async(Mensualidades, User, Api) =>{
             }
             // console.log(estudiante);
             const hash_chs = await Hash_chs({...estudiante.valores, cod_chs: estudiante.cod_chs})
-            await Mensualidad.updateOne({_id:estudiante._id},{valores:estudiante.valores, hash_chs, actualizado:User.username},{ upsert: true });
+            // await Mensualidad.updateOne({_id:estudiante._id},{valores:estudiante.valores, hash_chs, actualizado:User.username},{ upsert: true });
+            await Estudiante.updateOne({_id:estudiante._id},{valores:estudiante.valores, hash_chs, actualizado:User.username},{ upsert: true });
         }
         const pos = mensualidades.findIndex(f=> (f._id_estudiante===mes._id || f.cedula===mes.cedula) && f.periodo===mes.periodo)
         if (pos===-1){
             mensualidades= [...mensualidades,
                 {
                     _id_estudiante:mes._id, cedula:mes.cedula, nombres:mes.nombres, apellidos:mes.apellidos,
+                    grado:mes.grado, seccion:mes.seccion,
                     periodo: mes.periodo, [mes.value]: true, [`mensaje-${mes.value}`]:'Cancelado'
                 }
             ]
