@@ -786,7 +786,7 @@
                 "tipo": "input",
                 "label": "Titulo de Censo",
                 "placeholder": "Titulo de Censo",
-                "title": "Titulo de Cenco",
+                "title": "Titulo de Censo",
                 "required": true,
                 "mensaje_error": "Debe indicar titulo del censo",
                 "disabled": false,

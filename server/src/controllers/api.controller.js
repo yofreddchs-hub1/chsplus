@@ -653,6 +653,8 @@ serverCtrl.Delall = async (req, res) =>{
         // const anterior = await DB.findOne({_id:dato._id});
         console.log(dato)
         await DB.updateOne({_id:dato._id},{eliminado:true, actualizado:dato.user},{ upsert: true });
+        //elimina definitivamente verficar con las versiones de electron
+        await DB.deleteOne({_id:dato._id});
         // const resultado=await DB.find()
         global.io.emit('Actualizar',{data})//, datos:resultado})
         try{
