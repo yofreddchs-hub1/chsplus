@@ -1,0 +1,29 @@
+{
+  "files": {
+    "main.css": "./static/css/main.28370764.css",
+    "main.js": "./static/js/main.2efa8ea2.js",
+    "static/js/239.c57532e6.chunk.js": "./static/js/239.c57532e6.chunk.js",
+    "static/js/213.6fb581e2.chunk.js": "./static/js/213.6fb581e2.chunk.js",
+    "static/js/455.7827bec5.chunk.js": "./static/js/455.7827bec5.chunk.js",
+    "static/js/453.216f8313.chunk.js": "./static/js/453.216f8313.chunk.js",
+    "static/media/enconstruccion.png": "./static/media/enconstruccion.9691ae2ce76faa7c2a4e.png",
+    "static/media/noexiste.png": "./static/media/noexiste.d877c0c995ea4789a416.png",
+    "static/media/logo.png": "./static/media/logo.ae3907bb858e330a2ec8.png",
+    "static/media/logo512.png": "./static/media/logo512.ae3907bb858e330a2ec8.png",
+    "static/media/sindatos.png": "./static/media/sindatos.fe2cc920dace72656f2d.png",
+    "static/media/excelmock3.jpg": "./static/media/excelmock3.f05feccef5b1cf5f27f4.jpg",
+    "static/media/logoh.png": "./static/media/logoh.35ffe65c688f58034ff8.png",
+    "static/media/excel.png": "./static/media/excel.6a794f2f02495f3ced77.png",
+    "index.html": "./index.html",
+    "main.28370764.css.map": "./static/css/main.28370764.css.map",
+    "main.2efa8ea2.js.map": "./static/js/main.2efa8ea2.js.map",
+    "239.c57532e6.chunk.js.map": "./static/js/239.c57532e6.chunk.js.map",
+    "213.6fb581e2.chunk.js.map": "./static/js/213.6fb581e2.chunk.js.map",
+    "455.7827bec5.chunk.js.map": "./static/js/455.7827bec5.chunk.js.map",
+    "453.216f8313.chunk.js.map": "./static/js/453.216f8313.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.28370764.css",
+    "static/js/main.2efa8ea2.js"
+  ]
+}

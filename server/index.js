@@ -64,6 +64,7 @@ app.get('*',async(req,res) =>{
   console.log('<<<<<<<<<<<>>',direccion)
   const Apis = await Model(global.Principal,'Api')
   const api = await Apis.findOne({'valores.direccion':direccion});
+  console.log(api)
   if (api!==null){
     res.sendFile(path.join(__dirname,'build',direccion,'index.html'));
     return

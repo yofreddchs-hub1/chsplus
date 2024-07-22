@@ -4,6 +4,7 @@ const fs = require('fs');
 const { Hash_texto, Hash_password } = require('../servicios/encriptado');
 const { Codigo_chs, Hash_chs} = require('../servicios/conexiones');
 const {Verifica_api, Tablas} = require('../controllers/api.controller');
+const {Model} = require('../database/model');
 
 Ver_disponibilidad = (datos, horario)=>{
     return datos.valores.valor === horario.valores.horario[datos.pos.fila][datos.pos.columna].valor || horario.valores.horario[datos.pos.fila][datos.pos.columna].valor===''
@@ -16,11 +17,11 @@ unefaCtrl.DisponibilidadHorario = async (req, res) =>{
     const igual= await Verifica_api(api, true);
     if (hashn===hash && igual) {
         datos= JSON.parse(datos);
-        await Tablas(table);
-        const Horario = require(`../models/${table}`);
-        const Aula = require(`../models/unefa_aula`);
+        // await Tablas(table);
+        const Horario =  await Model(api, table);//require(`../models/${table}`);
+        const Aula =  await Model(api, 'unefa_horario_aula');//require(`../models/unefa_aula`);
         let aulas = await Aula.find();
-        let horarios = await Horario.find({$text: {$search: datos.periodo, $caseSensitive: true}})
+        let horarios = await Horario.find({[`valores.periodo`]:datos.periodo});//.find({$text: {$search: datos.periodo, $caseSensitive: true}})
         horarios= horarios.filter(f=> {
             const o = datos.docentes ? datos.docentes.filter(f1=> f1._id===f.valores._id_tipo) : [];
             const a = aulas.filter(f1=> String(f1._id)===f.valores._id_tipo);
@@ -55,7 +56,7 @@ unefaCtrl.DisponibilidadHorario = async (req, res) =>{
 
 }
 
-Verificar_horas = async (datos, i, j, hor, nuevo, columna, limpiar, user,codigo_id_tipo, codigo_titulo, codigo_tipo)=>{
+Verificar_horas = async (datos, i, j, hor, nuevo, columna, limpiar, user,codigo_id_tipo, codigo_titulo, codigo_tipo, api)=>{
     const {periodo, _id_tipo, titulo}= datos
     if (hor.length===0){
         hor=nuevo.map((val,i)=>{
@@ -88,7 +89,7 @@ Verificar_horas = async (datos, i, j, hor, nuevo, columna, limpiar, user,codigo_
             titulo: codigo_titulo,
             horario:hor
         }
-        await Guardar_horario(valores, user)
+        await Guardar_horario(valores, user, api)
     }else{
         hor=hor[0];
         hor.valores._id=hor._id;
@@ -139,13 +140,13 @@ Verificar_horas = async (datos, i, j, hor, nuevo, columna, limpiar, user,codigo_
             }
         }
         if (guardar){
-            await Guardar_horario(hor, user)
+            await Guardar_horario(hor, user, api)
         }    
     }
     return columna
 }
 
-Comparar_horario = async(datos, nuevo, user, limpiar=false)=>{
+Comparar_horario = async(datos, nuevo, user, api, limpiar=false)=>{
     const {horario, periodo}= datos
     let resultado=horario;
     for (var i=0; i<horario.length; i++){
@@ -155,8 +156,8 @@ Comparar_horario = async(datos, nuevo, user, limpiar=false)=>{
             if (columna.valor!=='' && j!==0){
                 //Para Docente
                 if(columna.docente && columna.docente._id){
-                    let hor = await Buscar_Horario({_id_tipo:columna.docente._id, periodo});
-                    resultado[i][j] = await Verificar_horas(datos, i, j, hor, nuevo, columna, limpiar, user, columna.docente._id, columna.docente.titulo, 'docente')
+                    let hor = await Buscar_Horario({_id_tipo:columna.docente._id, periodo}, api);
+                    resultado[i][j] = await Verificar_horas(datos, i, j, hor, nuevo, columna, limpiar, user, columna.docente._id, columna.docente.titulo, 'docente', api)
                     if (resultado[i][j].mensaje!==''){
                         let cont = 0;
                         while(resultado[i-cont][j].espacio===0 && i-cont>0){
@@ -168,8 +169,8 @@ Comparar_horario = async(datos, nuevo, user, limpiar=false)=>{
                 }
                 //Para Aula
                 if(columna.aula && columna.aula._id){
-                    let hor = await Buscar_Horario({_id_tipo:columna.aula._id, periodo});
-                    resultado[i][j] = await Verificar_horas(datos, i, j, hor, nuevo, columna, limpiar, user, columna.aula._id, columna.aula.titulo, 'aula')
+                    let hor = await Buscar_Horario({_id_tipo:columna.aula._id, periodo}, api);
+                    resultado[i][j] = await Verificar_horas(datos, i, j, hor, nuevo, columna, limpiar, user, columna.aula._id, columna.aula.titulo, 'aula', api)
                     if (resultado[i][j].mensaje!==''){
                         let cont = 0;
                         while(resultado[i-cont][j].espacio===0 && i-cont>0){
@@ -185,9 +186,9 @@ Comparar_horario = async(datos, nuevo, user, limpiar=false)=>{
     return resultado
 }
 
-Guardar_horario= async(datos, user)=>{
-    await Tablas('unefa_horario');
-    const Horario = require(`../models/unefa_horario`);
+Guardar_horario= async(datos, user, api)=>{
+    // await Tablas('unefa_horario');
+    const Horario =  await Model(api, 'unefa_horario_horario');//require(`../models/unefa_horario`);
     let horario
     if (datos._id){
         await Horario.updateOne({_id:datos._id},{valores:datos, actualizado:user.username},{ upsert: true });
@@ -208,18 +209,18 @@ unefaCtrl.GuardarHorario = async (req, res) =>{
     const igual= await Verifica_api(api, true);
     if (hashn===hash && igual) {
         datos= JSON.parse(datos);
-        await Tablas(table);
+        // await Tablas(table);
         const nuevo = datos.nuevo
         //Limpiar
-        let hor = await Buscar_Horario(datos);
+        let hor = await Buscar_Horario(datos, api);
         if (hor.length!==0){
             hor= {...hor[0].valores, _id: hor[0]._id}
-            await Comparar_horario(hor, nuevo, user, true);
+            await Comparar_horario(hor, nuevo, user, api, true);
         }
         //Cargar datos
-        datos.horario = await Comparar_horario(datos, nuevo, user);
+        datos.horario = await Comparar_horario(datos, nuevo, user, api);
         delete datos.nuevo
-        let horario= await Guardar_horario(datos, user);
+        let horario= await Guardar_horario(datos, user, api);
         
         res.json({Respuesta:'Ok', datos, horario, nuevo});
     }else{
@@ -228,12 +229,12 @@ unefaCtrl.GuardarHorario = async (req, res) =>{
 
 }
 
-Buscar_Horario= async(datos, campo='_id_tipo')=>{
-    await Tablas('unefa_horario');
-    const Horario = require(`../models/unefa_horario`);
+Buscar_Horario= async(datos, api, campo='_id_tipo')=>{
+    // await Tablas('unefa_horario');
+    const Horario =  await Model(api, 'unefa_horario_horario');//require(`../models/unefa_horario`);
     let horario= []
     try {
-        horario = await Horario.find({$text: {$search: datos[campo], $caseSensitive: true}})
+        horario = await Horario.find({[`valores.${campo}`]:datos[campo]});//({$text: {$search: datos[campo], $caseSensitive: true}})
     }catch(error) {
         console.log('Error-buscarhoraio',error);    
     }
@@ -248,7 +249,7 @@ unefaCtrl.LeerHorario = async (req, res) =>{
     const igual= await Verifica_api(api, true);
     if (hashn===hash && igual) {
         datos= JSON.parse(datos);
-        let horario = await Buscar_Horario(datos)
+        let horario = await Buscar_Horario(datos, api)
         res.json({Respuesta:'Ok', horario});
     }else{
         res.json({Respuesta:'Error', mensaje:'hash invalido'});
@@ -262,15 +263,15 @@ unefaCtrl.MisDatos = async (req, res) =>{
     const hashn = await Hash_texto(JSON.stringify({user, api}));
     const igual= await Verifica_api(api, true);
     if (hashn===hash && igual) {
-        await Tablas('unefa_User_api');
-        await Tablas('unefa_docente');
-        const Usuario = require(`../models/unefa_User_api`);
-        const Docente = require(`../models/unefa_docente`);
+        // await Tablas('unefa_User_api');
+        // await Tablas('unefa_docente');
+        const Usuario =  await Model(api, 'unefa_horario_user_api');//require(`../models/unefa_User_api`);
+        const Docente =  await Model(api, 'unefa_horario_docente');//require(`../models/unefa_docente`);
         let usuario = await Usuario.findOne({_id:user._id});
         if (usuario!==null){
             usuario= {...usuario.valores, _id: usuario._id};
         }
-        let docente = await Docente.find({$text: {$search: user.username, $caseSensitive: true}})
+        let docente = await Docente.find({[`valores.username`]:user.username});//.find({$text: {$search: user.username, $caseSensitive: true}})
         if (docente.length!==0){
             docente= docente.filter(f=>f.valores.username===user.username).map(v=>{return{...v.valores,_id:v._id}})[0];
         }else{
