@@ -18,6 +18,13 @@ const tabla_representante = 'uecla_Representante'; // 'colegio_representante'
 const tabla_pago = 'uecla_Pago'; // 'colegio_pago'
 const tabla_referencia= 'uecla_Referencia';
 const tabla_whatsapp_referencia = 'uecla_Whatsapp_Capture';
+const tabla_inscripcion ='uecla_Inscripcion';
+const tabla_horario = 'uecla_horario';
+const tabla_aula = 'uecla_Aula';
+const tabla_nota = 'uecla_nota';
+const tabla_asignatura= 'uecla_asignatura';
+const tabla_docente = 'uecla_docente';
+const tabla_evaluacion = 'uecla_evaluacion';
 
 Buscar = async(tabla, dato, Api, campo='_id') =>{
     const BD = await Model(Api, tabla);//require(`../models/${tabla}`);
@@ -36,11 +43,9 @@ Buscar = async(tabla, dato, Api, campo='_id') =>{
 }
 
 Guardar_Mensualidades = async(Mensualidades, User, Api) =>{
-    // await Tablas(tabla_mensualidad);
-    // await Tablas('uecla_Inscripcion');
     const Mensualidad= await Model(Api, tabla_mensualidad);//require(`../models/${tabla_mensualidad}`);
     const Estudiante = await Model(Api, tabla_estudiante);//require(`../models/uecla_Estudiante`);
-    const Inscripcion = await Model(Api, 'uecla_Inscripcion');//require(`../models/uecla_Inscripcion`);
+    const Inscripcion = await Model(Api, tabla_inscripcion);//require(`../models/uecla_Inscripcion`);
     let inscripcion = await Inscripcion.find();
     inscripcion= inscripcion.sort((a,b) => a.valores.periodo> b.valores.periodo ? -1 : 1).filter(f=> f.valores.estatus);
     // console.log(Mensualidades)
@@ -202,7 +207,7 @@ const Ver_Mensualidades = async(estu, Api)=>{
 }
 Actulizar_Inscripcion = async( Api)=>{
     const Estudiante = await Model(Api, tabla_estudiante);
-    const Inscripcion = await Model(Api, 'uecla_Inscripcion');
+    const Inscripcion = await Model(Api, tabla_inscripcion);
     const Mensualidad = await Model(Api,tabla_mensualidad);
     let inscripcion = await Inscripcion.find();
     inscripcion= inscripcion.sort((a,b) => a.valores.periodo> b.valores.periodo ? -1 : 1);
@@ -300,6 +305,7 @@ colegioCtrl.Solvencias = async (req, res) =>{
             let mensualidad = {}
             if (pos!==-1){
                 mensualidad = {_id:Mensualidades[pos]._id, ...Mensualidades[pos].valores}
+                mensualidades=[...mensualidades, mensualidad];
             }
             // let mensualidad = await Buscar(tabla_mensualidad, estu._id, '_id_estudiante');
             // let mensualidad = await Ver_Mensualidades(estu, Api);
@@ -307,7 +313,7 @@ colegioCtrl.Solvencias = async (req, res) =>{
                 // return {_id:val._id, ...val.valores}
             // })
             // mensualidad = mensualidad.filter(f=> f.periodo===datos.periodo);
-            mensualidades=[...mensualidades, mensualidad];
+            // mensualidades=[...mensualidades, mensualidad];
         }
         res.json({Respuesta:'Ok', estudiantes, mensualidades});
     }else{
@@ -315,6 +321,211 @@ colegioCtrl.Solvencias = async (req, res) =>{
     }
 
 }
+
+colegioCtrl.Notas = async (req, res) =>{
+    let {User, Api, datos, hash} = req.body;
+    User= typeof User==='string' ? JSON.parse(User) : User;
+    const hashn = await Hash_texto(JSON.stringify({User, Api, datos}));
+    const igual= await Verifica_api(Api, true);
+    if (hashn===hash && igual) {
+        datos= JSON.parse(datos);
+        const Mensualidad = await Model(Api,tabla_mensualidad);
+        const Notas = await Model(Api,tabla_nota);
+        const Evaluaciones = await Model(Api,tabla_evaluacion);
+        let Mensualidades = await Mensualidad.find({'valores.periodo':datos.periodo});
+        let estudiantes = await Buscar(tabla_estudiante, datos.grado, Api, 'grado.titulo');
+        let asignaturas = await Buscar(tabla_asignatura, datos.grado, Api, 'grado.titulo');
+        let nuevanotas={}
+        let evaluaciones= []
+        if (datos.tipo==='docente'){
+            evaluaciones= await Evaluaciones.find(
+                {
+                    $and:[
+                        {'valores.periodo':datos.periodo},
+                        {'valores.grado':datos.grado},
+                        {'valores.seccion':datos.seccion},
+                        {'valores.docente._id':datos.docente._id},
+                        {'valores.asignatura._id':datos.asignatura._id}
+                    ]
+                }
+            );
+            evaluaciones = evaluaciones.map(f=>{
+                return {
+                    _id:f._id, ...f.valores, titulo:f.valores.nombre, field:`nota-${f._id}`, createdAt: f.createdAt
+                }
+            }).sort((a,b) => a.lapso._id> b.lapso._id ? 1 : -1);
+        }
+        
+        asignaturas = asignaturas.map(f=>{
+            return {_id:f._id, ...f.valores, titulo:f.valores.abreviacion ? f.valores.abreviacion : f.valores.asignatura  , field:`nota-${f._id}`}
+        });
+        let lapso=null;
+        let titulos=[];
+        let titulosa=[];
+        if (datos.tipo==='seccion'){
+            // titulos = asignaturas
+            for (var i=0; i<asignaturas.length; i++){
+                const asig= asignaturas[i];
+                titulos=[...titulos,
+                    {...asig, titulo: `${asig.titulo} 1er LAPSO`,field:`1lapso-${asig._id}`},
+                    {...asig, titulo: `${asig.titulo} 2do LAPSO`,field:`2lapso-${asig._id}`},
+                    {...asig, titulo: `${asig.titulo} 3er LAPSO`,field:`3lapso-${asig._id}`}
+                ]
+            }
+        }else{
+            evaluaciones.map((val, i)=>{
+                if (lapso===null){
+                    lapso=val.lapso;
+                }
+                if (lapso.value===val.lapso.value){
+                    titulosa=[...titulosa,val] 
+                }
+                if (lapso.value!==val.lapso.value){
+                    titulos=[...titulos, ...titulosa.sort((a,b) => a.createdAt> b.createdAt ? 1 : -1),
+                        {
+                            _id:`Error-${lapso.value}`,
+                            titulo:`${lapso.titulo}`,
+                            field:`${lapso.value}-${datos.asignatura._id}`
+                        },
+                    ];
+                    titulosa=[val];
+                    lapso=val.lapso;
+                }
+                if (i===evaluaciones.length-1){
+                    titulos=[...titulos, ...titulosa.sort((a,b) => a.createdAt> b.createdAt ? 1 : -1),
+                        {
+                            _id:`Error-${lapso.value}`,
+                            titulo:`${lapso.titulo}`,
+                            field:`${lapso.value}-${datos.asignatura._id}`
+    
+                        }
+                    ]
+                }
+            });
+        }
+        // let titulos = datos.tipo==='seccion' 
+        //     ?   asignaturas   
+        //     :   [...evaluaciones,
+        //             {
+        //                 _id:'Error-total',
+        //                 titulo:'Total',
+        //                 field:`total-${datos.asignatura._id}`
+
+        //             }
+        //         ];
+        
+        titulos.map(f=>{
+            nuevanotas[f._id]={titulo:f.titulo, nota:null};
+        })
+        
+        let nuevo=[];
+        for (var i=0;i<estudiantes.length; i++){
+            let f = estudiantes[i];
+            if (datos.seccion && f.valores.seccion && f.valores.seccion.titulo===datos.seccion 
+                && f.valores.estatus && f.valores.estatus.value==='inscrito'
+                || datos.seccion===undefined && f.valores.estatus && f.valores.estatus.value==='inscrito'){
+                nuevo=[...nuevo, f.valores]
+            }
+        }
+
+        estudiantes= [...nuevo];
+        let seccion=[];
+        
+        for (var i=0; i<estudiantes.length; i++){
+            const estu= estudiantes[i];
+            const pos = Mensualidades.findIndex(f=>f.valores._id===estu._id || f.valores.cedula===estu.cedula );
+            if (pos!==-1){
+                let Asigna ={} 
+                let nota = await Notas.find({
+                    $and:[
+                        {"valores._id_estudiante":estu._id},
+                        {'valores.periodo':datos.periodo},
+                        // {'valores.grado':datos.grado},
+                        // {'valores.seccion':datos.seccion},
+                        // {'valores.asignatura._id':datos.asignatura._id},
+                        // {'valores.docente._id':datos.docente._id},
+                    ]
+                });
+                nota = nota.map(val=>{
+                    return {_id:val._id, ...val.valores}
+                })
+                const posnota = datos.asignatura ?  nota.findIndex(item=> item.asignatura._id===datos.asignatura._id) : -1;
+                if (datos.tipo==='seccion'){
+                    // console.log(nota)
+                    Object.keys(nuevanotas).map(val=>{
+                        const materia = nuevanotas[val];
+                        
+                        const posn= nota.findIndex(item=> item.asignatura._id===val);
+                        if (posn!==-1){
+                            Asigna[`1lapso-${val}`]=nota[posn][`1lapso-${val}`];
+                            Asigna[`2lapso-${val}`]=nota[posn][`2lapso-${val}`];
+                            Asigna[`3lapso-${val}`]=nota[posn][`3lapso-${val}`];
+                        }else{
+                            Asigna[`1lapso-${val}`]= materia.nota;
+                            Asigna[`2lapso-${val}`]= materia.nota;
+                            Asigna[`3lapso-${val}`]= materia.nota;
+                        }
+                        // Asigna[`nota-${val}`]=nota===null ? materia.nota : nota[`nota-${val}`];
+                        // Asigna[`nota-${val}`]= materia.nota;
+                        // Asigna[materia.titulo]=materia.nota;
+                    })
+                    
+                }else{
+                    Object.keys(nuevanotas).map(val=>{
+                        const materia = nuevanotas[val];
+                        const posn= nota.findIndex(item=> item[`nota-${val}`]);
+                        if (posn!==-1){
+                            Asigna[`nota-${val}`]=nota[posn][`nota-${val}`];
+                        }else{
+                            Asigna[`nota-${val}`]= materia.nota;
+                        }
+                        // Asigna[`nota-${val}`]=nota===null ? materia.nota : nota[`nota-${val}`];
+                        // Asigna[`nota-${val}`]= materia.nota;
+                        // Asigna[materia.titulo]=materia.nota;
+                    })
+                }
+                if (posnota!==-1){
+                    // Asigna[`total-${datos.asignatura._id}`]=nota[posnota][`total-${datos.asignatura._id}`];
+                    Asigna={...Asigna, ...nota[posnota]}
+                }
+                // nota = nota===null ? nota : {_id:nota._id , ...nota.valores}
+
+                
+                // console.log(Asigna)
+                seccion=[...seccion, 
+                    {
+                        _id: posnota!==-1 ? nota[posnota]._id : undefined,
+                        _id_estudiante: estu._id, periodo:datos.periodo,
+                        cedula:estu.cedula,
+                        nombres:estu.nombres, apellidos:estu.apellidos,
+                        grado:estu.grado, seccion:estu.seccion,
+                        ...Asigna
+                    }
+                ];
+            }
+            
+        }
+        // for (var i=0; i<seccion.length; i++){
+        //     const estu= seccion[i];
+        //     const nota = await Notas.findOne({
+        //         $and:[
+        //             {"valores._id_estudiante":estu._id_estudiante},
+        //             {'valores.periodo':datos.periodo},
+        //             // {'valores.grado':datos.grado},
+        //             // {'valores.seccion':datos.seccion},
+        //             {'valores.asignatura._id':datos.asignatura._id},
+        //             // {'valores.docente._id':datos.docente._id},
+        //         ]
+        //     });
+        //     // console.log(nota)
+        // }
+        res.json({Respuesta:'Ok', estudiantes, seccion, asignaturas, nuevanotas, titulos});
+    }else{
+        res.json({Respuesta:'Error', mensaje:'hash invalido'});
+    }
+
+}
+
 colegioCtrl.EnviarPago = async (req, res) =>{
     let {User, Api, datos, hash} = req.body;
     User= typeof User==='string' ? JSON.parse(User) : User;
@@ -978,8 +1189,8 @@ colegioCtrl.DisponibilidadHorarioU = async (req, res) =>{
     if (hashn===hash && igual) {
         datos= JSON.parse(datos);
         //await Tablas(table);
-        const Horario = await Model(api,'uecla_horario');//require(`../models/${table}`);
-        const Aula = await Model(api,'uecla_Aula');//require(`../models/unefa_aula`);
+        const Horario = await Model(api,tabla_horario);//require(`../models/${table}`);
+        const Aula = await Model(api,tabla_aula);//require(`../models/unefa_aula`);
         let aulas = await Aula.find();
         let horarios = await Horario.find({[`valores.periodo`]:datos.periodo});//({$text: {$search: datos.periodo, $caseSensitive: true}})
         horarios= horarios.filter(f=> {
@@ -1043,8 +1254,8 @@ colegioCtrl.GuardarHorarioU = async (req, res) =>{
 
 }
 Buscar_HorarioU= async(datos, Api, campo='_id_tipo')=>{
-    // await Tablas('uecla_horario');
-    const Horario = await Model(Api, 'uecla_horario');//require(`../models/unefa_horario`);
+    // await Tablas(tabla_horario);
+    const Horario = await Model(Api, tabla_horario);//require(`../models/unefa_horario`);
     let horario= []
     try {
         horario = await Horario.find({[`valores.${campo}`]:datos[campo]});//({$text: {$search: datos[campo], $caseSensitive: true}})
@@ -1186,7 +1397,7 @@ Verificar_horasU = async (datos, i, j, hor, nuevo, columna, limpiar, user,codigo
 }
 Guardar_horarioU= async(datos, user, api)=>{
     // await Tablas('unefa_horario');
-    const Horario = await Model(api,'uecla_horario');//require(`../models/unefa_horario`);
+    const Horario = await Model(api,tabla_horario);//require(`../models/unefa_horario`);
     let horario
     if (datos._id){
         await Horario.updateOne({_id:datos._id},{valores:datos, actualizado:user.username},{ upsert: true });
