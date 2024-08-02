@@ -148,6 +148,7 @@ colegioCtrl.Mensualidades = async (req, res) =>{
 colegioCtrl.Resumen_Mensualidades = async (Representados, Api)=>{
     let mensualidades=[];
     let solventes={}
+    Representados= Representados===null ? [] : Representados;
     for (var i=0; i<Representados.length; i++){
         const estu= Representados[i];
         if(solventes[estu._id]===undefined){
