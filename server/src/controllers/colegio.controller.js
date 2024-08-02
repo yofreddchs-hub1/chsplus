@@ -301,7 +301,8 @@ colegioCtrl.Solvencias = async (req, res) =>{
         let mensualidades=[];
         for (var i=0; i<estudiantes.length; i++){
             const estu= estudiantes[i];
-            const pos = Mensualidades.findIndex(f=>f.valores._id===estu._id || f.valores.cedula===estu.cedula );
+            
+            const pos = Mensualidades.findIndex(f=>f.valores._id_estudiante===estu._id || f.valores.cedula===estu.cedula );
             let mensualidad = {}
             if (pos!==-1){
                 mensualidad = {_id:Mensualidades[pos]._id, ...Mensualidades[pos].valores}
@@ -315,6 +316,7 @@ colegioCtrl.Solvencias = async (req, res) =>{
             // mensualidad = mensualidad.filter(f=> f.periodo===datos.periodo);
             // mensualidades=[...mensualidades, mensualidad];
         }
+       
         res.json({Respuesta:'Ok', estudiantes, mensualidades});
     }else{
         res.json({Respuesta:'Error', mensaje:'hash invalido'});
@@ -433,7 +435,7 @@ colegioCtrl.Notas = async (req, res) =>{
         
         for (var i=0; i<estudiantes.length; i++){
             const estu= estudiantes[i];
-            const pos = Mensualidades.findIndex(f=>f.valores._id===estu._id || f.valores.cedula===estu.cedula );
+            const pos = Mensualidades.findIndex(f=>f.valores._id_estudiante===estu._id || f.valores.cedula===estu.cedula );
             if (pos!==-1){
                 let Asigna ={} 
                 let nota = await Notas.find({

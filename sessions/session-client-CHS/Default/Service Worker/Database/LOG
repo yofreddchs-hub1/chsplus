@@ -1,3 +1,2 @@
-2024/07/04-09:43:03.340 331c Reusing MANIFEST C:\codigos\2024\chs-plus\sessions\session-client-CHS\Default\Service Worker\Database/MANIFEST-000001
-2024/07/04-09:43:03.341 331c Recovering log #3
-2024/07/04-09:43:03.342 331c Reusing old log C:\codigos\2024\chs-plus\sessions\session-client-CHS\Default\Service Worker\Database/000003.log 
+2024/08/01-10:32:40.258 5bf0 Creating DB C:\codigos\2024\chs-plus\sessions\session-client-CHS\Default\Service Worker\Database since it was missing.
+2024/08/01-10:32:40.275 5bf0 Reusing MANIFEST C:\codigos\2024\chs-plus\sessions\session-client-CHS\Default\Service Worker\Database/MANIFEST-000001
