@@ -527,7 +527,7 @@
                   "placeholder": "Inventario Actual",
                   "title": "Inventario Actual en almacén",
                   "mensaje_error": "",
-                  "disabled": false,
+                  "disabled": true,
                   "numberOfLines": "",
                   "getOptionLabel": [
                       "titulo"
@@ -649,7 +649,7 @@
                   "placeholder": "Inventario Actual",
                   "title": "Inventario Actual",
                   "mensaje_error": "",
-                  "disabled": false,
+                  "disabled": true,
                   "numberOfLines": "",
                   "getOptionLabel": [
                       "titulo"
@@ -912,7 +912,7 @@
                   "placeholder": "Inventario Actual",
                   "title": "Inventario Actual",
                   "mensaje_error": "",
-                  "disabled": false,
+                  "disabled": true,
                   "numberOfLines": "",
                   "getOptionLabel": [
                       "titulo"
