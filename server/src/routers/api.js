@@ -32,14 +32,19 @@ const { Ver_api, Login,Verificar, Getall, Getall_C, Setall, Delall, Leer_data, G
         Egew_pagarWesi,
         Egew_transferirWesi,
         VerApis,
-        Guardar_produccion, Ingresar_material, Ingresar_empaque, Ingreso_Egreso, Recibo_venta, Serial, Egreso_Venta, Ventas,
         Sincronizar,
-        Ingresar,
         Infor_database,Infor_databaseD, Infor_datos, WhatsAppQR,
       } = require('../controllers/api.controller');
+const { Guardar_produccion, Ingresar_material, Ingresar_empaque, Ingreso_Egreso, Recibo_venta, Serial, Egreso_Venta, Ventas,
+        Ingresar,
+        Iniciarchs,
+      } = require('../controllers/sistemachs.controller');
+const { Mensualidades, EnviarPago, Solvencias, Resumen, Sincronizar_uecla, Recibos, Verificar_Inscripcion, Actualizar_Referencia, 
+        Promover, LeerHorarioU, DisponibilidadHorarioU, GuardarHorarioU, Notas
+      } = require('../controllers/colegio.controller');
+const { LeerHorario, GuardarHorario, DisponibilidadHorario, MisDatos 
 
-const {Mensualidades, EnviarPago, Solvencias, Resumen, Sincronizar_uecla, Recibos, Verificar_Inscripcion, Actualizar_Referencia, Promover, LeerHorarioU, DisponibilidadHorarioU, GuardarHorarioU, Notas} = require('../controllers/colegio.controller');
-const { LeerHorario, GuardarHorario, DisponibilidadHorario, MisDatos } = require('../controllers/unefa.controller');
+      } = require('../controllers/unefa.controller');
 
 router.post('/ver_api', Ver_api);
 router.post('/login/verificar', Verificar);
@@ -70,6 +75,7 @@ router.post('/infodatos', Infor_datos);
 router.post('/whatsappqr', WhatsAppQR);
 // SistemaCHS
 router.get('/reciboventa',Recibo_venta);
+router.post('/inicarsistemachs',Iniciarchs);
 router.post('/serial', Serial);
 router.post('/egresoventa', Egreso_Venta);
 router.post('/ventas', Ventas);

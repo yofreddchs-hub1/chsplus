@@ -168,6 +168,11 @@
       "icon": "note_add",
       "childen": [
         {
+          "value": "Configuracion",
+          "primary": "Configuración",
+          "icon": "settings"
+        },
+        {
           "value": "Formulas",
           "primary": "Formulas",
           "icon": "shopping_cart_checkout"
