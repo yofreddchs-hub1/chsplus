@@ -98,7 +98,7 @@ sistemachsCtrl.Guardar_produccion = async (req, res)=>{
     let movimiento_em = [];
     for (var i=0; i< datos.produccion.length; i++){
         const produccion = datos.produccion[i];
-        if (!produccion.producir){
+        if (produccion.producir && !produccion.producido){
             //Materia prima
             for (var m=0; m<produccion.mp.length; m++){
                 const mp=produccion.mp[m];
@@ -124,16 +124,17 @@ sistemachsCtrl.Guardar_produccion = async (req, res)=>{
                 producto = producto.valores ? producto.valores : producto;
                 producto.actual = Number(producto.actual && producto.actual!=='' ? producto.actual : 0) + Number(pt.cantidadFinalr);
                 //movimiento de ingreso de producto terminado
-                movimiento_pt=[...movimiento_pt, Movimiento({...producto, cantidad: Number(pt.cantidadFinalr)})
-                    // {
-                    // _id: producto._id, codigo:producto.codigo, unidad:producto.unidad, descripcion: producto.descripcion,
-                    // cantidad: Number(pt.cantidadFinalr)
-                    // }
-                ]
+                if (Number(pt.cantidadFinalr)!==0)
+                    movimiento_pt=[...movimiento_pt, Movimiento({...producto, cantidad: Number(pt.cantidadFinalr)})
+                        // {
+                        // _id: producto._id, codigo:producto.codigo, unidad:producto.unidad, descripcion: producto.descripcion,
+                        // cantidad: Number(pt.cantidadFinalr)
+                        // }
+                    ]
                 // Actualizar empaques 
                 if (producto.empaque){
                     let empaque = await EMPAQUE.findOne({_id:producto.empaque._id});
-                    empaque = empaque.valores ? empaque.valores : empaque;
+                    empaque = empaque.valores ? {_id:empaque._id , ...empaque.valores} : empaque;
                     empaque.actual = Number(empaque.actual ? empaque.actual : 0)-Number(pt.cantidadFinalr);
                     await EMPAQUE.updateOne({_id:producto.empaque._id}, {valores:{...empaque}, actualizado:User.username},{ upsert: true });
                     // movimiento de egreso de empaque
@@ -166,6 +167,8 @@ sistemachsCtrl.Guardar_produccion = async (req, res)=>{
             formula = formula.valores ? formula.valores : formula;
             formula.actual = Number(formula.actual ? formula.actual : 0) + Number(produccion.resta);
             await FORMULA.updateOne({_id:produccion._id},{valores:{...formula}, actualizado:User.username},{ upsert: true });
+            datos.produccion[i].producido=true;
+            delete datos.produccion[i].producir;
         }
     }
     await Produccion.updateOne({_id:datos._id},{valores:{...datos}, actualizado:User.username},{ upsert: true });
@@ -228,6 +231,11 @@ sistemachsCtrl.Ingresar = async (req, res)=>{
             for (var i=0; i< anterior.valores.movimiento.length; i++){
                 let material =  anterior.valores.movimiento[i];
                 let Mat = await MP.findOne({_id:material._id});
+                Mat = Mat!==null ? Mat : await MP.findOne({'valores.codigo':material.codigo});
+                if (!material._id){
+                    material._id= Mat._id
+                }
+                console.log(tabla_inv, Mat, material)
                 if (egresar){
                     Mat.valores.actual= Number(Mat.valores.actual) + Number(material.cantidad);  
                 }else{
