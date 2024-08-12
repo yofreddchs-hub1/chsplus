@@ -80,7 +80,6 @@ sistemachsCtrl.Guardar_produccion = async (req, res)=>{
     const hashn = await Hash_texto(JSON.stringify({User, Api, datos}));
     // const igual= await sistemachsCtrl.Verifica_api(Api, true);
     if (hashn===hash){ // && igual) {
-    const fecha = moment(new Date()).format('YYYY-MM-DD');
     // await sistemachsCtrl.Tablas(tabla_egresomp);
     // await sistemachsCtrl.Tablas(tabla_egresoem);
     // await sistemachsCtrl.Tablas(tabla_ingresopt);
@@ -93,6 +92,8 @@ sistemachsCtrl.Guardar_produccion = async (req, res)=>{
     const EEM= await Model(Api,tabla_egresoem);//require(`../models/sistemachs_Egresoem`);
     const IPT= await Model(Api,tabla_ingresopt);//require(`../models/sistemachs_Ingresopt`);
     datos = JSON.parse(datos);
+    const fecha = datos.fecha ? datos.fecha : moment(new Date()).format('YYYY-MM-DD');
+    console.log(fecha, datos.fecha)
     let movimiento = [];
     let movimiento_pt = [];
     let movimiento_em = [];
@@ -176,7 +177,7 @@ sistemachsCtrl.Guardar_produccion = async (req, res)=>{
     //Guardar el egreso de materia prima
     // let total = await EM.estimatedDocumentCount();
     let codigo = await Serie({tabla:tabla_egresomp,id:'EMP', cantidad:6}, Api);//Generar_codigo(total,'EMP')
-    let valores = {codigo, fecha, movimiento};
+    let valores = {codigo:`${codigo}${datos.titulo ? ` "${datos.titulo}"`:''} de "${datos.referencia}"`, fecha, movimiento};
     let cod_chs = await Codigo_chs({...valores});
     let hash_chs = await Hash_chs({...valores, cod_chs})
 
@@ -188,7 +189,7 @@ sistemachsCtrl.Guardar_produccion = async (req, res)=>{
     // total = await EEM.estimatedDocumentCount();
     if (movimiento_em.length!==0){
         codigo =  await Serie({tabla:tabla_egresoem,id:'EEM', cantidad:6}, Api);//Generar_codigo(total,'EEM')
-        valores = {codigo, fecha, movimiento: movimiento_em};
+        valores = {codigo:`${codigo}${datos.titulo ? ` "${datos.titulo}"`:''} de "${datos.referencia}"`, fecha, movimiento: movimiento_em};
         cod_chs = await Codigo_chs({...valores});
         hash_chs = await Hash_chs({...valores, cod_chs})
         const NuevoE = new EEM({valores, cod_chs, hash_chs, actualizado:`Referencia: ${datos.referencia ? datos.referencia : datos._id} - ${User.username}`});
@@ -199,7 +200,7 @@ sistemachsCtrl.Guardar_produccion = async (req, res)=>{
     // total = await IPT.estimatedDocumentCount();
     if (movimiento_pt.length!==0){
         codigo =  await Serie({tabla:tabla_ingresopt,id:'IPT', cantidad:6}, Api);//Generar_codigo(total,'IPT')
-        valores = {codigo, fecha, movimiento:movimiento_pt};
+        valores = {codigo:`${codigo} de "${datos.referencia}"`, fecha, movimiento:movimiento_pt};
         cod_chs = await Codigo_chs({...valores});
         hash_chs = await Hash_chs({...valores, cod_chs})
         const NuevoI = new IPT({valores, cod_chs, hash_chs, actualizado:`Referencia: ${datos.referencia ? datos.referencia : datos._id} - ${User.username}`});
@@ -235,7 +236,7 @@ sistemachsCtrl.Ingresar = async (req, res)=>{
                 if (!material._id){
                     material._id= Mat._id
                 }
-                console.log(tabla_inv, Mat, material)
+                
                 if (egresar){
                     Mat.valores.actual= Number(Mat.valores.actual) + Number(material.cantidad);  
                 }else{
@@ -406,7 +407,7 @@ sistemachsCtrl.Ingreso_Egreso = async (req, res)=>{
 
         for (var i=0; i<ingresos.length; i++){
             const ingreso = ingresos[i];
-            // console.log('pppppp', ingreso)
+            
             for (var j=0; j<ingreso.movimiento.length;j++){
                 const mp= ingreso.movimiento[j];
                 
@@ -418,15 +419,14 @@ sistemachsCtrl.Ingreso_Egreso = async (req, res)=>{
                 }else{
                     inventario[pos][ingreso.fecha]={ingreso:Number(mp.cantidad), egreso:0};
                 }
-                // console.log('Agregar en ingreso>>>>>>')
-                // console.log(datos.tipo,ingreso.fecha,inventario[pos][ingreso.fecha])
+                
                 }
             }
         }
         
         for (var i=0; i<egresos.length; i++){
             const egreso = egresos[i];
-            // console.log('pppppp', ingreso)
+            
             for (var j=0; j<egreso.movimiento.length;j++){
                 const mp= egreso.movimiento[j];
                 const pos = inventario.findIndex(f=>String(f._id)===String(mp._id) || f.codigo===mp.codigo);
@@ -436,14 +436,11 @@ sistemachsCtrl.Ingreso_Egreso = async (req, res)=>{
                 }else{
                     inventario[pos][egreso.fecha]={ingreso:0, egreso:Number(mp.cantidad)};
                 }
-                // console.log('Agregar en engreso>>>>>>')
-                // console.log(datos.tipo,egreso.fecha,inventario[pos][egreso.fecha])
+                
                 }
             }
         }
-        // console.log('Ingresos',ingresos);
-        // console.log('Egresos',egresos);
-        // console.log(inventario)
+        
         res.json({Respuesta:'Ok', inventario, ingresos, egresos});
     }else{
         res.json({Respuesta:'Error', mensaje:'hash invalido'});
