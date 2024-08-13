@@ -89,13 +89,22 @@ sistemachsCtrl.Guardar_produccion = async (req, res)=>{
     const EMPAQUE = await Model(Api,tabla_empaque);//require(`../models/sistemachs_Empaque`);
     const FORMULA = await Model(Api,tabla_formula);//require(`../models/sistemachs_Formula`);
     const EM = await Model(Api,tabla_egresomp);//require(`../models/sistemachs_Egresomp`);
+    const IM = await Model(Api,tabla_ingresomp);//require(`../models/sistemachs_Egresomp`);
     const EEM= await Model(Api,tabla_egresoem);//require(`../models/sistemachs_Egresoem`);
     const IPT= await Model(Api,tabla_ingresopt);//require(`../models/sistemachs_Ingresopt`);
+    const EPT= await Model(Api,tabla_egresopt);//require(`../models/sistemachs_Ingresopt`);
+
     datos = JSON.parse(datos);
     const fecha = datos.fecha ? datos.fecha : moment(new Date()).format('YYYY-MM-DD');
-    console.log(fecha, datos.fecha)
+    //Egreso para materia prima
     let movimiento = [];
+    //Ingreso materia prima
+    let movimiento_mp = [];
+    //Ingreso producto terminado
     let movimiento_pt = [];
+    //Egreso producto terminado
+    let movimiento_ept = [];
+    //Egreso empaques
     let movimiento_em = [];
     for (var i=0; i< datos.produccion.length; i++){
         const produccion = datos.produccion[i];
@@ -104,16 +113,27 @@ sistemachsCtrl.Guardar_produccion = async (req, res)=>{
             for (var m=0; m<produccion.mp.length; m++){
                 const mp=produccion.mp[m];
                 let prima = await MP.findOne({_id:mp._id});
-                prima= prima.valores ? prima.valores : prima;
-                prima.actual = Number(prima.actual && prima.actual!=='' ? prima.actual : 0) - Number(mp.cantidadr);
-                await MP.updateOne({_id:mp._id},{valores:{...prima}, actualizado:User.username},{ upsert: true });
-                //movimiento de egreso de materia prima
-                movimiento = [...movimiento, Movimiento({...mp, cantidad: mp.cantidadr})
-                    // {
-                    // _id: mp._id, codigo:mp.codigo, unidad:mp.unidad, descripcion: mp.descripcion,
-                    // cantidad: mp.cantidadr
-                    // }
-                ]
+                if (prima!==null){
+                    prima= prima.valores ? prima.valores : prima;
+                    prima.actual = Number(prima.actual && prima.actual!=='' ? prima.actual : 0) - Number(mp.cantidadr);
+                    await MP.updateOne({_id:mp._id},{valores:{...prima}, actualizado:User.username},{ upsert: true });
+                    //movimiento de egreso de materia prima
+                    movimiento = [...movimiento, Movimiento({...mp, cantidad: mp.cantidadr})
+                        // {
+                        // _id: mp._id, codigo:mp.codigo, unidad:mp.unidad, descripcion: mp.descripcion,
+                        // cantidad: mp.cantidadr
+                        // }
+                    ]
+                }else{
+                    prima = await PT.findOne({_id:mp._id});
+                    prima= prima.valores ? prima.valores : prima;
+                    prima.actual = Number(prima.actual && prima.actual!=='' ? prima.actual : 0) - Number(mp.cantidadr);
+                    await PT.updateOne({_id:mp._id},{valores:{...prima}, actualizado:User.username},{ upsert: true });
+                    //movimiento de egreso de materia prima
+                    movimiento_ept = [...movimiento_ept, 
+                        Movimiento({...mp, cantidad: mp.cantidadr})                   
+                    ]
+                }
             }
 
             //Producto terminado
@@ -163,7 +183,19 @@ sistemachsCtrl.Guardar_produccion = async (req, res)=>{
                 }
                 await PT.updateOne({_id:pt._id},{valores:{...producto}, actualizado:User.username},{ upsert: true });
             }
-
+            // cuando produce materia prima
+            if (produccion.materiaprima){
+                let mp = produccion.materiaprima;
+                let prima = await MP.findOne({_id:mp._id});
+                prima= prima.valores ? prima.valores : prima;
+                prima.actual = Number(prima.actual && prima.actual!=='' ? prima.actual : 0) + Number(produccion.resta);
+                await MP.updateOne({_id:mp._id},{valores:{...prima}, actualizado:User.username},{ upsert: true });
+                movimiento_mp = [...movimiento_mp, 
+                    Movimiento({...mp, cantidad: produccion.resta})
+                ]
+                datos.produccion[i].resta= 0;
+                produccion.resta= 0;
+            }
             let formula = await FORMULA.findOne({_id:produccion._id});
             formula = formula.valores ? formula.valores : formula;
             formula.actual = Number(formula.actual ? formula.actual : 0) + Number(produccion.resta);
@@ -185,6 +217,16 @@ sistemachsCtrl.Guardar_produccion = async (req, res)=>{
         const Nuevo = new EM({valores, cod_chs, hash_chs, actualizado:`Referencia: ${datos.referencia ? datos.referencia : datos._id} - ${User.username}`});
         await Nuevo.save();
     }
+    //Guardar ingreso materia prima
+    if (movimiento_mp!==0){
+        codigo =  await Serie({tabla:tabla_ingresomp,id:'IMP', cantidad:6}, Api);//Generar_codigo(total,'EEM')
+        valores = {codigo:`${codigo}${datos.titulo ? ` "${datos.titulo}"`:''} de "${datos.referencia}"`, fecha, movimiento: movimiento_mp};
+        cod_chs = await Codigo_chs({...valores});
+        hash_chs = await Hash_chs({...valores, cod_chs})
+        const NuevoE = new IM({valores, cod_chs, hash_chs, actualizado:`Referencia: ${datos.referencia ? datos.referencia : datos._id} - ${User.username}`});
+        await NuevoE.save();
+    }
+
     //Guardar el egreso de empaque
     // total = await EEM.estimatedDocumentCount();
     if (movimiento_em.length!==0){
@@ -198,6 +240,7 @@ sistemachsCtrl.Guardar_produccion = async (req, res)=>{
 
     //Guardar el ingreso producto terminado
     // total = await IPT.estimatedDocumentCount();
+    //Ingreso
     if (movimiento_pt.length!==0){
         codigo =  await Serie({tabla:tabla_ingresopt,id:'IPT', cantidad:6}, Api);//Generar_codigo(total,'IPT')
         valores = {codigo:`${codigo} de "${datos.referencia}"`, fecha, movimiento:movimiento_pt};
@@ -205,7 +248,16 @@ sistemachsCtrl.Guardar_produccion = async (req, res)=>{
         hash_chs = await Hash_chs({...valores, cod_chs})
         const NuevoI = new IPT({valores, cod_chs, hash_chs, actualizado:`Referencia: ${datos.referencia ? datos.referencia : datos._id} - ${User.username}`});
         await NuevoI.save();
-    }    
+    }
+    //Egreso
+    if (movimiento_ept.length!==0){
+        codigo =  await Serie({tabla:tabla_egresopt,id:'EPT', cantidad:6}, Api);//Generar_codigo(total,'IPT')
+        valores = {codigo:`${codigo}${datos.titulo ? ` "${datos.titulo}"`:''} de "${datos.referencia}"`, fecha, movimiento:movimiento_ept};
+        cod_chs = await Codigo_chs({...valores});
+        hash_chs = await Hash_chs({...valores, cod_chs})
+        const NuevoI = new EPT({valores, cod_chs, hash_chs, actualizado:`Referencia: ${datos.referencia ? datos.referencia : datos._id} - ${User.username}`});
+        await NuevoI.save();
+    }
     global.io.emit(`Actualizar_empaque`);
     global.io.emit(`Actualizar_inventariomp`); 
     global.io.emit(`Actualizar_produccion`); 
@@ -404,7 +456,7 @@ sistemachsCtrl.Ingreso_Egreso = async (req, res)=>{
             egreso= egreso.filter(f=>f.valores.fecha===mes).map(val=>{return{_id: val._id, actualizado: val.actualizado, ...val.valores}});
             egresos=[...egresos,...egreso];
         }
-
+        
         for (var i=0; i<ingresos.length; i++){
             const ingreso = ingresos[i];
             

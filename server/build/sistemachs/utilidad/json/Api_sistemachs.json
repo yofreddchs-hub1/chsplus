@@ -30,7 +30,7 @@
         "color": "#fff"
       },
       "Icon_lista": {
-          "color": "#fff"
+          "color": "#000"
       },
       "Barra_menu": {
         "backgroundImage": "linear-gradient(180deg, #00ffff 0, #00e5ff 12.5%, #10a6f8 25%, #10a6fa 37.5%, #1e6ca3 50%, #1e6ca5 62.5%, #153959 75%, #15395b 87.5%, #000000 100%)",
@@ -729,11 +729,29 @@
                   "key": "actual",
                   "name": "actual",
                   "multiline": false
-              }
+              },
+              {
+                "nombre": "materiaprima",
+                "tipo": "lista_multiuso",
+                "label": "Materia Prima (Producida)",
+                "placeholder": "Materia Prima (Producida)",
+                "title": "Materia Prima (Producida)",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "lista": "sistemachs_Inventariomp",
+                "getOptionLabel": [
+                    "codigo",
+                    "descripcion"
+                ],
+                "key": "materiaprima",
+                "name": "materiaprima",
+                "multiline": false
+            }
           ]
       },
       "Form_formula_mp": {
-          "columna": 1,
+          "columna": 2,
           "value": [
               {
                   "nombre": "select_a",
@@ -745,13 +763,31 @@
                   "disabled": false,
                   "numberOfLines": "",
                   "lista": "sistemachs_Inventariomp",
+                  "lista1": "sistemachs_Inventariopt",
                   "getOptionLabel": [
                       "codigo",
                       "descripcion"
                   ],
                   "key": "select_a",
                   "name": "select_a"
-              }
+              },
+              {
+                "nombre": "select_a1",
+                "tipo": "lista_multiuso",
+                "label": "Selecciona Producto Terminado",
+                "placeholder": "",
+                "title": "",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "lista": "sistemachs_Inventariopt",
+                "getOptionLabel": [
+                    "codigo",
+                    "descripcion"
+                ],
+                "key": "select_a1",
+                "name": "select_a1"
+            }
           ]
       },
       "Form_Lista_Venta": {
