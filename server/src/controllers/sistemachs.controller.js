@@ -34,7 +34,10 @@ Generar_codigo = (valor, id='', cantidad=5)=>{
 Serie = async(dato, Api)=>{
     // await sistemachsCtrl.Tablas(dato.tabla);
     const DB = await Model(Api, dato.tabla);//require(`../models/${dato.tabla}`);
-    let total = await DB.estimatedDocumentCount();
+    let total = dato.condicion 
+                ?   await DB.find(dato.condicion)
+                :   await DB.estimatedDocumentCount();
+    total= dato.condicion ? total.length : total;
     const Recibo = Generar_codigo(total,`${dato.id ? dato.id : 'S'}`, dato.cantidad ? dato.cantidad : 6);
     return Recibo;
 }
@@ -565,49 +568,78 @@ sistemachsCtrl.Egreso_Venta = async (req, res)=>{
         // await sistemachsCtrl.Tablas(tabla_inventariopt);
         const PT = await Model(Api,tabla_inventariopt);//require(`../models/sistemachs_Inventariopt`);
         const EPT= await Model(Api,tabla_egresopt);//require(`../models/sistemachs_Egresopt`);
-        const VENTA = await Model(Api,'sistemachs_Venta');//require(`../models/sistemachs_Venta`);
+        const VENTA = await Model(Api, 'sistemachs_Venta');//require(`../models/sistemachs_Venta`);
         datos = JSON.parse(datos);
-        if (datos.formapago['formapago-subtotal'].restan>0){
-        datos.pendiente=true;
-        datos.estado='pendiente';
+        if (datos.formapago===null || datos.formapago['formapago-subtotal'].restan>0){
+            datos.pendiente=true;
+            datos.estado='pendiente';
         }else{
-        datos.pendiente=false;
-        datos.estado='cancelado';
+            datos.pendiente=false;
+            datos.estado='cancelado';
         }
-        if (datos._id){
-        await VENTA.updateOne({_id:datos._id},{valores:datos, actualizado:`${User.username}`},{ upsert: true });
+        if (datos.tipo==='Orden'){
+            if (datos._id){
+                await VENTA.updateOne({_id:datos._id},{valores:datos, actualizado:`${User.username}`},{ upsert: true });
+            }else{
+                //Guardar venta
+                datos.recibo=datos.orden_venta.recibo;
+                datos.fecha=moment(datos.orden_venta.fecha).format('YYYY-MM-DD');
+                const cod_chs = await Codigo_chs({...datos});
+                const hash_chs = await Hash_chs({...datos, cod_chs})
+                const NuevoV = new VENTA({valores:datos, cod_chs, hash_chs, actualizado:`${User.username}`});
+                await NuevoV.save();
+            }
         }else{
-        //Recibo
-        let Recibo = await Serie({tabla:'sistemachs_Venta', cantidad:6, id:'V'}, Api);//Generar_codigo(total,'V', 6);
-        datos.orden_venta.recibo=Recibo;
-        datos={recibo:Recibo, fecha, ...datos};
+            //Recibo
+            let Recibo = await Serie({tabla:'sistemachs_Venta', cantidad:6, id:'V', condicion:{'valores.tipo':'Venta'}}, Api);//Generar_codigo(total,'V', 6);
+            datos.orden_venta.recibo=Recibo;
+            datos.recibo=Recibo;
+            datos.fecha = datos.orden_venta.fecha
+                            ?   moment(datos.orden_venta.fecha).format('YYYY-MM-DD')
+                            :   fecha;
+            datos={recibo:Recibo, ...datos, tipo:'Venta'};
 
-        // let movimiento = [];
-        // for (var i=0; i< datos.orden_venta.producto.length; i++){
-        //     let producto = datos.orden_venta.producto[i];
-        //     movimiento = [...movimiento, Movimiento({...producto, cantidad: producto.cantidad ? producto.cantidad : 1})]
-        // }
-        
-        // for (var i=0; i< movimiento.length; i++){
-        //     let producto = movimiento[i];
-        //     let Prod = await PT.findOne({_id:producto._id});
-        //     Prod.valores.actual-= producto.cantidad;
-        //     await PT.updateOne({_id:Prod._id},{valores:Prod.valores, actualizado:`Referencia: ${Recibo} - ${User.username}`},{ upsert: true });
+            let movimiento = [];
+            for (var i=0; i< datos.orden_venta.producto.length; i++){
+                let producto = datos.orden_venta.producto[i];
+                if (!producto.entregado){
+                    const cantidad=producto.cantidad ? Number(producto.cantidad) : 1;
+                    movimiento = [
+                        ...movimiento, 
+                        Movimiento({...producto, cantidad})
+                    ];
+                    let Prod = await PT.findOne({_id:producto._id});
+                    Prod.valores.actual-= cantidad;
+                    await PT.updateOne({_id:Prod._id},{valores:Prod.valores, actualizado:`Referencia: ${Recibo} - ${User.username}`},{ upsert: true });
+                    datos.orden_venta.producto[i].entregado=true;
+                }
+            }
             
-        // }
-        // //Guardar el egreso producto terminado
-        // let codigo = await Serie({tabla:tabla_egresopt, id:'EPT', cantidad:6});
-        // let valores = {codigo, fecha, movimiento};
-        // let cod_chs = await Codigo_chs({...valores});
-        // let hash_chs = await Hash_chs({...valores, cod_chs})
-        // const NuevoI = new EPT({valores, cod_chs, hash_chs, actualizado:`Referencia: ${Recibo} - ${User.username}`});
-        // await NuevoI.save();
-
-        //Guardar venta
-        cod_chs = await Codigo_chs({...datos});
-        hash_chs = await Hash_chs({...datos, cod_chs})
-        const NuevoV = new VENTA({valores:datos, cod_chs, hash_chs, actualizado:`${User.username}`});
-        await NuevoV.save();
+            // for (var i=0; i< movimiento.length; i++){
+            //     let producto = movimiento[i];
+            //     let Prod = await PT.findOne({_id:producto._id});
+            //     Prod.valores.actual-= producto.cantidad;
+            //     await PT.updateOne({_id:Prod._id},{valores:Prod.valores, actualizado:`Referencia: ${Recibo} - ${User.username}`},{ upsert: true });
+                
+            // }
+            // //Guardar el egreso producto terminado
+            if (movimiento.length!==0){
+                let codigo = await Serie({tabla:tabla_egresopt, id:'EPT', cantidad:6},Api);
+                let valores = {codigo: `${codigo} de ${Recibo}`, fecha: datos.fecha ? datos.fecha : fecha, movimiento};
+                let cod_chs = await Codigo_chs({...valores});
+                let hash_chs = await Hash_chs({...valores, cod_chs})
+                const NuevoI = new EPT({valores, cod_chs, hash_chs, actualizado:`Referencia: ${Recibo} - ${User.username}`});
+                await NuevoI.save();
+            }
+            
+            if (datos._id){
+                await VENTA.updateOne({_id:datos._id},{valores:datos, actualizado:`${User.username}`},{ upsert: true });
+            }else{
+                const cod_chs = await Codigo_chs({...datos});
+                const hash_chs = await Hash_chs({...datos, cod_chs})
+                const NuevoV = new VENTA({valores:datos, cod_chs, hash_chs, actualizado:`${User.username}`});
+                await NuevoV.save();
+            }
         }
         global.io.emit(`Actualizar_inventariopt`);
         global.io.emit(`Actualizar_venta`); 
@@ -626,9 +658,11 @@ sistemachsCtrl.Ventas = async (req, res)=>{
         datos = datos ? JSON.parse(datos) : {};
         const VENTA = await Model(Api,'sistemachs_Venta')//require(`../models/sistemachs_Venta`);
         let ventas = datos && datos.estado 
-            ? await VENTA.find({$text: {$search: datos.estado, $caseSensitive: false}})
+            ? await VENTA.find({$and:[{"valores.estado":datos.estado},{"valores.tipo":'Venta'}]})//find({$text: {$search: datos.estado, $caseSensitive: false}})
+            : datos && datos.tipo
+            ? await VENTA.find({"valores.tipo":datos.tipo})
             : datos && datos.fecha
-            ? await VENTA.find({"valores.fecha":{$gte:datos.fecha.dia,$lte:datos.fecha.diaf}})
+            ? await VENTA.find({$and:[{"valores.tipo":'Venta'},{"valores.fecha":{$gte:datos.fecha.dia,$lte:datos.fecha.diaf}}]})//find({"valores.fecha":{$gte:datos.fecha.dia,$lte:datos.fecha.diaf}})
             : await VENTA.find();
         
         let ventas_p= ventas.filter(f=>f.valores.pendiente);
@@ -637,12 +671,16 @@ sistemachsCtrl.Ventas = async (req, res)=>{
         let pendiente = 0;
         let facturado = 0;
         ventas.map(val=>{
-        let valor = val.valores.formapago['formapago-subtotal'];
-        total= Number(valor.total);
-        total= valor.Tasa !==0  ? Number(total + valor.totalb / valor.Tasa) : total;
-        pendiente+= Number(valor.restan);
-        facturado+= Number(valor.cancelar);
-        return val
+            let valor = val.valores.formapago 
+                ? val.valores.formapago['formapago-subtotal'] 
+                : {
+                    total:0, tasa:0, totalb:0, restan:0, cancelar:0  
+                  };
+            total= Number(valor.total);
+            total= valor.Tasa !==0  ? Number(total + valor.totalb / valor.Tasa) : total;
+            pendiente+= Number(valor.restan);
+            facturado+= Number(valor.cancelar);
+            return val
         })
 
         res.json({Respuesta:'Ok', ventas, ventas_p, ventas_c, total, pendiente, facturado});
