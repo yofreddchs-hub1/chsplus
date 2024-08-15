@@ -708,7 +708,7 @@
                   "label": "Formula",
                   "tipo": "Tabla",
                   "titulos": "Titulos_formula_mp_d",
-                  "Form": "Form_formula_mp",
+                  "Form": "Form_formula_mp1",
                   "nopaginar": true,
                   "style": {
                       "height": 300
@@ -751,6 +751,29 @@
           ]
       },
       "Form_formula_mp": {
+          "columna": 1,
+          "value": [
+              {
+                  "nombre": "select_a",
+                  "tipo": "lista_multiuso",
+                  "label": "Selecciona Materia Prima",
+                  "placeholder": "",
+                  "title": "",
+                  "mensaje_error": "",
+                  "disabled": false,
+                  "numberOfLines": "",
+                  "lista": "sistemachs_Inventariomp",
+                  "lista1": "sistemachs_Inventariopt",
+                  "getOptionLabel": [
+                      "codigo",
+                      "descripcion"
+                  ],
+                  "key": "select_a",
+                  "name": "select_a"
+              }
+          ]
+      },
+      "Form_formula_mp1": {
           "columna": 2,
           "value": [
               {
@@ -1211,6 +1234,7 @@
               }
           ]
       },
+      
       "Form_ingreso_materia_prima": {
           "columna": 1,
           "value": [

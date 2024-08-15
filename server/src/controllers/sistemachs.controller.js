@@ -38,7 +38,13 @@ Serie = async(dato, Api)=>{
                 ?   await DB.find(dato.condicion)
                 :   await DB.estimatedDocumentCount();
     total= dato.condicion ? total.length : total;
-    const Recibo = Generar_codigo(total,`${dato.id ? dato.id : 'S'}`, dato.cantidad ? dato.cantidad : 6);
+    let Recibo = Generar_codigo(total,`${dato.id ? dato.id : 'S'}`, dato.cantidad ? dato.cantidad : 6);
+    let res = await DB.findOne({$or:[{'valores.codigo':Recibo},{'valores.recibo':Recibo},{'valores.referencia':Recibo}]})
+    while (res!==null){
+        total+=1;
+        Recibo = Generar_codigo(total,`${dato.id ? dato.id : 'S'}`, dato.cantidad ? dato.cantidad : 6);
+        res = await DB.findOne({$or:[{'valores.codigo':Recibo},{'valores.recibo':Recibo},{'valores.referencia':Recibo}]})
+    }
     return Recibo;
 }
   
@@ -421,23 +427,14 @@ sistemachsCtrl.Ingreso_Egreso = async (req, res)=>{
             res.json({Respuesta:'Ok', inventario:[], mensaje:'Tipo de ingreso y egresos no conocidos'});
         }
         if (datos.tipo==='Materia Prima'){
-            // await sistemachsCtrl.Tablas(tabla_ingresomp);
-            // await sistemachsCtrl.Tablas(tabla_egresomp);
-            // await sistemachsCtrl.Tablas(tabla_inventariomp);
             Ingreso=await Model(Api,tabla_ingresomp);//require(`../models/sistemachs_Ingresomp`);
             Egreso=await Model(Api,tabla_egresomp);//require(`../models/sistemachs_Egresomp`);
             Inventario = await Model(Api,tabla_inventariomp);//require(`../models/sistemachs_Inventariomp`);
         }else if (datos.tipo==='Empaque'){
-            // await sistemachsCtrl.Tablas(tabla_ingresoem);
-            // await sistemachsCtrl.Tablas(tabla_egresoem);
-            // await sistemachsCtrl.Tablas(tabla_empaque);
             Ingreso= await Model(Api,tabla_ingresoem);//require(`../models/sistemachs_Ingresoem`);
             Egreso= await Model(Api,tabla_egresoem);//require(`../models/sistemachs_Egresoem`);
             Inventario = await Model(Api,tabla_empaque);//require(`../models/sistemachs_Empaque`);
         }else if (datos.tipo==='Producto Terminado'){
-            // await sistemachsCtrl.Tablas(tabla_ingresopt);
-            // await sistemachsCtrl.Tablas(tabla_egresopt);
-            // await sistemachsCtrl.Tablas(tabla_inventariopt);
             Ingreso= await Model(Api,tabla_ingresopt);//require(`../models/sistemachs_Ingresopt`);
             Egreso= await Model(Api,tabla_egresopt);//require(`../models/sistemachs_Egresopt`);
             Inventario = await Model(Api,tabla_inventariopt);//require(`../models/sistemachs_Inventariopt`);
@@ -570,6 +567,38 @@ sistemachsCtrl.Egreso_Venta = async (req, res)=>{
         const EPT= await Model(Api,tabla_egresopt);//require(`../models/sistemachs_Egresopt`);
         const VENTA = await Model(Api, 'sistemachs_Venta');//require(`../models/sistemachs_Venta`);
         datos = JSON.parse(datos);
+
+        let anterior = null;
+        if (datos._id){
+            anterior = await VENTA.findOne({_id:datos._id});
+            anterior = anterior ? anterior.valores : anterior;
+        }
+        
+        let Recibo = await Serie({tabla:'sistemachs_Venta', cantidad:6, id:'V', condicion:{'valores.tipo':'Venta'}}, Api);//Generar_codigo(total,'V', 6);
+        Recibo = anterior ? anterior.recibo : Recibo;
+        //Elimina los datos de egreso de producto terminado
+        if (anterior){
+            for (var j=0; j<anterior.orden_venta.producto.length; j++){
+                let producto = anterior.orden_venta.producto[j];
+                const cantidad= producto.cantidad ? Number(producto.cantidad) : 1;
+                let Prod = await PT.findOne({_id:producto._id});
+                Prod.valores.actual+= cantidad;
+                await PT.updateOne({_id:Prod._id},{valores:Prod.valores, actualizado:`Referencia: ${Recibo} - ${User.username}`},{ upsert: true });
+            }
+        }
+        
+        if(datos.tipo==='Eliminar'){
+            if (datos.egreso._id){
+                await EPT.deleteOne({_id:datos.egreso._id});
+            }
+            if(datos._id){
+                await VENTA.deleteOne({_id:datos._id})
+            }
+            global.io.emit(`Actualizar_inventariopt`);
+            global.io.emit(`Actualizar_venta`); 
+            res.json({Respuesta:'Ok', datos});
+            return
+        }
         if (datos.formapago===null || datos.formapago['formapago-subtotal'].restan>0){
             datos.pendiente=true;
             datos.estado='pendiente';
@@ -590,19 +619,26 @@ sistemachsCtrl.Egreso_Venta = async (req, res)=>{
                 await NuevoV.save();
             }
         }else{
+            
             //Recibo
-            let Recibo = await Serie({tabla:'sistemachs_Venta', cantidad:6, id:'V', condicion:{'valores.tipo':'Venta'}}, Api);//Generar_codigo(total,'V', 6);
-            datos.orden_venta.recibo=Recibo;
-            datos.recibo=Recibo;
+            
+            datos.orden_venta.recibo= Recibo;
+            datos.recibo= Recibo;
             datos.fecha = datos.orden_venta.fecha
                             ?   moment(datos.orden_venta.fecha).format('YYYY-MM-DD')
                             :   fecha;
             datos={recibo:Recibo, ...datos, tipo:'Venta'};
-
+            //codigo para el egreso de producto terminado
+            let codigo = await Serie({tabla:tabla_egresopt, id:'EPT', cantidad:6},Api);
+            codigo=`${codigo} de ${Recibo}`;
+            
+            datos.egreso =anterior ? anterior.egreso : {codigo};
+            
+            
             let movimiento = [];
             for (var i=0; i< datos.orden_venta.producto.length; i++){
                 let producto = datos.orden_venta.producto[i];
-                if (!producto.entregado){
+                // if (!producto.entregado){
                     const cantidad=producto.cantidad ? Number(producto.cantidad) : 1;
                     movimiento = [
                         ...movimiento, 
@@ -611,8 +647,9 @@ sistemachsCtrl.Egreso_Venta = async (req, res)=>{
                     let Prod = await PT.findOne({_id:producto._id});
                     Prod.valores.actual-= cantidad;
                     await PT.updateOne({_id:Prod._id},{valores:Prod.valores, actualizado:`Referencia: ${Recibo} - ${User.username}`},{ upsert: true });
-                    datos.orden_venta.producto[i].entregado=true;
-                }
+                    // datos.orden_venta.producto[i].entregado=true;
+                    datos.orden_venta.producto[i].cantidad=cantidad;
+                // }
             }
             
             // for (var i=0; i< movimiento.length; i++){
@@ -624,12 +661,20 @@ sistemachsCtrl.Egreso_Venta = async (req, res)=>{
             // }
             // //Guardar el egreso producto terminado
             if (movimiento.length!==0){
-                let codigo = await Serie({tabla:tabla_egresopt, id:'EPT', cantidad:6},Api);
-                let valores = {codigo: `${codigo} de ${Recibo}`, fecha: datos.fecha ? datos.fecha : fecha, movimiento};
-                let cod_chs = await Codigo_chs({...valores});
-                let hash_chs = await Hash_chs({...valores, cod_chs})
-                const NuevoI = new EPT({valores, cod_chs, hash_chs, actualizado:`Referencia: ${Recibo} - ${User.username}`});
-                await NuevoI.save();
+                let valores = {codigo: datos.egreso.codigo, fecha: datos.fecha ? datos.fecha : fecha, movimiento};
+                if (datos.egreso._id){
+                    await EPT.updateOne({_id:datos.egreso._id},{valores, actualizado:`Referencia: ${Recibo} - ${User.username}`},{ upsert: true });        
+                }else{
+                    let cod_chs = await Codigo_chs({...valores});
+                    let hash_chs = await Hash_chs({...valores, cod_chs})
+                    const NuevoI = new EPT({valores, cod_chs, hash_chs, actualizado:`Referencia: ${Recibo} - ${User.username}`});
+                    await NuevoI.save();
+                    const result = await EPT.findOne({'valores.codigo':datos.egreso.codigo})
+                    if (result){
+                        datos.egreso._id=result._id;
+                    }
+                }
+                
             }
             
             if (datos._id){
