@@ -4,8 +4,9 @@ const {Hash_chs, Codigo_chs} = require('./servicios/conexiones');
 const { Hash_texto, Hash_password } = require('./servicios/encriptado');
 const {Tablas} = require('./controllers/api.controller');
 const {Model} = require('./database/model');
+const { RegistroChat } = require('./controllers/chat.controller');
 
-global.io = require("socket.io")(global.global_http,
+const io = require("socket.io")(global.global_http,
     {
        cors:{origin:"*"} 
     }    
@@ -13,7 +14,7 @@ global.io = require("socket.io")(global.global_http,
 const tiempo= 5 * (1000)
 let usuario = {}
 let databd = {};
-global.io.on('connection', (socket) =>{
+global.io = io.of('/').on('connection', (socket) =>{
     //socket.handshake.headers: host destino,origen de la peticion
     //socket.handshake.auth: se pueden enviar datos 
     console.log(chalk.green('Usuario conectado', socket.handshake.auth.username, socket.handshake.auth.api, socket.handshake.auth.tipo));
@@ -152,7 +153,7 @@ Enviar_usuario = async(socket)=>{
     const users = [];
     const sockets = await  global.io.fetchSockets();
     // console.log(sockets.map(v=>v.handshake.auth))
-    for (let [id, socket] of global.io.of("/").sockets) {
+    for (let [id, socket] of global.io.sockets) {
         users.push({
         userID: id,
         ...socket.handshake.auth,
@@ -162,3 +163,26 @@ Enviar_usuario = async(socket)=>{
     global.io.emit("users", {users, userID:socket.id});
     // global.io.emit('Usuario_presentes',usuarios)    
 }
+
+global.chat = io.of('/chat').on('connection', (socket)=> {
+    console.log('cliente:',socket.id, socket.handshake.auth);
+    socket.emit('conectado',{id: socket.id})
+    
+    socket.on('disconnect',  async()=> {
+        console.log(chalk.red('App desconectada de chat',socket.id));
+    });
+    socket.on('Registrar',async(valores)=>{
+        console.log('Registrar',valores.nuevo)
+        const respuesta = await RegistroChat({...valores, User:socket.handshake.auth})
+        socket.emit('Registrado', respuesta);
+    })
+    socket.on('Agregado',(nuevo)=>{
+        socket.auth={...socket.auth, ...nuevo};
+        console.log('Agregado:', nuevo, socket.handshake.auth);
+        // socket.disconnect().connect();
+    })
+    socket.on('message', (datos)=>{
+      console.log('MMMMMMMMMMMMMMMMMMMM',datos);
+    });
+  
+});

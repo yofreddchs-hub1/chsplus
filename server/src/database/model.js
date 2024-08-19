@@ -48,6 +48,8 @@ const Model = async(api, tabla, borrar=false) =>{
                 global.DataBase[api] = apis.url!==undefined 
                     ? database(apis.url,api).useDb( apis.nombredb, { useCache: true } ) 
                     : undefined
+            }else{
+                console.log(chalk.inverse.red('No se encuentra registrada ',api, tabla))
             }
 
             resultado = global.DataBase[api]===undefined ? null : global.DataBase[api].model(tabla,dataSchema,tabla);

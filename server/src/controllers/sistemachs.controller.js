@@ -227,7 +227,7 @@ sistemachsCtrl.Guardar_produccion = async (req, res)=>{
         await Nuevo.save();
     }
     //Guardar ingreso materia prima
-    if (movimiento_mp!==0){
+    if (movimiento_mp.length!==0){
         codigo =  await Serie({tabla:tabla_ingresomp,id:'IMP', cantidad:6}, Api);//Generar_codigo(total,'EEM')
         valores = {codigo:`${codigo}${datos.titulo ? ` "${datos.titulo}"`:''} de "${datos.referencia}"`, fecha, movimiento: movimiento_mp};
         cod_chs = await Codigo_chs({...valores});
