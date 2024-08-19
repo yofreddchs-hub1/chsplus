@@ -38,6 +38,7 @@ const { Ver_api, Login,Verificar, Getall, Getall_C, Setall, Delall, Leer_data, G
 const { Guardar_produccion, Ingresar_material, Ingresar_empaque, Ingreso_Egreso, Recibo_venta, Serial, Egreso_Venta, Ventas,
         Ingresar,
         Iniciarchs,
+        ActualizarCantidad,
       } = require('../controllers/sistemachs.controller');
 const { Mensualidades, EnviarPago, Solvencias, Resumen, Sincronizar_uecla, Recibos, Verificar_Inscripcion, Actualizar_Referencia, 
         Promover, LeerHorarioU, DisponibilidadHorarioU, GuardarHorarioU, Notas
@@ -84,6 +85,7 @@ router.post('/ingresar',Ingresar);
 router.post('/ingresarmaterial',Ingresar_material);
 router.post('/ingresarempaque',Ingresar_empaque);
 router.post('/ingresoegreso',Ingreso_Egreso);
+router.post('/actualizarcantidad',ActualizarCantidad);
 
 // Para EGEW
 router.post('/cuentas_wesi',Egew_cuentas_wesi);

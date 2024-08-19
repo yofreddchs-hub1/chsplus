@@ -445,18 +445,23 @@ sistemachsCtrl.Ingreso_Egreso = async (req, res)=>{
         let ingresos=[];
         let egresos=[];
         let inventario = await Inventario.find();
-        inventario= inventario.map(val=>{return{_id:val._id, ...val.valores}});
-
-        for (var i=0; i<datos.meses.length;i++){
-            const mes = datos.meses[i];
-            let ingreso = await Ingreso.find({$text: {$search: mes, $caseSensitive: false}});
-            ingreso= ingreso.filter(f=>f.valores.fecha===mes).map(val=>{return{_id: val._id, actualizado: val.actualizado, ...val.valores}});
-            ingresos=[...ingresos,...ingreso];
-            let egreso = await Egreso.find({$text: {$search: mes, $caseSensitive: false}});
-            egreso= egreso.filter(f=>f.valores.fecha===mes).map(val=>{return{_id: val._id, actualizado: val.actualizado, ...val.valores}});
-            egresos=[...egresos,...egreso];
+        inventario= inventario.map(val=>{return{_id:val._id, ...val.valores, cantidadA:0}});
+        if (datos.meses==='Todos'){
+            let ingreso = await Ingreso.find();
+            ingresos = ingreso.map(val=>{return{_id: val._id, actualizado: val.actualizado, ...val.valores}});
+            let egreso = await Egreso.find();
+            egresos = egreso.map(val=>{return{_id: val._id, actualizado: val.actualizado, ...val.valores}});
+        }else{
+            for (var i=0; i<datos.meses.length;i++){
+                const mes = datos.meses[i];
+                let ingreso = await Ingreso.find({$text: {$search: mes, $caseSensitive: false}});
+                ingreso= ingreso.filter(f=>f.valores.fecha===mes).map(val=>{return{_id: val._id, actualizado: val.actualizado, ...val.valores}});
+                ingresos=[...ingresos,...ingreso];
+                let egreso = await Egreso.find({$text: {$search: mes, $caseSensitive: false}});
+                egreso= egreso.filter(f=>f.valores.fecha===mes).map(val=>{return{_id: val._id, actualizado: val.actualizado, ...val.valores}});
+                egresos=[...egresos,...egreso];
+            }
         }
-        
         for (var i=0; i<ingresos.length; i++){
             const ingreso = ingresos[i];
             
@@ -466,12 +471,13 @@ sistemachsCtrl.Ingreso_Egreso = async (req, res)=>{
                 const pos = inventario.findIndex(f=>String(f._id)===String(mp._id));
                 
                 if (pos!==-1){
-                if(inventario[pos][ingreso.fecha]){
-                    inventario[pos][ingreso.fecha].ingreso+=Number(mp.cantidad);  
-                }else{
-                    inventario[pos][ingreso.fecha]={ingreso:Number(mp.cantidad), egreso:0};
-                }
-                
+                    if(inventario[pos][ingreso.fecha]){
+                        inventario[pos][ingreso.fecha].ingreso+=Number(mp.cantidad);  
+                    }else{
+                        inventario[pos][ingreso.fecha]={ingreso:Number(mp.cantidad), egreso:0};
+                    }
+                    inventario[pos].cantidadA+=Number(mp.cantidad);
+
                 }
             }
         }
@@ -483,12 +489,12 @@ sistemachsCtrl.Ingreso_Egreso = async (req, res)=>{
                 const mp= egreso.movimiento[j];
                 const pos = inventario.findIndex(f=>String(f._id)===String(mp._id) || f.codigo===mp.codigo);
                 if (pos!==-1){
-                if(inventario[pos][egreso.fecha]){
-                    inventario[pos][egreso.fecha].egreso+=Number(mp.cantidad);  
-                }else{
-                    inventario[pos][egreso.fecha]={ingreso:0, egreso:Number(mp.cantidad)};
-                }
-                
+                    if(inventario[pos][egreso.fecha]){
+                        inventario[pos][egreso.fecha].egreso+=Number(mp.cantidad);  
+                    }else{
+                        inventario[pos][egreso.fecha]={ingreso:0, egreso:Number(mp.cantidad)};
+                    }
+                    inventario[pos].cantidadA-=Number(mp.cantidad);
                 }
             }
         }
@@ -702,6 +708,7 @@ sistemachsCtrl.Ventas = async (req, res)=>{
     if (hashn===hash){ // && igual) {
         datos = datos ? JSON.parse(datos) : {};
         const VENTA = await Model(Api,'sistemachs_Venta')//require(`../models/sistemachs_Venta`);
+        console.log('Por ventas')
         let ventas = datos && datos.estado 
             ? await VENTA.find({$and:[{"valores.estado":datos.estado},{"valores.tipo":'Venta'}]})//find({$text: {$search: datos.estado, $caseSensitive: false}})
             : datos && datos.tipo
@@ -709,12 +716,13 @@ sistemachsCtrl.Ventas = async (req, res)=>{
             : datos && datos.fecha
             ? await VENTA.find({$and:[{"valores.tipo":'Venta'},{"valores.fecha":{$gte:datos.fecha.dia,$lte:datos.fecha.diaf}}]})//find({"valores.fecha":{$gte:datos.fecha.dia,$lte:datos.fecha.diaf}})
             : await VENTA.find();
-        
+        console.log('despues ventas')
         let ventas_p= ventas.filter(f=>f.valores.pendiente);
         let ventas_c= ventas.filter(f=>!f.valores.pendiente);
         let total=0;
         let pendiente = 0;
         let facturado = 0;
+        console.log('antes del map')
         ventas.map(val=>{
             let valor = val.valores.formapago 
                 ? val.valores.formapago['formapago-subtotal'] 
@@ -729,6 +737,50 @@ sistemachsCtrl.Ventas = async (req, res)=>{
         })
 
         res.json({Respuesta:'Ok', ventas, ventas_p, ventas_c, total, pendiente, facturado});
+    }else{
+        res.json({Respuesta:'Error', mensaje:'hash invalido'});
+    }
+}
+
+sistemachsCtrl.ActualizarCantidad = async (req, res)=>{
+    let {User, Api, datos, hash} = req.body;
+    User= typeof User==='string' ? JSON.parse(User) : User;
+    const hashn = await Hash_texto(JSON.stringify({User, Api, datos}));
+    // const igual= await sistemachsCtrl.Verifica_api(Api, true);
+    if (hashn===hash){ // && igual) {
+        
+        datos = JSON.parse(datos);
+        let Ingreso;
+        let Egreso;
+        let Inventario;
+        if (datos.tipo === undefined ){
+            res.json({Respuesta:'Ok', inventario:[], mensaje:'Tipo de ingreso y egresos no conocidos'});
+        }
+        if (datos.tipo==='Materia Prima'){
+            Ingreso=await Model(Api,tabla_ingresomp);//require(`../models/sistemachs_Ingresomp`);
+            Egreso=await Model(Api,tabla_egresomp);//require(`../models/sistemachs_Egresomp`);
+            Inventario = await Model(Api,tabla_inventariomp);//require(`../models/sistemachs_Inventariomp`);
+        }else if (datos.tipo==='Empaque'){
+            Ingreso= await Model(Api,tabla_ingresoem);//require(`../models/sistemachs_Ingresoem`);
+            Egreso= await Model(Api,tabla_egresoem);//require(`../models/sistemachs_Egresoem`);
+            Inventario = await Model(Api,tabla_empaque);//require(`../models/sistemachs_Empaque`);
+        }else if (datos.tipo==='Producto Terminado'){
+            Ingreso= await Model(Api,tabla_ingresopt);//require(`../models/sistemachs_Ingresopt`);
+            Egreso= await Model(Api,tabla_egresopt);//require(`../models/sistemachs_Egresopt`);
+            Inventario = await Model(Api,tabla_inventariopt);//require(`../models/sistemachs_Inventariopt`);
+        }else{
+            res.json({Respuesta:'Ok', inventario:[], mensaje:'Tipo de ingreso y egresos no conocidos'});
+            return
+        }
+        for (var i=0; i<datos.datos.length; i++){
+            const dato = datos.datos[i];
+            let actual = await Inventario.findOne({_id:String(dato._id)});
+            if (actual!==null){          
+                await Inventario.updateOne({_id:String(dato._id)},{valores:{...actual.valores, actual: dato.cantidadA}, actualizado:`Actualizado por ${User.username}, a cantidades calculadas `},{ upsert: true });
+            }
+        }
+        
+        res.json({Respuesta:'Ok'});
     }else{
         res.json({Respuesta:'Error', mensaje:'hash invalido'});
     }
