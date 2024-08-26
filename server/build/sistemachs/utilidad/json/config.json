@@ -7,8 +7,9 @@
     "https1":"https://chsplus.onrender.com",
     "cloud_name":"dtu1dwuwf",
     "carpeta":"chsplus",
+    "local":true,
     "models":[
-                "sistemachs_Eliminado",
+                "sistemachs_Modificacion",
                 "sistemachs_Agencia",
                 "sistemachs_Cliente","sistemachs_Proveedor",
                 "sistemachs_Empaque", "sistemachs_Formula",
@@ -17,7 +18,7 @@
                 "sistemachs_Egresopt","sistemachs_Ingresoem",
                 "sistemachs_Ingresomp","sistemachs_Ingresopt",
                 "sistemachs_Produccion", "sistemachs_Venta",
-                "sistemachs_Orden_Venta","sistemachs_Lista_Venta",
+                "sistemachs_Lista_Venta",
                 "sistemachs_User_api"  
             ]
 }

@@ -1606,6 +1606,26 @@
               }
           ]
       },
+      "Form_Modificacion": {
+        "columna": 2,
+        "value": [
+            {
+                "key": "_id_registro",
+                "name": "_id_registro",
+                "label": "_id_registro",
+                "tipo": "input",
+                "mensaje_error": "Indique rif de la agencia"
+            },
+            {
+                "key": "valores",
+                "name": "valores",
+                "label": "Valores",
+                "multiline": true,
+                "numberOfLines": 15,
+                "formato":"(dato)=>{return JSON.stringify({tabla:dato.tabla, tipo:dato.tipo, newdatos:dato.newdatos, origen:dato.origen,clientes:dato.clientes},null,2)}"
+            }
+        ]
+      },
       "Form_ejemplos": {
         "columna": 1,
         "value": [
@@ -2574,6 +2594,40 @@
               "default": "",
               "type": "number",
               "flex": 2
+          }
+      ],
+      "Titulos_Agencia": [
+          {
+              "title": "Cedula / Rif",
+              "field": "rif",
+              "formato": "(dato)=> `${dato.valores.rif}`"
+          },
+          {
+              "title": "Nombre",
+              "field": "nombre",
+              "formato": "(dato)=> `${dato.valores.nombre}`"
+          },
+          {
+              "title": "Ubicación",
+              "field": "Ubicación",
+              "formato": "(dato)=> `${dato.valores.Ubicación}`"
+          }
+      ],
+      "Titulos_Modificacion": [
+          {
+              "title": "_id_registro",
+              "field": "_id_registro",
+              "formato": "(dato)=> `${dato.valores._id_registro}`"
+          },
+          {
+              "title": "Creado",
+              "field": "createdAt",
+              "formato": "(dato)=> `${dato.createdAt}`"
+          },
+          {
+            "title": "Modificado",
+            "field": "updatedAt",
+            "formato": "(dato)=> `${dato.updatedAt}`"
           }
       ]
   },
