@@ -1,4 +1,3 @@
-2024/08/02-08:36:06.833 1fc Creating DB C:\codigos\2024\chs-plus\sessions\session-client-CHS\Default\Session Storage since it was missing.
-2024/08/02-08:36:06.844 1fc Reusing MANIFEST C:\codigos\2024\chs-plus\sessions\session-client-CHS\Default\Session Storage/MANIFEST-000001
-2024/08/02-08:36:06.845 1fc Recovering log #3
-2024/08/02-08:36:06.845 1fc Reusing old log C:\codigos\2024\chs-plus\sessions\session-client-CHS\Default\Session Storage/000003.log 
+2024/08/26-09:12:19.543 28d8 Reusing MANIFEST C:\codigos\2024\chs-plus\sessions\session-client-CHS\Default\Session Storage/MANIFEST-000001
+2024/08/26-09:12:19.543 28d8 Recovering log #3
+2024/08/26-09:12:19.544 28d8 Reusing old log C:\codigos\2024\chs-plus\sessions\session-client-CHS\Default\Session Storage/000003.log 

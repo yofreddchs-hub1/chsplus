@@ -23,7 +23,7 @@ const clientCHS = new Client({
 clientCHS.on('qr', (qr) => {
     global[`whatsappqr-chs`] = qr;
     console.log('En espera de whatsapp CHS...')
-    global.io.emit('whatsappqr-CHS',{qr}) //datos:resultado})
+    global.io.emit('whatsappqr-CHS',{qr, tiempo: new Date()}) //datos:resultado})
     // qrcode.generate(qr, {small:true});
 });
 
