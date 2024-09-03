@@ -53,8 +53,10 @@ app.use(express.json({limit: '5mb'}));
 app.use(express.urlencoded({ limit: '5mb', extended: true}));
 
 
-const dir_arch = __dirname.replace('/server/src','')+'/archivos/imagenes';
-app.use('/api/imagen',express.static(`${dir_arch}`))
+const dir_arch = __dirname.replace(`${path.sep}server${path.sep}src`,'')+`${path.sep}archivos`;
+app.use('/api/imagen',express.static(`${dir_arch}${path.sep}imagenes`));
+app.use('/api/archivos',express.static(`${dir_arch}`));
+app.use('/api/chat',express.static(`${dir_arch}${path.sep}chat`))
 
 app.use('/api', require('./src/routers/api'));
 

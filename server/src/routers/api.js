@@ -1,5 +1,6 @@
 const { Router, static } = require('express');
 const router = Router();
+const path = require("path"); 
 const upload = require('../servicios/api_fichero');
 var fs = require('fs');
 let archivos=upload.any()
@@ -11,14 +12,14 @@ let archivos=upload.any()
 //   {name:'file_15' }, {name:'file_16' }, {name:'file_17' }, {name:'file_18' }, {name:'file_19' },
 // ]);
 
-const direct = __dirname.replace('/src/routers','/archivos');
+const direct = __dirname.replace(`${path.sep}src${path.sep}routers`,`${path.sep}archivos`);
 fs.stat(direct, (err) => {
   if (!err) {
       console.log('Existe>', direct);
   }
   else if (err.code === 'ENOENT') {
       console.log('No existe');
-      const Archivos_crear=['','imagenes',
+      const Archivos_crear=['','imagenes','chat',
                           ];
       Archivos_crear.map(dir => fs.mkdirSync(`${direct}/${dir}`));
   }
@@ -46,6 +47,7 @@ const { Mensualidades, EnviarPago, Solvencias, Resumen, Sincronizar_uecla, Recib
 const { LeerHorario, GuardarHorario, DisponibilidadHorario, MisDatos 
 
       } = require('../controllers/unefa.controller');
+const { GuardarArchivoChat } = require('../controllers/chat.controller');
 
 router.post('/ver_api', Ver_api);
 router.post('/login/verificar', Verificar);
@@ -121,6 +123,9 @@ router.post('/unefa/leerhorario',LeerHorario);
 router.post('/unefa/guardarhorario',GuardarHorario);
 router.post('/unefa/disponibilidadhorario',DisponibilidadHorario);
 router.post('/unefa/misdatos',MisDatos);
+
+// para chat
+router.post('/chat/subir',archivos, GuardarArchivoChat);
 
 
 module.exports = router;

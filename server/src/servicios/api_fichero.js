@@ -1,29 +1,43 @@
 const multer = require('multer');
 const path = require("path"); 
 // Multer config
-module.exports = multer({
-  storage: multer.diskStorage({}),
-  fileFilter: (req, file, cb) => {
-    let ext = path.extname(file.originalname);
-      if (ext !== ".jpg" && ext !== ".jpeg" && ext !== ".png" && ext !== ".PNG" && ext !== ".mp4") {
-      cb(new Error("File type is not supported"), false);
-      return;
-    }
-    cb(null, true);
-  },
-});
 // const direct = __dirname.replace(`${path.sep}src${path.sep}servicios`,'');
-// let storage = multer.diskStorage ({
-//   destination: (req, file, cb) => {
-//     cb(null,direct + '/archivos/'+req.headers.destino);
-//   },
-//   filename: (req, file, cb) =>{
+// module.exports = multer({
+//   storage: multer.diskStorage({
+//     destination: (req, file, cb) => {
+//       cb(null,direct + '/archivos');
+//     },
+    
+//   }),
+//   fileFilter: (req, file, cb) => {
 //     let ext = path.extname(file.originalname);
-//     cb(null, `${Date.now()}${ext}`);
-//   }
-// })
-// const upload = multer({storage});
-// module.exports = upload;
+//     console.log('>>>>>>>',file)
+//     if (ext !== ".jpg" && ext !== ".jpeg" && ext !== ".png" && ext !== ".PNG" && ext !== ".mp4") {
+//       cb(new Error("File type is not supported"), false);
+//       return;
+//     }
+//     cb(null, true);
+//   },
+// });
+const direct = __dirname.replace(`${path.sep}src${path.sep}servicios`,'');
+console.log('<<<<<<', direct)
+let storage = multer.diskStorage ({
+  destination: (req, file, cb) => {
+    let destino =direct + `${path.sep}archivos`;
+    destino+= req.headers.destino ? `${path.sep}${req.headers.destino}` : '';
+    destino+= file.mimetype.indexOf('image')!==-1 ? `${path.sep}imagenes` :`${path.sep}documentos`;
+    cb(null,destino);
+  },
+  filename: (req, file, cb) =>{
+    let ext = path.extname(file.originalname);
+    cb(null, `${Date.now()}${ext}`);
+  }
+})
+const upload = multer({
+  limits: { fieldSize: 25 * 1024 * 1024 },
+  storage
+});
+module.exports = upload;
 
 // const methoOverride = require('method-override');
 // const GridFsStorage = require('multer-gridfs-storage');

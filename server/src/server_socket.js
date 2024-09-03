@@ -4,7 +4,7 @@ const {Hash_chs, Codigo_chs} = require('./servicios/conexiones');
 const { Hash_texto, Hash_password } = require('./servicios/encriptado');
 const {Tablas} = require('./controllers/api.controller');
 const {Model} = require('./database/model');
-const { RegistroChat } = require('./controllers/chat.controller');
+const { RegistroChat, VerContactos, Mensajes, NuevoMensaje } = require('./controllers/chat.controller');
 
 const io = require("socket.io")(global.global_http,
     {
@@ -374,6 +374,21 @@ Enviar_usuario = async(socket, enviar=true)=>{
     // global.io.emit('Usuario_presentes',usuarios)    
 }
 
+Buscar_usuario = async(socketE, valores)=>{
+    const {Usuario1, Usuario2} = valores;
+    let users = [];
+    const sockets = await  global.chat.sockets;
+    
+    for (let [id, socket] of global.chat.sockets) {
+        users.push({
+        userID: id,
+        ...socket.handshake.auth,
+        });
+    }
+    users= users.filter(f=> f.username===Usuario1.username || f.username===Usuario2.username);
+    console.log(users)
+    return users
+}
 global.chat = io.of('/chat').on('connection', (socket)=> {
     console.log('cliente:',socket.id, socket.handshake.auth);
     socket.emit('conectado',{id: socket.id})
@@ -382,9 +397,27 @@ global.chat = io.of('/chat').on('connection', (socket)=> {
         console.log(chalk.red('App desconectada de chat',socket.id));
     });
     socket.on('Registrar',async(valores)=>{
-        console.log('Registrar',valores.nuevo)
+        console.log('Registrar')
         const respuesta = await RegistroChat({...valores, User:socket.handshake.auth})
-        socket.emit('Registrado', respuesta);
+        global.chat.to(socket.id).emit('Registrado', respuesta);
+        // socket.emit('Registrado', respuesta);
+    })
+    socket.on('Contactos',async(valores)=>{
+        const contactos = await VerContactos(valores);
+        global.chat.to(socket.id).emit('Miscontactos', contactos);
+    })
+    socket.on('Mensajes',async(valores)=>{
+        const respuesta = await Mensajes(valores);
+        global.chat.to(socket.id).emit('Mensaje', respuesta);
+    })
+    socket.on('NuevoMensaje',async(valores)=>{
+        const destinos = await Buscar_usuario(socket, valores);
+        const respuesta = await NuevoMensaje(valores);
+        // global.chat.to(socket.id).emit('RecibirMensaje', respuesta);
+        global.chat.to(destinos[0].userID).emit('RecibirMensaje', respuesta);
+        if (destinos.length>1)
+            global.chat.to(destinos[1].userID).emit('RecibirMensaje', respuesta);
+
     })
     socket.on('Agregado',(nuevo)=>{
         socket.auth={...socket.auth, ...nuevo};
