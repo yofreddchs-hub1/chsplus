@@ -14,7 +14,7 @@ variables.env
 /coverage
 
 # production
-
+/chat
 #session de whatsapp
 /sessions
 # misc
