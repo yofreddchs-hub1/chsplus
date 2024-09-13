@@ -66,6 +66,9 @@ global.io = io.of('/').on('connection', (socket) =>{
         // }
         Enviar_usuario(socket);
     })
+    socket.on('tasa_cambio',()=>{
+        global.io.to(socket.id).emit('Actualizar_tasa',{tasa: global.global_cambio});
+    })
     socket.on('login', async(data) =>{
         // await User.updateOne({_id:data._id},{id_socket:socket.id, conectado: true},{ upsert: true });
         Enviar_usuario(socket);

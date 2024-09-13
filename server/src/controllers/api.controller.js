@@ -428,6 +428,7 @@ serverCtrl.Getall = async (req, res) =>{
 serverCtrl.Getall_C = async (req, res) =>{
   const {User, tablas, Api, condicion, hash} = req.body;
   const hashn = await Hash_texto(JSON.stringify({User, tablas, condicion, Api}));
+  
   // const responder = await Ver_conexion(User, hash)
   // if (responder.Respuesta!=='OK'){
   //   res.json({Respuesta:'Error', mensaje:'no autorizado'});
@@ -520,13 +521,13 @@ serverCtrl.Tablas = async(tabla, Api)=>{
 serverCtrl.Setall = async (req, res) =>{
   let {User, Api, datos, tabla, hash} = req.body;
   User= typeof User==='string' ? JSON.parse(User) : User;
-  console.log('>>>>>>>>>',typeof Api==='string' ? Api : Api.valores.api)
+  console.log('>>>>>>>>>',typeof Api==='string' ? Api : Api.valores.api, datos, tabla)
   // Api= typeof Api==='string' ? JSON.parse(Api) : Api;
   const hashn = await Hash_texto(JSON.stringify({User, Api, datos, tabla}));
   // const igual= await serverCtrl.Verifica_api(Api, true);
 
   if (hashn===hash){ //&& igual) {
-    let newdatos= JSON.parse(datos);
+    let newdatos= typeof datos === 'string' ? JSON.parse(datos) : datos;
     // newdatos['filename']= newdatos['filename'] && newdatos['filename']!==undefined?newdatos['filename']:[];
     // newdatos['fileid']=newdatos['fileid'] && newdatos['fileid']!==undefined ? newdatos['fileid'] :[];
     try{
@@ -610,11 +611,11 @@ serverCtrl.Setall = async (req, res) =>{
       }
       if (newdatos._id){//(newdatos._id){
         const hash_chs = await Hash_chs({...newdatos})
-        await DB.updateOne({_id:newdatos._id},{...newdatos, hash_chs, actualizado:User.username},{ upsert: true });
+        await DB.updateOne({_id:newdatos._id},{...newdatos, hash_chs, actualizado:User && User.username ? User.username : Api},{ upsert: true });
       } else {
         let cod_chs = await Codigo_chs({...newdatos['multiples_valores'] ? newdatos.valores : newdatos});
         const hash_chs = await Hash_chs({...newdatos, cod_chs})
-        const Nuevo = new DB({...newdatos, cod_chs, hash_chs, actualizado:User.username});
+        const Nuevo = new DB({...newdatos, cod_chs, hash_chs, actualizado:User && User.username ? User.username : Api});
         await Nuevo.save();
       }
       const resultado=await DB.find()
