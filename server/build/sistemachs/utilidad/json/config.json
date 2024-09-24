@@ -7,7 +7,7 @@
     "https1":"https://chsplus.onrender.com",
     "cloud_name":"dtu1dwuwf",
     "carpeta":"chsplus",
-    "local":true,
+    "local":false,
     "models":[
                 "sistemachs_Modificacion",
                 "sistemachs_Agencia",

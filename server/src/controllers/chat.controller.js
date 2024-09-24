@@ -27,8 +27,37 @@ Verificar = async(DB, verificar, datos) =>{
     return {continuar, resultado};
 }
 
-chatCtrl.VerContactos=async(valores)=>{
-    
+CambiarRecibido = async(DB,datos, leidos=false)=>{
+    let nuevos =[];
+    for (var i=0; i<datos.length; i++){
+        let nuevo = datos[i];
+        if (!nuevo.valores.recibido ){
+            nuevo.valores.recibido= true;
+            await DB.updateOne({_id:nuevo._id},{valores:nuevo.valores},{ upsert: true })
+        }
+        if(leidos && !nuevo.valores.leido){
+            nuevo.valores.leido= true;
+            await DB.updateOne({_id:nuevo._id},{valores:nuevo.valores},{ upsert: true })
+        }
+
+        nuevos=[...nuevos, nuevo];
+    }
+    return nuevos
+}
+
+Noleidos = async(DB, Usuario1, Usuario2)=>{
+    let noleidos=[];
+    if (Usuario1.username===Usuario2.username){
+        noleidos = await DB.find({$and:[{'valores.leido':{$ne:true}}]});
+    }else{
+        noleidos = await DB.find({$and:[{'valores.user._id':{$ne:Usuario1._id}},{'valores.leido':{$ne:true}}]});
+    }
+    return noleidos
+}
+
+chatCtrl.VerContactos=async(props)=>{
+    let {valores, User}= props;
+      
     valores = valores.map(val=>{
         let telefonos = val.phoneNumbers 
             ?   val.phoneNumbers.map(tel=> {
@@ -43,11 +72,29 @@ chatCtrl.VerContactos=async(valores)=>{
     usuarios = usuarios.map(f=>{return {...f.valores, _id:f._id}})
     let nuevof=[];
     let nuevosf=[];
+    let mensajes={};
     for (var i=0; i<valores.length; i++){
         // const usuario = {...usuarios[i].valores, _id: usuarios[i]._id};
         const usuario = valores[i];
         const pos = usuarios.findIndex(f=> usuario.telefonos.indexOf(f.telefono.replace('+58','0'))!==-1)//valores.findIndex(f=> f.telefonos.indexOf(usuario.telefono.replace('+58','0'))!==-1);
         if (pos!==-1){
+            let chat =[User.username, usuarios[pos].username].sort();
+            chat = `${api}_mensajes_${chat[0]}_${chat[1]}`;
+            const MDB = await tabla_mensajes({Usuario1:{username:User.username},Usuario2:{username:usuarios[pos].username}});
+            const count = await MDB.estimatedDocumentCount();
+            let ultimo = await MDB.find().sort({$natural:-1}).limit(1);
+            const fecha = ultimo.length===0 ? '' : ultimo[0].valores.createdAt 
+            ultimo = ultimo.length===0 ? '' : ultimo[0].valores;
+            let noleidos = await Noleidos(MDB, User, usuarios[pos]);
+            // if (User.username===usuarios[pos].username){
+            //     noleidos = await MDB.find({$and:[{'valores.leido':{$ne:true}}]});
+            // }else{
+            //     noleidos = await MDB.find({$and:[{'valores.user._id':{$ne:User._id}},{'valores.leido':{$ne:true}}]});
+                
+            // }
+            noleidos = await CambiarRecibido(MDB, noleidos);
+            mensajes[chat]=noleidos;
+            
             nuevof=[...nuevof,{
                 ...usuario, 
                 _id:usuarios[pos]._id, 
@@ -56,7 +103,11 @@ chatCtrl.VerContactos=async(valores)=>{
                 username: usuarios[pos].username, 
                 telefono:usuarios[pos].telefono, 
                 chatfanb:true,
-                nombres:usuarios[pos].nombres 
+                nombres:usuarios[pos].nombres,
+                mensajes:count,
+                ultimomensaje:ultimo,
+                mensajespendientes:noleidos.length,
+                fecha,
             }]
         }else{
             nuevosf=[...nuevosf, usuario];
@@ -65,7 +116,7 @@ chatCtrl.VerContactos=async(valores)=>{
     nuevof = nuevof.sort((a,b)=> a.name>b.name ? 1 : -1);
     nuevosf = nuevosf.sort((a,b)=> a.name>b.name ? 1 : -1);
 
-    return [...nuevof, ...nuevosf]
+    return {contactos:[...nuevof, ...nuevosf], mensajes}
 }
 chatCtrl.RegistroChat=async(valores)=>{
     const {datos, User, nuevo, api, actualizar}=valores;
@@ -131,14 +182,40 @@ tabla_mensajes = async(valores) =>{
 }
 
 chatCtrl.Mensajes= async(valores)=>{
+    const {Usuario1, Usuario2, Todos}= valores;
     const DB = await tabla_mensajes(valores);
-    let mensajes =await DB.find();
+    let mensajes =[];
+    if (Usuario1.username===Usuario2.username){
+        mensajes = Todos ? await DB.find() : await Noleidos(DB, Usuario1, Usuario2) ;
+        mensajes = mensajes.length===0 ? await DB.find().sort({$natural:-1}).limit(10) : mensajes;
+        mensajes = await CambiarRecibido(DB, mensajes, true);
+    }else {
+        mensajes = Todos 
+            ? await DB.find() 
+            : await DB.find({$and:[{'valores.leido':{$ne:true}}]});  
+        mensajes = mensajes.length===0 ? await DB.find().sort({$natural:-1}).limit(10) : mensajes;
+        let nuevos =[];
+        for (var i=0; i<mensajes.length; i++){
+            let nuevo = mensajes[i];
+            if (!nuevo.valores.recibido && nuevo.valores.user._id!==Usuario1._id ){
+                nuevo.valores.recibido= true;
+            }
+            if(!nuevo.valores.leido && nuevo.valores.user._id!==Usuario1._id){
+                nuevo.valores.leido= true;
+            }
+            await DB.updateOne({_id:nuevo._id},{valores:nuevo.valores},{ upsert: true })
+    
+            nuevos=[...nuevos, nuevo];
+        }
+        mensajes = nuevos;
+    }
     mensajes= mensajes.map(val=>{return {...val.valores, _id:String(val._id)}});
+    
     return mensajes;
 }
 
 chatCtrl.NuevoMensaje = async(valores)=>{
-    let {Usuario1, messages}= valores;
+    let {Usuario1, Usuario2, messages}= valores;
     const DB = await tabla_mensajes(valores);
     messages.createdAt = new Date();
     messages.enviado = true;
@@ -146,6 +223,24 @@ chatCtrl.NuevoMensaje = async(valores)=>{
     const Nuevo = new DB({valores:{...messages }, cod_chs, actualizado:Usuario1.username});
     await Nuevo.save();
     let mensajes =await DB.find().sort({$natural:-1}).limit(10);
+    if (Usuario1.username===Usuario2.username){
+        mensajes = await CambiarRecibido(DB, mensajes, true);
+    }else{
+        let nuevos =[];
+        for (var i=0; i<mensajes.length; i++){
+            let nuevo = mensajes[i];
+            if (!nuevo.valores.recibido && nuevo.valores.user._id!==Usuario1._id ){
+                nuevo.valores.recibido= true;
+            }
+            if(!nuevo.valores.leido && nuevo.valores.user._id!==Usuario1._id){
+                nuevo.valores.leido= true;
+            }
+            await DB.updateOne({_id:nuevo._id},{valores:nuevo.valores},{ upsert: true })
+    
+            nuevos=[...nuevos, nuevo];
+        }
+        mensajes = nuevos;
+    }
     mensajes= mensajes.map(val=>{return {...val.valores, _id:String(val._id)}});
     return mensajes
 

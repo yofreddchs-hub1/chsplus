@@ -380,7 +380,6 @@ Enviar_usuario = async(socket, enviar=true)=>{
 Buscar_usuario = async(socketE, valores)=>{
     const {Usuario1, Usuario2} = valores;
     let users = [];
-    const sockets = await  global.chat.sockets;
     
     for (let [id, socket] of global.chat.sockets) {
         users.push({
@@ -388,7 +387,7 @@ Buscar_usuario = async(socketE, valores)=>{
         ...socket.handshake.auth,
         });
     }
-    users= users.filter(f=> f.username===Usuario1.username || f.username===Usuario2.username);
+    users= users.filter(f=>  f.username===Usuario2.username);//f.username===Usuario1.username ||
     console.log(users)
     return users
 }
@@ -406,20 +405,28 @@ global.chat = io.of('/chat').on('connection', (socket)=> {
         // socket.emit('Registrado', respuesta);
     })
     socket.on('Contactos',async(valores)=>{
-        const contactos = await VerContactos(valores);
+        const contactos = await VerContactos({valores, User:socket.handshake.auth});
         global.chat.to(socket.id).emit('Miscontactos', contactos);
     })
     socket.on('Mensajes',async(valores)=>{
+        const destinos = await Buscar_usuario(socket, valores);
         const respuesta = await Mensajes(valores);
         global.chat.to(socket.id).emit('Mensaje', respuesta);
+        if (destinos.length>0){
+            global.chat.to(destinos[0].userID).emit('Mensaje', respuesta);
+            global.chat.to(destinos[0].userID).emit('ActualizarCHS');
+        }
     })
     socket.on('NuevoMensaje',async(valores)=>{
         const destinos = await Buscar_usuario(socket, valores);
         const respuesta = await NuevoMensaje(valores);
         // global.chat.to(socket.id).emit('RecibirMensaje', respuesta);
-        global.chat.to(destinos[0].userID).emit('RecibirMensaje', respuesta);
-        if (destinos.length>1)
-            global.chat.to(destinos[1].userID).emit('RecibirMensaje', respuesta);
+        // global.chat.to(destinos[0].userID).emit('RecibirMensaje', respuesta);
+        global.chat.to(socket.id).emit('RecibirMensaje', respuesta);
+        if (destinos.length>0){
+            global.chat.to(destinos[0].userID).emit('RecibirMensaje', respuesta);
+            global.chat.to(destinos[0].userID).emit('ActualizarCHS');
+        }
 
     })
     socket.on('Agregado',(nuevo)=>{
@@ -430,5 +437,16 @@ global.chat = io.of('/chat').on('connection', (socket)=> {
     socket.on('message', (datos)=>{
       console.log('MMMMMMMMMMMMMMMMMMMM',datos);
     });
+  
+});
+
+global.rtchs = io.of('/rtchs').on('connection', (socket)=> {
+    console.log('cliente de rtchs:',socket.id, socket.handshake.auth);
+    socket.emit('conectado',{id: socket.id})
+    
+    socket.on('disconnect',  async()=> {
+        console.log(chalk.red('App desconectada de rtchs',socket.id));
+    });
+    
   
 });

@@ -1890,18 +1890,30 @@
         },
         {
             "_id": 2,
-            "titulo": "Orden Traslado Blanca",
+            "titulo": "Orden Traslado Blanca (Anterior)",
             "value": "ordentrasladoblanca",
             "permisos": ""
         },
         {
             "_id": 3,
-            "titulo": "Orden Traslado Formato",
+            "titulo": "Orden Traslado Formato (Anterior)",
             "value": "ordentrasladoformato",
             "permisos": ""
         },
         {
             "_id": 4,
+            "titulo": "Guia Traslado Formato",
+            "value": "guiatrasladoformato",
+            "permisos": ""
+        },
+        {
+            "_id": 5,
+            "titulo": "Guia Factura Formato",
+            "value": "ordentrasladoformato",
+            "permisos": ""
+        },
+        {
+            "_id": 6,
             "titulo": "Factura",
             "value": "factura",
             "permisos": ""
