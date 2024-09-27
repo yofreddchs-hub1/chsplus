@@ -521,7 +521,7 @@ serverCtrl.Tablas = async(tabla, Api)=>{
 serverCtrl.Setall = async (req, res) =>{
   let {User, Api, datos, tabla, hash} = req.body;
   User= typeof User==='string' ? JSON.parse(User) : User;
-  console.log('>>>>>>>>>',typeof Api==='string' ? Api : Api.valores.api, datos, tabla)
+  // console.log('>>>>>>>>>',typeof Api==='string' ? Api : Api.valores.api, datos, tabla)
   // Api= typeof Api==='string' ? JSON.parse(Api) : Api;
   const hashn = await Hash_texto(JSON.stringify({User, Api, datos, tabla}));
   // const igual= await serverCtrl.Verifica_api(Api, true);
