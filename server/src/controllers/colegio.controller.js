@@ -364,6 +364,7 @@ colegioCtrl.Notas = async (req, res) =>{
         });
         let lapso=null;
         let titulos=[];
+        let titulosn = {filas:1,datos:[[],[]]}
         let titulosa=[];
         if (datos.tipo==='seccion'){
             // titulos = asignaturas
@@ -373,7 +374,15 @@ colegioCtrl.Notas = async (req, res) =>{
                     {...asig, titulo: `${asig.titulo} 1er LAPSO`,field:`1lapso-${asig._id}`},
                     {...asig, titulo: `${asig.titulo} 2do LAPSO`,field:`2lapso-${asig._id}`},
                     {...asig, titulo: `${asig.titulo} 3er LAPSO`,field:`3lapso-${asig._id}`}
-                ]
+                ];
+                titulosn.datos[0]=[...titulosn.datos[0],
+                    {...asig, titulo: `${asig.asignatura}`,field:`${asig._id}`},
+                ];
+                titulosn.datos[1]=[...titulosn.datos[1],
+                    {...asig, titulo: `1er LAPSO`,field:`1lapso-${asig._id}`},
+                    {...asig, titulo: `2do LAPSO`,field:`2lapso-${asig._id}`},
+                    {...asig, titulo: `3er LAPSO`,field:`3lapso-${asig._id}`}
+                ];
             }
         }else{
             evaluaciones.map((val, i)=>{
@@ -383,27 +392,67 @@ colegioCtrl.Notas = async (req, res) =>{
                 if (lapso.value===val.lapso.value){
                     titulosa=[...titulosa,val] 
                 }
-                if (lapso.value!==val.lapso.value){
+                if (lapso.value!==val.lapso.value || i===evaluaciones.length-1){
                     titulos=[...titulos, ...titulosa.sort((a,b) => a.createdAt> b.createdAt ? 1 : -1),
                         {
                             _id:`Error-${lapso.value}`,
                             titulo:`${lapso.titulo}`,
                             field:`${lapso.value}-${datos.asignatura._id}`
                         },
-                    ];
-                    titulosa=[val];
-                    lapso=val.lapso;
-                }
-                if (i===evaluaciones.length-1){
-                    titulos=[...titulos, ...titulosa.sort((a,b) => a.createdAt> b.createdAt ? 1 : -1),
+                        {
+                            _id:`Error-${lapso.value}-art112`,
+                            titulo:`Aplicación de Art. 112`,
+                            field:`${lapso.value}-${datos.asignatura._id}-art112`,
+                            
+                        },
+                        {
+                            _id:`Error-${lapso.value}-consejo`,
+                            titulo:`Modificación de Consejo de Sección`,
+                            field:`${lapso.value}-${datos.asignatura._id}-consejo`,
+                            
+                        },
+
+                    ];  
+                    titulosn.datos[1]=[...titulosn.datos[1],  ...titulosa.sort((a,b) => a.createdAt> b.createdAt ? 1 : -1),
                         {
                             _id:`Error-${lapso.value}`,
                             titulo:`${lapso.titulo}`,
                             field:`${lapso.value}-${datos.asignatura._id}`
-    
-                        }
-                    ]
+                        },
+                        {
+                            _id:`Error-${lapso.value}-art112`,
+                            titulo:`Aplicación de Art. 112`,
+                            field:`${lapso.value}-${datos.asignatura._id}-art112`,
+                            
+                        },
+                        {
+                            _id:`Error-${lapso.value}-consejo`,
+                            titulo:`Modificación de Consejo de Sección`,
+                            field:`${lapso.value}-${datos.asignatura._id}-consejo`,
+                            
+                        },
+
+                    ];  
+                    titulosa=[val];
+                    lapso=val.lapso;
                 }
+                // if (i===evaluaciones.length-1){
+                //     titulos=[...titulos, ...titulosa.sort((a,b) => a.createdAt> b.createdAt ? 1 : -1),
+                //         {
+                //             _id:`Error-${lapso.value}`,
+                //             titulo:`${lapso.titulo}`,
+                //             field:`${lapso.value}-${datos.asignatura._id}`
+    
+                //         }
+                //     ];
+                //     titulosn.datos[1]=[...titulosn.datos[1],  ...titulosa.sort((a,b) => a.createdAt> b.createdAt ? 1 : -1),
+                //         {
+                //             _id:`Error-${lapso.value}`,
+                //             titulo:`${lapso.titulo}`,
+                //             field:`${lapso.value}-${datos.asignatura._id}`
+                //         },
+                //     ];  
+                // }
             });
         }
         // let titulos = datos.tipo==='seccion' 
@@ -522,7 +571,7 @@ colegioCtrl.Notas = async (req, res) =>{
         //     });
         //     // console.log(nota)
         // }
-        res.json({Respuesta:'Ok', estudiantes, seccion, asignaturas, nuevanotas, titulos});
+        res.json({Respuesta:'Ok', estudiantes, seccion, asignaturas, nuevanotas, titulos, titulosn});
     }else{
         res.json({Respuesta:'Error', mensaje:'hash invalido'});
     }

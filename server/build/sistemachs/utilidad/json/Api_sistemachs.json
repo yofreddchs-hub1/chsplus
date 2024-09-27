@@ -557,7 +557,23 @@
                   "name": "aproximadosaco",
                   "resultado": "(dato)=>{let resultado= dato.actual && dato.cantidadsaco ? Number(dato.actual)/Number(dato.cantidadsaco) : 0; return resultado.toFixed(2)}",
                   "multiline": false
-              }
+              },
+              {
+                "nombre": "orden",
+                "tipo": "number",
+                "label": "Orden a Mostra",
+                "placeholder": "Orden a Mostra",
+                "title": "Inventario Actual",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "orden",
+                "name": "orden",
+                "multiline": false
+            }
           ]
       },
       "Form_Proveedor_Art": {
@@ -679,7 +695,23 @@
                   "key": "categoria",
                   "name": "categoria",
                   "multiline": false
-              }
+              },
+              {
+                "nombre": "orden",
+                "tipo": "number",
+                "label": "Orden a Mostra",
+                "placeholder": "Orden a Mostra",
+                "title": "Inventario Actual",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "orden",
+                "name": "orden",
+                "multiline": false
+            }
           ]
       },
       "Form_Formula": {
@@ -1117,6 +1149,22 @@
                 ],
                 "key": "imagen",
                 "name": "imagen",
+                "multiline": false
+            },
+            {
+                "nombre": "orden",
+                "tipo": "number",
+                "label": "Orden a Mostra",
+                "placeholder": "Orden a Mostra",
+                "title": "Inventario Actual",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "orden",
+                "name": "orden",
                 "multiline": false
             }
           ]
@@ -1966,6 +2014,14 @@
           }
       ],
       "Titulos_Inventariomp": [
+        {
+            "title": "Item",
+            "field": "orden",
+            "tipo": "",
+            "formato": "(dato)=> `${dato.valores.orden}`",
+            "default": "",
+            "type": ""
+        },
           {
               "title": "Descripción",
               "field": "descripcion",
@@ -1992,6 +2048,14 @@
           }
       ],
       "Titulos_Empaque": [
+        {
+            "title": "Item",
+            "field": "orden",
+            "tipo": "",
+            "formato": "(dato)=> `${dato.valores.orden}`",
+            "default": "",
+            "type": ""
+        },
           {
               "title": "Código",
               "field": "codigo",
@@ -2044,6 +2108,14 @@
           }
       ],
       "Titulos_Inventariopt": [
+        {
+            "title": "Item",
+            "field": "orden",
+            "tipo": "",
+            "formato": "(dato)=> `${dato.valores.orden}`",
+            "default": "",
+            "type": ""
+        },
           {
               "title": "Descripción",
               "field": "descripcion",

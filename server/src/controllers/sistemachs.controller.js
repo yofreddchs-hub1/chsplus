@@ -307,7 +307,9 @@ sistemachsCtrl.Ingreso_Egreso = async (req, res)=>{
                 }
             }
         }
-        inventario = inventario.sort((a,b)=> a.categoria && b.categoria && (a.categoria.titulo>b.categoria.titulo) ? 1 : -1);
+        
+        // inventario = inventario.sort((a,b)=> a.categoria && b.categoria && (a.categoria.titulo>b.categoria.titulo) ? 1 : -1);
+        inventario = inventario.sort((a,b)=> Number(a.orden) > Number(b.orden) ? 1 : -1);
         res.json({Respuesta:'Ok', inventario, ingresos, egresos});
     }else{
         res.json({Respuesta:'Error', mensaje:'hash invalido'});
@@ -615,6 +617,7 @@ sistemachsCtrl.Egreso_Venta = async (req, res)=>{
         }
         
         if(datos.tipo==='Eliminar'){
+            
             if (datos.egreso._id){
                 await EPT.deleteOne({_id:datos.egreso._id});
             }
