@@ -548,13 +548,13 @@ sistemachsCtrl.Ventas = async (req, res)=>{
     if (hashn===hash){ // && igual) {
         datos = datos ? JSON.parse(datos) : {};
         const VENTA = await Model(Api,'sistemachs_Venta')//require(`../models/sistemachs_Venta`);
-        
+        console.log('Ventas....', datos.estado, datos.tipo, datos.fecha, datos && datos.fecha!==undefined)
         let ventas = datos && datos.estado 
             ? await VENTA.find({$and:[{"valores.estado":datos.estado},{"valores.tipo":'Venta'}]})//find({$text: {$search: datos.estado, $caseSensitive: false}})
             : datos && datos.tipo
             ? await VENTA.find({"valores.tipo":datos.tipo})
-            : datos && datos.fecha
-            ? await VENTA.find({$and:[{"valores.tipo":'Venta'},{"valores.fecha":{$gte:datos.fecha.dia,$lte:datos.fecha.diaf}}]})//find({"valores.fecha":{$gte:datos.fecha.dia,$lte:datos.fecha.diaf}})
+            : datos && datos.fecha!==undefined
+            ? await VENTA.find({$and:[{"valores.fecha":{$gte:datos.fecha.dia,$lte:datos.fecha.diaf}}]})//find({"valores.fecha":{$gte:datos.fecha.dia,$lte:datos.fecha.diaf}})
             : await VENTA.find();
         
         let ventas_p= ventas.filter(f=>f.valores.pendiente);
@@ -563,7 +563,9 @@ sistemachsCtrl.Ventas = async (req, res)=>{
         let pendiente = 0;
         let facturado = 0;
         console.log('antes del map')
-        ventas.map(val=>{
+        for(var i=0; i<ventas.length; i++){
+        // ventas.map(val=>{
+            const val = ventas[i];
             let valor = val.valores.formapago 
                 ? val.valores.formapago['formapago-subtotal'] 
                 : {
@@ -573,9 +575,10 @@ sistemachsCtrl.Ventas = async (req, res)=>{
             total= valor.Tasa !==0  ? Number(total + valor.totalb / valor.Tasa) : total;
             pendiente+= Number(valor.restan);
             facturado+= Number(valor.cancelar);
-            return val
-        })
-
+            // return val
+        // })
+        }
+        console.log('despues antes del map')
         res.json({Respuesta:'Ok', ventas, ventas_p, ventas_c, total, pendiente, facturado});
     }else{
         res.json({Respuesta:'Error', mensaje:'hash invalido'});
