@@ -306,7 +306,12 @@ colegioCtrl.Solvencias = async (req, res) =>{
             const pos = Mensualidades.findIndex(f=>f.valores._id_estudiante===estu._id || f.valores.cedula===estu.cedula );
             let mensualidad = {}
             if (pos!==-1){
-                mensualidad = {_id:Mensualidades[pos]._id, ...Mensualidades[pos].valores}
+                mensualidad = {_id:Mensualidades[pos]._id, ...Mensualidades[pos].valores,
+                    cedula:estu.cedula, nombres:estu.nombres, apellidos:estu.apellidos,
+                    grado:estu.grado ? estu.grado.titulo : '',
+                    seccion:estu.seccion ? estu.seccion.titulo : ''
+
+                }
                 mensualidades=[...mensualidades, mensualidad];
             }
             // let mensualidad = await Buscar(tabla_mensualidad, estu._id, '_id_estudiante');

@@ -160,11 +160,6 @@
                   "icon": "group"
               },
               {
-                  "value": "Docentes",
-                  "primary": "Docentes",
-                  "icon": "diversity_3"
-              },
-              {
                   "value": "Recibos",
                   "primary": "Recibos",
                   "icon": "text_snippet"
@@ -183,13 +178,40 @@
                 "value": "EnviarWHATSAPP",
                 "primary": "Enviar Mensaje",
                 "icon": "send"
-              },
-              {
+              }
+          ]
+      },
+      {
+        "value": "Academico",
+        "primary": "Academico",
+        "icon": "school",
+        "childen": [
+            {
+                "value": "Aulas",
+                "primary": "Aulas",
+                "icon": "other_houses"
+            },
+            {
+                "value": "Asignaturas",
+                "primary": "Asignaturas",
+                "icon": "assignment"
+            },
+            {
+                "value": "Docentes",
+                "primary": "Docentes",
+                "icon": "diversity_3"
+            },
+            {
                 "value": "Horario",
                 "primary": "Horario",
                 "icon": "calendar_month"
-              }
-          ]
+            },
+            {
+                "value": "Notas",
+                "primary": "Notas",
+                "icon": "description"
+            }
+        ]
       },
       {
           "value": "Registros",
@@ -1280,6 +1302,65 @@
                   "name": "impedimentos"
               },
               {
+                "nombre": "posee_condicion",
+                "tipo": "lista_multiuso",
+                "label": "¿Posee alguna condición?",
+                "placeholder": "¿Posee alguna condición?",
+                "title": "¿Posee alguna condición?",
+                "required": false,
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "lista": "lista_colegio_sino",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "multiple": false,
+                "key": "posee_condicion",
+                "name": "posee_condicion",
+                "modificar": "Cambio_condicion"
+            },
+            {
+                "nombre": "condicion",
+                "tipo": "lista_multiuso",
+                "label": "Condición",
+                "placeholder": "Condición",
+                "title": "Condición",
+                "required": false,
+                "mensaje_error": "",
+                "disabled": true,
+                "numberOfLines": "",
+                "lista": "lista_colegio_condicion",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "multiple": false,
+                "key": "condicion",
+                "name": "condicion",
+                "modificar": "Condicion_especial"
+            },
+            {
+                "nombre": "condicione",
+                "tipo": "lista_multiuso",
+                "label": "Condición",
+                "placeholder": "Condición",
+                "title": "Condición",
+                "required": false,
+                "mensaje_error": "Indique la neurodiversidad",
+                "disabled": true,
+                "numberOfLines": "",
+                "lista": "lista_colegio_condicion_neurodiversidad",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "multiple": false,
+                "key": "condicione",
+                "name": "condicione"
+            },
+              {
                   "nombre": "medico",
                   "tipo": "input",
                   "label": "Medico",
@@ -1448,7 +1529,7 @@
                   "label": "Grado",
                   "placeholder": "Grado",
                   "title": "Grado",
-                  "mensaje_error": "",
+                  "mensaje_error": "Debe seleccionar el grado al que pertenece la asignatura",
                   "disabled": false,
                   "numberOfLines": "",
                   "lista": "lista_colegio_grado",
@@ -1457,7 +1538,8 @@
                   ],
                   "key": "grado",
                   "name": "grado",
-                  "multiline": false
+                  "multiline": false,
+                  "required": true
               },
               {
                   "nombre": "asignatura",
@@ -1465,14 +1547,89 @@
                   "label": "Asignatura",
                   "placeholder": "Asignatura",
                   "title": "Asignatura",
-                  "mensaje_error": "",
+                  "mensaje_error": "Debe indicar el nombre de la asignatura",
                   "disabled": false,
                   "numberOfLines": "",
                   "getOptionLabel": [
                       "titulo"
                   ],
                   "key": "asignatura",
-                  "name": "asignatura"
+                  "name": "asignatura",
+                  "required": true
+              },
+              {
+                "nombre": "abreviacion",
+                "tipo": "input",
+                "label": "Siglas",
+                "placeholder": "Siglas",
+                "title": "Siglas",
+                "mensaje_error": "Debe indicar el nombre de la asignatura",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "abreviacion",
+                "name": "abreviacion",
+                "required": false
+            }
+        ]
+      },
+      "Form_Evaluacion": {
+          "columna": 2,
+          "value": [
+              {
+                  "nombre": "nombre",
+                  "tipo": "input",
+                  "label": "Nombre",
+                  "placeholder": "Nombre",
+                  "title": "Nombre",
+                  "mensaje_error": "Debe indicar nombre de evaluación",
+                  "disabled": false,
+                  "numberOfLines": "",
+                  "lista": "",
+                  "getOptionLabel": [
+                      "titulo"
+                  ],
+                  "key": "nombre",
+                  "name": "nombre",
+                  "multiline": false,
+                  "required": true
+              },
+              {
+                "nombre": "lapso",
+                "tipo": "lista_multiuso",
+                "label": "Lapso",
+                "placeholder": "Lapso",
+                "title": "Lapso",
+                "mensaje_error": "Debe indicar el lapso al que pertenece la evaluación",
+                "disabled": false,
+                "numberOfLines": "",
+                "lista": "lista_lapsos",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "lapso",
+                "name": "lapso",
+                "multiline": false,
+                "required": true
+              },
+              {
+                  "nombre": "descripcion",
+                  "tipo": "input",
+                  "label": "Descripción",
+                  "placeholder": "Descripción",
+                  "title": "Descripción",
+                  "mensaje_error": "",
+                  "disabled": false,
+                  "numberOfLines": "2",
+                  "getOptionLabel": [
+                      "titulo"
+                  ],
+                  "key": "descripcion",
+                  "name": "descripcion",
+                  "multiline": true,
+                  "required": false
               }
           ]
       },
@@ -2123,12 +2280,15 @@
                   "numberOfLines": "",
                   "lista": "uecla_Asignatura",
                   "getOptionLabel": [
+                      "grado.titulo",
                       "asignatura"
                   ],
                   "key": "asignaturas",
                   "name": "asignaturas",
                   "multiline": false,
-                  "multiple": true
+                  "multiple": true,
+                  "modificar": "Seleccionar_asignatura",
+                  "solo": true
               },
               {
                   "nombre": "grados",
@@ -2137,7 +2297,7 @@
                   "placeholder": "Grado(s)",
                   "title": "Grado(s)",
                   "mensaje_error": "",
-                  "disabled": false,
+                  "disabled": true,
                   "numberOfLines": "",
                   "lista": "lista_colegio_grado",
                   "getOptionLabel": [
@@ -2146,7 +2306,8 @@
                   "key": "grados",
                   "name": "grados",
                   "multiline": false,
-                  "multiple": true
+                  "multiple": true,
+                  "solo": true
               }
           ]
       },
@@ -2885,9 +3046,9 @@
             {
                 "nombre": "lista",
                 "tipo": "lista_multiuso",
-                "label": "Datos",
-                "placeholder": "Datos",
-                "title": "Datos",
+                "label": "Sección",
+                "placeholder": "Sección",
+                "title": "Sección",
                 "mensaje_error": "",
                 "disabled": false,
                 "numberOfLines": "",
@@ -2901,6 +3062,253 @@
                 "cargar":true
             }
         ]
+      },
+      "Form_horarios": {
+        "columna": 4,
+        "value": [
+            {
+                "nombre": "horas",
+                "tipo": "Lista",
+                "label": "Horas a asignar",
+                "placeholder": "Horas a asignar",
+                "title": "Cantidad de horas que desea colocar",
+                "required": true,
+                "disabled": false,
+                "lista": [],
+                "agregar": false,
+                "form": "",
+                "titulos": "",
+                "Subtotal": "",
+                "name": "horas",
+                "multiline": false,
+                "table": []
+            },
+            {
+                "nombre": "asignatura",
+                "tipo": "lista_multiuso",
+                "label": "Asignatura",
+                "placeholder": "Asignatura",
+                "title": "Asignatura",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "lista": "lista_tipo",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "asignatura",
+                "name": "asignatura",
+                "multiline": false
+            },
+            {
+                "nombre": "docente",
+                "tipo": "lista_multiuso",
+                "label": "Docente",
+                "placeholder": "Docente",
+                "title": "Docente",
+                "mensaje_error": "",
+                "disabled": true,
+                "numberOfLines": "",
+                "lista": "lista_categoria",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "docente",
+                "name": "docente"
+            },
+            {
+                "nombre": "aula",
+                "tipo": "lista_multiuso",
+                "label": "Aula",
+                "placeholder": "Aula",
+                "title": "Aula",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "lista": "lista_tipo",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "aula",
+                "name": "aula",
+                "multiline": false
+            }
+        ]
+      },
+      "Form_Notas": {
+        "columna": 4,
+        "value": [
+            {
+                "nombre": "periodo",
+                "name": "periodo",
+                "label": "Periodo",
+                "placeholder": "Periodo Académico",
+                "title": "Periodo Académico",
+                "required": "false",
+                "disabled": false,
+                "tipo": "lista_multiuso",
+                "lista": "uecla_Inscripcion",
+                "multiple": false,
+                "agregar": false,
+                "getOptionLabel": [
+                    "periodo"
+                ],
+                "form": "Form_Inscripcion",
+                "cargar":true,
+                "ordenar":"(lista)=> lista.sort((a,b)=> a.periodo>b.periodo ? -1 : 1)"
+            },
+            {
+                "nombre": "tipo",
+                "tipo": "lista_multiuso",
+                "label": "Tipo Horario",
+                "placeholder": "Tipo Horario",
+                "title": "Tipo Horario",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "lista": "lista_tipo_horario",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "tipo",
+                "name": "tipo",
+                "multiline": false,
+                "cargar":true
+            },
+            {
+                "nombre": "grado",
+                "tipo": "lista_multiuso",
+                "label": "Grado",
+                "placeholder": "Grado",
+                "title": "Grado",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "lista": "lista_colegio_grado",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "grado",
+                "name": "grado",
+                "multiline": false,
+                "cargar":true
+            },
+            {
+                "nombre": "lista",
+                "tipo": "lista_multiuso",
+                "label": "Sección",
+                "placeholder": "Sección",
+                "title": "Sección",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "lista": "lista_colegio_seccion",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "lista",
+                "name": "lista",
+                "multiline": false,
+                "cargar":true
+            }
+        ]
+      },
+      "Form_Notas_Docente": {
+        "columna": 4,
+        "value": [
+            
+            {
+                "nombre": "asignatura",
+                "tipo": "lista_multiuso",
+                "label": "Asignatura",
+                "placeholder": "Asignatura",
+                "title": "Asignaturas",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "lista": "lista_tipo_horario",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "asignatura",
+                "name": "asignatura",
+                "multiline": false,
+                "cargar":true
+            },
+            {
+                "nombre": "grado",
+                "tipo": "lista_multiuso",
+                "label": "Grado",
+                "placeholder": "Grado",
+                "title": "Grado",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "lista": "lista_colegio_grado",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "grado",
+                "name": "grado",
+                "multiline": false,
+                "cargar":true
+            },
+            {
+                "nombre": "lista",
+                "tipo": "lista_multiuso",
+                "label": "Sección",
+                "placeholder": "Sección",
+                "title": "Sección",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "lista": "lista_colegio_seccion",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "lista",
+                "name": "lista",
+                "multiline": false,
+                "cargar":true
+            }
+        ]
+      },
+      "Form_Aula": {
+          "columna": 2,
+          "value": [
+              {
+                  "nombre": "nombre",
+                  "tipo": "input",
+                  "label": "Nombre",
+                  "placeholder": "Nombre",
+                  "title": "Nombre",
+                  "mensaje_error": "",
+                  "disabled": false,
+                  "numberOfLines": "",
+                  "lista": "",
+                  "getOptionLabel": [
+                      "titulo"
+                  ],
+                  "key": "nombre",
+                  "name": "nombre",
+                  "multiline": false
+              },
+              {
+                  "nombre": "edificio",
+                  "tipo": "input",
+                  "label": "Edificio",
+                  "placeholder": "Edificio",
+                  "title": "Edificio",
+                  "mensaje_error": "",
+                  "disabled": false,
+                  "numberOfLines": "",
+                  "getOptionLabel": [
+                      "titulo"
+                  ],
+                  "key": "edificio",
+                  "name": "edificio"
+              }
+          ]
       },
       "Form_User_api": {
         "columna": 2,
@@ -3514,7 +3922,8 @@
                 "agregar": false,
                 "multiple": false,
                 "key": "posee_condicion",
-                "name": "posee_condicion"
+                "name": "posee_condicion",
+                "modificar": "Cambio_condicion"
             },
             {
                 "nombre": "condicion",
@@ -3524,7 +3933,7 @@
                 "title": "Condición",
                 "required": false,
                 "mensaje_error": "",
-                "disabled": false,
+                "disabled": true,
                 "numberOfLines": "",
                 "lista": "lista_colegio_condicion",
                 "getOptionLabel": [
@@ -3533,7 +3942,8 @@
                 "agregar": false,
                 "multiple": false,
                 "key": "condicion",
-                "name": "condicion"
+                "name": "condicion",
+                "modificar": "Condicion_especial"
             },
             {
                 "nombre": "condicione",
@@ -3834,7 +4244,7 @@
     {
         "_id": 3,
         "titulo": "Docente",
-        "permisos": ["Docente", "/docente", "Nomina", "/nomina"]
+        "permisos": ["Academico","Docentes","Horario", "Notas"]
     },
     {
         "_id": 4,
@@ -4076,6 +4486,26 @@
             "_id": 12,
             "titulo": "4to año",
             "value": "4to",
+            "permisos": ""
+        }
+    ],
+    "lista_lapsos": [
+        {
+            "_id": 0,
+            "titulo": "1er Lapso",
+            "value": "1lapso",
+            "permisos": ""
+        },
+        {
+            "_id": 1,
+            "titulo": "2do Lapso",
+            "value": "2lapso",
+            "permisos": ""
+        },
+        {
+            "_id": 2,
+            "titulo": "3er Lapso",
+            "value": "3lapso",
             "permisos": ""
         }
     ],
@@ -4871,46 +5301,46 @@
           }
       ],
       "Titulos_EstudianteR": [
-          {
-              "title": "Cedula",
-              "field": "cedula",
-              "tipo": "",
-              "formato": "",
-              "default": "",
-              "type": ""
-          },
-          {
-              "title": "Nombres",
-              "field": "nombres",
-              "tipo": "",
-              "formato": "",
-              "default": "",
-              "type": ""
-          },
-          {
-              "title": "Apellidos",
-              "field": "apellidos",
-              "tipo": "",
-              "formato": "",
-              "default": "",
-              "type": ""
-          },
-          {
-              "title": "Grado",
-              "field": "grado",
-              "tipo": "",
-              "formato": "(dato)=> `${ typeof dato.grado === 'object' ? dato.grado.titulo : dato.grado ? dato.grado : ''}`",
-              "default": "",
-              "type": ""
-          },
-          {
-              "title": "Sección",
-              "field": "seccion",
-              "tipo": "",
-              "formato": "(dato)=> `${ typeof dato.seccion === 'object' ? dato.seccion.titulo : dato.seccion ? dato.seccion : ''}`",
-              "default": "",
-              "type": ""
-          }
+        {
+            "title": "Cedula",
+            "field": "cedula",
+            "tipo": "",
+            "formato": "",
+            "default": "",
+            "type": ""
+        },
+        {
+            "title": "Nombres",
+            "field": "nombres",
+            "tipo": "",
+            "formato": "",
+            "default": "",
+            "type": ""
+        },
+        {
+            "title": "Apellidos",
+            "field": "apellidos",
+            "tipo": "",
+            "formato": "",
+            "default": "",
+            "type": ""
+        },
+        {
+            "title": "Grado",
+            "field": "grado",
+            "tipo": "",
+            "formato": "(dato)=> `${ typeof dato.grado === 'object' ? dato.grado.titulo : dato.grado ? dato.grado : ''}`",
+            "default": "",
+            "type": ""
+        },
+        {
+            "title": "Sección",
+            "field": "seccion",
+            "tipo": "",
+            "formato": "(dato)=> `${ typeof dato.seccion === 'object' ? dato.seccion.titulo : dato.seccion ? dato.seccion : ''}`",
+            "default": "",
+            "type": ""
+        }
       ],
       "Titulos_Mensualidad1": [
         {
@@ -5538,6 +5968,36 @@
               "filtro":true
           }
       ],
+      "Titulos_Notas": [
+          {
+              "title": "Cedula",
+              "field": "cedula",
+              "tipo": "",
+              "formato": "",
+              "default": "",
+              "type": "",
+              "orden":"true"
+          },
+          {
+              "title": "Nombres",
+              "field": "nombres",
+              "tipo": "",
+              "formato": "",
+              "default": "",
+              "type": "",
+              "orden":"true"
+          },
+          {
+              "title": "Apellidos",
+              "field": "apellidos",
+              "tipo": "",
+              "formato": "",
+              "default": "",
+              "type": "",
+              "orden":"true"
+          }
+          
+      ],
       "Titulos_Portada": [
           {
               "title": "Imagen",
@@ -5697,7 +6157,43 @@
             "default": "",
             "type": ""
         }
-    ]
+      ],
+      "Titulos_Aula": [
+        {
+            "title": "Nombre",
+            "field": "nombre",
+            "tipo": "",
+            "formato": "(dato)=> `${dato.valores.nombre}`",
+            "default": "",
+            "type": ""
+        },
+        {
+            "title": "Edificio",
+            "field": "edificio",
+            "tipo": "",
+            "formato": "(dato)=> `${dato.valores.edificio}`",
+            "default": "",
+            "type": ""
+        }
+      ],
+      "Titulos_Evaluacion": [
+        {
+            "title": "Nombre",
+            "field": "nombre",
+            "tipo": "",
+            "formato": "(dato)=> `${dato.valores.nombre}`",
+            "default": "",
+            "type": ""
+        },
+        {
+            "title": "Lapso",
+            "field": "lapso",
+            "tipo": "",
+            "formato": "(dato)=> `${dato.valores.lapso.titulo}`",
+            "default": "",
+            "type": ""
+        }
+      ]
   },
   "Funciones": {},
   "Subtotales": {

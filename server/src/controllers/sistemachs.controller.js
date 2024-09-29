@@ -37,13 +37,17 @@ Serie = async(dato, Api)=>{
     let total = dato.condicion 
                 ?   await DB.find(dato.condicion)
                 :   await DB.estimatedDocumentCount();
+    console.log(dato.condicion)
     total= dato.condicion ? total.length : total;
     let Recibo = Generar_codigo(total,`${dato.id ? dato.id : 'S'}`, dato.cantidad ? dato.cantidad : 6);
-    let res = await DB.findOne({$or:[{'valores.codigo':Recibo},{'valores.recibo':Recibo},{'valores.referencia':Recibo}]})
+    let res = await DB.findOne({$or:[{'valores.codigo':Recibo},{'valores.recibo':Recibo},{'valores.referencia':Recibo}]});
+    console.log('... primera serie');
     while (res!==null){
         total+=1;
         Recibo = Generar_codigo(total,`${dato.id ? dato.id : 'S'}`, dato.cantidad ? dato.cantidad : 6);
-        res = await DB.findOne({$or:[{'valores.codigo':Recibo},{'valores.recibo':Recibo},{'valores.referencia':Recibo}]})
+        res = await DB.findOne({$or:[{'valores.codigo':Recibo},{'valores.recibo':Recibo},{'valores.referencia':Recibo}]});
+        console.log('... otra serie');
+
     }
     return Recibo;
 }
@@ -605,7 +609,7 @@ sistemachsCtrl.Egreso_Venta = async (req, res)=>{
             anterior = anterior ? anterior.valores : anterior;
         }
         
-        let Recibo = await Serie({tabla:'sistemachs_Venta', cantidad:6, id:'V', condicion:{'valores.tipo':'Venta'}}, Api);//Generar_codigo(total,'V', 6);
+        let Recibo = await Serie({tabla:'sistemachs_Venta', cantidad:6, id:'V'}, Api);//, condicion:{'valores.tipo':'Venta'}//Generar_codigo(total,'V', 6);
         Recibo = anterior ? anterior.recibo : Recibo;
         let actualizado = `Referencia: ${Recibo} - ${User.username}`;
         //Elimina los datos de egreso de producto terminado
@@ -740,7 +744,9 @@ sistemachsCtrl.Serial= async(req,res)=>{
             // const DB = require(`../models/${dato.tabla}`);
             // let total = await DB.estimatedDocumentCount();
             // const Recibo = Generar_codigo(total,`${dato.id ? dato.id : 'S'}`, dato.cantidad ? dato.cantidad : 6);
+            console.log('>>>>>>> buscar serie')
             const Recibo = await Serie(dato, Api);
+            console.log('>>>>>>> encontrada serie')
             res.json({Respuesta:'Ok', Recibo});
         }
         
