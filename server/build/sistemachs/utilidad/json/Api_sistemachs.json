@@ -174,7 +174,8 @@
                 {
                     "value": "ordenesdeventa",
                     "primary": "Ordenes de Venta",
-                    "icon": "table_view"
+                    "icon": "table_view",
+                    "disabled": true
                 },
                 {
                     "value": "Ventas",

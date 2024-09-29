@@ -613,6 +613,7 @@ serverCtrl.Setall = async (req, res) =>{
         const hash_chs = await Hash_chs({...newdatos})
         await DB.updateOne({_id:newdatos._id},{...newdatos, hash_chs, actualizado:User && User.username ? User.username : Api},{ upsert: true });
       } else {
+        console.log(newdatos.valores);
         let cod_chs = await Codigo_chs({...newdatos['multiples_valores'] ? newdatos.valores : newdatos});
         const hash_chs = await Hash_chs({...newdatos, cod_chs})
         const Nuevo = new DB({...newdatos, cod_chs, hash_chs, actualizado:User && User.username ? User.username : Api});
