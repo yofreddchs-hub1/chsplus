@@ -1426,7 +1426,7 @@ Verificar_horasU = async (datos, i, j, hor, nuevo, columna, limpiar, user,codigo
                 tipo:codigo_tipo
             }
             
-        }else if (hor.horario[i][j].valor!=='' && hor.horario[i][j].valor === columna.valor && hor.horario[i][j].seccion.titulo === titulo && limpiar){
+        }else if (hor.horario[i][j].valor!=='' && hor.horario[i][j].valor === columna.valor && hor.horario[i][j].seccion && hor.horario[i][j].seccion.titulo === titulo && limpiar){
             hor.horario[i][j]={dia:nuevo[i][j].dia, hora:nuevo[i][j].hora, espacio: 1, valor:'', mensaje:''};
             if (hor.horario[i+1][j].espacio===0) hor.horario[i+1][j].espacio=1;
             

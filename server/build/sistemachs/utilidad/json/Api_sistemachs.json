@@ -172,10 +172,9 @@
           "icon": "table_view",
           "childen": [
                 {
-                    "value": "ordenesdeventa",
-                    "primary": "Ordenes de Venta",
-                    "icon": "table_view",
-                    "disabled": true
+                    "value": "Traslado",
+                    "primary": "Orden de Traslado",
+                    "icon": "sync_alt"
                 },
                 {
                     "value": "Ventas",
@@ -186,6 +185,21 @@
                     "value": "cobrar",
                     "primary": "Por Cobrar",
                     "icon": "local_mall"
+                },
+                {
+                    "value": "ingresoC",
+                    "primary": "Ingresos",
+                    "icon": "assignment_add"
+                },
+                {
+                    "value": "egresoC",
+                    "primary": "Engresos",
+                    "icon": "remove"
+                },
+                {
+                    "value": "reporteingresoegreso",
+                    "primary": "Reporte de Ingreso y Egresos",
+                    "icon": "content_paste_search"
                 }
           ]
       },
@@ -224,6 +238,18 @@
                 "value": "PruebasT",
                 "primary": "Pruebas Tabla",
                 "icon": "feed",
+                "prueba":"true"
+              },
+              {
+                "value": "ordenesdeventa",
+                "primary": "Ordenes de Venta",
+                "icon": "table_view",
+                "disabled": true
+            },
+              {
+                "value": "CrearR",
+                "primary": "Crear Reportes",
+                "icon": "edit",
                 "prueba":"true"
               }
           ]
@@ -1283,7 +1309,92 @@
               }
           ]
       },
-      
+      "Form_Ingresos_Egresos": {
+          "columna": 4,
+          "value": [
+            {
+                "nombre": "fecha",
+                "tipo": "Fecha",
+                "label": "Fecha",
+                "placeholder": "",
+                "title": "",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "key": "fecha",
+                "name": "fecha"
+            },
+            {
+                "nombre": "codigo",
+                "label": "Código",
+                "placeholder": "Código",
+                "title": "Código",
+                "required": true,
+                "mensaje_error": "Debe colocar código a empaque",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "codigo",
+                "name": "codigo"
+            },
+            {
+                "nombre": "descripcion",
+                "tipo": "multiline",
+                "label": "Descripción",
+                "placeholder": "Descripción",
+                "title": "Descripción",
+                "required": true,
+                "mensaje_error": "Debe colocar descripción del empaque",
+                "disabled": false,
+                "numberOfLines": "4",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "descripcion",
+                "name": "descripcion",
+                "multiline": true
+            },
+            {
+                "nombre": "moneda",
+                "tipo": "lista_multiuso",
+                "label": "Moneda",
+                "placeholder": "Moneda",
+                "title": "Moneda",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "lista":"lista_moneda",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "moneda",
+                "name": "moneda",
+                "multiline": false
+            },
+            {
+                "nombre": "monto",
+                "tipo": "moneda",
+                "label": "Monto",
+                "placeholder": "Monto",
+                "title": "Monto",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "monto",
+                "name": "monto",
+                "multiline": false
+            }
+          ]
+      },
       "Form_ingreso_materia_prima": {
           "columna": 1,
           "value": [
@@ -1655,6 +1766,224 @@
               }
           ]
       },
+      "Form_reporte_crear": {
+          "columna": 1,
+          "value": [
+            {
+                "nombre": "recibos",
+                "tipo": "lista_multiuso",
+                "label": "Recibos",
+                "placeholder": "Recibos",
+                "title": "Recibos",
+                "required": false,
+                "mensaje_error": "Debe seleccionar Lista Precio de Venta",
+                "disabled": false,
+                "numberOfLines": "",
+                "lista": "sistemachs_reporte",
+                "getOptionLabel": [
+                    "nombre"
+                ],
+                "key": "recibos",
+                "name": "recibos"
+            },
+            {
+                "nombre": "ancho",
+                "tipo": "number",
+                "label": "Ancho de Pagina (mm)",
+                "placeholder": "Ancho de Pagina (mm)",
+                "title": "Ancho de Pagina (mm)",
+                "required": true,
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "ancho",
+                "name": "ancho",
+                "multiline": false
+            },
+            {
+                "nombre": "alto",
+                "tipo": "number",
+                "label": "Alto de Pagina (mm)",
+                "placeholder": "Alto de Pagina (mm)",
+                "title": "Alto de Pagina (mm)",
+                "required": true,
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "alto",
+                "name": "alto",
+                "multiline": false
+            },
+            {
+                "nombre": "nombre",
+                "tipo": "input",
+                "label": "Nombre",
+                "placeholder": "Nombre",
+                "required": true,
+                "title": "Nombre",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "nombre",
+                "name": "nombre",
+                "multiline": false
+            }
+          ]
+      },
+      "Form_reporte_crear_n": {
+          "columna": 2,
+          "value": [
+            {
+                "nombre": "fila",
+                "tipo": "number",
+                "label": "Fila",
+                "placeholder": "Fila",
+                "title": "Fila",
+                "required": true,
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "default":"10",
+                "key": "fila",
+                "name": "fila",
+                "multiline": false
+            },
+            {
+                "nombre": "columna",
+                "tipo": "number",
+                "label": "Columna",
+                "placeholder": "Columna",
+                "title": "Columna",
+                "required": true,
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "default":"10",
+                "key": "columna",
+                "name": "columna",
+                "multiline": false
+            },
+            {
+                "nombre": "letra",
+                "tipo": "number",
+                "label": "Tamaño letra",
+                "placeholder": "Tamaño letra",
+                "title": "Tamaño letra",
+                "required": true,
+                "mensaje_error": "Debe Tamaño letra",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "letra",
+                "name": "letra",
+                "multiline": false
+            },
+            {
+                "nombre": "tipo",
+                "tipo": "lista_multiuso",
+                "label": "Tipo",
+                "placeholder": "Tipo",
+                "title": "Tipo",
+                "required": true,
+                "mensaje_error": "Debe indicar tipo",
+                "disabled": false,
+                "numberOfLines": "",
+                "lista": "lista_reporte_componentes",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "tipo",
+                "name": "tipo",
+                "multiline": false
+            },
+            {
+                "nombre": "linea",
+                "tipo": "number",
+                "label": "Separacion de linea",
+                "placeholder": "Separacion de linea",
+                "title": "Separacion de linea",
+                "required": true,
+                "mensaje_error": "Separacion de linea",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "linea",
+                "name": "linea",
+                "multiline": false
+            },
+            {
+                "nombre": "lineas",
+                "tipo": "number",
+                "label": "Lineas de muestar",
+                "placeholder": "Lineas de muestar",
+                "title": "Lineas de muestar",
+                "required": true,
+                "mensaje_error": "Lineas de muestar",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "lineas",
+                "name": "lineas",
+                "multiline": false
+            },
+            {
+                "nombre": "field",
+                "tipo": "input",
+                "label": "Campo",
+                "placeholder": "Campo",
+                "title": "Campo",
+                "required": true,
+                "mensaje_error": "Debe indicar el campo a mostrar",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "field",
+                "name": "field",
+                "multiline": false
+            },
+            {
+                "nombre": "formato",
+                "tipo": "input",
+                "label": "Formato",
+                "placeholder": "Formato",
+                "title": "Formato",
+                "required": false,
+                "mensaje_error": "Debe indicar el campo a mostrar",
+                "disabled": false,
+                "numberOfLines": "2",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "formato",
+                "name": "formato",
+                "multiline": true
+            }
+            
+          ]
+      },
       "Form_Modificacion": {
         "columna": 2,
         "value": [
@@ -1674,6 +2003,29 @@
                 "formato":"(dato)=>{return JSON.stringify({tabla:dato.tabla, tipo:dato.tipo, newdatos:dato.newdatos, origen:dato.origen,clientes:dato.clientes},null,2)}"
             }
         ]
+      },
+      "Form_Sedes": {
+          "columna": 1,
+          "value": [
+              {
+                  "nombre": "sede",
+                  "tipo": "lista_multiuso",
+                  "label": "Sede destino",
+                  "placeholder": "Sede a copiar registros",
+                  "title": "Seleccione sede a que desea copiar los registros",
+                  "mensaje_error": "Seleccione sede a que desea copiar los registros",
+                  "disabled": false,
+                  "numberOfLines": "",
+                  "lista": "lista_sedes",
+                  "getOptionLabel": [
+                      "titulo"
+                  ],
+                  "agregar": false,
+                  "key": "sede",
+                  "name": "sede",
+                  "required":true
+              }
+          ]
       },
       "Form_ejemplos": {
         "columna": 1,
@@ -1898,16 +2250,18 @@
       ],
       "lista_moneda": [
           {
-              "_id": 0,
-              "titulo": "Bs",
-              "value": "bs",
-              "permisos": ""
-          },
-          {
               "_id": 1,
               "titulo": "USD",
               "value": "usd",
+              "signo":"$",
               "permisos": ""
+          },
+          {
+            "_id": 0,
+            "titulo": "Bs",
+            "value": "bs",
+            "signo":"Bs",
+            "permisos": ""
           }
       ],
       "lista_sedes": [
@@ -1924,47 +2278,73 @@
             "permisos": ""
         }
       ],
-      "lista_impresion_chs": [
+    "lista_impresion_chs": [
         {
             "_id": 0,
             "titulo": "Nota de Entrega Blanca",
             "value": "notaentregablanca",
-            "permisos": ""
+            "permisos": "",
+            "tipo":"VENTA"
         },
         {
             "_id": 1,
             "titulo": "Nota de Entrega Formato",
             "value": "notaentregaformato",
-            "permisos": ""
+            "permisos": "",
+            "tipo":"VENTA"
         },
         {
             "_id": 2,
             "titulo": "Orden Traslado Blanca (Anterior)",
             "value": "ordentrasladoblanca",
-            "permisos": ""
+            "permisos": "",
+            "tipo":"GUIA DE TRASLADO"
         },
         {
             "_id": 3,
             "titulo": "Orden Traslado Formato (Anterior)",
             "value": "ordentrasladoformato",
-            "permisos": ""
+            "tipo":"VENTA"
         },
         {
             "_id": 4,
             "titulo": "Guia Traslado Formato",
             "value": "guiatrasladoformato",
-            "permisos": ""
+            "permisos": "",
+            "tipo":"GUIA DE TRASLADO"
         },
         {
             "_id": 5,
             "titulo": "Guia Factura Formato",
             "value": "ordentrasladoformato",
-            "permisos": ""
+            "permisos": "",
+            "tipo":"VENTA"
         },
         {
             "_id": 6,
             "titulo": "Factura",
             "value": "factura",
+            "permisos": "",
+            "tipo":"VENTA"
+        }
+    ],
+    "lista_reporte_componentes": [
+        {
+            "_id": 0,
+            "titulo": "Texto",
+            "value": "Texto",
+            "permisos": ""
+        },
+        {
+            "_id": 1,
+            "titulo": "Tabla",
+            "value": "tabla",
+            "permisos": ""
+        },
+        {
+            "_id": 2,
+            "titulo": "Imagen",
+            "value": "imagen",
             "permisos": ""
         }
     ]
@@ -2256,6 +2636,7 @@
               "width":200
           }
       ],
+      
       "Titulos_formula_em": [
           {
               "title": "Código",
@@ -2450,45 +2831,44 @@
             "editable": true
         }
       ],
-      "Titulos_Formaspago": [
+      "Titulos_Formaspagoa": [
           {
               "title": "Forma de Pago",
               "field": "titulo",
               "tipo": "",
               "formato": "",
               "default": "",
-              "type": "",
-              "flex":0.5
+              "type": ""
           },
           {
-              "title": "Moneda",
-              "field": "moneda",
-              "tipo": "",
-              "default": "Bs",
-              "formato": "(dato)=>{let valor = dato.field && dato.row && ['efectivodolar','zelle'].indexOf(dato.row.value)!==-1 ? '$' : 'Bs'; if(dato.field && dato.row && dato.row.value==='otro'){valor=dato.row.moneda}; return valor}",
-              "type": "singleSelect",
-              "valueOptions": ["Bs", "$"],
-              "editable": true,
-              "flex":0.3
-          },
+            "title": "Moneda",
+            "field": "moneda",
+            "tipo": "",
+            "default": "Bs",
+            "formato": "(dato)=>{let valor = dato.field && dato.row && ['efectivodolar','zelle'].indexOf(dato.row.value)!==-1 ? '$' : 'Bs'; if(dato.field && dato.row && dato.row.value==='otro'){valor=dato.row.moneda}; return valor}",
+            "type": "singleSelect1",
+            "valueOptions": ["Bs", "$"],
+            "editable": true,
+            "modificar":true
+          },              
           {
             "title": "Tasa Cambio",
             "field": "tasa",
-            "tipo": "",
+            "tipo": "moneda",
             "default": "Bs",
             "formato": "TasaCambio",
             "editable": true,
-            "flex":0.5
+            "modificar":true
           },                    
           {
-              "title": "Fecha",
-              "field": "fecha",
-              "tipo": "",
-              "formato": "",
-              "default": "actual",
-              "type": "date",
-              "editable": true,
-              "flex":0.5
+            "title": "Fecha",
+            "field": "fecha",
+            "tipo": "Fecha",
+            "formato": "",
+            "default": "actual",
+            "type": "",
+            "editable": true,
+            "modificar":true
           },
           {
               "title": "Banco Origen",
@@ -2523,22 +2903,102 @@
           {
             "title": "Monto Bs",
             "field": "montobs",
-            "tipo": "",
+            "tipo": "moneda",
             "formato": "MontoBolivares",
             "default": "",
             "type": "number",
             "editable": true,
-            "flex":0.5
+            "modificar":true
           },
           {
               "title": "Monto",
               "field": "monto",
-              "tipo": "",
+              "tipo": "moneda",
               "formato": "MontoDolar",
               "default": "",
               "type": "number",
               "editable": true,
-              "flex":0.5
+              "modificar":true
+          }
+      ],
+      "Titulos_Formaspago": [
+          {
+              "title": "Forma de Pago",
+              "field": "titulo",
+              "tipo": "",
+              "formato": "",
+              "default": "",
+              "type": ""
+          },
+          {
+            "title": "Moneda",
+            "field": "moneda",
+            "tipo": "",
+            "default": "Bs",
+            "formato": "(dato)=>{let valor = dato.field && dato.row && ['efectivodolar','zelle'].indexOf(dato.row.value)!==-1 ? '$' : 'Bs'; if(dato.field && dato.row && dato.row.value==='otro'){valor=dato.row.moneda}; return valor}",
+            "type": "singleSelect1",
+            "valueOptions": ["Bs", "$"],
+            "editable": true,
+            "modificar":true
+          },              
+          {
+            "title": "Tasa Cambio",
+            "field": "tasa",
+            "tipo": "moneda",
+            "default": "Bs",
+            "formato": "TasaCambio",
+            "editable": true,
+            "modificar":true
+          },                    
+          {
+            "title": "Fecha",
+            "field": "fecha",
+            "tipo": "Fecha",
+            "formato": "",
+            "default": "actual",
+            "type": "",
+            "editable": true,
+            "modificar":true
+          },
+          {
+              "title": "Banco Origen",
+              "field": "bancoo",
+              "tipo": "",
+              "formato": "",
+              "default": "",
+              "type": "",
+              "editable": true,
+              "modificar":true
+          },
+          {
+              "title": "Banco Destino",
+              "field": "bancod",
+              "tipo": "",
+              "formato": "",
+              "default": "",
+              "type": "",
+              "editable": true,
+              "modificar":true
+          },
+          {
+              "title": "Referencia",
+              "field": "referencia",
+              "tipo": "",
+              "formato": "",
+              "default": "",
+              "type": "",
+              "editable": true,
+              "modificar":true
+          },
+          {
+            "title": "Monto",
+            "field": "monto",
+            "tipo": "moneda",
+            "formato": "",
+            "default": "",
+            "type": "number",
+            "editable": true,
+            "modificar":true
           }
       ],
       "Titulos_porcobrar": [
@@ -2592,6 +3052,108 @@
               "default": "",
               "type": ""
           }
+      ],
+      "Titulos_Ingresos_Egresos": [
+          {
+              "title": "Código",
+              "field": "codigo",
+              "tipo": "",
+              "formato": "(dato)=> `${dato.valores ? dato.valores.codigo : dato.codigo}`",
+              "default": "",
+              "type": ""
+          },
+          {
+            "title": "Descripción",
+            "field": "descripcion",
+            "tipo": "",
+            "formato": "(dato)=> `${dato.valores ? dato.valores.descripcion : dato.descripcion}`",
+            "default": "",
+            "type": "",
+            "fixed":"left"
+          },
+          {
+              "title": "Fecha",
+              "field": "fecha",
+              "tipo": "",
+              "formato": "Titulo_fecha",
+              "default": "",
+              "type": ""
+          },
+          {
+            "title": "Monto $",
+            "field": "monto",
+            "tipo": "",
+            "formato": "Ingreso_EgresoD",
+            "default": "",
+            "type": "number"
+          },
+          {
+            "title": "Monto Bs.",
+            "field": "monto",
+            "tipo": "",
+            "formato": "Ingreso_EgresoB",
+            "default": "",
+            "type": "number"
+          }
+      ],
+      "Titulos_Ingresos_Egresos_R": [
+        {
+            "title": "Fecha",
+            "field": "fecha",
+            "tipo": "",
+            "formato": "Titulo_fecha",
+            "default": "",
+            "type": ""
+        },
+        {
+            "title": "Código",
+            "field": "codigo",
+            "tipo": "",
+            "formato": "(dato)=> `${dato.valores ? dato.valores.codigo : dato.codigo}`",
+            "default": "",
+            "type": ""
+        },
+        {
+            "title": "Descripción",
+            "field": "descripcion",
+            "tipo": "",
+            "formato": "(dato)=> `${dato.valores ? dato.valores.descripcion : dato.descripcion}`",
+            "default": "",
+            "type": "",
+            "fixed":"left"
+        },
+        {
+            "title": "Monto Egreso Bs.",
+            "field": "monto",
+            "tipo": "",
+            "formato": "Monto_EgresoB",
+            "default": "",
+            "type": ""
+        },
+        {
+            "title": "Monto Ingreso Bs.",
+            "field": "monto",
+            "tipo": "",
+            "formato": "Monto_IngresoB",
+            "default": "",
+            "type": ""
+        },
+        {
+            "title": "Monto Egreso",
+            "field": "monto",
+            "tipo": "",
+            "formato": "Monto_Egreso",
+            "default": "",
+            "type": ""
+        },
+        {
+            "title": "Monto Ingreso",
+            "field": "monto",
+            "tipo": "",
+            "formato": "Monto_Ingreso",
+            "default": "",
+            "type": ""
+        }
       ],
       "Titulos_Ventas": [
           {

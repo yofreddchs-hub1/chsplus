@@ -35,11 +35,13 @@ const { Ver_api, Login,Verificar, Getall, Getall_C, Setall, Delall, Leer_data, G
         VerApis,
         Sincronizar,
         Infor_database,Infor_databaseD, Infor_datos, WhatsAppQR,
+        Copiar,
       } = require('../controllers/api.controller');
 const { Guardar_produccion, Ingresar_material, Ingresar_empaque, Ingreso_Egreso, Recibo_venta, Serial, Egreso_Venta, Ventas,
         Ingresar,
         Iniciarchs,
         ActualizarCantidad,
+        Traslados,
       } = require('../controllers/sistemachs.controller');
 const { Mensualidades, EnviarPago, Solvencias, Resumen, Sincronizar_uecla, Recibos, Verificar_Inscripcion, Actualizar_Referencia, 
         Promover, LeerHorarioU, DisponibilidadHorarioU, GuardarHorarioU, Notas
@@ -55,6 +57,7 @@ router.post('/login', Login);
 router.post('/getall',Getall);
 router.post('/getallc',Getall_C);
 router.post('/setall',archivos ,Setall);
+router.post('/copiar',Copiar);
 
 // router.post('/setall',upload.single('file') ,Setall);
 router.post('/leer_data',Leer_data);
@@ -88,6 +91,7 @@ router.post('/ingresarmaterial',Ingresar_material);
 router.post('/ingresarempaque',Ingresar_empaque);
 router.post('/ingresoegreso',Ingreso_Egreso);
 router.post('/actualizarcantidad',ActualizarCantidad);
+router.post('/traslados', Traslados);
 
 // Para EGEW
 router.post('/cuentas_wesi',Egew_cuentas_wesi);

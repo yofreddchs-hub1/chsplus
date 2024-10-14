@@ -112,11 +112,11 @@ serverCtrl.Verificar_autenticidad = async ( datos, hash, token=false, inicia=fal
     console.log('Error-login',error);    
   }
    
-   console.log('despues de ver useradmin')
+   console.log('despues de ver useradmin', Api, )
    if ((Api.api && Api.api!==dapi) || (Api!==dapi)){
     useradmin = useradmin.filter(f=> f.valores.username===nameAdmin);
     if (useradmin.length===0){
-      const clave= await Hash_password(`${claveinicioapi}${Api.api}-4891`);
+      const clave= await Hash_password(`${claveinicioapi}${Api.api ? Api.api : Api}-4891`);
       const tokenA= await Token({username:nameAdmin, password: clave, fecha: new Date()});
       const codigo= await Codigo_chs({username:nameAdmin, password: clave,
                                       actualizado:'Sistema'});
@@ -144,11 +144,11 @@ serverCtrl.Verificar_autenticidad = async ( datos, hash, token=false, inicia=fal
    userS.map(d=>{
      if (d.username===username || d.valores.username===username){
        user=d.valores ? d.valores : d;
-       user.api=Api.api;
+       user.api=Api.api ? Api.api : Api;
        user._id= d._id;
      }
    })
-   console.log(user)
+  //  console.log(user.password, password)
    // if (hashn === hash){
 
      if (inicia)  {
@@ -156,7 +156,7 @@ serverCtrl.Verificar_autenticidad = async ( datos, hash, token=false, inicia=fal
              const newUser = new User({username, password,
                                        correo:username,
                                        token:tokenN, categoria:'5',
-                                       api: Api.api,
+                                       api: Api.api ? Api.api : Api,
                                        master: Api.master,
                                        actualizado:username,
                                       //  cod_chs, 
@@ -164,14 +164,16 @@ serverCtrl.Verificar_autenticidad = async ( datos, hash, token=false, inicia=fal
              await newUser.save();
             //  return {Respuesta:'OK', user: newUser};
             user= await User.findOne({username});
+            
             return {Respuesta:'OK', 
                       user: {_id:user._id, username: user.username, token: user.token, categoria: user.categoria, foto: user.foto,
-                             api: user.api, master: user.master, passwordp: user.passwordp ? true : false
+                             api: user.api, master: user.master, passwordp: user.passwordp ? true : false,
+                             ...user.personal ? {personal:user.personal} : {}
                             }
                    };
            }else if (user===null){
              return {Respuesta:'Error', Mensaje:'Usuario no existe', codigo:0};
-           }else if (user !== null && user.username===username && user.password===password && (user.api===Api.api || user.master)) {
+           }else if (user !== null && user.username===username && user.password===password && (user.api===Api.api || user.api===Api || user.master)) {
              user.token=tokenN;
             //  user.hash_chs= await Hash_chs({
             //    username:user.username, password: user.password,
@@ -190,7 +192,8 @@ serverCtrl.Verificar_autenticidad = async ( datos, hash, token=false, inicia=fal
             //  return {Respuesta:'OK', user};
             return {Respuesta:'OK',
                       user: {_id:user._id, username: user.username, token: user.token, categoria: user.categoria, foto: user.foto,
-                              api: user.api, master: user.master, passwordp: user.passwordp ? true : false
+                              api: user.api, master: user.master, passwordp: user.passwordp ? true : false,
+                              ...user.personal ? {personal:user.personal} : {}
                             } 
                    }
            }else{
@@ -203,9 +206,10 @@ serverCtrl.Verificar_autenticidad = async ( datos, hash, token=false, inicia=fal
           //  const ver = await VerificarToken(token);
           //  if (ver.Respuesta==='OK'){
              //return {Respuesta:'OK', user};
+             
              return {Respuesta:'OK',
                       user: {_id:user._id, username: user.username, token: user.token, categoria: user.categoria, foto: user.foto,
-                              api: user.api, master: user.master, passwordp: user.passwordp ? true : false
+                              api: user.api, master: user.master, passwordp: user.passwordp ? true : false,
                             } 
                     }
           //  }else{
@@ -244,7 +248,7 @@ serverCtrl.Login= async (req, res) => {
   console.log('login....',Api.valores && Api.valores.api ? Api.valores.api : Api)
   const datos= {username, Api, password, mantener, crear};
   let resultado = await serverCtrl.Verificar_autenticidad(datos, hash,false,inicia=true);
-  console.log('<<<<<<<<<<',resultado)
+  // console.log('<<<<<<<<<<',resultado)
   if (resultado.Respuesta==='Error' && Api==='uecla'){
     //========================Para acceoso en uecla==================
     const tabla=['Docente','Representante','Estudiante'];
@@ -255,7 +259,7 @@ serverCtrl.Login= async (req, res) => {
       if (user===null){
         user= await DB.findOne({"valores.correo":username});
       }
-      // console.log('...... ver si es representante, estudiante, docente', tabla[i], user)
+      console.log('...... ver si es representante, estudiante, docente', tabla[i], user ? user.valores : user)
       const nuevapassword= await Hash_password(password);
       const nuevapasswordA= await Hash_passwordA(password);
       
@@ -290,19 +294,22 @@ serverCtrl.Login= async (req, res) => {
         break
       }
     }
+  }else if(Api==='uecla'){
+
   }
   
   res.json(resultado);
 }
 //Leer valores
-serverCtrl.Ver_datos = async (tablas, Api, cantidad=20, eliminados=false) =>{
+serverCtrl.Ver_datos = async (tablas, Api, cantidad=20, sede=undefined, eliminados=false) =>{
   let datos={};
   try{
     return Promise.all(tablas.map(async(data)=>{
       if (data==='' || data===' ' || data===null ||data===undefined)
         return data
       // await serverCtrl.Tablas(data);
-      const DB = await Model(Api,data); //require(`../models/${data}`);
+      let tabla = serverCtrl.ConSede(data,sede);
+      const DB = await Model(Api,tabla); //require(`../models/${data}`);
       if (DB===null){
         console.log(chalk.inverse.red('Ver datos, no puede acceder >>>', data, Api))
         datos[data+'_cantidad']=0;
@@ -338,8 +345,19 @@ serverCtrl.Ver_datos = async (tablas, Api, cantidad=20, eliminados=false) =>{
     return {Respuesta:'Error'};
   }
 }
+serverCtrl.ConSede = (tabla, sede) =>{
+  if (sede && sede!=='Coro'){
+    sede = sede.replace(' ','_');
+    console.log(sede);
+    const pos = tabla.indexOf('_');
+    tabla = tabla.slice(0,pos)+'_'+sede+tabla.slice(pos);
+    console.log(tabla)
+    // data = tabla;
+  }
+  return tabla
+}
 //Leer valores por condicion 
-serverCtrl.Ver_datos_C = async (tablas, Api, condicion, eliminados=false) =>{
+serverCtrl.Ver_datos_C = async (tablas, Api, condicion, sede=undefined, eliminados=false) =>{
   let datos={};
   try{
     return Promise.all(tablas.map(async(data)=>{
@@ -347,7 +365,8 @@ serverCtrl.Ver_datos_C = async (tablas, Api, condicion, eliminados=false) =>{
         return data
       }
       // await serverCtrl.Tablas(data)
-      const DB = await Model(Api, data); //require(`../models/${data}`);
+      let tabla = serverCtrl.ConSede(data,sede);
+      const DB = await Model(Api, tabla); //require(`../models/${data}`);
       if (DB===null){
         return data
       }
@@ -391,11 +410,11 @@ serverCtrl.Ver_datos_C = async (tablas, Api, condicion, eliminados=false) =>{
   }
 }
 //Leer valores por pagina
-serverCtrl.Ver_datos_pagina = async (tablas, Api, pagina, cantidad) =>{
+serverCtrl.Ver_datos_pagina = async (tablas, Api, pagina, cantidad, sede) =>{
   let datos={};
   try{
     return Promise.all(tablas.map(async(data)=>{
-      const DB = await Model(Api,tabla);//require(`../models/${data}`);
+      const DB = await Model(Api,data);//require(`../models/${data}`);
       const dbs = await DB.find();
       datos[data]=dbs;
       return data;
@@ -409,7 +428,7 @@ serverCtrl.Ver_datos_pagina = async (tablas, Api, pagina, cantidad) =>{
 }
 //Leer todos los datos de distintas tablas
 serverCtrl.Getall = async (req, res) =>{
-  const {User, tablas, Api, cantidad, hash} = req.body;
+  const {User, tablas, Api, cantidad, hash, sede} = req.body;
   const hashn = await Hash_texto(JSON.stringify({User, tablas, Api}));
   
   // const responder = await Ver_conexion(User, hash)
@@ -417,7 +436,7 @@ serverCtrl.Getall = async (req, res) =>{
   //   res.json({Respuesta:'Error', mensaje:'no autorizado'});
   // }else 
   if (hash===hashn) {
-    let datos= await serverCtrl.Ver_datos(tablas, Api, cantidad);
+    let datos= await serverCtrl.Ver_datos(tablas, Api, cantidad, sede);
     res.json(datos);
   }else{
     res.json({Respuesta:'Error', mensaje:'hash invalido'});
@@ -426,15 +445,16 @@ serverCtrl.Getall = async (req, res) =>{
 }
 //Leer datos con condiciones 
 serverCtrl.Getall_C = async (req, res) =>{
-  const {User, tablas, Api, condicion, hash} = req.body;
+  const {User, tablas, Api, condicion, hash, sede} = req.body;
   const hashn = await Hash_texto(JSON.stringify({User, tablas, condicion, Api}));
   
   // const responder = await Ver_conexion(User, hash)
   // if (responder.Respuesta!=='OK'){
   //   res.json({Respuesta:'Error', mensaje:'no autorizado'});
   // }else 
+  
   if (hash===hashn) {
-    let datos= await serverCtrl.Ver_datos_C(tablas, Api, condicion);
+    let datos= await serverCtrl.Ver_datos_C(tablas, Api, condicion, sede);
     res.json(datos);
   }else{
     res.json({Respuesta:'Error', mensaje:'hash invalido'});
@@ -443,17 +463,36 @@ serverCtrl.Getall_C = async (req, res) =>{
 }
 //Leer datos pagina
 serverCtrl.Getall_pagina = async (req, res) =>{
-  const {User, tablas, pagina, cantidad, hash} = req.body;
+  const {User, tablas, pagina, cantidad, hash, sede} = req.body;
   const hashn = await Hash_texto(JSON.stringify({User, tablas, pagina, cantidad}));
   if (hash===hashn) {
-    let datos= await serverCtrl.Ver_datos_pagina(tablas, Api, pagina);
+    let datos= await serverCtrl.Ver_datos_pagina(tablas, Api, pagina, cantidad, sede);
     res.json(datos);
   }else{
     res.json({Respuesta:'Error', mensaje:'hash invalido'});
   }
 
 }
-
+serverCtrl.Copiar = async(req, res)=>{
+  const {User, tablao, tablad, condicion, Api, hash} = req.body;
+  const hashn = await Hash_texto(JSON.stringify({User, tablao, tablad, condicion, Api}));
+  console.log('...................por copiar')
+  if (hash===hashn) {
+    console.log(tablao, tablad);
+    const Origen = await Model(Api,tablao);
+    const Destino = await Model(Api,tablad);
+    const datos = await Origen.find();
+    for (var i=0; i< datos.length; i++){
+      let dato = datos[i];
+      await Destino.updateOne({_id:dato._id},{valores:{...dato.valores}, cod_chs:dato.cod_chs, hash_chs:dato.hash_chs},{ upsert: true })
+      // const newDato = new Destino({...dato});
+      // await newDato.save()
+    }
+    res.json({Respuesta:'Ok'});
+  }else{
+    res.json({Respuesta:'Error', mensaje:'hash invalido'});
+  }
+}
 Eliminar_imagen =(imagen)=>{
   try{
     
@@ -519,7 +558,7 @@ serverCtrl.Tablas = async(tabla, Api)=>{
   }
 }
 serverCtrl.Setall = async (req, res) =>{
-  let {User, Api, datos, tabla, hash} = req.body;
+  let {User, Api, datos, tabla, hash, sede} = req.body;
   User= typeof User==='string' ? JSON.parse(User) : User;
   // console.log('>>>>>>>>>',typeof Api==='string' ? Api : Api.valores.api, datos, tabla)
   // Api= typeof Api==='string' ? JSON.parse(Api) : Api;
@@ -541,7 +580,8 @@ serverCtrl.Setall = async (req, res) =>{
         res.json({Respuesta:'Ok', newdatos});
       }
       // await serverCtrl.Tablas(tabla)
-      const DB = await Model(Api, tabla);//require(`../models/${tabla}`);
+      const data = serverCtrl.ConSede(tabla, sede);
+      const DB = await Model(Api, data);//require(`../models/${tabla}`);
       if (newdatos['unico'] && newdatos._id===undefined){
         let datos = await DB.find(
             {$text: {$search: newdatos['multiples_valores'] ? newdatos.valores[newdatos['unico']] : newdatos[newdatos['unico']] , 

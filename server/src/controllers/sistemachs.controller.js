@@ -566,10 +566,57 @@ sistemachsCtrl.Ventas = async (req, res)=>{
         let total=0;
         let pendiente = 0;
         let facturado = 0;
+        let deproduccion=0;
         console.log('antes del map')
         for(var i=0; i<ventas.length; i++){
         // ventas.map(val=>{
             const val = ventas[i];
+            let valor = val.valores.formapago 
+                ?   {
+                        ...val.valores.formapago['formapago-subtotal'],
+                        totalp: val.valores.formapago.totales.totalp
+                    }
+                : {
+                    total:0, tasa:0, totalb:0, restan:0, cancelar:0, totalp:0 
+                  };
+            total= Number(valor.total);
+            total= valor.Tasa !==0  ? Number(total + valor.totalb / valor.Tasa) : total;
+            pendiente+= Number(valor.restan);
+            facturado+= Number(valor.cancelar);
+            deproduccion+= Number(valor.totalp);
+            // return val
+        // })
+        }
+        console.log('despues antes del map')
+        res.json({Respuesta:'Ok', ventas, ventas_p, ventas_c, total, pendiente, facturado, deproduccion});
+    }else{
+        res.json({Respuesta:'Error', mensaje:'hash invalido'});
+    }
+}
+sistemachsCtrl.Traslados = async (req, res)=>{
+    let {User, Api, datos, hash} = req.body;
+    User= typeof User==='string' ? JSON.parse(User) : User;
+    const hashn = await Hash_texto(JSON.stringify({User, Api, datos}));
+    // const igual= await sistemachsCtrl.Verifica_api(Api, true);
+    if (hashn===hash){ // && igual) {
+        datos = datos ? JSON.parse(datos) : {};
+        const TRASLADO = await Model(Api,'sistemachs_Traslado')//require(`../models/sistemachs_Venta`);
+        console.log('Traslados....', datos.estado, datos.fecha, datos && datos.fecha!==undefined)
+        let traslados = datos && datos.estado 
+            ? await TRASLADO.find({$and:[{"valores.estado":datos.estado}]})//find({$text: {$search: datos.estado, $caseSensitive: false}})
+            : datos && datos.fecha!==undefined
+            ? await TRASLADO.find({$and:[{"valores.fecha":{$gte:datos.fecha.dia,$lte:datos.fecha.diaf}}]})//find({"valores.fecha":{$gte:datos.fecha.dia,$lte:datos.fecha.diaf}})
+            : await TRASLADO.find();
+        
+        let traslados_p= traslados.filter(f=>f.valores.pendiente);
+        let traslados_c= traslados.filter(f=>!f.valores.pendiente);
+        let total=0;
+        let pendiente = 0;
+        let facturado = 0;
+        
+        for(var i=0; i<traslados.length; i++){
+        // ventas.map(val=>{
+            const val = traslados[i];
             let valor = val.valores.formapago 
                 ? val.valores.formapago['formapago-subtotal'] 
                 : {
@@ -582,8 +629,8 @@ sistemachsCtrl.Ventas = async (req, res)=>{
             // return val
         // })
         }
-        console.log('despues antes del map')
-        res.json({Respuesta:'Ok', ventas, ventas_p, ventas_c, total, pendiente, facturado});
+        
+        res.json({Respuesta:'Ok', traslados, traslados_p, traslados_c, total, pendiente, facturado});
     }else{
         res.json({Respuesta:'Error', mensaje:'hash invalido'});
     }
@@ -600,16 +647,22 @@ sistemachsCtrl.Egreso_Venta = async (req, res)=>{
         // await sistemachsCtrl.Tablas(tabla_inventariopt);
         const PT = await Model(Api,tabla_inventariopt);//require(`../models/sistemachs_Inventariopt`);
         const EPT= await Model(Api,tabla_egresopt);//require(`../models/sistemachs_Egresopt`);
-        const VENTA = await Model(Api, 'sistemachs_Venta');//require(`../models/sistemachs_Venta`);
+        const ICA = await Model(Api,'sistemachs_IngresoEgreso');
         datos = JSON.parse(datos);
-
+        const VENTA = await Model(Api, datos.tipo ==='Traslado' ? 'sistemachs_Traslado' :'sistemachs_Venta');//require(`../models/sistemachs_Venta`);
+        
+        
         let anterior = null;
         if (datos._id){
             anterior = await VENTA.findOne({_id:datos._id});
             anterior = anterior ? anterior.valores : anterior;
         }
         
-        let Recibo = await Serie({tabla:'sistemachs_Venta', cantidad:6, id:'V'}, Api);//, condicion:{'valores.tipo':'Venta'}//Generar_codigo(total,'V', 6);
+        let Recibo = await Serie({
+            tabla:datos.tipo ==='Traslado' ? 'sistemachs_Traslado' : 'sistemachs_Venta', 
+            cantidad:6, 
+            id:datos.tipo ==='Traslado' ? 'T' :'V'
+        }, Api);//, condicion:{'valores.tipo':'Venta'}//Generar_codigo(total,'V', 6);
         Recibo = anterior ? anterior.recibo : Recibo;
         let actualizado = `Referencia: ${Recibo} - ${User.username}`;
         //Elimina los datos de egreso de producto terminado
@@ -621,9 +674,24 @@ sistemachsCtrl.Egreso_Venta = async (req, res)=>{
                 Prod.valores.actual+= cantidad;
                 await PT.updateOne({_id:Prod._id},{valores:Prod.valores, actualizado},{ upsert: true });
             }
+            if (anterior.formapago && anterior.formapago.formapago){
+                for (var k=0; k<anterior.formapago.formapago.length; k++){
+                    let formapago = anterior.formapago.formapago[k];
+                    if (formapago._id_ingreso){
+                        let forma = await ICA.findOne({_id:formapago._id_ingreso});
+                        if (forma!==null){
+                            forma.valores.monto='0.00';
+                            forma.valores.descripcion +='\n"Eliminado"'
+                            await ICA.updateOne({_id:forma._id},{valores:forma.valores, actualizado},{ upsert: true });
+                        }
+                    }
+
+                }
+            }
+            
         }
         
-        if(datos.tipo==='Eliminar'){
+        if(datos.tipo==='Eliminar' || datos.eliminar){
             
             if (datos.egreso._id){
                 await EPT.deleteOne({_id:datos.egreso._id});
@@ -632,7 +700,8 @@ sistemachsCtrl.Egreso_Venta = async (req, res)=>{
                 await VENTA.deleteOne({_id:datos._id})
             }
             global.io.emit(`Actualizar_inventariopt`);
-            global.io.emit(`Actualizar_venta`); 
+            global.io.emit(`Actualizar_IngresoCA`);
+            global.io.emit(datos.tipo ==='Traslado' ? `Actualizar_traslado` : `Actualizar_venta`); 
             res.json({Respuesta:'Ok', datos});
             return
         }
@@ -664,7 +733,60 @@ sistemachsCtrl.Egreso_Venta = async (req, res)=>{
             datos.fecha = datos.orden_venta.fecha
                             ?   moment(datos.orden_venta.fecha).format('YYYY-MM-DD')
                             :   fecha;
-            datos={recibo:Recibo, ...datos, tipo:'Venta'};
+            datos={recibo:Recibo, ...datos, tipo:datos.tipo ==='Traslado' ? 'Traslado': 'Venta'};
+
+            //Agregar en ingreso de capital forma de pago
+            
+            if (datos.formapago && datos.formapago.formapago){
+                for(var k1=0; k1<datos.formapago.formapago.length;k1++){
+                    let formapago = datos.formapago.formapago[k1];
+                    console.log(formapago.fecha)
+                    const fecha = formapago.fecha===null ? moment().format('DD/MM/YYYY').split('/') : formapago.fecha.split('/');
+                    let monto = Number(formapago.monto)/Number(formapago.tasa);
+                    let Ingreso = await ICA.findOne({_id:formapago._id_ingreso});
+                    if (!formapago._id_ingreso || Ingreso===null){
+                        let codigo = await Serie({tabla:'sistemachs_IngresoEgreso', id:'ICA', cantidad:6, condicion:{'valores.tipo':'Ingreso'}},Api);
+                        
+                        Ingreso = {
+                            recibo:datos.recibo,
+                            tipo:'Ingreso',
+                            codigo, 
+                            fecha:`${fecha[2]}-${fecha[1]}-${fecha[0]}`,
+                            descripcion:`Recibo: ${datos.recibo} \nForma de Pago: ${formapago.titulo}${formapago.moneda ? '\nMoneda: '+ formapago.moneda : ''}${formapago.tasa ? '\nTasa de cambio: '+ formapago.tasa : ''}${formapago.fecha ? '\nFecha: '+ formapago.fecha : ''}`+
+                            `${formapago.bancoo ? '\nBanco Origen: '+ formapago.bancod : ''}${formapago.bancod ? '\nBanco Destino: '+ formapago.bancoo : ''}${formapago.bancoo ? '\nBanco Origen: '+ formapago.bancod : ''}${formapago.referencia ? '\nReferencia: '+ formapago.referencia : ''}`+
+                            `${formapago.moneda==='$' ? '\nMonto: '+ formapago.monto : '\nMonto: '+ formapago.monto +' en dolar ' +monto.toFixed(2)}`,
+                            monto: formapago.moneda==='$' ? formapago.monto : monto.toFixed(2),
+                            montod: formapago.moneda==='$' ? formapago.monto : monto.toFixed(2),
+                            montob: formapago.moneda!=='$' ? formapago.monto : Number(formapago.monto) * Number(formapago.tasa),
+                            moneda:formapago.moneda
+                        }
+                        
+                        let cod_chs = await Codigo_chs({...Ingreso});
+                        let hash_chs = await Hash_chs({...Ingreso, cod_chs})
+                        const NuevoI = new ICA({valores:Ingreso, cod_chs, hash_chs, actualizado});
+                        formapago._id_ingreso= String(NuevoI._id);
+                        await NuevoI.save();
+                        datos.formapago.formapago[k1]= formapago;
+
+                    }else{
+                        
+                        Ingreso.valores={
+                            ...Ingreso.valores,
+                            fecha:`${fecha[2]}-${fecha[1]}-${fecha[0]}`,
+                            descripcion:`Recibo: ${datos.recibo} \nForma de Pago: ${formapago.titulo}${formapago.moneda ? '\nMoneda: '+ formapago.moneda : ''}${formapago.tasa ? '\nTasa de cambio: '+ formapago.tasa : ''}${formapago.fecha ? '\nFecha: '+ formapago.fecha : ''}`+
+                            `${formapago.bancoo ? '\nBanco Origen: '+ formapago.bancod : ''}${formapago.bancod ? '\nBanco Destino: '+ formapago.bancoo : ''}${formapago.bancoo ? '\nBanco Origen: '+ formapago.bancod : ''}${formapago.referencia ? '\nReferencia: '+ formapago.referencia : ''}`+
+                            `${formapago.moneda==='$' ? '\nMonto: '+ formapago.monto : '\nMonto: '+ formapago.monto +' en dolar ' +monto.toFixed(2)}`,
+                            monto: formapago.moneda==='$' ? formapago.monto : monto.toFixed(2),
+                            montod: formapago.moneda==='$' ? formapago.monto : monto.toFixed(2),
+                            montob: formapago.moneda!=='$' ? formapago.monto : Number(formapago.monto) * Number(formapago.tasa),
+                            moneda: formapago.moneda
+                        };
+                        await ICA.updateOne({_id:Ingreso._id},{valores:Ingreso.valores, actualizado},{ upsert: true });
+
+                    }
+                }
+            }
+
             //codigo para el egreso de producto terminado
             let codigo = await Serie({tabla:tabla_egresopt, id:'EPT', cantidad:6},Api);
             codigo=`${codigo} de ${Recibo}`;
@@ -724,7 +846,7 @@ sistemachsCtrl.Egreso_Venta = async (req, res)=>{
             }
         }
         global.io.emit(`Actualizar_inventariopt`);
-        global.io.emit(`Actualizar_venta`); 
+        global.io.emit(datos.tipo ==='Traslado' ? `Actualizar_traslado` : `Actualizar_venta`); 
         res.json({Respuesta:'Ok', datos});
     }else{
         res.json({Respuesta:'Error', mensaje:'hash invalido'});
