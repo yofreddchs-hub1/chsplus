@@ -484,7 +484,12 @@ serverCtrl.Copiar = async(req, res)=>{
     const datos = await Origen.find();
     for (var i=0; i< datos.length; i++){
       let dato = datos[i];
-      await Destino.updateOne({_id:dato._id},{valores:{...dato.valores}, cod_chs:dato.cod_chs, hash_chs:dato.hash_chs},{ upsert: true })
+      await Destino.updateOne({_id:dato._id},{
+          valores:{
+            ...dato.valores,
+            ...dato.valores.actual ? {actual:0} : {}
+
+          }, cod_chs:dato.cod_chs, hash_chs:dato.hash_chs},{ upsert: true })
       // const newDato = new Destino({...dato});
       // await newDato.save()
     }
@@ -677,14 +682,15 @@ serverCtrl.Setall = async (req, res) =>{
 
 //Eliminar un registro de varias tablas
 serverCtrl.Delall = async (req, res) =>{
-  const {dato, Api, tablas, hash} = req.body;
+  const {dato, Api, tablas, hash, sede} = req.body;
   const hashn = await Hash_texto(JSON.stringify({dato, Api, tablas}));
   // const igual= await serverCtrl.Verifica_api(Api, true);
   console.log('Eliminar en ', Api)
   if (hash===hashn){ // && igual) {
     try{
       Promise.all(tablas.map(async(data)=>{
-        const DB = await Model(Api, data);//require(`../models/${data}`);
+        const tabla = serverCtrl.ConSede(data, sede);
+        const DB = await Model(Api, tabla);//require(`../models/${data}`);
         const valor_verificar = await DB.findOne({_id:dato._id})
         
         let imagenes= Object.keys(valor_verificar.valores).filter(f=>f.indexOf('-id')!==-1);
