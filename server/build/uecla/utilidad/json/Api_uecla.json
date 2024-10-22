@@ -2308,7 +2308,26 @@
                   "multiline": false,
                   "multiple": true,
                   "solo": true
-              }
+              },
+              {
+                "key": "passwordn",
+                "name": "passwordn",
+                "label": "Contraseña",
+                "tipo": "password",
+                "comparar": "true",
+                "con": "passwordc",
+                "mensaje_error": "Contraseñas no son iguales",
+                "no_mostrar": true
+            },
+            {
+                "key": "passwordc",
+                "name": "passwordc",
+                "label": "Contraseña Confirmar",
+                "tipo": "password",
+                "comparar": "true",
+                "con": "passwordn",
+                "mensaje_error": "Contraseñas no son iguales"
+            }
           ]
       },
       "Form_Representados": {
@@ -3136,7 +3155,7 @@
         ]
       },
       "Form_Notas": {
-        "columna": 4,
+        "columna": 6,
         "value": [
             {
                 "nombre": "periodo",
@@ -3336,11 +3355,12 @@
             "multiple": false,
             "getOptionLabel": [
               "titulo"
-            ]
+            ],
+            "modificar": "Cambio_categoria"
           },
           {
-            "key": "password",
-            "name": "password",
+            "key": "passwordn",
+            "name": "passwordn",
             "label": "Contraseña",
             "tipo": "password",
             "comparar": "true",
@@ -3354,8 +3374,28 @@
             "label": "Contraseña Confirmar",
             "tipo": "password",
             "comparar": "true",
-            "con": "password",
+            "con": "passwordn",
             "mensaje_error": "Contraseñas no son iguales"
+          },
+          {
+            "nombre": "personal",
+            "tipo": "lista_multiuso",
+            "label": "Personal",
+            "placeholder": "Personal",
+            "title": "Personal",
+            "required": false,
+            "mensaje_error": "",
+            "disabled": true,
+            "numberOfLines": "",
+            "lista": "",
+            "getOptionLabel": [
+                "nombres", "apellidos"
+            ],
+            "agregar": false,
+            "multiple": false,
+            "key": "personal",
+            "name": "personal",
+            "modificar": "Seleccionar_personal"
           },
           {
             "key": "nombre",
@@ -5075,7 +5115,7 @@
               "title": "Sección",
               "field": "seccion",
               "tipo": "",
-              "formato": "(dato)=> `${ typeof dato.valores.seccion === 'object' ? dato.valores.seccion.titulo : dato.valores.seccion ? dato.valores.seccion : ''}`",
+              "formato": "(dato)=> `${ dato.valores.seccion === null || dato.valores.seccion === undefined ? '' : typeof dato.valores.seccion === 'object' ? dato.valores.seccion.titulo : dato.valores.seccion ? dato.valores.seccion : ''}`",
               "default": "",
               "type": ""
           },
@@ -5337,7 +5377,7 @@
             "title": "Sección",
             "field": "seccion",
             "tipo": "",
-            "formato": "(dato)=> `${ typeof dato.seccion === 'object' ? dato.seccion.titulo : dato.seccion ? dato.seccion : ''}`",
+            "formato": "(dato)=> `${ dato.seccion === null || dato.seccion === undefined ? '' : typeof dato.seccion === 'object' ? dato.seccion.titulo : dato.seccion ? dato.seccion : ''}`",
             "default": "",
             "type": ""
         }
@@ -5768,6 +5808,48 @@
             "formato": "(dato)=>`${dato.valores.moneda} ${Number(dato.valores.monto).toFixed(2)}`",
             "default": "",
             "type": "number"
+        }
+      ],
+      "Titulos_Referencia_verificar": [
+        {
+            "title": "Fecha",
+            "field": "Fecha",
+            "tipo": "",
+            "formato": "(dato)=>dato.Fecha",
+            "default": "",
+            "type": ""
+        },
+        {
+            "title": "Referencia",
+            "field": "referencia",
+            "tipo": "",
+            "formato": "(dato)=>dato.Referencia",
+            "default": "",
+            "type": ""
+        },
+        {
+            "title": "Descripción",
+            "field": "Descripcion",
+            "tipo": "",
+            "formato": "(dato)=>dato.Descripción",
+            "default": "",
+            "type": ""
+        },
+        {
+            "title": "Monto",
+            "field": "Monto",
+            "tipo": "",
+            "formato": "(dato)=>dato.Monto ? dato.Monto : dato.Crédito ? dato.Crédito : '' ",
+            "default": "",
+            "type": ""
+        },
+        {
+            "title": "Información",
+            "field": "informacion",
+            "tipo": "detalles",
+            "formato": "Informacion_referencia",
+            "default": "",
+            "type": ""
         }
       ],
       "Titulos_Recibo": [
