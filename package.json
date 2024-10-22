@@ -33,7 +33,7 @@
     "request-promise": "^4.2.6",
     "socket.io": "^4.7.5",
     "tesseract.js": "^5.0.5",
-    "whatsapp-web.js": "^1.23.0",
+    "whatsapp-web.js": "^1.26.0",
     "xlsx": "^0.17.2",
     "yapople": "^0.4.4"
   },

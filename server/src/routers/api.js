@@ -36,6 +36,7 @@ const { Ver_api, Login,Verificar, Getall, Getall_C, Setall, Delall, Leer_data, G
         Sincronizar,
         Infor_database,Infor_databaseD, Infor_datos, WhatsAppQR,
         Copiar,
+        WhatsAppEnviar,
       } = require('../controllers/api.controller');
 const { Guardar_produccion, Ingresar_material, Ingresar_empaque, Ingreso_Egreso, Recibo_venta, Serial, Egreso_Venta, Ventas,
         Ingresar,
@@ -79,6 +80,7 @@ router.post('/infodatos', Infor_datos);
 
 //Whatsapp
 router.post('/whatsappqr', WhatsAppQR);
+router.post('/whatsappenviar', WhatsAppEnviar);
 // SistemaCHS
 router.get('/reciboventa',Recibo_venta);
 router.post('/inicarsistemachs',Iniciarchs);

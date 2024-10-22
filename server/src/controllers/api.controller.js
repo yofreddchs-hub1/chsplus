@@ -1616,7 +1616,25 @@ serverCtrl.Infor_datos = async (req, res) =>{
 }
 serverCtrl.WhatsAppQR = async (req, res) =>{
   let {Api} = req.body;
-  
-  res.json({Respuesta:'Ok', QR: global[Api], fecha:new Date()});
+  console.log('Whatsapp qr', Api)
+  res.json({
+    Respuesta:'Ok', 
+    QR: global[Api], 
+    dispositivo:global[Api+'-dispositivo'], 
+    contactos:global[Api+'-contactos'],
+    fecha:new Date()
+  });
+}
+
+serverCtrl.WhatsAppEnviar = async (req, res) =>{
+  let {Api, contactos, mensaje} = req.body;
+  console.log('Whatsapp enviar', Api)
+  res.json({
+    Respuesta:'Ok', 
+    QR: global[Api], 
+    dispositivo:global[Api+'-dispositivo'], 
+    contactos:global[Api+'-contactos'],
+    fecha:new Date()
+  });
 }
 module.exports = serverCtrl;

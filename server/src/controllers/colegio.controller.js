@@ -402,19 +402,20 @@ colegioCtrl.Notas = async (req, res) =>{
                         {
                             _id:`Error-${lapso.value}`,
                             titulo:`${lapso.titulo}`,
-                            field:`${lapso.value}-${datos.asignatura._id}`
+                            field:`${lapso.value}-${datos.asignatura._id}`,
+                            lapso
                         },
                         {
                             _id:`Error-${lapso.value}-art112`,
                             titulo:`Aplicación de Art. 112`,
                             field:`${lapso.value}-${datos.asignatura._id}-art112`,
-                            
+                            lapso
                         },
                         {
                             _id:`Error-${lapso.value}-consejo`,
                             titulo:`Modificación de Consejo de Sección`,
                             field:`${lapso.value}-${datos.asignatura._id}-consejo`,
-                            
+                            lapso
                         },
 
                     ];  
@@ -428,13 +429,13 @@ colegioCtrl.Notas = async (req, res) =>{
                             _id:`Error-${lapso.value}-art112`,
                             titulo:`Aplicación de Art. 112`,
                             field:`${lapso.value}-${datos.asignatura._id}-art112`,
-                            
+                            lapso
                         },
                         {
                             _id:`Error-${lapso.value}-consejo`,
                             titulo:`Modificación de Consejo de Sección`,
                             field:`${lapso.value}-${datos.asignatura._id}-consejo`,
-                            
+                            lapso
                         },
 
                     ];  
@@ -514,9 +515,13 @@ colegioCtrl.Notas = async (req, res) =>{
                         
                         const posn= nota.findIndex(item=> item.asignatura._id===val);
                         if (posn!==-1){
-                            Asigna[`1lapso-${val}`]=nota[posn][`1lapso-${val}`];
-                            Asigna[`2lapso-${val}`]=nota[posn][`2lapso-${val}`];
-                            Asigna[`3lapso-${val}`]=nota[posn][`3lapso-${val}`];
+                            
+                            const nota1 = nota[posn][`1lapso-${val}-consejo`] ? nota[posn][`1lapso-${val}-consejo`] : nota[posn][`1lapso-${val}-art112`] ? nota[posn][`1lapso-${val}-art112`] : nota[posn][`1lapso-${val}`];
+                            const nota2 = nota[posn][`2lapso-${val}-consejo`] ? nota[posn][`2lapso-${val}-consejo`] : nota[posn][`2lapso-${val}-art112`] ? nota[posn][`2lapso-${val}-art112`] : nota[posn][`2lapso-${val}`]
+                            const nota3 = nota[posn][`3lapso-${val}-consejo`] ? nota[posn][`3lapso-${val}-consejo`] : nota[posn][`3lapso-${val}-art112`] ? nota[posn][`3lapso-${val}-art112`] : nota[posn][`3lapso-${val}`]
+                            Asigna[`1lapso-${val}`]=nota1;
+                            Asigna[`2lapso-${val}`]=nota2;
+                            Asigna[`3lapso-${val}`]=nota3;
                         }else{
                             Asigna[`1lapso-${val}`]= materia.nota;
                             Asigna[`2lapso-${val}`]= materia.nota;

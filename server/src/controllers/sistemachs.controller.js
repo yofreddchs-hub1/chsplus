@@ -6,7 +6,7 @@ const moment = require('moment');
 const fs = require('fs');
 const { Hash_texto, Hash_password } = require('../servicios/encriptado');
 const { Codigo_chs, Hash_chs} = require('../servicios/conexiones');
-const {Verifica_api, Tablas} = require('../controllers/api.controller');
+const {Verifica_api, Tablas, ConSede} = require('../controllers/api.controller');
 const {Model} = require('../database/model');
 
 const tabla_ingresoem='sistemachs_ingresoem';//ingresos de empaques
@@ -60,19 +60,21 @@ Movimiento = (dato)=>{
 }
 //Iniciar los valores por defecto, valores acutales en 0, ingresos y egresos eliminados
 sistemachsCtrl.Iniciarchs= async(req,res)=>{
-    let {User, Api, hash} = req.body;
+    let {User, Api, hash, sede} = req.body;
     User= typeof User==='string' ? JSON.parse(User) : User;
     const hashn = await Hash_texto(JSON.stringify({User, Api}));
     // const igual= await sistemachsCtrl.Verifica_api(Api, true);
     if (hashn===hash){ // && igual) {
         const listae=[tabla_ingresoem,tabla_ingresomp, tabla_ingresopt, tabla_egresoem, tabla_egresomp, tabla_egresopt, tabla_produccion];
         for (var i=0; i<listae.length; i++){
-            const bd = await Model(Api,listae[i]);
+            let tabla = ConSede(listae[i],sede);
+            const bd = await Model(Api,tabla);
             await bd.deleteMany();
         }
         const listab=[tabla_inventariomp, tabla_inventariopt, tabla_empaque, tabla_formula];
         for (var i=0; i<listab.length;i++){
-            const bd = await Model(Api,listab[i]);
+            let tabla = ConSede(listab[i],sede);
+            const bd = await Model(Api,tabla);
             const valores = await bd.find();
             for (var j=0; j<valores.length;j++){
                 let valor = valores[j];
@@ -90,14 +92,16 @@ sistemachsCtrl.Iniciarchs= async(req,res)=>{
   
 //Ingresar y egresar
 sistemachsCtrl.Ingresar = async (req, res)=>{
-    let {User, Api, datos, tabla_inv, tabla_ing, id, egresar, hash} = req.body;
+    let {User, Api, datos, tabla_inv, tabla_ing, id, egresar, hash, sede} = req.body;
     User= typeof User==='string' ? JSON.parse(User) : User;
     const hashn = await Hash_texto(JSON.stringify({User, Api, datos, tabla_inv, tabla_ing, id, egresar}));
     // const igual= await sistemachsCtrl.Verifica_api(Api, true);
     if (hashn===hash){ // && igual) {
         // await sistemachsCtrl.Tablas(`${tabla_ing}`);
-        const MP = await Model(Api, tabla_inv);//require(`../models/${tabla_inv}`);
-        const IM = await Model(Api, tabla_ing);//require(`../models/${tabla_ing}`);
+        let tabla = ConSede(tabla_inv,sede);
+        const MP = await Model(Api, tabla);//require(`../models/${tabla_inv}`);
+        tabla = ConSede(tabla_ing,sede);
+        const IM = await Model(Api, tabla);//require(`../models/${tabla_ing}`);
         datos = JSON.parse(datos);
         if (datos._id){
         
@@ -155,15 +159,17 @@ sistemachsCtrl.Ingresar = async (req, res)=>{
 }
 //Ingresos de Materia Prima
 sistemachsCtrl.Ingresar_material = async (req, res)=>{
-    let {User, Api, datos, hash} = req.body;
+    let {User, Api, datos, hash, sede} = req.body;
     User= typeof User==='string' ? JSON.parse(User) : User;
     const hashn = await Hash_texto(JSON.stringify({User, Api, datos}));
     // const igual= await sistemachsCtrl.Verifica_api(Api, true);
     if (hashn===hash){ // && igual) {
         const fecha = moment(new Date()).format('YYYY-MM-DD');
         // await sistemachsCtrl.Tablas(tabla_ingresomp);
-        const MP = await Model(Api,tabla_inventariomp);//require(`../models/sistemachs_Inventariomp`);
-        const IM = await Model(Api,tabla_ingresomp);//require(`../models/sistemachs_Ingresomp`);
+        let tabla = ConSede(tabla_inventariomp,sede);
+        const MP = await Model(Api,tabla);//require(`../models/sistemachs_Inventariomp`);
+        tabla = ConSede(tabla_ingresomp,sede);
+        const IM = await Model(Api,tabla);//require(`../models/sistemachs_Ingresomp`);
         datos = JSON.parse(datos);
         let movimiento = [];
         // let total = await IM.estimatedDocumentCount();
@@ -545,13 +551,15 @@ sistemachsCtrl.Guardar_produccion = async (req, res)=>{
     }
 }
 sistemachsCtrl.Ventas = async (req, res)=>{
-    let {User, Api, datos, hash} = req.body;
+    let {User, Api, datos, hash, sede} = req.body;
+    console.log('Ventas....',sede)
     User= typeof User==='string' ? JSON.parse(User) : User;
     const hashn = await Hash_texto(JSON.stringify({User, Api, datos}));
     // const igual= await sistemachsCtrl.Verifica_api(Api, true);
     if (hashn===hash){ // && igual) {
         datos = datos ? JSON.parse(datos) : {};
-        const VENTA = await Model(Api,'sistemachs_Venta')//require(`../models/sistemachs_Venta`);
+        let tabla = ConSede('sistemachs_Venta',sede);
+        const VENTA = await Model(Api,tabla)//require(`../models/sistemachs_Venta`);
         console.log('Ventas....', datos.estado, datos.tipo, datos.fecha, datos && datos.fecha!==undefined)
         let ventas = datos && datos.estado 
             ? await VENTA.find({$and:[{"valores.estado":datos.estado},{"valores.tipo":'Venta'}]})//find({$text: {$search: datos.estado, $caseSensitive: false}})
@@ -594,13 +602,14 @@ sistemachsCtrl.Ventas = async (req, res)=>{
     }
 }
 sistemachsCtrl.Traslados = async (req, res)=>{
-    let {User, Api, datos, hash} = req.body;
+    let {User, Api, datos, hash, sede} = req.body;
     User= typeof User==='string' ? JSON.parse(User) : User;
     const hashn = await Hash_texto(JSON.stringify({User, Api, datos}));
     // const igual= await sistemachsCtrl.Verifica_api(Api, true);
     if (hashn===hash){ // && igual) {
         datos = datos ? JSON.parse(datos) : {};
-        const TRASLADO = await Model(Api,'sistemachs_Traslado')//require(`../models/sistemachs_Venta`);
+        let tabla = ConSede('sistemachs_Traslado',sede);
+        const TRASLADO = await Model(Api,tabla)//require(`../models/sistemachs_Venta`);
         console.log('Traslados....', datos.estado, datos.fecha, datos && datos.fecha!==undefined)
         let traslados = datos && datos.estado 
             ? await TRASLADO.find({$and:[{"valores.estado":datos.estado}]})//find({$text: {$search: datos.estado, $caseSensitive: false}})
@@ -636,7 +645,7 @@ sistemachsCtrl.Traslados = async (req, res)=>{
     }
 }
 sistemachsCtrl.Egreso_Venta = async (req, res)=>{
-    let {User, Api, datos, hash} = req.body;
+    let {User, Api, datos, hash, sede} = req.body;
     User= typeof User==='string' ? JSON.parse(User) : User;
     const hashn = await Hash_texto(JSON.stringify({User, Api, datos}));
     // const igual= await sistemachsCtrl.Verifica_api(Api, true);
@@ -645,11 +654,16 @@ sistemachsCtrl.Egreso_Venta = async (req, res)=>{
         const fecha = moment(new Date()).format('YYYY-MM-DD');
         // await sistemachsCtrl.Tablas(tabla_egresopt);
         // await sistemachsCtrl.Tablas(tabla_inventariopt);
-        const PT = await Model(Api,tabla_inventariopt);//require(`../models/sistemachs_Inventariopt`);
-        const EPT= await Model(Api,tabla_egresopt);//require(`../models/sistemachs_Egresopt`);
-        const ICA = await Model(Api,'sistemachs_IngresoEgreso');
+        let tabla = ConSede(tabla_inventariopt,sede);
+        const PT = await Model(Api,tabla);//require(`../models/sistemachs_Inventariopt`);
+        tabla = ConSede(tabla_egresopt,sede);
+        const EPT= await Model(Api,tabla);//require(`../models/sistemachs_Egresopt`);
+        tabla = ConSede('sistemachs_IngresoEgreso',sede);
+        const ICA = await Model(Api,tabla);
         datos = JSON.parse(datos);
-        const VENTA = await Model(Api, datos.tipo ==='Traslado' ? 'sistemachs_Traslado' :'sistemachs_Venta');//require(`../models/sistemachs_Venta`);
+        const tablaT = ConSede('sistemachs_Traslado',sede);
+        const tablaV = ConSede('sistemachs_Venta',sede);
+        const VENTA = await Model(Api, datos.tipo ==='Traslado' ? tablaT :tablaV);//require(`../models/sistemachs_Venta`);
         
         
         let anterior = null;
@@ -659,7 +673,7 @@ sistemachsCtrl.Egreso_Venta = async (req, res)=>{
         }
         
         let Recibo = await Serie({
-            tabla:datos.tipo ==='Traslado' ? 'sistemachs_Traslado' : 'sistemachs_Venta', 
+            tabla:datos.tipo ==='Traslado' ? tablaT : tablaV, 
             cantidad:6, 
             id:datos.tipo ==='Traslado' ? 'T' :'V'
         }, Api);//, condicion:{'valores.tipo':'Venta'}//Generar_codigo(total,'V', 6);
@@ -740,7 +754,7 @@ sistemachsCtrl.Egreso_Venta = async (req, res)=>{
             if (datos.formapago && datos.formapago.formapago){
                 for(var k1=0; k1<datos.formapago.formapago.length;k1++){
                     let formapago = datos.formapago.formapago[k1];
-                    console.log(formapago.fecha)
+                    
                     const fecha = formapago.fecha===null ? moment().format('DD/MM/YYYY').split('/') : formapago.fecha.split('/');
                     let monto = Number(formapago.monto)/Number(formapago.tasa);
                     let Ingreso = await ICA.findOne({_id:formapago._id_ingreso});
@@ -749,10 +763,12 @@ sistemachsCtrl.Egreso_Venta = async (req, res)=>{
                         
                         Ingreso = {
                             recibo:datos.recibo,
+                            _id_cliente:datos.orden_venta.cliente._id,
+                            cliente:`${datos.orden_venta.cliente.rif} ${datos.orden_venta.cliente.nombre}`,
                             tipo:'Ingreso',
                             codigo, 
                             fecha:`${fecha[2]}-${fecha[1]}-${fecha[0]}`,
-                            descripcion:`Recibo: ${datos.recibo} \nForma de Pago: ${formapago.titulo}${formapago.moneda ? '\nMoneda: '+ formapago.moneda : ''}${formapago.tasa ? '\nTasa de cambio: '+ formapago.tasa : ''}${formapago.fecha ? '\nFecha: '+ formapago.fecha : ''}`+
+                            descripcion:`Recibo: ${datos.recibo} \n${datos.orden_venta.cliente.rif} ${datos.orden_venta.cliente.nombre} \nForma de Pago: ${formapago.titulo}${formapago.moneda ? '\nMoneda: '+ formapago.moneda : ''}${formapago.tasa ? '\nTasa de cambio: '+ formapago.tasa : ''}${formapago.fecha ? '\nFecha: '+ formapago.fecha : ''}`+
                             `${formapago.bancoo ? '\nBanco Origen: '+ formapago.bancod : ''}${formapago.bancod ? '\nBanco Destino: '+ formapago.bancoo : ''}${formapago.bancoo ? '\nBanco Origen: '+ formapago.bancod : ''}${formapago.referencia ? '\nReferencia: '+ formapago.referencia : ''}`+
                             `${formapago.moneda==='$' ? '\nMonto: '+ formapago.monto : '\nMonto: '+ formapago.monto +' en dolar ' +monto.toFixed(2)}`,
                             monto: formapago.moneda==='$' ? formapago.monto : monto.toFixed(2),
@@ -772,8 +788,10 @@ sistemachsCtrl.Egreso_Venta = async (req, res)=>{
                         
                         Ingreso.valores={
                             ...Ingreso.valores,
+                            _id_cliente:datos.orden_venta.cliente._id,
+                            cliente:`${datos.orden_venta.cliente.rif} ${datos.orden_venta.cliente.nombre}`,
                             fecha:`${fecha[2]}-${fecha[1]}-${fecha[0]}`,
-                            descripcion:`Recibo: ${datos.recibo} \nForma de Pago: ${formapago.titulo}${formapago.moneda ? '\nMoneda: '+ formapago.moneda : ''}${formapago.tasa ? '\nTasa de cambio: '+ formapago.tasa : ''}${formapago.fecha ? '\nFecha: '+ formapago.fecha : ''}`+
+                            descripcion:`Recibo: ${datos.recibo} \n${datos.orden_venta.cliente.rif} ${datos.orden_venta.cliente.nombre} \nForma de Pago: ${formapago.titulo}${formapago.moneda ? '\nMoneda: '+ formapago.moneda : ''}${formapago.tasa ? '\nTasa de cambio: '+ formapago.tasa : ''}${formapago.fecha ? '\nFecha: '+ formapago.fecha : ''}`+
                             `${formapago.bancoo ? '\nBanco Origen: '+ formapago.bancod : ''}${formapago.bancod ? '\nBanco Destino: '+ formapago.bancoo : ''}${formapago.bancoo ? '\nBanco Origen: '+ formapago.bancod : ''}${formapago.referencia ? '\nReferencia: '+ formapago.referencia : ''}`+
                             `${formapago.moneda==='$' ? '\nMonto: '+ formapago.monto : '\nMonto: '+ formapago.monto +' en dolar ' +monto.toFixed(2)}`,
                             monto: formapago.moneda==='$' ? formapago.monto : monto.toFixed(2),
@@ -854,7 +872,7 @@ sistemachsCtrl.Egreso_Venta = async (req, res)=>{
 }
 // En ventas..
 sistemachsCtrl.Serial= async(req,res)=>{
-    let {User, Api, dato, hash} = req.body;
+    let {User, Api, dato, hash, sede} = req.body;
     User= typeof User==='string' ? JSON.parse(User) : User;
     const hashn = await Hash_texto(JSON.stringify({User, Api, dato}));
     // const igual= await sistemachsCtrl.Verifica_api(Api, true);
@@ -877,8 +895,10 @@ sistemachsCtrl.Serial= async(req,res)=>{
     }
 }
 sistemachsCtrl.Recibo_venta = async(req, res)=>{
+    let {sede} = req.body;
     // await sistemachsCtrl.Tablas('sistemachs_Venta');
-    const Venta = await Model('sistemachs','sistemachs_Venta');//require(`../models/sistemachs_Venta`);
+    let tabla = ConSede('sistemachs_Venta',sede);
+    const Venta = await Model('sistemachs',tabla);//require(`../models/sistemachs_Venta`);
     let total = await Venta.estimatedDocumentCount();
     const Recibo = Generar_codigo(total,'V', 6);
     res.json({Respuesta:'Ok', Recibo});

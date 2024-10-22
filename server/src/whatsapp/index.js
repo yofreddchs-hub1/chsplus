@@ -9,15 +9,17 @@ const MensajeCHS = require('./mensajes-chs');
 //     authStrategy: new LocalAuth()
 // });
 /////>>>>>>>>>>>>>>>>>>>>>>>>Whatsapp para SistemaCHS<<<<<<<<<<<<<<<<<<
+const wwebVersion = '2.2412.54'
 const clientCHS = new Client({
+    puppeteer: {
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    },
+
     authStrategy: new LocalAuth({
         clientId: "client-CHS",
-        dataPath: "sessions", 
-    }),
-    webVersionCache: {
-        type: 'remote',
-        remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.2412.54.html',
-    }
+        dataPath: "sessions"
+    })
+   
 });
 
 clientCHS.on('qr', (qr) => {
@@ -27,8 +29,23 @@ clientCHS.on('qr', (qr) => {
     // qrcode.generate(qr, {small:true});
 });
 
-clientCHS.on('ready', () => {
+clientCHS.on('ready', async() => {
     console.log('Client CHS iniciado!');
+    // informacion del dispositico sincronizado
+    
+    const valor = clientCHS.info
+    const contactos = (await clientCHS.getContacts()).filter(f=> f.id && f.id.server==="c.us");
+    global[`whatsappqr-chs-dispositivo`] = valor ;
+    global[`whatsappqr-chs-contactos`] = contactos ;
+    global.io.emit('whatsappqr-CHS',
+        {
+            qr:undefined, 
+            dispositivo:valor, 
+            contactos, 
+            tiempo: new Date()
+        }
+    ) //datos:resultado})
+    
 });
 
 clientCHS.on('message_create', message =>{
