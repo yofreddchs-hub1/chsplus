@@ -9,7 +9,7 @@ const archivo = `${__dirname}${path.sep}ayuda.txt`;
 const Ayuda = MensajeCHS.Ayuda//fs.readFileSync(archivo, 'utf8');
 
 Condicion.ping = async(message, client)=>{
-    console.log('ping ...');
+    console.log('ping ...', message.from);
     client.sendMessage(message.from,'conectado a bot chs');
 }
 Condicion.tasacambio = async(message, client)=>{
@@ -24,6 +24,16 @@ Condicion.ayuda = async(message, client)=>{
     RespuestaCHS(message, Ayuda)
 }
 // Sistema CHS
+Condicion.Enviar = async(client, mensaje, contactos)=>{
+    // console.log(mensaje, contactos)
+    // client.sendMessage(contactos[0].id._serialized, mensaje)
+    const directorio = `${__dirname}${path.sep}media${path.sep}botchs.png`
+    const mediaFile = MessageMedia.fromFilePath(directorio);
+    // console.log(contact)
+    await client.sendMessage(contactos[0].id._serialized,mediaFile, {
+        caption:`BOTCHS\n${MensajeCHS.separado}\n${mensaje}`
+    });
+}
 Condicion.informacion = async(message, client)=>{
     const chat = await message.getChat();
     const contact = await message.getContact();

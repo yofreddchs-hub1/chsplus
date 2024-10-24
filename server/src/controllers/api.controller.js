@@ -1634,12 +1634,10 @@ serverCtrl.WhatsAppQR = async (req, res) =>{
 
 serverCtrl.WhatsAppEnviar = async (req, res) =>{
   let {Api, contactos, mensaje} = req.body;
-  console.log('Whatsapp enviar', Api)
+  await global.condicion[Api].Enviar(global[Api], mensaje, contactos);
   res.json({
     Respuesta:'Ok', 
-    QR: global[Api], 
-    dispositivo:global[Api+'-dispositivo'], 
-    contactos:global[Api+'-contactos'],
+    
     fecha:new Date()
   });
 }

@@ -76,6 +76,7 @@ clientCHS.on('message_create', message =>{
     //     client.sendMessage(message.from,'Sistema CHS 2023');
     // }
 });
+global.clientCHS = clientCHS;
 clientCHS.initialize()
 
 /////>>>>>>>>>>>>>>>>>>>>>>>>Whatsapp para SistemaCHS<<<<<<<<<<<<<<<<<<
@@ -172,6 +173,10 @@ clientUECLA.on('message_create',async (message) =>{
 });
 clientUECLA.initialize()
 global.clientUECLA=clientUECLA;
+global.condicion={
+    clientCHS:Condicion,
+    clientUECLA:CondicionUECLA
+}
 // const SESSION_FILE_PATH = './session.json';
 // let sessionData;
 // let client;

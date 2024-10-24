@@ -754,7 +754,7 @@ sistemachsCtrl.Egreso_Venta = async (req, res)=>{
             if (datos.formapago && datos.formapago.formapago){
                 for(var k1=0; k1<datos.formapago.formapago.length;k1++){
                     let formapago = datos.formapago.formapago[k1];
-                    
+                    const fechaF = datos.fecha.split('-')
                     const fecha = formapago.fecha===null ? moment().format('DD/MM/YYYY').split('/') : formapago.fecha.split('/');
                     let monto = Number(formapago.monto)/Number(formapago.tasa);
                     let Ingreso = await ICA.findOne({_id:formapago._id_ingreso});
@@ -768,7 +768,7 @@ sistemachsCtrl.Egreso_Venta = async (req, res)=>{
                             tipo:'Ingreso',
                             codigo, 
                             fecha:`${fecha[2]}-${fecha[1]}-${fecha[0]}`,
-                            descripcion:`Recibo: ${datos.recibo} \n${datos.orden_venta.cliente.rif} ${datos.orden_venta.cliente.nombre} \nForma de Pago: ${formapago.titulo}${formapago.moneda ? '\nMoneda: '+ formapago.moneda : ''}${formapago.tasa ? '\nTasa de cambio: '+ formapago.tasa : ''}${formapago.fecha ? '\nFecha: '+ formapago.fecha : ''}`+
+                            descripcion:`Fecha de Emisión: ${fechaF[2]}/${fechaF[1]}/${fechaF[0]} \nRecibo: ${datos.recibo}\nCliente: ${datos.orden_venta.cliente.rif} ${datos.orden_venta.cliente.nombre} \nForma de Pago: ${formapago.titulo}${formapago.moneda ? '\nMoneda: '+ formapago.moneda : ''}${formapago.tasa ? '\nTasa de cambio: '+ formapago.tasa : ''}${formapago.fecha ? '\nFecha: '+ formapago.fecha : ''}`+
                             `${formapago.bancoo ? '\nBanco Origen: '+ formapago.bancod : ''}${formapago.bancod ? '\nBanco Destino: '+ formapago.bancoo : ''}${formapago.bancoo ? '\nBanco Origen: '+ formapago.bancod : ''}${formapago.referencia ? '\nReferencia: '+ formapago.referencia : ''}`+
                             `${formapago.moneda==='$' ? '\nMonto: '+ formapago.monto : '\nMonto: '+ formapago.monto +' en dolar ' +monto.toFixed(2)}`,
                             monto: formapago.moneda==='$' ? formapago.monto : monto.toFixed(2),
@@ -791,7 +791,7 @@ sistemachsCtrl.Egreso_Venta = async (req, res)=>{
                             _id_cliente:datos.orden_venta.cliente._id,
                             cliente:`${datos.orden_venta.cliente.rif} ${datos.orden_venta.cliente.nombre}`,
                             fecha:`${fecha[2]}-${fecha[1]}-${fecha[0]}`,
-                            descripcion:`Recibo: ${datos.recibo} \n${datos.orden_venta.cliente.rif} ${datos.orden_venta.cliente.nombre} \nForma de Pago: ${formapago.titulo}${formapago.moneda ? '\nMoneda: '+ formapago.moneda : ''}${formapago.tasa ? '\nTasa de cambio: '+ formapago.tasa : ''}${formapago.fecha ? '\nFecha: '+ formapago.fecha : ''}`+
+                            descripcion:`Fecha de Emisión: ${fechaF[2]}/${fechaF[1]}/${fechaF[0]} \nRecibo: ${datos.recibo} \nCliente: ${datos.orden_venta.cliente.rif} ${datos.orden_venta.cliente.nombre} \nForma de Pago: ${formapago.titulo}${formapago.moneda ? '\nMoneda: '+ formapago.moneda : ''}${formapago.tasa ? '\nTasa de cambio: '+ formapago.tasa : ''}${formapago.fecha ? '\nFecha: '+ formapago.fecha : ''}`+
                             `${formapago.bancoo ? '\nBanco Origen: '+ formapago.bancod : ''}${formapago.bancod ? '\nBanco Destino: '+ formapago.bancoo : ''}${formapago.bancoo ? '\nBanco Origen: '+ formapago.bancod : ''}${formapago.referencia ? '\nReferencia: '+ formapago.referencia : ''}`+
                             `${formapago.moneda==='$' ? '\nMonto: '+ formapago.monto : '\nMonto: '+ formapago.monto +' en dolar ' +monto.toFixed(2)}`,
                             monto: formapago.moneda==='$' ? formapago.monto : monto.toFixed(2),
@@ -865,7 +865,8 @@ sistemachsCtrl.Egreso_Venta = async (req, res)=>{
         }
         global.io.emit(`Actualizar_inventariopt`);
         global.io.emit(datos.tipo ==='Traslado' ? `Actualizar_traslado` : `Actualizar_venta`); 
-        res.json({Respuesta:'Ok', datos});
+        const nuevo = datos._id ? await VENTA.findOne({_id:datos._id}) : await VENTA.findOne({"valores.recibo":datos.recibo})
+        res.json({Respuesta:'Ok', datos, nuevo});
     }else{
         res.json({Respuesta:'Error', mensaje:'hash invalido'});
     }
