@@ -22,6 +22,11 @@ const tabla_empaque='sistemachs_empaque';//inventario de empaque
 const tabla_formula='sistemachs_formula';// datos de fomulas
 const tabla_produccion='sistemachs_produccion';// datos de proccion y planificacion
 
+AgregarSede = async(Api, tabla, sede)=>{
+    let tablaS = ConSede(tabla,sede);
+    const BD = await Model(Api, tablaS)
+    return BD
+}
 Generar_codigo = (valor, id='', cantidad=5)=>{
     let nuevo = String(Number(valor) + 1);
     let cero = cantidad-nuevo.length;
@@ -31,9 +36,9 @@ Generar_codigo = (valor, id='', cantidad=5)=>{
     return `${id!=='' ? id+'-' : ''}${nuevo}`
 }
   
-Serie = async(dato, Api)=>{
+Serie = async(dato, Api, sede)=>{
     // await sistemachsCtrl.Tablas(dato.tabla);
-    const DB = await Model(Api, dato.tabla);//require(`../models/${dato.tabla}`);
+    const DB = await AgregarSede(Api,dato.tabla,sede)//await Model(Api, dato.tabla);//require(`../models/${dato.tabla}`);
     let total = dato.condicion 
                 ?   await DB.find(dato.condicion)
                 :   await DB.estimatedDocumentCount();
@@ -67,14 +72,14 @@ sistemachsCtrl.Iniciarchs= async(req,res)=>{
     if (hashn===hash){ // && igual) {
         const listae=[tabla_ingresoem,tabla_ingresomp, tabla_ingresopt, tabla_egresoem, tabla_egresomp, tabla_egresopt, tabla_produccion];
         for (var i=0; i<listae.length; i++){
-            let tabla = ConSede(listae[i],sede);
-            const bd = await Model(Api,tabla);
+            // let tabla = ConSede(listae[i],sede);
+            const bd = await AgregarSede(Api,listae[i],sede)//await Model(Api,tabla);
             await bd.deleteMany();
         }
         const listab=[tabla_inventariomp, tabla_inventariopt, tabla_empaque, tabla_formula];
         for (var i=0; i<listab.length;i++){
-            let tabla = ConSede(listab[i],sede);
-            const bd = await Model(Api,tabla);
+            // let tabla = ConSede(listab[i],sede);
+            const bd = await AgregarSede(Api,listab[i],sede)//await Model(Api,tabla);
             const valores = await bd.find();
             for (var j=0; j<valores.length;j++){
                 let valor = valores[j];
@@ -98,10 +103,10 @@ sistemachsCtrl.Ingresar = async (req, res)=>{
     // const igual= await sistemachsCtrl.Verifica_api(Api, true);
     if (hashn===hash){ // && igual) {
         // await sistemachsCtrl.Tablas(`${tabla_ing}`);
-        let tabla = ConSede(tabla_inv,sede);
-        const MP = await Model(Api, tabla);//require(`../models/${tabla_inv}`);
-        tabla = ConSede(tabla_ing,sede);
-        const IM = await Model(Api, tabla);//require(`../models/${tabla_ing}`);
+        //let tabla = ConSede(tabla_inv,sede);
+        const MP = await AgregarSede(Api,tabla_inv,sede)//await Model(Api, tabla);//require(`../models/${tabla_inv}`);
+        //tabla = ConSede(tabla_ing,sede);
+        const IM = await AgregarSede(Api,tabla_ing,sede)//await Model(Api, tabla);//require(`../models/${tabla_ing}`);
         datos = JSON.parse(datos);
         if (datos._id){
         
@@ -126,7 +131,7 @@ sistemachsCtrl.Ingresar = async (req, res)=>{
         const fecha = datos.fecha; //moment(new Date()).format('YYYY-MM-DD');
         let movimiento = [];
         // let total = await IM.estimatedDocumentCount();
-        const codigo = datos.codigo ? datos.codigo : await Serie({tabla:`${tabla_ing}`,id, cantidad:6}, Api);//Generar_codigo(total,'IMP');
+        const codigo = datos.codigo ? datos.codigo : await Serie({tabla:`${tabla_ing}`,id, cantidad:6}, Api, sede);//Generar_codigo(total,'IMP');
 
         for (var i=0; i<datos.movimiento.length; i++){
             let material =  datos.movimiento[i];
@@ -166,14 +171,14 @@ sistemachsCtrl.Ingresar_material = async (req, res)=>{
     if (hashn===hash){ // && igual) {
         const fecha = moment(new Date()).format('YYYY-MM-DD');
         // await sistemachsCtrl.Tablas(tabla_ingresomp);
-        let tabla = ConSede(tabla_inventariomp,sede);
-        const MP = await Model(Api,tabla);//require(`../models/sistemachs_Inventariomp`);
-        tabla = ConSede(tabla_ingresomp,sede);
-        const IM = await Model(Api,tabla);//require(`../models/sistemachs_Ingresomp`);
+        // let tabla = ConSede(tabla_inventariomp,sede);
+        const MP = await AgregarSede(Api,tabla_inventariomp,sede)//await Model(Api,tabla);//require(`../models/sistemachs_Inventariomp`);
+        // tabla = ConSede(tabla_ingresomp,sede);
+        const IM = await AgregarSede(Api,tabla_ingresomp,sede)//await Model(Api,tabla);//require(`../models/sistemachs_Ingresomp`);
         datos = JSON.parse(datos);
         let movimiento = [];
         // let total = await IM.estimatedDocumentCount();
-        const codigo = await Serie({tabla:tabla_ingresomp,id:'IMP', cantidad:6}, Api);//Generar_codigo(total,'IMP');
+        const codigo = await Serie({tabla:tabla_ingresomp,id:'IMP', cantidad:6}, Api, sede);//Generar_codigo(total,'IMP');
 
         for (var i=0; i<datos.length; i++){
             let material =  datos[i];
@@ -196,19 +201,19 @@ sistemachsCtrl.Ingresar_material = async (req, res)=>{
 }   
 // Ingreso de empaque
 sistemachsCtrl.Ingresar_empaque = async (req, res)=>{
-    let {User, Api, datos, hash} = req.body;
+    let {User, Api, datos, hash, sede} = req.body;
     User= typeof User==='string' ? JSON.parse(User) : User;
     const hashn = await Hash_texto(JSON.stringify({User, Api, datos}));
     // const igual= await sistemachsCtrl.Verifica_api(Api, true);
     if (hashn===hash){ // && igual) {
         const fecha = moment(new Date()).format('YYYY-MM-DD');
         // await sistemachsCtrl.Tablas(tabla_ingresoem);
-        const EM = await Model(Api,tabla_empaque);//require(`../models/sistemachs_Empaque`);
-        const IE = await Model(Api,tabla_ingresoem);//require(`../models/sistemachs_Ingresoem`);
+        const EM = await AgregarSede(Api,tabla_empaque,sede)//await Model(Api,tabla_empaque);//require(`../models/sistemachs_Empaque`);
+        const IE = await AgregarSede(Api,tabla_ingresoem,sede)//await Model(Api,tabla_ingresoem);//require(`../models/sistemachs_Ingresoem`);
         datos = JSON.parse(datos);
         let movimiento = [];
         // let total = await IE.estimatedDocumentCount();
-        const codigo =  await Serie({tabla:tabla_ingresoem,id:'IEM', cantidad:6}, Api);//Generar_codigo(total,'IEM')
+        const codigo =  await Serie({tabla:tabla_ingresoem,id:'IEM', cantidad:6}, Api, sede);//Generar_codigo(total,'IEM')
 
         for (var i=0; i<datos.length; i++){
         let material =  datos[i];
@@ -231,7 +236,7 @@ sistemachsCtrl.Ingresar_empaque = async (req, res)=>{
     }
 }
 sistemachsCtrl.Ingreso_Egreso = async (req, res)=>{
-    let {User, Api, datos, hash} = req.body;
+    let {User, Api, datos, hash, sede} = req.body;
     User= typeof User==='string' ? JSON.parse(User) : User;
     const hashn = await Hash_texto(JSON.stringify({User, Api, datos}));
     // const igual= await sistemachsCtrl.Verifica_api(Api, true);
@@ -245,17 +250,17 @@ sistemachsCtrl.Ingreso_Egreso = async (req, res)=>{
             res.json({Respuesta:'Ok', inventario:[], mensaje:'Tipo de ingreso y egresos no conocidos'});
         }
         if (datos.tipo==='Materia Prima'){
-            Ingreso=await Model(Api,tabla_ingresomp);//require(`../models/sistemachs_Ingresomp`);
-            Egreso=await Model(Api,tabla_egresomp);//require(`../models/sistemachs_Egresomp`);
-            Inventario = await Model(Api,tabla_inventariomp);//require(`../models/sistemachs_Inventariomp`);
+            Ingreso=await AgregarSede(Api,tabla_ingresomp,sede)//await Model(Api,tabla_ingresomp);//require(`../models/sistemachs_Ingresomp`);
+            Egreso=await AgregarSede(Api,tabla_egresomp,sede)//await Model(Api,tabla_egresomp);//require(`../models/sistemachs_Egresomp`);
+            Inventario = await AgregarSede(Api,tabla_inventariomp,sede)//await Model(Api,tabla_inventariomp);//require(`../models/sistemachs_Inventariomp`);
         }else if (datos.tipo==='Empaque'){
-            Ingreso= await Model(Api,tabla_ingresoem);//require(`../models/sistemachs_Ingresoem`);
-            Egreso= await Model(Api,tabla_egresoem);//require(`../models/sistemachs_Egresoem`);
-            Inventario = await Model(Api,tabla_empaque);//require(`../models/sistemachs_Empaque`);
+            Ingreso= await AgregarSede(Api,tabla_ingresoem,sede)//await Model(Api,tabla_ingresoem);//require(`../models/sistemachs_Ingresoem`);
+            Egreso= await AgregarSede(Api,tabla_egresoem,sede)//await Model(Api,tabla_egresoem);//require(`../models/sistemachs_Egresoem`);
+            Inventario = await AgregarSede(Api,tabla_empaque,sede)//await Model(Api,tabla_empaque);//require(`../models/sistemachs_Empaque`);
         }else if (datos.tipo==='Producto Terminado'){
-            Ingreso= await Model(Api,tabla_ingresopt);//require(`../models/sistemachs_Ingresopt`);
-            Egreso= await Model(Api,tabla_egresopt);//require(`../models/sistemachs_Egresopt`);
-            Inventario = await Model(Api,tabla_inventariopt);//require(`../models/sistemachs_Inventariopt`);
+            Ingreso= await AgregarSede(Api,tabla_ingresopt,sede)//await Model(Api,tabla_ingresopt);//require(`../models/sistemachs_Ingresopt`);
+            Egreso= await AgregarSede(Api,tabla_egresopt,sede)//await Model(Api,tabla_egresopt);//require(`../models/sistemachs_Egresopt`);
+            Inventario = await AgregarSede(Api,tabla_inventariopt,sede)//await Model(Api,tabla_inventariopt);//require(`../models/sistemachs_Inventariopt`);
         }else{
             res.json({Respuesta:'Ok', inventario:[], mensaje:'Tipo de ingreso y egresos no conocidos'});
             return
@@ -326,7 +331,7 @@ sistemachsCtrl.Ingreso_Egreso = async (req, res)=>{
     }
 }
 sistemachsCtrl.ActualizarCantidad = async (req, res)=>{
-    let {User, Api, datos, hash} = req.body;
+    let {User, Api, datos, hash, sede} = req.body;
     User= typeof User==='string' ? JSON.parse(User) : User;
     const hashn = await Hash_texto(JSON.stringify({User, Api, datos}));
     // const igual= await sistemachsCtrl.Verifica_api(Api, true);
@@ -342,15 +347,15 @@ sistemachsCtrl.ActualizarCantidad = async (req, res)=>{
         if (datos.tipo==='Materia Prima'){
             // Ingreso=await Model(Api,tabla_ingresomp);//require(`../models/sistemachs_Ingresomp`);
             // Egreso=await Model(Api,tabla_egresomp);//require(`../models/sistemachs_Egresomp`);
-            Inventario = await Model(Api,tabla_inventariomp);//require(`../models/sistemachs_Inventariomp`);
+            Inventario = await AgregarSede(Api,tabla_inventariomp,sede)//await Model(Api,tabla_inventariomp);//require(`../models/sistemachs_Inventariomp`);
         }else if (datos.tipo==='Empaque'){
             // Ingreso= await Model(Api,tabla_ingresoem);//require(`../models/sistemachs_Ingresoem`);
             // Egreso= await Model(Api,tabla_egresoem);//require(`../models/sistemachs_Egresoem`);
-            Inventario = await Model(Api,tabla_empaque);//require(`../models/sistemachs_Empaque`);
+            Inventario = await AgregarSede(Api,tabla_empaque,sede)//await Model(Api,tabla_empaque);//require(`../models/sistemachs_Empaque`);
         }else if (datos.tipo==='Producto Terminado'){
             // Ingreso= await Model(Api,tabla_ingresopt);//require(`../models/sistemachs_Ingresopt`);
             // Egreso= await Model(Api,tabla_egresopt);//require(`../models/sistemachs_Egresopt`);
-            Inventario = await Model(Api,tabla_inventariopt);//require(`../models/sistemachs_Inventariopt`);
+            Inventario = await AgregarSede(Api,tabla_inventariopt,sede)//await Model(Api,tabla_inventariopt);//require(`../models/sistemachs_Inventariopt`);
         }else{
             res.json({Respuesta:'Ok', inventario:[], mensaje:'Tipo de ingreso y egresos no conocidos'});
             return
@@ -369,7 +374,7 @@ sistemachsCtrl.ActualizarCantidad = async (req, res)=>{
     }
 }
 sistemachsCtrl.Guardar_produccion = async (req, res)=>{
-    let {User, Api, datos, hash} = req.body;
+    let {User, Api, datos, hash, sede} = req.body;
     User= typeof User==='string' ? JSON.parse(User) : User;
     const hashn = await Hash_texto(JSON.stringify({User, Api, datos}));
     // const igual= await sistemachsCtrl.Verifica_api(Api, true);
@@ -377,16 +382,16 @@ sistemachsCtrl.Guardar_produccion = async (req, res)=>{
     // await sistemachsCtrl.Tablas(tabla_egresomp);
     // await sistemachsCtrl.Tablas(tabla_egresoem);
     // await sistemachsCtrl.Tablas(tabla_ingresopt);
-    const Produccion = await Model(Api,tabla_produccion)//require(`../models/sistemachs_Produccion`);
-    const MP = await Model(Api, tabla_inventariomp); //require(`../models/sistemachs_Inventariomp`);
-    const PT = await Model(Api,tabla_inventariopt);//require(`../models/sistemachs_Inventariopt`);
-    const EMPAQUE = await Model(Api,tabla_empaque);//require(`../models/sistemachs_Empaque`);
-    const FORMULA = await Model(Api,tabla_formula);//require(`../models/sistemachs_Formula`);
-    const EM = await Model(Api,tabla_egresomp);//require(`../models/sistemachs_Egresomp`);
-    const IM = await Model(Api,tabla_ingresomp);//require(`../models/sistemachs_Egresomp`);
-    const EEM= await Model(Api,tabla_egresoem);//require(`../models/sistemachs_Egresoem`);
-    const IPT= await Model(Api,tabla_ingresopt);//require(`../models/sistemachs_Ingresopt`);
-    const EPT= await Model(Api,tabla_egresopt);//require(`../models/sistemachs_Ingresopt`);
+    const Produccion = await AgregarSede(Api,tabla_produccion,sede)//await Model(Api,tabla_produccion)//require(`../models/sistemachs_Produccion`);
+    const MP = await AgregarSede(Api,tabla_inventariomp,sede)//await Model(Api, tabla_inventariomp); //require(`../models/sistemachs_Inventariomp`);
+    const PT = await AgregarSede(Api,tabla_inventariopt,sede)//await Model(Api,tabla_inventariopt);//require(`../models/sistemachs_Inventariopt`);
+    const EMPAQUE = await AgregarSede(Api,tabla_empaque,sede)//await Model(Api,tabla_empaque);//require(`../models/sistemachs_Empaque`);
+    const FORMULA = await AgregarSede(Api,tabla_formula,sede)//await Model(Api,tabla_formula);//require(`../models/sistemachs_Formula`);
+    const EM = await AgregarSede(Api,tabla_egresomp,sede)//await Model(Api,tabla_egresomp);//require(`../models/sistemachs_Egresomp`);
+    const IM = await AgregarSede(Api,tabla_ingresomp,sede)//await Model(Api,tabla_ingresomp);//require(`../models/sistemachs_Egresomp`);
+    const EEM= await AgregarSede(Api,tabla_egresoem,sede)//await Model(Api,tabla_egresoem);//require(`../models/sistemachs_Egresoem`);
+    const IPT= await AgregarSede(Api,tabla_ingresopt,sede)//await Model(Api,tabla_ingresopt);//require(`../models/sistemachs_Ingresopt`);
+    const EPT= await AgregarSede(Api,tabla_egresopt,sede)//await Model(Api,tabla_egresopt);//require(`../models/sistemachs_Ingresopt`);
 
     datos = JSON.parse(datos);
     const fecha = datos.fecha ? datos.fecha : moment(new Date()).format('YYYY-MM-DD');
@@ -492,7 +497,7 @@ sistemachsCtrl.Guardar_produccion = async (req, res)=>{
 
     //Guardar el egreso de materia prima
     // let total = await EM.estimatedDocumentCount();
-    let codigo = await Serie({tabla:tabla_egresomp,id:'EMP', cantidad:6}, Api);//Generar_codigo(total,'EMP')
+    let codigo = await Serie({tabla:tabla_egresomp,id:'EMP', cantidad:6}, Api, sede);//Generar_codigo(total,'EMP')
     let valores = {codigo:`${codigo}${datos.titulo ? ` "${datos.titulo}"`:''} de "${datos.referencia}"`, fecha, movimiento, dependiente:true};
     let cod_chs = await Codigo_chs({...valores});
     let hash_chs = await Hash_chs({...valores, cod_chs})
@@ -503,7 +508,7 @@ sistemachsCtrl.Guardar_produccion = async (req, res)=>{
     }
     //Guardar ingreso materia prima
     if (movimiento_mp.length!==0){
-        codigo =  await Serie({tabla:tabla_ingresomp,id:'IMP', cantidad:6}, Api);//Generar_codigo(total,'EEM')
+        codigo =  await Serie({tabla:tabla_ingresomp,id:'IMP', cantidad:6}, Api, sede);//Generar_codigo(total,'EEM')
         valores = {codigo:`${codigo}${datos.titulo ? ` "${datos.titulo}"`:''} de "${datos.referencia}"`, fecha, movimiento: movimiento_mp, dependiente:true};
         cod_chs = await Codigo_chs({...valores});
         hash_chs = await Hash_chs({...valores, cod_chs})
@@ -514,7 +519,7 @@ sistemachsCtrl.Guardar_produccion = async (req, res)=>{
     //Guardar el egreso de empaque
     // total = await EEM.estimatedDocumentCount();
     if (movimiento_em.length!==0){
-        codigo =  await Serie({tabla:tabla_egresoem,id:'EEM', cantidad:6}, Api);//Generar_codigo(total,'EEM')
+        codigo =  await Serie({tabla:tabla_egresoem,id:'EEM', cantidad:6}, Api, sede);//Generar_codigo(total,'EEM')
         valores = {codigo:`${codigo}${datos.titulo ? ` "${datos.titulo}"`:''} de "${datos.referencia}"`, fecha, movimiento: movimiento_em, dependiente:true};
         cod_chs = await Codigo_chs({...valores});
         hash_chs = await Hash_chs({...valores, cod_chs})
@@ -526,7 +531,7 @@ sistemachsCtrl.Guardar_produccion = async (req, res)=>{
     // total = await IPT.estimatedDocumentCount();
     //Ingreso
     if (movimiento_pt.length!==0){
-        codigo =  await Serie({tabla:tabla_ingresopt,id:'IPT', cantidad:6}, Api);//Generar_codigo(total,'IPT')
+        codigo =  await Serie({tabla:tabla_ingresopt,id:'IPT', cantidad:6}, Api, sede);//Generar_codigo(total,'IPT')
         valores = {codigo:`${codigo} de "${datos.referencia}"`, fecha, movimiento:movimiento_pt, dependiente:true};
         cod_chs = await Codigo_chs({...valores});
         hash_chs = await Hash_chs({...valores, cod_chs})
@@ -535,7 +540,7 @@ sistemachsCtrl.Guardar_produccion = async (req, res)=>{
     }
     //Egreso
     if (movimiento_ept.length!==0){
-        codigo =  await Serie({tabla:tabla_egresopt,id:'EPT', cantidad:6}, Api);//Generar_codigo(total,'IPT')
+        codigo =  await Serie({tabla:tabla_egresopt,id:'EPT', cantidad:6}, Api, sede);//Generar_codigo(total,'IPT')
         valores = {codigo:`${codigo}${datos.titulo ? ` "${datos.titulo}"`:''} de "${datos.referencia}"`, fecha, movimiento:movimiento_ept, dependiente:true};
         cod_chs = await Codigo_chs({...valores});
         hash_chs = await Hash_chs({...valores, cod_chs})
@@ -558,8 +563,8 @@ sistemachsCtrl.Ventas = async (req, res)=>{
     // const igual= await sistemachsCtrl.Verifica_api(Api, true);
     if (hashn===hash){ // && igual) {
         datos = datos ? JSON.parse(datos) : {};
-        let tabla = ConSede('sistemachs_Venta',sede);
-        const VENTA = await Model(Api,tabla)//require(`../models/sistemachs_Venta`);
+        // let tabla = ConSede('sistemachs_Venta',sede);
+        const VENTA = await AgregarSede(Api,'sistemachs_Venta',sede)//await Model(Api,tabla)//require(`../models/sistemachs_Venta`);
         console.log('Ventas....', datos.estado, datos.tipo, datos.fecha, datos && datos.fecha!==undefined)
         let ventas = datos && datos.estado 
             ? await VENTA.find({$and:[{"valores.estado":datos.estado},{"valores.tipo":'Venta'}]})//find({$text: {$search: datos.estado, $caseSensitive: false}})
@@ -608,8 +613,8 @@ sistemachsCtrl.Traslados = async (req, res)=>{
     // const igual= await sistemachsCtrl.Verifica_api(Api, true);
     if (hashn===hash){ // && igual) {
         datos = datos ? JSON.parse(datos) : {};
-        let tabla = ConSede('sistemachs_Traslado',sede);
-        const TRASLADO = await Model(Api,tabla)//require(`../models/sistemachs_Venta`);
+        // let tabla = ConSede('sistemachs_Traslado',sede);
+        const TRASLADO = await AgregarSede(Api,'sistemachs_Traslado',sede)//await Model(Api,tabla)//require(`../models/sistemachs_Venta`);
         console.log('Traslados....', datos.estado, datos.fecha, datos && datos.fecha!==undefined)
         let traslados = datos && datos.estado 
             ? await TRASLADO.find({$and:[{"valores.estado":datos.estado}]})//find({$text: {$search: datos.estado, $caseSensitive: false}})
@@ -654,12 +659,12 @@ sistemachsCtrl.Egreso_Venta = async (req, res)=>{
         const fecha = moment(new Date()).format('YYYY-MM-DD');
         // await sistemachsCtrl.Tablas(tabla_egresopt);
         // await sistemachsCtrl.Tablas(tabla_inventariopt);
-        let tabla = ConSede(tabla_inventariopt,sede);
-        const PT = await Model(Api,tabla);//require(`../models/sistemachs_Inventariopt`);
-        tabla = ConSede(tabla_egresopt,sede);
-        const EPT= await Model(Api,tabla);//require(`../models/sistemachs_Egresopt`);
-        tabla = ConSede('sistemachs_IngresoEgreso',sede);
-        const ICA = await Model(Api,tabla);
+        // let tabla = ConSede(tabla_inventariopt,sede);
+        const PT = await AgregarSede(Api,tabla_inventariopt,sede)//await Model(Api,tabla);//require(`../models/sistemachs_Inventariopt`);
+        // tabla = ConSede(tabla_egresopt,sede);
+        const EPT= await AgregarSede(Api,tabla_egresopt,sede)//await Model(Api,tabla);//require(`../models/sistemachs_Egresopt`);
+        // tabla = ConSede('sistemachs_IngresoEgreso',sede);
+        const ICA = await AgregarSede(Api,"sistemachs_IngresoEgreso",sede)//await Model(Api,tabla);
         datos = JSON.parse(datos);
         const tablaT = ConSede('sistemachs_Traslado',sede);
         const tablaV = ConSede('sistemachs_Venta',sede);
@@ -673,10 +678,10 @@ sistemachsCtrl.Egreso_Venta = async (req, res)=>{
         }
         
         let Recibo = await Serie({
-            tabla:datos.tipo ==='Traslado' ? tablaT : tablaV, 
+            tabla:datos.tipo ==='Traslado' ? 'sistemachs_Traslado' : 'sistemachs_Venta', 
             cantidad:6, 
             id:datos.tipo ==='Traslado' ? 'T' :'V'
-        }, Api);//, condicion:{'valores.tipo':'Venta'}//Generar_codigo(total,'V', 6);
+        }, Api, sede);//, condicion:{'valores.tipo':'Venta'}//Generar_codigo(total,'V', 6);
         Recibo = anterior ? anterior.recibo : Recibo;
         let actualizado = `Referencia: ${Recibo} - ${User.username}`;
         //Elimina los datos de egreso de producto terminado
@@ -759,7 +764,7 @@ sistemachsCtrl.Egreso_Venta = async (req, res)=>{
                     let monto = Number(formapago.monto)/Number(formapago.tasa);
                     let Ingreso = await ICA.findOne({_id:formapago._id_ingreso});
                     if (!formapago._id_ingreso || Ingreso===null){
-                        let codigo = await Serie({tabla:'sistemachs_IngresoEgreso', id:'ICA', cantidad:6, condicion:{'valores.tipo':'Ingreso'}},Api);
+                        let codigo = await Serie({tabla:'sistemachs_IngresoEgreso', id:'ICA', cantidad:6, condicion:{'valores.tipo':'Ingreso'}},Api, sede);
                         
                         Ingreso = {
                             recibo:datos.recibo,
@@ -806,7 +811,7 @@ sistemachsCtrl.Egreso_Venta = async (req, res)=>{
             }
 
             //codigo para el egreso de producto terminado
-            let codigo = await Serie({tabla:tabla_egresopt, id:'EPT', cantidad:6},Api);
+            let codigo = await Serie({tabla:tabla_egresopt, id:'EPT', cantidad:6},Api, sede);
             codigo=`${codigo} de ${Recibo}`;
             
             datos.egreso =anterior ? anterior.egreso : {codigo};
@@ -886,7 +891,7 @@ sistemachsCtrl.Serial= async(req,res)=>{
             // let total = await DB.estimatedDocumentCount();
             // const Recibo = Generar_codigo(total,`${dato.id ? dato.id : 'S'}`, dato.cantidad ? dato.cantidad : 6);
             console.log('>>>>>>> buscar serie')
-            const Recibo = await Serie(dato, Api);
+            const Recibo = await Serie(dato, Api, sede);
             console.log('>>>>>>> encontrada serie')
             res.json({Respuesta:'Ok', Recibo});
         }
@@ -898,37 +903,37 @@ sistemachsCtrl.Serial= async(req,res)=>{
 sistemachsCtrl.Recibo_venta = async(req, res)=>{
     let {sede} = req.body;
     // await sistemachsCtrl.Tablas('sistemachs_Venta');
-    let tabla = ConSede('sistemachs_Venta',sede);
-    const Venta = await Model('sistemachs',tabla);//require(`../models/sistemachs_Venta`);
+    // let tabla = ConSede('sistemachs_Venta',sede);
+    const Venta = await AgregarSede(Api,'sistemachs_Venta',sede)//await Model('sistemachs',tabla);//require(`../models/sistemachs_Venta`);
     let total = await Venta.estimatedDocumentCount();
     const Recibo = Generar_codigo(total,'V', 6);
     res.json({Respuesta:'Ok', Recibo});
 }
-Procesar_Entrega = async(User, fecha, Recibo, datos)=>{
-    const PT = await Model('sistemachs',tabla_inventariopt);//require(`../models/sistemachs_Inventariopt`);
-    const EPT= await Model('sistemachs',tabla_egresopt);//require(`../models/sistemachs_Egresopt`);
-    let movimiento = [];
-    for (var i=0; i< datos.orden_venta.producto.length; i++){
-        let producto = datos.orden_venta.producto[i];
-        movimiento = [...movimiento, Movimiento({...producto, cantidad: producto.cantidad ? producto.cantidad : 1})]
-    }
+// Procesar_Entrega = async(User, fecha, Recibo, datos)=>{
+//     const PT = await AgregarSede(Api,tabla_inventariopt,sede)//await Model('sistemachs',tabla_inventariopt);//require(`../models/sistemachs_Inventariopt`);
+//     const EPT= await AgregarSede(Api,tabla_egresopt,sede)//await Model('sistemachs',tabla_egresopt);//require(`../models/sistemachs_Egresopt`);
+//     let movimiento = [];
+//     for (var i=0; i< datos.orden_venta.producto.length; i++){
+//         let producto = datos.orden_venta.producto[i];
+//         movimiento = [...movimiento, Movimiento({...producto, cantidad: producto.cantidad ? producto.cantidad : 1})]
+//     }
 
-    for (var i=0; i< movimiento.length; i++){
-        let producto = movimiento[i];
-        let Prod = await PT.findOne({_id:producto._id});
-        Prod.valores.actual-= producto.cantidad;
-        await PT.updateOne({_id:Prod._id},{valores:Prod.valores, actualizado:`Referencia: ${Recibo} - ${User.username}`},{ upsert: true });
+//     for (var i=0; i< movimiento.length; i++){
+//         let producto = movimiento[i];
+//         let Prod = await PT.findOne({_id:producto._id});
+//         Prod.valores.actual-= producto.cantidad;
+//         await PT.updateOne({_id:Prod._id},{valores:Prod.valores, actualizado:`Referencia: ${Recibo} - ${User.username}`},{ upsert: true });
         
-    }
-    //Guardar el egreso producto terminado
-    let codigo = await Serie({tabla:tabla_egresopt, id:'EPT', cantidad:6}, Api);
-    let valores = {codigo, fecha, movimiento};
-    let cod_chs = await Codigo_chs({...valores});
-    let hash_chs = await Hash_chs({...valores, cod_chs})
-    const NuevoI = new EPT({valores, cod_chs, hash_chs, actualizado:`Referencia: ${Recibo} - ${User.username}`});
-    await NuevoI.save();
-    return
-}
+//     }
+//     //Guardar el egreso producto terminado
+//     let codigo = await Serie({tabla:tabla_egresopt, id:'EPT', cantidad:6}, Api);
+//     let valores = {codigo, fecha, movimiento};
+//     let cod_chs = await Codigo_chs({...valores});
+//     let hash_chs = await Hash_chs({...valores, cod_chs})
+//     const NuevoI = new EPT({valores, cod_chs, hash_chs, actualizado:`Referencia: ${Recibo} - ${User.username}`});
+//     await NuevoI.save();
+//     return
+// }
   
 
 module.exports = sistemachsCtrl;
