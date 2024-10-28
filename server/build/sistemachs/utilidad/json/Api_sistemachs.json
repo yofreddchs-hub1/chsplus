@@ -182,6 +182,11 @@
                     "icon": "table_view"
                 },
                 {
+                    "value": "VentasFiscal",
+                    "primary": "Ventas Fiscal",
+                    "icon": "credit_card"
+                },
+                {
                     "value": "cobrar",
                     "primary": "Por Cobrar",
                     "icon": "local_mall"
@@ -200,6 +205,11 @@
                     "value": "reporteingresoegreso",
                     "primary": "Reporte de Ingreso y Egresos",
                     "icon": "content_paste_search"
+                },
+                {
+                    "value": "reportemes",
+                    "primary": "Reporte Mensual",
+                    "icon": "assessment"
                 }
           ]
       },
@@ -3223,7 +3233,7 @@
               "formato": "",
               "default": "",
               "type": "",
-              "flex": 6
+              "flex": 6.2
           },
           {
               "title": "Precio Unitario ",
