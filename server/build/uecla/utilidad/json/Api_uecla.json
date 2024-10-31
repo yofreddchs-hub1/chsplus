@@ -1344,9 +1344,9 @@
             {
                 "nombre": "condicione",
                 "tipo": "lista_multiuso",
-                "label": "Condición",
-                "placeholder": "Condición",
-                "title": "Condición",
+                "label": "Tipo Condición",
+                "placeholder": "Tipo Condición",
+                "title": "Tipo Condición",
                 "required": false,
                 "mensaje_error": "Indique la neurodiversidad",
                 "disabled": true,
@@ -4256,7 +4256,161 @@
                 "multiline": false
             }
         ]
-     }
+     },
+    "Form_DescargaExcel_Estudiante": {
+        "columna": 2,
+        "value": [
+            {
+                "nombre": "campos",
+                "tipo": "lista_multiuso",
+                "label": "Datos del Estudiante",
+                "placeholder": "Datos del Estudiante",
+                "title": "Datos del Estudiante",
+                "mensaje_error": "Debe seleccionar por lo menos un dato del estudiante",
+                "disabled": false,
+                "numberOfLines": "",
+                "lista": "lista_Meses",
+                "getOptionLabel": [
+                    "label"
+                ],
+                "key": "campos",
+                "name": "campos",
+                "multiline": false,
+                "multiple": true,
+                "required": true
+            },
+            {
+                "nombre": "camposr",
+                "tipo": "lista_multiuso",
+                "label": "Datos del Representante",
+                "placeholder": "Datos del Representante",
+                "title": "Datos del Representante",
+                "mensaje_error": "Debe seleccionar por lo menos un dato del representante",
+                "disabled": false,
+                "numberOfLines": "",
+                "lista": "lista_Meses",
+                "getOptionLabel": [
+                    "label"
+                ],
+                "key": "camposr",
+                "name": "camposr",
+                "multiline": false,
+                "multiple": true
+            },
+            {
+                "nombre": "periodo",
+                "tipo": "lista_multiuso",
+                "label": "Periodo",
+                "placeholder": "Periodo",
+                "title": "Periodo",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "lista": "uecla_Inscripcion",
+                "getOptionLabel": [
+                    "periodo"
+                ],
+                "key": "periodo",
+                "name": "periodo",
+                "multiline": false,
+                "cargar":true
+            },
+            {
+                "nombre": "grado",
+                "tipo": "lista_multiuso",
+                "label": "Grado",
+                "placeholder": "Grado",
+                "title": "Grado",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "lista": "lista_colegio_grado",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "grado",
+                "name": "grado",
+                "multiline": false
+            }
+        ]
+    },
+    "Form_DescargaExcel_Representante": {
+        "columna": 2,
+        "value": [
+            {
+                "nombre": "campos",
+                "tipo": "lista_multiuso",
+                "label": "Datos del Representante",
+                "placeholder": "Datos del Representante",
+                "title": "Datos del Representante",
+                "mensaje_error": "Debe seleccionar por lo menos un dato del representante",
+                "disabled": false,
+                "numberOfLines": "",
+                "lista": "lista_Meses",
+                "getOptionLabel": [
+                    "label"
+                ],
+                "key": "campos",
+                "name": "campos",
+                "multiline": false,
+                "multiple": true,
+                "required": true
+            },
+            {
+                "nombre": "camposr",
+                "tipo": "lista_multiuso",
+                "label": "Datos del Representado",
+                "placeholder": "Datos del Representado",
+                "title": "Datos del Representado",
+                "mensaje_error": "Debe seleccionar por lo menos un dato del representante",
+                "disabled": false,
+                "numberOfLines": "",
+                "lista": "lista_Meses",
+                "getOptionLabel": [
+                    "label"
+                ],
+                "key": "camposr",
+                "name": "camposr",
+                "multiline": false,
+                "multiple": true
+            },
+            {
+                "nombre": "periodo",
+                "tipo": "lista_multiuso",
+                "label": "Periodo",
+                "placeholder": "Periodo",
+                "title": "Periodo",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "lista": "uecla_Inscripcion",
+                "getOptionLabel": [
+                    "periodo"
+                ],
+                "key": "periodo",
+                "name": "periodo",
+                "multiline": false,
+                "cargar":true
+            },
+            {
+                "nombre": "grado",
+                "tipo": "lista_multiuso",
+                "label": "Grado",
+                "placeholder": "Grado",
+                "title": "Grado",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "lista": "lista_colegio_grado",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "grado",
+                "name": "grado",
+                "multiline": false
+            }
+        ]
+    }
   },
   "Listas": {
     "lista_categoria": [
