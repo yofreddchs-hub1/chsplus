@@ -645,8 +645,8 @@ colegioCtrl.EnviarPago = async (req, res) =>{
             global.io.emit('ActualizarPago','Pendiente')
             return
         }
-        representante.valores.abono= Number(datos.Totales.abono).toFixed(3);
-        representante.valores.abonod= Number(datos.Totales.abonod).toFixed(2);
+        representante.valores.abono= datos.Abono ? Number(representante.valores.abono)+ Number(datos.Totales.abono):Number(datos.Totales.abono).toFixed(3);
+        representante.valores.abonod=datos.Abono ? Number(representante.valores.abonod)+ Number(datos.Totales.abonod):Number(datos.Totales.abonod).toFixed(2);
 
         let hash_chs = await Hash_chs({...representante.valores, cod_chs: representante.cod_chs})
         await Representante.updateOne({_id:representante._id},{valores:representante.valores, hash_chs, actualizado:User.username},{ upsert: true });
@@ -688,7 +688,8 @@ colegioCtrl.EnviarPago = async (req, res) =>{
             subtotalvalor: datos.Subtotalvalor,
             totales: datos.Totales,
             valorcambio: datos.valorCambio,
-            fecha
+            fecha,
+            Abono:datos.Abono
         }
         let cod_chs = await Codigo_chs({...recibo, fecha: new Date()});
         cod_chs= cod_chs===null ? new Date() : cod_chs;
@@ -1237,7 +1238,138 @@ colegioCtrl.Promover = async (req, res) =>{
         res.json({Respuesta:'Error', mensaje:'hash invalido'});
     }
 }
+colegioCtrl.NominaDocente = async (req, res) =>{
+    let {User, Api, Periodo, Fecha, hash} = req.body;
+    User= typeof User==='string' ? JSON.parse(User) : User;
+    const hashn = await Hash_texto(JSON.stringify({User, Api, Periodo, Fecha}));
+    // const igual= await Verifica_api(Api, true);
+    if (hashn===hash) {// && igual) {
+        const quincena = Ver_quincena(moment(Fecha).format('YYYY-MM-DD'))
+        console.log(Fecha, quincena);
+        const Docente = await Model(Api,tabla_docente);
+        let docentes = await Docente.find();
+        for (var i=0; i<docentes.length;i++){
+            let dias = quincena.dias 
+            let {_id, cedula, nombres, apellidos }=docentes[i].valores
+            _id = _id ? _id : String(docentes[i]._id);
+            let hor = await Buscar_HorarioU({_id_tipo:_id, periodo:Periodo},Api);
+            if (hor.length===0){
+                hor = await Buscar_HorarioU({cedula, periodo:Periodo},Api);
+            }
+            const horas = hor.length!==0 
+                    ? Calcula_hora_docente(hor[0].valores.horario) 
+                    :  {
+                        horas:0,
+                        horaslunes:0,
+                        horasmartes:0,
+                        horasmiercoles:0,
+                        horasjueves:0,
+                        horasviernes:0
+                    } ;
+            for (var d=0; d<dias.length;d++){
+                switch(dias[d].dia){
+                    case 'Lu':
+                        dias[d].hora=horas.horaslunes;
+                        horas[`${dias[d].dia}-${dias[d].fecha}`]=horas.horaslunes;
+                        break;
+                    case 'Ma':
+                        dias[d].hora=horas.horasmartes;
+                        horas[`${dias[d].dia}-${dias[d].fecha}`]=horas.horasmartes;
+                        break;
+                    case 'Mi':
+                        dias[d].hora=horas.horasmiercoles;
+                        horas[`${dias[d].dia}-${dias[d].fecha}`]=horas.horasmiercoles;
+                        break;
+                    case 'Ju':
+                        dias[d].hora=horas.horasjueves;
+                        horas[`${dias[d].dia}-${dias[d].fecha}`]=horas.horasjueves;
+                        break;
+                    case 'Vi':
+                        dias[d].hora=horas.horasviernes;
+                        horas[`${dias[d].dia}-${dias[d].fecha}`]=horas.horasviernes;
+                        break;
 
+                }
+            }
+            docentes[i]={
+                _id, cedula, nombres, apellidos, ...horas  
+            }
+        }
+        
+        res.json({Respuesta:'Ok', docentes, quincena});
+    }else{
+        res.json({Respuesta:'Error', mensaje:'hash invalido'});
+    }
+}
+Calcula_hora_docente= (datos)=>{
+    let horas=0;
+    let horaslunes=0;
+    let horasmartes=0;
+    let horasmiercoles=0;
+    let horasjueves=0;
+    let horasviernes=0;
+
+    datos.map((fila,f)=>{
+        
+        fila.map((columna,c)=>{
+            if (columna.valor!=='' && c!==0){
+                if (columna.docente){
+                    horas+= columna.espacio;
+                    switch(c){
+                        case 1://lunes
+                            horaslunes+= columna.espacio;
+                            break;
+                        case 2://martes
+                            horasmartes+= columna.espacio;
+                            break;   
+                        case 3://miercoles
+                            horasmiercoles+= columna.espacio;
+                            break;
+                        case 4://jueves
+                            horasjueves+= columna.espacio;
+                            break;
+                        case 5://viernes
+                            horasviernes+= columna.espacio;
+                            break;
+                    }
+                }
+            }
+            
+            return columna
+        })
+        return fila
+    })
+    
+    return {horas, horaslunes, horasmartes, horasmiercoles, horasmiercoles, horasjueves,horasviernes}
+}
+Ver_quincena =(dato)=>{
+    let fecha=new Date(dato)
+    // let semana=['Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo'];
+    let semana=['Lu','Ma','Mi','Ju','Vi','Sa','Do'];
+    let dias=[];
+    var ultimoDia = new Date(fecha.getFullYear(), fecha.getMonth() + 1, 0).getUTCDate();
+    let inicio=1;
+    let fin=15;
+    if (fecha.getUTCDate()>15){
+        inicio=16;
+        fin=ultimoDia;
+    }
+    
+    for (var i=inicio; i<=fin; i++){
+        fecha.setUTCDate(i)
+        if (fecha.getDay()<5){
+            
+            dias=[...dias,{dia:semana[fecha.getDay()], fecha:fecha.getUTCDate(), hora:0 }]
+        }
+    }
+    fecha.setDate(inicio);
+    let fechai=moment(fecha).format('DD-MM-YYYY')
+    fecha.setDate(fin);
+    let fechaf=moment(fecha).format('DD-MM-YYYY')
+    let quincena=`${fechai} al ${fechaf}`
+    
+    return {quincena, dias}
+}
 colegioCtrl.LeerHorarioU = async (req, res) =>{
     let {user, api, datos, hash} = req.body;
     user= typeof user==='string' ? JSON.parse(user) : user;

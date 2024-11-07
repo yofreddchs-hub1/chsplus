@@ -123,6 +123,11 @@
                 "icon": "payments"
             },
             {
+                "value": "Abono",
+                "primary": "Abonos",
+                "icon": "add_card"
+            },
+            {
                 "value": "Productos",
                 "primary": "Productos",
                 "icon": "store"
@@ -5899,6 +5904,73 @@
             "modificar":true,
             "mensaje_recomienda":"Enviado por WhatsApp",
             "formato_mensaje_recomienda":"Mensaje_recomienda"
+        }
+      ],
+      "Titulos_Formaspago_abonos": [
+        {
+            "title": "Fecha",
+            "field": "fecha",
+            "tipo": "Fecha",
+            "formato": "",
+            "default": "",
+            "type": ""
+        },
+        {
+            "title": "Forma de Pago",
+            "field": "titulo",
+            "tipo": "",
+            "formato": "",
+            "default": "",
+            "type": ""
+        },
+        {
+            "title": "Moneda",
+            "field": "moneda",
+            "tipo": "",
+            "formato": "",
+            "default": "",
+            "type": ""
+        },            
+        {
+            "title": "Banco Origen",
+            "field": "bancoo",
+            "tipo": "",
+            "formato": "",
+            "default": "",
+            "type": ""
+        },
+        {
+            "title": "Banco Destino",
+            "field": "bancod",
+            "tipo": "",
+            "formato": "",
+            "default": "",
+            "type": ""
+        },
+        {
+            "title": "Referencia",
+            "field": "referencia",
+            "tipo": "",
+            "formato": "",
+            "default": "",
+            "type": ""
+        },
+        {
+            "title": "Monto Bs.",
+            "field": "monto",
+            "tipo": "monto",
+            "formato": "(dato)=> `${ dato.moneda === '$' ? '' : dato.monto}`",
+            "default": "",
+            "type": ""
+        },
+        {
+            "title": "Monto $",
+            "field": "monto",
+            "tipo": "monto",
+            "moneda":"$",
+            "formato": "(dato)=> `${ dato.moneda === '$' ? dato.monto : ''}`",
+            "default": "",
+            "type": ""
         }
       ],
       "Titulos_Referencia": [

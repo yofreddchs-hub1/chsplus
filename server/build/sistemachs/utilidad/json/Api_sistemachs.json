@@ -3037,12 +3037,28 @@
               "type": ""
           },
           {
-              "title": "Deuda",
+              "title": "Deuda Total",
               "field": "deuda",
               "tipo": "",
               "formato": "(dato)=> {\nreturn `$ ${Number(dato.valores && dato.valores.formapago && dato.valores.formapago['formapago-subtotal'] ? dato.valores.formapago['formapago-subtotal'].restan : 0)}`\n}",
               "default": "",
               "type": "number"
+          },
+          {
+            "title": "Producción",
+            "field": "totalp",
+            "tipo": "",
+            "formato": "(dato)=> {\nreturn `$ ${Number(dato.valores && dato.valores.formapago && dato.valores.formapago['totales'] ? dato.valores.formapago['totales'].totalp : 0).toFixed(2)}`\n}",
+            "default": "",
+            "type": "number"
+          },
+          {
+            "title": "Deuda Producción",
+            "field": "deudap",
+            "tipo": "",
+            "formato": "(dato)=> {\nreturn `$ ${Number( (dato.valores && dato.valores.formapago && dato.valores.formapago['formapago-subtotal']) && (dato.valores && dato.valores.formapago && dato.valores.formapago['totales']) ? Number(dato.valores.formapago['totales'].totalp) -Number(dato.valores.formapago['formapago-subtotal'].total) : 0).toFixed(2)}`\n}",
+            "default": "",
+            "type": "number"
           }
       ],
       "Titulos_Ingresos": [
