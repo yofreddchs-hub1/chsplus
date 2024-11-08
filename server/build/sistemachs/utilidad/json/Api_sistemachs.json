@@ -777,7 +777,7 @@
                   "label": "Formula",
                   "tipo": "Tabla",
                   "titulos": "Titulos_formula_mp_d",
-                  "Form": "Form_formula_mp1",
+                  "Form": "Form_formula_mp",
                   "nopaginar": true,
                   "style": {
                       "height": 300
