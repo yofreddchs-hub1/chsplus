@@ -180,6 +180,11 @@
                   "icon": "fact_check"
               },
               {
+                "value": "Nomina",
+                "primary": "Nomina Docente",
+                "icon": "contact_mail"
+              },
+              {
                 "value": "EnviarWHATSAPP",
                 "primary": "Enviar Mensaje",
                 "icon": "send"
@@ -4415,6 +4420,44 @@
                 "multiline": false
             }
         ]
+    },
+    "Form_filtro_nomina_docente": {
+        "columna": 3,
+        "value": [
+            {
+                "nombre": "periodo",
+                "tipo": "lista_multiuso",
+                "label": "Periodo",
+                "placeholder": "Periodo",
+                "title": "Periodo",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "lista": "uecla_Inscripcion",
+                "getOptionLabel": [
+                    "periodo"
+                ],
+                "key": "periodo",
+                "name": "periodo",
+                "multiline": false,
+                "cargar":true
+            },
+            {
+                "nombre": "fecha",
+                "tipo": "Fecha",
+                "label": "Fecha",
+                "placeholder": "Fecha",
+                "title": "Fecha",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "fecha",
+                "name": "fecha"
+            }
+        ]
     }
   },
   "Listas": {
@@ -5499,6 +5542,40 @@
               "type": ""
           }
       ],
+    "Titulos_Nomina_Docente": [
+        {
+            "title": "Cedula",
+            "field": "cedula",
+            "tipo": "",
+            "formato": "(dato)=> `${dato.cedula}`",
+            "default": "",
+            "type": ""
+        },
+        {
+            "title": "Nombres",
+            "field": "nombres",
+            "tipo": "",
+            "formato": "(dato)=> `${dato.nombres}`",
+            "default": "",
+            "type": ""
+        },
+        {
+            "title": "Apellidos",
+            "field": "apellidos",
+            "tipo": "",
+            "formato": "(dato)=> `${dato.apellidos}`",
+            "default": "",
+            "type": ""
+        },
+        {
+            "title": "Horas en Clase",
+            "field": "horas",
+            "tipo": "",
+            "formato": "(dato)=> `${dato.horas ? dato.horas : 0}`",
+            "default": "0",
+            "type": ""
+        }
+    ],
       "Titulos_EstudianteR": [
         {
             "title": "Cedula",
@@ -5956,6 +6033,14 @@
             "type": ""
         },
         {
+            "title": "Tasa ",
+            "field": "valorcambio",
+            "tipo": "",
+            "formato": "(dato)=> `${dato.valorcambio.toFixed(2)}`",
+            "default": "",
+            "type": ""
+        },
+        {
             "title": "Monto Bs.",
             "field": "monto",
             "tipo": "monto",
@@ -5968,7 +6053,7 @@
             "field": "monto",
             "tipo": "monto",
             "moneda":"$",
-            "formato": "(dato)=> `${ dato.moneda === '$' ? dato.monto : ''}`",
+            "formato": "(dato)=> `${ dato.moneda === '$' ? dato.monto : dato.monto/dato.valorcambio}`",
             "default": "",
             "type": ""
         }

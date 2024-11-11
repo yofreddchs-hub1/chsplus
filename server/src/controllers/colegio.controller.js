@@ -410,6 +410,12 @@ colegioCtrl.Notas = async (req, res) =>{
                 if (lapso.value!==val.lapso.value || i===evaluaciones.length-1){
                     titulos=[...titulos, ...titulosa.sort((a,b) => a.createdAt> b.createdAt ? 1 : -1),
                         {
+                            _id:`Error-${lapso.value}-rasgos`,
+                            titulo:`Rasgos`,
+                            field:`${lapso.value}-${datos.asignatura._id}-rasgos`,
+                            lapso
+                        },
+                        {
                             _id:`Error-${lapso.value}`,
                             titulo:`${lapso.titulo}`,
                             field:`${lapso.value}-${datos.asignatura._id}`,
@@ -417,13 +423,13 @@ colegioCtrl.Notas = async (req, res) =>{
                         },
                         {
                             _id:`Error-${lapso.value}-art112`,
-                            titulo:`Aplicación de Art. 112`,
+                            titulo:'Art. 112',//`Aplicación de Art. 112`,
                             field:`${lapso.value}-${datos.asignatura._id}-art112`,
                             lapso
                         },
                         {
                             _id:`Error-${lapso.value}-consejo`,
-                            titulo:`Modificación de Consejo de Sección`,
+                            titulo:'Consejo de Sección',//`Modificación de Consejo de Sección`,
                             field:`${lapso.value}-${datos.asignatura._id}-consejo`,
                             lapso
                         },
@@ -431,19 +437,25 @@ colegioCtrl.Notas = async (req, res) =>{
                     ];  
                     titulosn.datos[1]=[...titulosn.datos[1],  ...titulosa.sort((a,b) => a.createdAt> b.createdAt ? 1 : -1),
                         {
+                            _id:`Error-${lapso.value}-rasgos`,
+                            titulo:`Rasgo`,
+                            field:`${lapso.value}-${datos.asignatura._id}-rasgos`,
+                            lapso
+                        },
+                        {
                             _id:`Error-${lapso.value}`,
                             titulo:`${lapso.titulo}`,
                             field:`${lapso.value}-${datos.asignatura._id}`
                         },
                         {
                             _id:`Error-${lapso.value}-art112`,
-                            titulo:`Aplicación de Art. 112`,
+                            titulo:'Art. 112',//`Aplicación de Art. 112`,
                             field:`${lapso.value}-${datos.asignatura._id}-art112`,
                             lapso
                         },
                         {
                             _id:`Error-${lapso.value}-consejo`,
-                            titulo:`Modificación de Consejo de Sección`,
+                            titulo:`Consejo de Sección`,//`Modificación de Consejo de Sección`,
                             field:`${lapso.value}-${datos.asignatura._id}-consejo`,
                             lapso
                         },
@@ -517,6 +529,7 @@ colegioCtrl.Notas = async (req, res) =>{
                 nota = nota.map(val=>{
                     return {_id:val._id, ...val.valores}
                 })
+                
                 const posnota = datos.asignatura ?  nota.findIndex(item=> item.asignatura._id===datos.asignatura._id) : -1;
                 if (datos.tipo==='seccion'){
                     // console.log(nota)
@@ -526,9 +539,9 @@ colegioCtrl.Notas = async (req, res) =>{
                         const posn= nota.findIndex(item=> item.asignatura._id===val);
                         if (posn!==-1){
                             
-                            const nota1 = nota[posn][`1lapso-${val}-consejo`] ? nota[posn][`1lapso-${val}-consejo`] : nota[posn][`1lapso-${val}-art112`] ? nota[posn][`1lapso-${val}-art112`] : nota[posn][`1lapso-${val}`];
-                            const nota2 = nota[posn][`2lapso-${val}-consejo`] ? nota[posn][`2lapso-${val}-consejo`] : nota[posn][`2lapso-${val}-art112`] ? nota[posn][`2lapso-${val}-art112`] : nota[posn][`2lapso-${val}`]
-                            const nota3 = nota[posn][`3lapso-${val}-consejo`] ? nota[posn][`3lapso-${val}-consejo`] : nota[posn][`3lapso-${val}-art112`] ? nota[posn][`3lapso-${val}-art112`] : nota[posn][`3lapso-${val}`]
+                            const nota1 = nota[posn][`1lapso-${val}-consejo`] ? nota[posn][`1lapso-${val}-consejo`] : nota[posn][`1lapso-${val}-art112`] ? nota[posn][`1lapso-${val}-art112`] : nota[posn][`1lapso-${val}`] 
+                            const nota2 = nota[posn][`2lapso-${val}-consejo`] ? nota[posn][`2lapso-${val}-consejo`] : nota[posn][`2lapso-${val}-art112`] ? nota[posn][`2lapso-${val}-art112`] : nota[posn][`2lapso-${val}`] 
+                            const nota3 = nota[posn][`3lapso-${val}-consejo`] ? nota[posn][`3lapso-${val}-consejo`] : nota[posn][`3lapso-${val}-art112`] ? nota[posn][`3lapso-${val}-art112`] : nota[posn][`3lapso-${val}`] 
                             Asigna[`1lapso-${val}`]=nota1;
                             Asigna[`2lapso-${val}`]=nota2;
                             Asigna[`3lapso-${val}`]=nota3;
@@ -1245,8 +1258,13 @@ colegioCtrl.NominaDocente = async (req, res) =>{
     // const igual= await Verifica_api(Api, true);
     if (hashn===hash) {// && igual) {
         const quincena = Ver_quincena(moment(Fecha).format('YYYY-MM-DD'))
-        console.log(Fecha, quincena);
         const Docente = await Model(Api,tabla_docente);
+        const Nominas = await Model(Api, 'uecla_Nomina_docente');
+        let nomina = await Nominas.findOne({"valores.quincena":quincena.quincena});
+        if (nomina !== null){
+            res.json({Respuesta:'Ok', _id:nomina._id, docentes: nomina.valores.datos, quincena});
+            return
+        }
         let docentes = await Docente.find();
         for (var i=0; i<docentes.length;i++){
             let dias = quincena.dias 
@@ -1270,22 +1288,27 @@ colegioCtrl.NominaDocente = async (req, res) =>{
                 switch(dias[d].dia){
                     case 'Lu':
                         dias[d].hora=horas.horaslunes;
+                        horas[`${dias[d].dia}  F-${dias[d].fecha}`]=horas.horaslunes;
                         horas[`${dias[d].dia}-${dias[d].fecha}`]=horas.horaslunes;
                         break;
                     case 'Ma':
                         dias[d].hora=horas.horasmartes;
+                        horas[`${dias[d].dia}  F-${dias[d].fecha}`]=horas.horasmartes;
                         horas[`${dias[d].dia}-${dias[d].fecha}`]=horas.horasmartes;
                         break;
                     case 'Mi':
                         dias[d].hora=horas.horasmiercoles;
+                        horas[`${dias[d].dia}  F-${dias[d].fecha}`]=horas.horasmiercoles;
                         horas[`${dias[d].dia}-${dias[d].fecha}`]=horas.horasmiercoles;
                         break;
                     case 'Ju':
                         dias[d].hora=horas.horasjueves;
+                        horas[`${dias[d].dia}  F-${dias[d].fecha}`]=horas.horasjueves;
                         horas[`${dias[d].dia}-${dias[d].fecha}`]=horas.horasjueves;
                         break;
                     case 'Vi':
                         dias[d].hora=horas.horasviernes;
+                        horas[`${dias[d].dia}  F-${dias[d].fecha}`]=horas.horasviernes;
                         horas[`${dias[d].dia}-${dias[d].fecha}`]=horas.horasviernes;
                         break;
 
@@ -1359,7 +1382,10 @@ Ver_quincena =(dato)=>{
         fecha.setUTCDate(i)
         if (fecha.getDay()<5){
             
-            dias=[...dias,{dia:semana[fecha.getDay()], fecha:fecha.getUTCDate(), hora:0 }]
+            dias=[...dias,
+                {dia:semana[fecha.getDay()]+'  F', fecha:fecha.getUTCDate(), hora:0 },
+                {dia:semana[fecha.getDay()], fecha:fecha.getUTCDate(), hora:0 }
+            ]
         }
     }
     fecha.setDate(inicio);
