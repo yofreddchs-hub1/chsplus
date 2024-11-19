@@ -376,7 +376,8 @@ colegioCtrl.Notas = async (req, res) =>{
         
         asignaturas = asignaturas.map(f=>{
             return {_id:f._id, ...f.valores, titulo:f.valores.abreviacion ? f.valores.abreviacion : f.valores.asignatura  , field:`nota-${f._id}`}
-        });
+        }).sort((a,b)=> Number(a.item ? a.item : 100) < Number(b.item ? b.item : 100) ? -1 : 1);
+        
         let lapso=null;
         let titulos=[];
         let titulosn = {filas:1,datos:[[],[]]}

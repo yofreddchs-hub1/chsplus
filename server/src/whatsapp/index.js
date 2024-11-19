@@ -82,6 +82,7 @@ clientCHS.initialize()
 
 //Emojis de trabajo
 const yo = MensajeUecla.Yo;
+
 const clientUECLA = new Client({
     puppeteer: {
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
