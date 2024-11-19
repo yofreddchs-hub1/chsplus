@@ -49,13 +49,21 @@ ${MensajeUecla.separadoc}
 ${MensajeUecla.ActuliarM()}`
 }
 
-MensajeUecla.Mensualidad = (mes)=>{
+// Mensualidad : 
+//     $${mes}
+//     Bs. ${(mes*global.global_cambio.USD).toFixed(2)}
+MensajeUecla.Mensualidad = (mes, representados)=>{
     return `VALOR DE MENSUALIDAD 
 ${moment().format('DD/MM/YYYY')}
 ${MensajeUecla.separado}
-Mensualidad : Bs. ${(mes*global.global_cambio.USD).toFixed(2)}
 Tasa de cambio:
-    BCV: ${global.global_cambio.USD}`
+    BCV: ${global.global_cambio.USD}
+${MensajeUecla.separadoc}
+${representados.map(val=>`${val.nombres} 
+    Mensualidad: $${val.mes}
+    Mensualidad: Bs. ${(val.mes*global.global_cambio.USD).toFixed(2)}
+`)}
+    `
 }
 
 MensajeUecla.Representante = (repre) =>{
@@ -102,14 +110,14 @@ Contraseña: contraseña de acceso del representante al sistema.
 MensajeUecla.MoviActualizado = (repre, clavec, clave, telefono, number, anterior) =>{
     return`ACTUALIZAR TELEFONO MOVIL  
 ${MensajeUecla.separado}
-${repre.valores.password===clavec ? telefono || number ?  
+${(repre.valores.password && repre.valores.password===clavec) || (repre.valores.password===undefined && clave===repre.valores.cedula) ? telefono || number ?  
 `✅✅✅✅✅✅✅✅
 ACTUALIZACION DE:
 ${repre.valores.nombres} ${repre.valores.apellidos}
 APROBADA` : 
 `❌❌❌❌❌❌❌❌
     RECHAZADO` :''}
-${repre.valores.password===clavec ? telefono || number ?  `✅ Numero de telefono actualizado de ${anterior} a ${telefono ? telefono : number}` : '❌ No indico el nuevo numero ❌' : clave || cedula ? '❌ Contraseña Invalida ❌' : '❌ No indico contraseña ❌' }
+${(repre.valores.password && repre.valores.password===clavec) || (repre.valores.password===undefined && clave===repre.valores.cedula) ? telefono || number ?  `✅ Numero de telefono actualizado de ${anterior} a ${telefono ? telefono : number}` : '❌ No indico el nuevo numero ❌' : clave ? '❌ Contraseña Invalida ❌' : '❌ No indico contraseña ❌' }
     `
 }
 
@@ -121,7 +129,7 @@ ${repre.nombres} ${repre.apellidos}
 REPRESENTADO${representa.length>1 ? `S` : ``}:
 ${representa.map(val=>`${MensajeUecla.separadoc}
 ☑️ ${val.nombres} ${val.apellidos}
-☑️ GRADO: ${val.grado.titulo} ${val.seccion.titulo}
+☑️ GRADO: ${val.grado.titulo ? val.grado.titulo : val.grado} ${val.seccion.titulo}
 ☑️ MESES PENDIENTES:
     ${val.porpagar && Object.keys(val.porpagar).length!==0 ? Object.keys(val.porpagar).map(m=>`${m}:
         ${val.porpagar[m]}

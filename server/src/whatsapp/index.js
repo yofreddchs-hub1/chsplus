@@ -14,7 +14,6 @@ const clientCHS = new Client({
     puppeteer: {
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
     },
-
     authStrategy: new LocalAuth({
         clientId: "client-CHS",
         dataPath: "sessions"
@@ -84,27 +83,37 @@ clientCHS.initialize()
 //Emojis de trabajo
 const yo = MensajeUecla.Yo;
 const clientUECLA = new Client({
+    puppeteer: {
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    },
     authStrategy: new LocalAuth({
         clientId: "client-UECLA",
-        dataPath: "sessions",
-    }),
-    
-    webVersionCache: {
-        type: 'remote',
-        remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.2412.54.html',
-    }
+        dataPath: "sessions"
+    })
 });
 
 
 clientUECLA.on('qr', (qr) => {
     global[`whatsappqr-uecla`]= qr;
     console.log('En espera de whatsapp UECLA...')
-    global.io.emit('whatsappqr-UECLA',{qr}) //datos:resultado})
+    global.io.emit('whatsappqr-UECLA',{qr, tiempo: new Date()}) //datos:resultado})
     // qrcode.generate(qr, {small:true});
 });
 
-clientUECLA.on('ready', () => {
+clientUECLA.on('ready', async() => {
     console.log('Client UECLA iniciado!');
+    const valor = clientUECLA.info
+    const contactos = (await clientUECLA.getContacts()).filter(f=> f.id && f.id.server==="c.us");
+    global[`whatsappqr-uecla-dispositivo`] = valor ;
+    global[`whatsappqr-uecla-contactos`] = contactos ;
+    global.io.emit('whatsappqr-UECLA',
+        {
+            qr:undefined, 
+            dispositivo:valor, 
+            contactos, 
+            tiempo: new Date()
+        }
+    )
 });
 
 clientUECLA.on('message_create',async (message) =>{
@@ -127,7 +136,7 @@ clientUECLA.on('message_create',async (message) =>{
             mensaje='tasacambio';
         }else if(['información'].indexOf(mensaje)!==-1){
             mensaje='informacion';
-        }else if(['costo'].indexOf(mensaje)!==-1){
+        }else if(['costo'].indexOf(mensaje)!==-1 || mensaje.indexOf('costo')!==-1){
             mensaje='mes';
         }else if(['ℹ️','mis datos','misdatos','md','m d'].indexOf(mensaje)!==-1 
                 || mensaje.indexOf('mis datos')!==-1 
@@ -171,8 +180,9 @@ clientUECLA.on('message_create',async (message) =>{
     //     client.sendMessage(message.from,'Sistema CHS 2023');
     // }
 });
-clientUECLA.initialize()
 global.clientUECLA=clientUECLA;
+clientUECLA.initialize()
+
 global.condicion={
     clientCHS:Condicion,
     clientUECLA:CondicionUECLA

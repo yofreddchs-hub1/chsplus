@@ -297,8 +297,8 @@ colegioCtrl.Solvencias = async (req, res) =>{
                 && f.valores.estatus && f.valores.estatus.value==='inscrito'
                 || datos.seccion===undefined && f.valores.estatus && f.valores.estatus.value==='inscrito'){
                 nuevo=[...nuevo, f.valores]
-                const posR = representantes.findIndex(val=>val._id===f.valores.representante._id);
-                if (posR===-1){
+                const posR = representantes.findIndex(val=> f.valores.representante && val._id===f.valores.representante._id);
+                if (posR===-1 && f.valores.representante){
                     let repres= await Representante.findOne({_id:f.valores.representante._id});
                     if (repres===null) 
                         repres= await Representante.findOne({cedula:f.valores.representante.cedula});
@@ -394,9 +394,13 @@ colegioCtrl.Notas = async (req, res) =>{
                     {...asig, titulo: `${asig.asignatura}`,field:`${asig._id}`},
                 ];
                 titulosn.datos[1]=[...titulosn.datos[1],
-                    {...asig, titulo: `1er LAPSO`,field:`1lapso-${asig._id}`},
-                    {...asig, titulo: `2do LAPSO`,field:`2lapso-${asig._id}`},
-                    {...asig, titulo: `3er LAPSO`,field:`3lapso-${asig._id}`}
+                    {...asig, titulo: `1° PROB`,field:`1lapso-${asig._id}`},
+                    {...asig, titulo: `1° PARC`,field:`1lapso-${asig._id}-parc`},
+                    {...asig, titulo: `2° PROB`,field:`2lapso-${asig._id}`},
+                    {...asig, titulo: `2° PARC`,field:`2lapso-${asig._id}-parc`},
+                    {...asig, titulo: `3° PROB`,field:`3lapso-${asig._id}`},
+                    {...asig, titulo: `3° PARC`,field:`3lapso-${asig._id}-parc`},
+                    {...asig, titulo: `NOTA DEF.`,field:`${asig._id}-def`},
                 ];
             }
         }else{
@@ -539,12 +543,22 @@ colegioCtrl.Notas = async (req, res) =>{
                         const posn= nota.findIndex(item=> item.asignatura._id===val);
                         if (posn!==-1){
                             
-                            const nota1 = nota[posn][`1lapso-${val}-consejo`] ? nota[posn][`1lapso-${val}-consejo`] : nota[posn][`1lapso-${val}-art112`] ? nota[posn][`1lapso-${val}-art112`] : nota[posn][`1lapso-${val}`] 
-                            const nota2 = nota[posn][`2lapso-${val}-consejo`] ? nota[posn][`2lapso-${val}-consejo`] : nota[posn][`2lapso-${val}-art112`] ? nota[posn][`2lapso-${val}-art112`] : nota[posn][`2lapso-${val}`] 
-                            const nota3 = nota[posn][`3lapso-${val}-consejo`] ? nota[posn][`3lapso-${val}-consejo`] : nota[posn][`3lapso-${val}-art112`] ? nota[posn][`3lapso-${val}-art112`] : nota[posn][`3lapso-${val}`] 
+                            const nota1 =  nota[posn][`1lapso-${val}-art112`] ? nota[posn][`1lapso-${val}-art112`] : nota[posn][`1lapso-${val}`]
+                            const nota11 = nota[posn][`1lapso-${val}-consejo`] ? nota[posn][`1lapso-${val}-consejo`] : 0;
+                            const nota2 =  nota[posn][`2lapso-${val}-art112`] ? nota[posn][`2lapso-${val}-art112`] : nota[posn][`2lapso-${val}`] 
+                            const nota22 = nota[posn][`2lapso-${val}-consejo`] ? nota[posn][`2lapso-${val}-consejo`] : 0;
+                            const nota3 =  nota[posn][`3lapso-${val}-art112`] ? nota[posn][`3lapso-${val}-art112`] : nota[posn][`3lapso-${val}`] 
+                            const nota33 = nota[posn][`3lapso-${val}-consejo`] ? nota[posn][`3lapso-${val}-consejo`] : 0
                             Asigna[`1lapso-${val}`]=nota1;
+                            Asigna[`1lapso-${val}-parc`]=nota11;
                             Asigna[`2lapso-${val}`]=nota2;
+                            Asigna[`2lapso-${val}-parc`]=nota22;
                             Asigna[`3lapso-${val}`]=nota3;
+                            Asigna[`3lapso-${val}-parc`]=nota33;
+                            const n1 = nota11!=0 ? nota11 : nota1;
+                            const n2 = nota22!=0 ? nota22 : nota2;
+                            const n3 = nota33!=0 ? nota33 : nota3;
+                            Asigna[`${val}-def`]=(n1+n2+n3)/3;
                         }else{
                             Asigna[`1lapso-${val}`]= materia.nota;
                             Asigna[`2lapso-${val}`]= materia.nota;
@@ -583,7 +597,10 @@ colegioCtrl.Notas = async (req, res) =>{
                         _id_estudiante: estu._id, periodo:datos.periodo,
                         cedula:estu.cedula,
                         nombres:estu.nombres, apellidos:estu.apellidos,
-                        grado:estu.grado, seccion:estu.seccion,
+                        grado:estu.grado ? estu.grado.titulo : '', seccion:estu.seccion ? estu.seccion.titulo : '',
+                        fecha_nacimiento:estu.fecha_nacimiento,
+                        lugar_nacimiento:estu.lugar_nacimiento,
+                        
                         ...Asigna
                     }
                 ];
@@ -733,6 +750,8 @@ colegioCtrl.Resumen = async (req, res)=>{
         }).sort((a,b)=> a.periodo>b.periodo ? -1 : 1);
         let recibos = datos.representante && datos.representante._id  ? await Buscar(tabla_recibo, datos.representante._id, Api, 'representante._id'): [];
         let recibos1 = datos.representante && datos.representante._id  ? await Buscar(tabla_recibo, datos.representante.cedula, Api, 'representante.cedula'): [];
+        console.log(recibos)
+        console.log(recibos1)
         recibos1.map(val=>{
             const pos = recibos.findIndex(f=>String(f._id)===String(val._id))
             if(pos===-1){

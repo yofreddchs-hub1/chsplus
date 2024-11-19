@@ -18,6 +18,16 @@ const config = {
     oem: 1,
     psm: 3,
 }
+CondicionUECLA.Enviar = async(client, mensaje, contactos)=>{
+    // console.log(mensaje, contactos)
+    // client.sendMessage(contactos[0].id._serialized, mensaje)
+    const directorio = `${__dirname}${path.sep}media${path.sep}bot.jpg`
+    const mediaFile = MessageMedia.fromFilePath(directorio);
+    // console.log(contact)
+    await client.sendMessage(contactos[0].id._serialized,mediaFile, {
+        caption:`BOT\n${MensajeUecla.Colegio}\nhttps://uecolegiolibertadoresdeamerica.com\n${mensaje}`
+    });
+}
 CondicionUECLA.ping = async(message, client)=>{
     console.log('ping ...',message.from, typeof message.from);
     client.sendMessage('584127517660@c.us','conectado a bot UECLA');
@@ -32,14 +42,34 @@ CondicionUECLA.tasacambio = async(message, client)=>{
 }
 CondicionUECLA.mes = async(message, client)=>{
     // console.log('mes ...');
-    const Arancel = await Model('uecla', 'uecla_Arancel');
-    let aranceles= await Arancel.find();
-    aranceles= aranceles.sort((a,b)=> a.valores.periodo.periodo>b.valores.periodo.periodo ? -1 : 1).map(val=>val.valores)
-    const mes = Number(aranceles[0].monto);
-    // client.sendMessage(message.from,`Tasa de cambio:\nBCV: ${global.global_cambio.USD}`);//\nDolar Today: ${global.global_cambio.dolartoday}
-    // message.reply(`Mensualidad : Bs. ${(mes*global.global_cambio.USD).toFixed(2)}\nTasa de cambio:\nBCV: ${global.global_cambio.USD}`)
-    // client.sendMessage(message.from,`Mensualidad : Bs. ${(mes*global.global_cambio.USD).toFixed(2)}\nTasa de cambio:\nBCV: ${global.global_cambio.USD}`);
-    Respuesta(message, client, MensajeUecla.Mensualidad(mes));
+    const {cedula}=CondicionUECLA.Parametros(message);
+    const contact = await message.getContact();
+    const {number} = contact;
+    const numero = number.slice(2);
+    let representantes= await Buscar_Representante({numero, cedula});
+    if (representantes===null){
+        Mensaje_noregistrado(message,client,{numero, cedula},MensajeUecla.ActuliarM());//'🤖 MIS MENSUALIDADES "su cedula"');
+    }else{
+        const Arancel = await Model('uecla', 'uecla_Arancel');
+        let aranceles= await Arancel.find();
+        aranceles= aranceles.sort((a,b)=> a.valores.periodo.periodo>b.valores.periodo.periodo ? -1 : 1).map(val=>val.valores)
+        const mes = Number(aranceles[0].monto);
+        let representados=[]
+        for (var i = 0; i<representantes.valores.representados.length;i++){
+            let est = representantes.valores.representados[i];
+            if (est.grado!=='GRADUADO' && (est.estatus.titulo && est.estatus.titulo!=='Graduado')){
+                representados=[...representados,{
+                    nombres:`${est.nombres} ${est.apellidos}`,
+                    mes: est.beca ? mes - (Number(est.beca)*mes/100) : mes
+                }]
+            }
+        }
+        
+        // client.sendMessage(message.from,`Tasa de cambio:\nBCV: ${global.global_cambio.USD}`);//\nDolar Today: ${global.global_cambio.dolartoday}
+        // message.reply(`Mensualidad : Bs. ${(mes*global.global_cambio.USD).toFixed(2)}\nTasa de cambio:\nBCV: ${global.global_cambio.USD}`)
+        // client.sendMessage(message.from,`Mensualidad : Bs. ${(mes*global.global_cambio.USD).toFixed(2)}\nTasa de cambio:\nBCV: ${global.global_cambio.USD}`);
+        Respuesta(message, client, MensajeUecla.Mensualidad(mes, representados));
+    }
 }
 extrae_monto = (texto)=>{
     
@@ -441,7 +471,8 @@ CondicionUECLA.actualizarmovil = async(message, client)=>{
         const anterior =repre.valores.telefono_movil;
         let clavec= await Hash_passwordA(clave ? clave : cedula);
         clavec=clavec.toUpperCase();
-        if (repre.valores.password===clavec){
+        
+        if ((repre.valores.password && repre.valores.password===clavec) || (repre.valores.password===undefined && clave===repre.valores.cedula)){
             const nuevo = {...repre.valores, telefono_movil:telefono ? telefono : number, whatsapp_contacto:message.from};
             const hash_chs = await Hash_chs({...nuevo})
             await Representante.updateOne({_id:repre._id},{valores:nuevo, hash_chs, actualizado:repre.valores.cedula+'-'+numero},{ upsert: true });
