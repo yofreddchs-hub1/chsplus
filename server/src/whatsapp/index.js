@@ -123,10 +123,10 @@ clientUECLA.on('message_create',async (message) =>{
     // console.log(mensaje)
     if (mensaje==='boton'){
         // let button = new Buttons('Button body',[{body:'bt1'},{body:'bt2'},{body:'bt3'}],'title','footer');
-        // const button = new Buttons('!Body', [{id:'1', body:'Aceptar'}, {id:'0', body:'Rechazar'}], 'title', 'footer');
-        // clientUECLA.sendMessage(message.from, button);
-        const media = await MessageMedia.fromUrl('https://via.placeholder.com/350x150.png');
-        await clientUECLA.sendMessage(message.from, media);
+        const button = new Buttons('!Body', [{id:'1', body:'Aceptar'}, {id:'0', body:'Rechazar'}], 'title', 'footer');
+        clientUECLA.sendMessage(message.from, button);
+        // const media = await MessageMedia.fromUrl('https://via.placeholder.com/350x150.png');
+        // await clientUECLA.sendMessage(message.from, media);
     }
     if((mensaje.indexOf(yo)!==-1 && mensaje.indexOf(yo)===0) || (mensaje.indexOf('uecla-')!==-1 && mensaje.indexOf('uecla-')===0) || mensaje==='ayuda'){
         mensaje = mensaje.replace(yo,'').trim();

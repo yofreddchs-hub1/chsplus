@@ -11,36 +11,23 @@ MensajeUecla.Colegio = `Unidad Educativa Colegio “Libertadores de América”`
 MensajeUecla.MisDatos =`Elaborado por:
 Ing. Yofredd R. Chirino S.
 Telf.: 04127517660`;
-MensajeUecla.separado='-----------------------------------------------------';
-MensajeUecla.separadoc='---------------------------------------';
+MensajeUecla.separado=``;//'-----------------------------------------------------';
+MensajeUecla.separadoc=``;//'---------------------------------------';
 
-MensajeUecla.Ayuda=(emoji=MensajeUecla.yo)=>{
-    return `EN QUE TE PUEDO AYUDAR?${emoji} 
-${MensajeUecla.separado}
-Envia ${emoji} seguido de la operación que desea realizar
+MensajeUecla.Ayuda=(emoji=MensajeUecla.yo)=>{//EN QUE TE PUEDO AYUDAR?${emoji} 
+    return `
+Envia ${emoji} mas la operación que desea realizar
 ${emoji} 'Operación'
 ${MensajeUecla.separado}
-OPERACIONES PERMITIDAS
-${MensajeUecla.separado}
-Valor de Mensualidad:
-${MensajeUecla.separadoc}
-${emoji} COSTO
-${MensajeUecla.separadoc}
-Datos del Representante:
-${MensajeUecla.separadoc} 
+${emoji} COSTO 
+${emoji} MENSUALIDAD
 ${emoji} MIS DATOS
 ${emoji} ${MensajeUecla.Informa}
-${MensajeUecla.separadoc}
-Mensualidades del Representante:
-${MensajeUecla.separadoc}
 ${emoji} MIS MENSUALIDADES
 ${emoji} ${MensajeUecla.Mensualidades}
-${MensajeUecla.separadoc}
-Pagos Pendientes:
 ${emoji} PENDIENTE
-Reportar pago:
-${MensajeUecla.separadoc}
-Debe enviar el capture de la operación por Transferencia o Pago Movil seguido de: 
+
+Debe enviar el capture de Transferencia o Pago Movil seguido de: 
 ${MensajeUecla.Yo} REFERENCIA
 ${MensajeUecla.Yo} PAGO
 ${MensajeUecla.separadoc}

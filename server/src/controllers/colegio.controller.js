@@ -1272,23 +1272,33 @@ colegioCtrl.Promover = async (req, res) =>{
     }
 }
 colegioCtrl.NominaDocente = async (req, res) =>{
-    let {User, Api, Periodo, Fecha, hash} = req.body;
+    let {User, Api, Fecha, Periodo, hash} = req.body;
     User= typeof User==='string' ? JSON.parse(User) : User;
-    const hashn = await Hash_texto(JSON.stringify({User, Api, Periodo, Fecha}));
+    const hashn = await Hash_texto(JSON.stringify({User, Api, Fecha, Periodo}));
     // const igual= await Verifica_api(Api, true);
     if (hashn===hash) {// && igual) {
         const quincena = Ver_quincena(moment(Fecha).format('YYYY-MM-DD'))
         const Docente = await Model(Api,tabla_docente);
         const Nominas = await Model(Api, 'uecla_Nomina_docente');
         let nomina = await Nominas.findOne({"valores.quincena":quincena.quincena});
+        console.log(Periodo)
         if (nomina !== null){
-            res.json({Respuesta:'Ok', _id:nomina._id, docentes: nomina.valores.datos, quincena});
+            let docentes =[]
+            for (var i=0; i<nomina.valores.datos.length;i++){ 
+                const val = nomina.valores.datos[i];
+                const doc = await Docente.findOne({_id:val._id})
+                docentes=[...docentes, {...val, 
+                        bonot: val.bonot ? val.bonot : doc!==null && doc.valores.bonot ? doc.valores.bonot : val.bonot, 
+                        bonoa: val.bonoa ? val.bonoa : doc!==null && doc.valores.bonoa ? doc.valores.bonoa : val.bonoa, 
+                }]
+            }
+            res.json({Respuesta:'Ok', _id:nomina._id, docentes, quincena});
             return
         }
         let docentes = await Docente.find();
         for (var i=0; i<docentes.length;i++){
             let dias = quincena.dias 
-            let {_id, cedula, nombres, apellidos }=docentes[i].valores
+            let {_id, cedula, nombres, apellidos, bonot, bonoa }=docentes[i].valores
             _id = _id ? _id : String(docentes[i]._id);
             let hor = await Buscar_HorarioU({_id_tipo:_id, periodo:Periodo},Api);
             if (hor.length===0){
@@ -1335,7 +1345,7 @@ colegioCtrl.NominaDocente = async (req, res) =>{
                 }
             }
             docentes[i]={
-                _id, cedula, nombres, apellidos, ...horas  
+                _id, cedula, nombres, apellidos, bonot, bonoa, ...horas  
             }
         }
         
@@ -1386,9 +1396,10 @@ Calcula_hora_docente= (datos)=>{
     return {horas, horaslunes, horasmartes, horasmiercoles, horasmiercoles, horasjueves,horasviernes}
 }
 Ver_quincena =(dato)=>{
+    console.log(dato)
     let fecha=new Date(dato)
     // let semana=['Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo'];
-    let semana=['Lu','Ma','Mi','Ju','Vi','Sa','Do'];
+    let semana=['Do','Lu','Ma','Mi','Ju','Vi','Sa'];
     let dias=[];
     var ultimoDia = new Date(fecha.getFullYear(), fecha.getMonth() + 1, 0).getUTCDate();
     let inicio=1;
@@ -1400,17 +1411,17 @@ Ver_quincena =(dato)=>{
     
     for (var i=inicio; i<=fin; i++){
         fecha.setUTCDate(i)
-        if (fecha.getDay()<5){
+        if (fecha.getUTCDay()!==0 && fecha.getUTCDay()<6){
             
             dias=[...dias,
-                {dia:semana[fecha.getDay()]+'  F', fecha:fecha.getUTCDate(), hora:0 },
-                {dia:semana[fecha.getDay()], fecha:fecha.getUTCDate(), hora:0 }
+                {dia:semana[fecha.getUTCDay()]+'  F', fecha:fecha.getUTCDate(), hora:0 },
+                {dia:semana[fecha.getUTCDay()], fecha:fecha.getUTCDate(), hora:0 }
             ]
         }
     }
-    fecha.setDate(inicio);
+    fecha.setUTCDate(inicio);
     let fechai=moment(fecha).format('DD-MM-YYYY')
-    fecha.setDate(fin);
+    fecha.setUTCDate(fin);
     let fechaf=moment(fecha).format('DD-MM-YYYY')
     let quincena=`${fechai} al ${fechaf}`
     
