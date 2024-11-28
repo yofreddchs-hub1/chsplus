@@ -1,6 +1,6 @@
 const fs = require('fs');
 const qrcode = require('qrcode-terminal');
-const { Client, LegacySessionAuth, LocalAuth, Buttons, MessageMedia  } = require('whatsapp-web.js');
+const { Client, LegacySessionAuth, LocalAuth, Buttons, MessageMedia, Poll, Location,List  } = require('whatsapp-web.js');
 const Condicion = require('./condiciones');
 const CondicionUECLA = require('./condicionesUECLA');
 const MensajeUecla = require('./mensajes');
@@ -86,6 +86,7 @@ const yo = MensajeUecla.Yo;
 const clientUECLA = new Client({
     puppeteer: {
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        //headless: false,
     },
     authStrategy: new LocalAuth({
         clientId: "client-UECLA",
@@ -93,7 +94,17 @@ const clientUECLA = new Client({
     })
 });
 
+clientUECLA.on('loading_screen', (percent, message) => {
+    console.log('CARGANDO PANTALLA', percent, message);
+});
+clientUECLA.on('authenticated', () => {
+    console.log('AUTENTICADA');
+});
 
+clientUECLA.on('auth_failure', msg => {
+    // Fired if session restore was unsuccessful
+    console.error('ERROR DE AUTENTICACIÓN', msg);
+});
 clientUECLA.on('qr', (qr) => {
     global[`whatsappqr-uecla`]= qr;
     console.log('En espera de whatsapp UECLA...')
@@ -115,6 +126,16 @@ clientUECLA.on('ready', async() => {
             tiempo: new Date()
         }
     )
+
+    const debugWWebVersion = await clientUECLA.getWWebVersion();
+    console.log(`WWebVersion = ${debugWWebVersion}`);
+
+    clientUECLA.pupPage.on('pageerror', function(err) {
+        console.log('Page error: ' + err.toString());
+    });
+    clientUECLA.pupPage.on('error', function(err) {
+        console.log('Page error: ' + err.toString());
+    });
 });
 
 clientUECLA.on('message_create',async (message) =>{
@@ -122,9 +143,20 @@ clientUECLA.on('message_create',async (message) =>{
     let mensaje = message.body.toLowerCase().trim();
     // console.log(mensaje)
     if (mensaje==='boton'){
-        // let button = new Buttons('Button body',[{body:'bt1'},{body:'bt2'},{body:'bt3'}],'title','footer');
+        // let button = new Buttons('But ton body',[{body:'bt1'},{body:'bt2'},{body:'bt3'}],'title','footer');
         const button = new Buttons('!Body', [{id:'1', body:'Aceptar'}, {id:'0', body:'Rechazar'}], 'title', 'footer');
-        clientUECLA.sendMessage(message.from, button);
+        let sections = [
+            { title: 'sectionTitle', rows: [{ title: 'ListItem1', description: 'desc' }, { title: 'ListItem2' }] }
+        ];
+        let list = new List('List body', 'btnText', sections, 'Title', 'footer');
+        clientUECLA.sendMessage(message.from, list);
+        //encuestas
+        //await message.reply(new Poll('Winter or Summer?', ['Winter', 'Summer']));
+        /** If you want to provide a multiple choice poll, add allowMultipleAnswers as true: */
+        //await message.reply(new Poll('Cats or Dogs?', ['Cats', 'Dogs'], { allowMultipleAnswers: true }));
+        // localizacion
+        // await message.reply(new Location(37.422, -122.084));
+        //clientUECLA.sendMessage(message.from, button);
         // const media = await MessageMedia.fromUrl('https://via.placeholder.com/350x150.png');
         // await clientUECLA.sendMessage(message.from, media);
     }
@@ -137,7 +169,9 @@ clientUECLA.on('message_create',async (message) =>{
             mensaje='tasacambio';
         }else if(['información'].indexOf(mensaje)!==-1){
             mensaje='informacion';
-        }else if(['costo'].indexOf(mensaje)!==-1 || mensaje.indexOf('costo')!==-1){
+        }else if((['costo'].indexOf(mensaje)!==-1 || mensaje.indexOf('costo')!==-1)
+                ||(['mensualidad'].indexOf(mensaje)!==-1 || (mensaje.indexOf('mensualidad')!==-1 && mensaje.indexOf('mensualidades')===-1 ))
+        ){
             mensaje='mes';
         }else if(['ℹ️','mis datos','misdatos','md','m d'].indexOf(mensaje)!==-1 
                 || mensaje.indexOf('mis datos')!==-1 

@@ -1279,9 +1279,10 @@ colegioCtrl.NominaDocente = async (req, res) =>{
     if (hashn===hash) {// && igual) {
         const quincena = Ver_quincena(moment(Fecha).format('YYYY-MM-DD'))
         const Docente = await Model(Api,tabla_docente);
+        const Personal = await Model(Api,'uecla_Personal');
         const Nominas = await Model(Api, 'uecla_Nomina_docente');
         let nomina = await Nominas.findOne({"valores.quincena":quincena.quincena});
-        console.log(Periodo)
+        
         if (nomina !== null){
             let docentes =[]
             for (var i=0; i<nomina.valores.datos.length;i++){ 
@@ -1296,9 +1297,10 @@ colegioCtrl.NominaDocente = async (req, res) =>{
             return
         }
         let docentes = await Docente.find();
+        let personal = await Personal.find();
         for (var i=0; i<docentes.length;i++){
             let dias = quincena.dias 
-            let {_id, cedula, nombres, apellidos, bonot, bonoa }=docentes[i].valores
+            let {_id, cedula, nombres, apellidos, bonot, bonoa,  valorhora, valordia }=docentes[i].valores
             _id = _id ? _id : String(docentes[i]._id);
             let hor = await Buscar_HorarioU({_id_tipo:_id, periodo:Periodo},Api);
             if (hor.length===0){
@@ -1314,6 +1316,7 @@ colegioCtrl.NominaDocente = async (req, res) =>{
                         horasjueves:0,
                         horasviernes:0
                     } ;
+                    
             for (var d=0; d<dias.length;d++){
                 switch(dias[d].dia){
                     case 'Lu':
@@ -1345,11 +1348,17 @@ colegioCtrl.NominaDocente = async (req, res) =>{
                 }
             }
             docentes[i]={
-                _id, cedula, nombres, apellidos, bonot, bonoa, ...horas  
+                _id, cedula, nombres, apellidos, bonot, bonoa, valorhora, valordia, ...horas,
+                ultimo : dias[dias.length-1].fecha  
             }
         }
-        
-        res.json({Respuesta:'Ok', docentes, quincena});
+        personal= personal.map(val=>{
+            return{
+                _id: val._id, ...val.valores,
+                ultimo :quincena.dias[quincena.dias.length-1].fecha
+            }
+        })
+        res.json({Respuesta:'Ok', docentes, quincena, personal});
     }else{
         res.json({Respuesta:'Error', mensaje:'hash invalido'});
     }

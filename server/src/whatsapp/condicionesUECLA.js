@@ -12,7 +12,7 @@ const archivo = `${__dirname}${path.sep}ayuda-uecla.txt`;
 const Ayuda =  MensajeUecla.Ayuda(MensajeUecla.Yo);//fs.readFileSync(archivo, 'utf8');
 const separado=MensajeUecla.separado;
 const separadoc=MensajeUecla.separadoc;
-
+const direccion = 'https://uecolegiolibertadoresdeamerica.com';
 const config = {
     lang: "eng",
     oem: 1,
@@ -25,7 +25,7 @@ CondicionUECLA.Enviar = async(client, mensaje, contactos)=>{
     const mediaFile = MessageMedia.fromFilePath(directorio);
     // console.log(contact)
     await client.sendMessage(contactos[0].id._serialized,mediaFile, {
-        caption:`BOT\n${MensajeUecla.Colegio}\nhttps://uecolegiolibertadoresdeamerica.com\n${mensaje}`
+        caption:`BOT\n${MensajeUecla.Colegio}\n${direccion}\n${mensaje}`
     });
 }
 CondicionUECLA.ping = async(message, client)=>{

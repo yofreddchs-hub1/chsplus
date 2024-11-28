@@ -13,7 +13,9 @@ Ing. Yofredd R. Chirino S.
 Telf.: 04127517660`;
 MensajeUecla.separado=``;//'-----------------------------------------------------';
 MensajeUecla.separadoc=``;//'---------------------------------------';
-
+//${emoji} ${MensajeUecla.Informa}
+//${emoji} ${MensajeUecla.Mensualidades}
+//${emoji} PENDIENTE
 MensajeUecla.Ayuda=(emoji=MensajeUecla.yo)=>{//EN QUE TE PUEDO AYUDAR?${emoji} 
     return `
 Envia ${emoji} mas la operación que desea realizar
@@ -22,10 +24,7 @@ ${MensajeUecla.separado}
 ${emoji} COSTO 
 ${emoji} MENSUALIDAD
 ${emoji} MIS DATOS
-${emoji} ${MensajeUecla.Informa}
 ${emoji} MIS MENSUALIDADES
-${emoji} ${MensajeUecla.Mensualidades}
-${emoji} PENDIENTE
 
 Debe enviar el capture de Transferencia o Pago Movil seguido de: 
 ${MensajeUecla.Yo} REFERENCIA
@@ -74,9 +73,7 @@ ${MensajeUecla.separado}
 }
 
 MensajeUecla.NoRegistrado = (numero,ayuda, cedula)=>{
-    return `❌❌❌❌❌❌❌❌ 
-NO SE ENCUENTRA REGISTRADO
-❌❌❌❌❌❌❌❌
+    return `❌NO SE ENCUENTRA REGISTRADO❌
 Su número de telefono movil${cedula ? `, cedula de identidad` :''} no se encuentra${cedula ? `n` :''} asignado${cedula ? `s` :''} a ningun representante dentro de nuestro sistema.
 📌 NUMERO DE TELEFONO: \n"${numero}"${cedula ? `\n📌 CEDULA: ${cedula}` :''}
 Si es representante de ${MensajeUecla.Colegio}
