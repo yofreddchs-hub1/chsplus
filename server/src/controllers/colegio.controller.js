@@ -346,13 +346,19 @@ colegioCtrl.Notas = async (req, res) =>{
     const hashn = await Hash_texto(JSON.stringify({User, Api, datos}));
     const igual= await Verifica_api(Api, true);
     if (hashn===hash && igual) {
+        console.log('por notas')
         datos= JSON.parse(datos);
         const Mensualidad = await Model(Api,tabla_mensualidad);
         const Notas = await Model(Api,tabla_nota);
         const Evaluaciones = await Model(Api,tabla_evaluacion);
-        let Mensualidades = await Mensualidad.find({'valores.periodo':datos.periodo});
-        let estudiantes = await Buscar(tabla_estudiante, datos.grado, Api, 'grado.titulo');
-        let asignaturas = await Buscar(tabla_asignatura, datos.grado, Api, 'grado.titulo');
+        const Estudiantes = await Model(Api,tabla_estudiante);
+        const Asignatura = await Model(Api,tabla_asignatura);
+        let Mensualidades = await Mensualidad.find({'valores.periodo':datos.periodo});//, 'valores.grado':datos.grado});
+        // let estudiantes = await Buscar(tabla_estudiante, datos.grado, Api, 'grado.titulo');
+        let estudiantes = await Estudiantes.find({'valores.grado.titulo':datos.grado, 'valores.seccion.titulo':datos.seccion});
+        // let asignaturas = await Buscar(tabla_asignatura, datos.grado, Api, 'grado.titulo');
+        let asignaturas = await Asignatura.find({'valores.grado.titulo':datos.grado});
+        console.log('Despues de buscar...')
         let nuevanotas={}
         let evaluaciones= []
         if (datos.tipo==='docente'){
@@ -377,7 +383,6 @@ colegioCtrl.Notas = async (req, res) =>{
         asignaturas = asignaturas.map(f=>{
             return {_id:f._id, ...f.valores, titulo:f.valores.abreviacion ? f.valores.abreviacion : f.valores.asignatura  , field:`nota-${f._id}`}
         }).sort((a,b)=> Number(a.item ? a.item : 100) < Number(b.item ? b.item : 100) ? -1 : 1);
-        
         let lapso=null;
         let titulos=[];
         let titulosn = {filas:1,datos:[[],[]]}
@@ -512,25 +517,34 @@ colegioCtrl.Notas = async (req, res) =>{
                 nuevo=[...nuevo, f.valores]
             }
         }
-
         estudiantes= [...nuevo];
         let seccion=[];
-        
+        let notas = await Notas.find({
+            $and:[
+                //{"valores._id_estudiante":estu._id},
+                {'valores.periodo':datos.periodo},
+                {'valores.grado':datos.grado},
+                {'valores.seccion':datos.seccion},
+                // {'valores.asignatura._id':datos.asignatura._id},
+                // {'valores.docente._id':datos.docente._id},
+            ]
+        });
         for (var i=0; i<estudiantes.length; i++){
             const estu= estudiantes[i];
             const pos = Mensualidades.findIndex(f=>f.valores._id_estudiante===estu._id || f.valores.cedula===estu.cedula );
             if (pos!==-1){
                 let Asigna ={} 
-                let nota = await Notas.find({
-                    $and:[
-                        {"valores._id_estudiante":estu._id},
-                        {'valores.periodo':datos.periodo},
-                        // {'valores.grado':datos.grado},
-                        // {'valores.seccion':datos.seccion},
-                        // {'valores.asignatura._id':datos.asignatura._id},
-                        // {'valores.docente._id':datos.docente._id},
-                    ]
-                });
+                let nota = notas.filter(f=>f.valores._id_estudiante===estu._id) 
+                // await Notas.find({
+                //     $and:[
+                //         {"valores._id_estudiante":estu._id},
+                //         {'valores.periodo':datos.periodo},
+                //         {'valores.grado':datos.grado},
+                //         {'valores.seccion':datos.seccion},
+                //         // {'valores.asignatura._id':datos.asignatura._id},
+                //         // {'valores.docente._id':datos.docente._id},
+                //     ]
+                // });
                 nota = nota.map(val=>{
                     return {_id:val._id, ...val.valores}
                 })
@@ -622,6 +636,7 @@ colegioCtrl.Notas = async (req, res) =>{
         //     });
         //     // console.log(nota)
         // }
+        console.log('Enviando notas')
         res.json({Respuesta:'Ok', estudiantes, seccion, asignaturas, nuevanotas, titulos, titulosn});
     }else{
         res.json({Respuesta:'Error', mensaje:'hash invalido'});

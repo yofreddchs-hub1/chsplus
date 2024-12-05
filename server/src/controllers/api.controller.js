@@ -664,7 +664,7 @@ serverCtrl.Setall = async (req, res) =>{
         const Nuevo = new DB({...newdatos, cod_chs, hash_chs, actualizado:User && User.username ? User.username : Api});
         await Nuevo.save();
       }
-      const resultado=await DB.find()
+      const resultado=await DB.find().sort({$natural:-1}).limit(20)
       console.log('Actualizar_'+tabla)
       // global.io.emit('Actualizar_'+tabla,{tabla}) //datos:resultado})
       global.io.emit('Actualizar',{tabla}) //datos:resultado})
