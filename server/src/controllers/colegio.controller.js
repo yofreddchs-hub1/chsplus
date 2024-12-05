@@ -356,6 +356,18 @@ colegioCtrl.Notas = async (req, res) =>{
         let Mensualidades = await Mensualidad.find({'valores.periodo':datos.periodo});//, 'valores.grado':datos.grado});
         // let estudiantes = await Buscar(tabla_estudiante, datos.grado, Api, 'grado.titulo');
         let estudiantes = await Estudiantes.find({'valores.grado.titulo':datos.grado, 'valores.seccion.titulo':datos.seccion});
+        console.log('....',estudiantes.length)
+        // for (var est=0;est<estudiantes.length;est++){
+        //     const estud= estudiantes[est];
+        //     let encontrado = await Mensualidad.findOne({"valores._id_estudiante":estud._id});
+        //     if (!encontrado){
+        //         encontrado = await Mensualidad.findOne({"valores.cedula":estud.valores.cedula});
+        //     }
+        //     if (encontrado){
+        //         Mensualidades=[...Mensualidades, encontrado]
+        //     }
+        // }
+        console.log('....',Mensualidades.length)
         // let asignaturas = await Buscar(tabla_asignatura, datos.grado, Api, 'grado.titulo');
         let asignaturas = await Asignatura.find({'valores.grado.titulo':datos.grado});
         console.log('Despues de buscar...')
@@ -529,6 +541,7 @@ colegioCtrl.Notas = async (req, res) =>{
                 // {'valores.docente._id':datos.docente._id},
             ]
         });
+        console.log('Notas',notas.length)
         for (var i=0; i<estudiantes.length; i++){
             const estu= estudiantes[i];
             const pos = Mensualidades.findIndex(f=>f.valores._id_estudiante===estu._id || f.valores.cedula===estu.cedula );

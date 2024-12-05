@@ -691,12 +691,14 @@ serverCtrl.Delall = async (req, res) =>{
       Promise.all(tablas.map(async(data)=>{
         const tabla = serverCtrl.ConSede(data, sede);
         const DB = await Model(Api, tabla);//require(`../models/${data}`);
-        const valor_verificar = await DB.findOne({_id:dato._id})
+        const valor_verificar = await DB.findOne({_id:String(dato._id)})
         
-        let imagenes= Object.keys(valor_verificar.valores).filter(f=>f.indexOf('-id')!==-1);
-        imagenes.map(val=>{
-          Eliminar_imagen(valor_verificar.valores[val])
-        })
+        if (valor_verificar!==null){
+          let imagenes= Object.keys(valor_verificar.valores).filter(f=>f.indexOf('-id')!==-1);
+          imagenes.map(val=>{
+            Eliminar_imagen(valor_verificar.valores[val])
+          })
+        }
         // await DB.deleteOne({_id:dato._id});
         // const anterior = await DB.findOne({_id:dato._id});
         
