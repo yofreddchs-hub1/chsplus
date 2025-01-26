@@ -72,8 +72,12 @@
       "Tabla_buscar_icono": {
           "color": "#ffffff"
       },
+      "Tabla_titulos1": {
+          "backgroundImage": "linear-gradient(0deg, rgba(0,0,0,1) 2%, rgba(2,57,80,1) 97%)",
+          "color": "#ffffff"
+      },
       "Tabla_titulos": {
-          "backgroundColor": "rgba(0, 0, 0, 1)",
+          "backgroundColor": "rgba(0, 0, 0,1)",
           "color": "#ffffff"
       },
       "Tabla_subtotal": {
@@ -180,16 +184,33 @@
                   "icon": "fact_check"
               },
               {
-                "value": "Nomina",
-                "primary": "Nomina Docente",
-                "icon": "contact_mail"
-              },
-              {
                 "value": "EnviarWHATSAPP",
                 "primary": "Enviar Mensaje",
                 "icon": "send"
               }
           ]
+      },
+      {
+        "value": "Nomina",
+        "primary": "Nomina",
+        "icon": "contact_mail",
+        "childen": [
+            {
+                "value": "Nomina",
+                "primary": "Nomina",
+                "icon": "contact_mail"
+            },
+            {
+                "value": "Docenten",
+                "primary": "Docente",
+                "icon": "diversity_3"
+            },
+            {
+                "value": "Personaln",
+                "primary": "Personal",
+                "icon": "diversity_3"
+            }
+        ]
       },
       {
         "value": "Academico",
@@ -215,6 +236,11 @@
                 "value": "Horario",
                 "primary": "Horario",
                 "icon": "calendar_month"
+            },
+            {
+                "value": "procesosnotas",
+                "primary": "Procesos de notas",
+                "icon": "manage_accounts"
             },
             {
                 "value": "Notas",
@@ -269,6 +295,12 @@
             {
                 "value": "Pruebas",
                 "primary": "Pruebas",
+                "icon": "developer_mode",
+                "desarrollo":"true"
+            },
+            {
+                "value": "notasA",
+                "primary": "Notas acomodar",
                 "icon": "developer_mode",
                 "desarrollo":"true"
             }
@@ -1053,66 +1085,82 @@
         ]
       },
       "Form_Estudiante": {
-          "columna": 4,
+          "columna": 5,
           "value": [
-              {
-                  "nombre": "cedula",
-                  "tipo": "input",
-                  "label": "Cedula",
-                  "placeholder": "Cedula",
-                  "title": "Cedula de identidad",
-                  "required": true,
-                  "mensaje_error": "Indique cedula de identidad",
-                  "disabled": false,
-                  "getOptionLabel": [
-                      "titulo"
-                  ],
-                  "agregar": false,
-                  "name": "cedula"
-              },
-              {
-                  "nombre": "cedula_estudiantil",
-                  "tipo": "input",
-                  "label": "Cedula Escolar",
-                  "placeholder": "Cedula Escolar",
-                  "title": "Cedula Escolar",
-                  "required": false,
-                  "disabled": false,
-                  "getOptionLabel": [
-                      "titulo"
-                  ],
-                  "agregar": false,
-                  "name": "cedula_estudiantil"
-              },
-              {
-                  "nombre": "nombres",
-                  "tipo": "input",
-                  "label": "Nombres",
-                  "placeholder": "Nombres",
-                  "title": "Nombres del estudiante",
-                  "required": true,
-                  "mensaje_error": "indique nombre del estudiante",
-                  "disabled": false,
-                  "getOptionLabel": [
-                      "titulo"
-                  ],
-                  "agregar": false,
-                  "name": "nombres"
-              },
-              {
-                  "nombre": "apellidos",
-                  "tipo": "input",
-                  "label": "Apellidos",
-                  "placeholder": "Apellidos",
-                  "title": "Apellidos del estudiante",
-                  "required": true,
-                  "disabled": false,
-                  "getOptionLabel": [
-                      "titulo"
-                  ],
-                  "agregar": false,
-                  "name": "apellidos"
-              },
+            {
+                "nombre": "foto",
+                "tipo": "Avatar",
+                "label": "Foto",
+                "placeholder": "Foto",
+                "title": "Foto",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "foto",
+                "name": "foto",
+                "multiline": false
+            },
+            {
+                "nombre": "cedula",
+                "tipo": "input",
+                "label": "Cedula",
+                "placeholder": "Cedula",
+                "title": "Cedula de identidad",
+                "required": true,
+                "mensaje_error": "Indique cedula de identidad",
+                "disabled": false,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "name": "cedula"
+            },
+            {
+                "nombre": "cedula_estudiantil",
+                "tipo": "input",
+                "label": "Cedula Escolar",
+                "placeholder": "Cedula Escolar",
+                "title": "Cedula Escolar",
+                "required": false,
+                "disabled": false,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "name": "cedula_estudiantil"
+            },
+            {
+                "nombre": "nombres",
+                "tipo": "input",
+                "label": "Nombres",
+                "placeholder": "Nombres",
+                "title": "Nombres del estudiante",
+                "required": true,
+                "mensaje_error": "indique nombre del estudiante",
+                "disabled": false,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "name": "nombres"
+            },
+            {
+                "nombre": "apellidos",
+                "tipo": "input",
+                "label": "Apellidos",
+                "placeholder": "Apellidos",
+                "title": "Apellidos del estudiante",
+                "required": true,
+                "disabled": false,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "name": "apellidos"
+            },
               {
                   "nombre": "sexo",
                   "tipo": "lista_multiuso",
@@ -1581,6 +1629,23 @@
                 ],
                 "key": "abreviacion",
                 "name": "abreviacion",
+                "required": false
+            },
+            {
+                "nombre": "item",
+                "tipo": "input",
+                "label": "Item",
+                "placeholder": "Item",
+                "title": "Item",
+                "type":"number",
+                "mensaje_error": "Debe indicar el nombre de la asignatura",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "item",
+                "name": "item",
                 "required": false
             }
         ]
@@ -2084,7 +2149,7 @@
                   "placeholder": "Foto",
                   "title": "Foto",
                   "mensaje_error": "",
-                  "disabled": true,
+                  "disabled": false,
                   "numberOfLines": "",
                   "getOptionLabel": [
                       "titulo"
@@ -2337,6 +2402,370 @@
                 "comparar": "true",
                 "con": "passwordn",
                 "mensaje_error": "Contraseñas no son iguales"
+            }
+          ]
+      },
+      "Form_Docenten": {
+          "columna": 4,
+          "value": [
+            {
+                "nombre": "foto",
+                "tipo": "Avatar",
+                "label": "Foto",
+                "placeholder": "Foto",
+                "title": "Foto",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "foto",
+                "name": "foto",
+                "multiline": false
+            },
+            {
+                  "nombre": "cedula",
+                  "tipo": "input",
+                  "label": "Cedula",
+                  "placeholder": "Cedula",
+                  "title": "Cedula",
+                  "required": true,
+                  "mensaje_error": "Debe indicar la cedula del docente",
+                  "disabled": false,
+                  "numberOfLines": "",
+                  "getOptionLabel": [
+                      "titulo"
+                  ],
+                  "key": "cedula",
+                  "name": "cedula"
+              },
+              {
+                  "nombre": "nombres",
+                  "tipo": "input",
+                  "label": "Nombres",
+                  "placeholder": "Nombres",
+                  "title": "Nombres",
+                  "required": true,
+                  "mensaje_error": "Debe indicar nombre del docente",
+                  "disabled": false,
+                  "numberOfLines": "",
+                  "getOptionLabel": [
+                      "titulo"
+                  ],
+                  "key": "nombres",
+                  "name": "nombres"
+              },
+              {
+                  "nombre": "apellidos",
+                  "tipo": "input",
+                  "label": "Apellidos",
+                  "placeholder": "Apellidos",
+                  "title": "Apellidos",
+                  "required": true,
+                  "mensaje_error": "Debe indicar apellido del docente",
+                  "disabled": false,
+                  "numberOfLines": "",
+                  "getOptionLabel": [
+                      "titulo"
+                  ],
+                  "key": "apellidos",
+                  "name": "apellidos"
+              },
+              {
+                  "nombre": "telefono_movil",
+                  "tipo": "input",
+                  "label": "Teléfono Móvil",
+                  "placeholder": "Teléfono Móvil",
+                  "title": "Teléfono Móvil",
+                  "mensaje_error": "",
+                  "disabled": false,
+                  "numberOfLines": "",
+                  "getOptionLabel": [
+                      "titulo"
+                  ],
+                  "key": "telefono_movil",
+                  "name": "telefono_movil"
+              },
+              {
+                  "nombre": "profesion",
+                  "tipo": "input",
+                  "label": "Profesión",
+                  "placeholder": "Profesión",
+                  "title": "Profesión",
+                  "mensaje_error": "",
+                  "disabled": false,
+                  "numberOfLines": "",
+                  "getOptionLabel": [
+                      "titulo"
+                  ],
+                  "key": "profesion",
+                  "name": "profesion"
+            },
+            {
+                "nombre": "valorhora",
+                "tipo": "input",
+                "label": "Valor Hora",
+                "placeholder": "Valor Hora",
+                "title": "Valor Hora",
+                "mensaje_error": "",
+                "disabled": false,
+                "type":"number",
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "valorhora",
+                "name": "valorhora"
+            },
+            {
+                "nombre": "bonot",
+                "tipo": "input",
+                "label": "Bono de Transporte",
+                "placeholder": "Bono de Transporte",
+                "title": "Bono de Transporte",
+                "mensaje_error": "",
+                "disabled": false,
+                "type":"number",
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "bonot",
+                "name": "bonot"
+            },
+            {
+                "nombre": "bonoa",
+                "tipo": "input",
+                "label": "Bono de Alimentación $",
+                "placeholder": "Bono de Alimentación $",
+                "title": "Bono de Alimentación $",
+                "mensaje_error": "",
+                "disabled": false,
+                "type":"number",
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "bonoa",
+                "name": "bonoa"
+            },
+            {
+                "nombre": "condicion",
+                "tipo": "lista_multiuso",
+                "label": "Condición Administrativa",
+                "placeholder": "Condición Administrativa",
+                "title": "Condición Administrativa",
+                "required": false,
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "lista": "lista_colegio_sino",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "multiple": false,
+                "key": "condicion",
+                "name": "condicion",
+                "modificar": "Cambio_valordia"
+            },
+            {
+                "nombre": "valordia",
+                "tipo": "input",
+                "label": "Valor Día",
+                "placeholder": "Valor Día",
+                "title": "Valor Día",
+                "mensaje_error": "",
+                "disabled": true,
+                "type":"number",
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "valordia",
+                "name": "valordia"
+            }
+          ]
+      },
+      "Form_Personal": {
+          "columna": 4,
+          "value": [
+            {
+                "nombre": "foto",
+                "tipo": "Avatar",
+                "label": "Foto",
+                "placeholder": "Foto",
+                "title": "Foto",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "foto",
+                "name": "foto",
+                "multiline": false
+            },
+            {
+                  "nombre": "cedula",
+                  "tipo": "input",
+                  "label": "Cedula",
+                  "placeholder": "Cedula",
+                  "title": "Cedula",
+                  "required": true,
+                  "mensaje_error": "Debe indicar la cedula del docente",
+                  "disabled": false,
+                  "numberOfLines": "",
+                  "getOptionLabel": [
+                      "titulo"
+                  ],
+                  "key": "cedula",
+                  "name": "cedula"
+              },
+              {
+                  "nombre": "nombres",
+                  "tipo": "input",
+                  "label": "Nombres",
+                  "placeholder": "Nombres",
+                  "title": "Nombres",
+                  "required": true,
+                  "mensaje_error": "Debe indicar nombre del docente",
+                  "disabled": false,
+                  "numberOfLines": "",
+                  "getOptionLabel": [
+                      "titulo"
+                  ],
+                  "key": "nombres",
+                  "name": "nombres"
+              },
+              {
+                  "nombre": "apellidos",
+                  "tipo": "input",
+                  "label": "Apellidos",
+                  "placeholder": "Apellidos",
+                  "title": "Apellidos",
+                  "required": true,
+                  "mensaje_error": "Debe indicar apellido del docente",
+                  "disabled": false,
+                  "numberOfLines": "",
+                  "getOptionLabel": [
+                      "titulo"
+                  ],
+                  "key": "apellidos",
+                  "name": "apellidos"
+              },
+              {
+                  "nombre": "telefono_movil",
+                  "tipo": "input",
+                  "label": "Teléfono Móvil",
+                  "placeholder": "Teléfono Móvil",
+                  "title": "Teléfono Móvil",
+                  "mensaje_error": "",
+                  "disabled": false,
+                  "numberOfLines": "",
+                  "getOptionLabel": [
+                      "titulo"
+                  ],
+                  "key": "telefono_movil",
+                  "name": "telefono_movil"
+              },
+              {
+                  "nombre": "profesion",
+                  "tipo": "input",
+                  "label": "Profesión",
+                  "placeholder": "Profesión",
+                  "title": "Profesión",
+                  "mensaje_error": "",
+                  "disabled": false,
+                  "numberOfLines": "",
+                  "getOptionLabel": [
+                      "titulo"
+                  ],
+                  "key": "profesion",
+                  "name": "profesion"
+            },
+            {
+                "nombre": "tipopersonal",
+                "tipo": "lista_multiuso",
+                "label": "Tipo de Personal",
+                "placeholder": "Tipo de Personal",
+                "title": "Tipo de Personal",
+                "required": false,
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "lista": "lista_personal",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "multiple": false,
+                "key": "tipopersonal",
+                "name": "tipopersonal"
+            },
+            {
+                "nombre": "cargo",
+                "tipo": "input",
+                "label": "Cargo",
+                "placeholder": "Cargo",
+                "title": "Cargo",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "cargo",
+                "name": "cargo"
+            },
+            {
+                "nombre": "valordia",
+                "tipo": "input",
+                "label": "Valor Día",
+                "placeholder": "Valor Día",
+                "title": "Valor Día",
+                "mensaje_error": "",
+                "disabled": false,
+                "type":"number",
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "valordia",
+                "name": "valordia"
+            },
+            {
+                "nombre": "bonot",
+                "tipo": "input",
+                "label": "Bono de Transporte",
+                "placeholder": "Bono de Transporte",
+                "title": "Bono de Transporte",
+                "mensaje_error": "",
+                "disabled": false,
+                "type":"number",
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "bonot",
+                "name": "bonot"
+            },
+            {
+                "nombre": "bonoa",
+                "tipo": "input",
+                "label": "Bono de Alimentación $",
+                "placeholder": "Bono de Alimentación $",
+                "title": "Bono de Alimentación $",
+                "mensaje_error": "",
+                "disabled": false,
+                "type":"number",
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "bonoa",
+                "name": "bonoa"
             }
           ]
       },
@@ -3338,6 +3767,87 @@
                   "name": "edificio"
               }
           ]
+      },
+      "Form_PNotas": {
+        "columna": 4,
+        "value": [
+            {
+                "nombre": "periodo",
+                "name": "periodo",
+                "label": "Periodo",
+                "placeholder": "Periodo Académico",
+                "title": "Periodo Académico",
+                "required": "false",
+                "disabled": false,
+                "tipo": "lista_multiuso",
+                "lista": "uecla_Inscripcion",
+                "multiple": false,
+                "agregar": true,
+                "getOptionLabel": [
+                    "periodo"
+                ],
+                "form": "Form_Inscripcion",
+                "table": "colegio_inscripcion"
+            },
+            {
+                "nombre": "lapso1",
+                "tipo": "Checkbox",
+                "label": "1er Momento Activo/1er Momento Inactivo",
+                "placeholder": "1er Momento Activo/1er Momento Inactivo",
+                "title": "",
+                "required": "false",
+                "disabled": false,
+                "lista": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": "false",
+                "form": "",
+                "titulos": "",
+                "Subtotal": "",
+                "name": "lapso1",
+                "multiline": false
+            },
+            {
+                "nombre": "lapso2",
+                "tipo": "Checkbox",
+                "label": "2do Momento Activo/2do Momento Inactivo",
+                "placeholder": "2do Momento Activo/2do Momento Inactivo",
+                "title": "",
+                "required": "false",
+                "disabled": false,
+                "lista": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": "false",
+                "form": "",
+                "titulos": "",
+                "Subtotal": "",
+                "name": "lapso2",
+                "multiline": false
+            },
+            {
+                "nombre": "lapso3",
+                "tipo": "Checkbox",
+                "label": "3er Momento Activo/3er Momento Inactivo",
+                "placeholder": "3er Momento Activo/3er Momento Inactivo",
+                "title": "",
+                "required": "false",
+                "disabled": false,
+                "lista": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": "false",
+                "form": "",
+                "titulos": "",
+                "Subtotal": "",
+                "name": "lapso3",
+                "multiline": false
+            }
+
+        ]
       },
       "Form_User_api": {
         "columna": 2,
@@ -4431,7 +4941,7 @@
                 "placeholder": "Periodo",
                 "title": "Periodo",
                 "mensaje_error": "",
-                "disabled": false,
+                "disabled": true,
                 "numberOfLines": "",
                 "lista": "uecla_Inscripcion",
                 "getOptionLabel": [
@@ -4502,6 +5012,11 @@
         "_id": 6,
         "titulo": "Contador",
         "permisos": ["Sistema","/sistema","recibos", "Recibos"]
+    },
+    {
+        "_id": 7,
+        "titulo": "Control de Estudio",
+        "permisos": ["Academico","/academico","Aulas", "Docentes","Asignaturas","Horarios","Notas"]
     }
     ],
     "lista_tipo_horario": [
@@ -5123,6 +5638,80 @@
             "value": "espectro",
             "permisos": ""
         }
+    ],
+    "lista_condicion_nomina": [
+        {
+            "_id": 0,
+            "titulo": "Sin condición",
+            "value": "sincondicion",
+            "permisos": "",
+            "color":""
+        },
+        {
+            "_id": 2,
+            "titulo": "Inasistencias injustificadas",
+            "value": "Inasistenciasinjustificadas",
+            "permisos": "",
+            "color":"#FFFF00"
+        },
+        {
+            "_id": 3,
+            "titulo": "Inasistencia justificadas (enfermedad)",
+            "value": "Inasistencia justificadas (enfermedad)",
+            "permisos": "",
+            "color":"#FFC000"
+        },
+        {
+            "_id": 4,
+            "titulo": "Permisos",
+            "value": "Permisos",
+            "permisos": "",
+            "color":"#00B0F0"
+        },
+        {
+            "_id": 5,
+            "titulo": "Firmas faltantes",
+            "value": "Firmas faltantes",
+            "permisos": "",
+            "color":"#BFBFBF"
+        },
+        {
+            "_id": 6,
+            "titulo": "Suplencias",
+            "value": "Suplencias",
+            "permisos": "",
+            "color":"#FF0000"
+        }
+    ],
+    "lista_personal": [
+        {
+            "_id": 0,
+            "titulo": "Directivo",
+            "value": "directivo",
+            "permisos": "",
+            "color":""
+        },
+        {
+            "_id": 2,
+            "titulo": "Administrativo",
+            "value": "administrativo",
+            "permisos": "",
+            "color":"#FFFF00"
+        },
+        {
+            "_id": 3,
+            "titulo": "Obrero",
+            "value": "Obrero",
+            "permisos": "",
+            "color":"#FFC000"
+        },
+        {
+            "_id": 4,
+            "titulo": "Otro",
+            "value": "otro",
+            "permisos": "",
+            "color":"#00B0F0"
+        }
     ]
   },
   "Titulos": {
@@ -5544,10 +6133,10 @@
       ],
     "Titulos_Nomina_Docente": [
         {
-            "title": "Cedula",
-            "field": "cedula",
+            "title": "Apellidos",
+            "field": "apellidos",
             "tipo": "",
-            "formato": "(dato)=> `${dato.cedula}`",
+            "formato": "(dato)=> `${dato.apellidos}`",
             "default": "",
             "type": ""
         },
@@ -5556,14 +6145,6 @@
             "field": "nombres",
             "tipo": "",
             "formato": "(dato)=> `${dato.nombres}`",
-            "default": "",
-            "type": ""
-        },
-        {
-            "title": "Apellidos",
-            "field": "apellidos",
-            "tipo": "",
-            "formato": "(dato)=> `${dato.apellidos}`",
             "default": "",
             "type": ""
         },
@@ -6036,7 +6617,7 @@
             "title": "Tasa ",
             "field": "valorcambio",
             "tipo": "",
-            "formato": "(dato)=> `${dato.valorcambio.toFixed(2)}`",
+            "formato": "(dato)=> `${Number(dato.valorcambio).toFixed(2)}`",
             "default": "",
             "type": ""
         },
@@ -6372,10 +6953,31 @@
               "orden":"true"
           },
           {
+              "title": "Apellidos",
+              "field": "apellidos",
+              "tipo": "",
+              "formato": "",
+              "default": "",
+              "type": "",
+              "orden":"true"
+          },
+          {
               "title": "Nombres",
               "field": "nombres",
               "tipo": "",
               "formato": "",
+              "default": "",
+              "type": "",
+              "orden":"true"
+          }
+          
+      ],
+      "Titulos_NotasA": [
+          {
+              "title": "Cedula",
+              "field": "cedula",
+              "tipo": "",
+              "formato": "(dato)=> `${dato.valores.cedula ?  dato.valores.cedula : null}`",
               "default": "",
               "type": "",
               "orden":"true"
@@ -6384,10 +6986,35 @@
               "title": "Apellidos",
               "field": "apellidos",
               "tipo": "",
-              "formato": "",
+              "formato": "(dato)=> `${dato.valores.apellidos ?  dato.valores.apellidos : null}`",
               "default": "",
               "type": "",
               "orden":"true"
+          },
+          {
+              "title": "Nombres",
+              "field": "nombres",
+              "tipo": "",
+              "formato": "(dato)=> `${dato.valores.nombres ?  dato.valores.nombres : null}`",
+              "default": "",
+              "type": "",
+              "orden":"true"
+          },
+          {
+              "title": "Grado",
+              "field": "grado",
+              "tipo": "",
+              "formato": "(dato)=> `${dato.valores.grado ?  dato.valores.grado : null}`",
+              "default": "",
+              "type": ""
+          },
+          {
+              "title": "Seccion",
+              "field": "seccion",
+              "tipo": "",
+              "formato": "(dato)=> `${dato.valores.seccion ?  dato.valores.seccion : null}`",
+              "default": "",
+              "type": ""
           }
           
       ],
@@ -6585,8 +7212,58 @@
             "formato": "(dato)=> `${dato.valores.lapso.titulo}`",
             "default": "",
             "type": ""
+        },
+        {
+            "title": "Grado",
+            "field": "grado",
+            "tipo": "",
+            "formato": "(dato)=> `${ dato.valores.grado ? dato.valores.grado : dato.grado}`",
+            "default": "",
+            "type": ""
+        },
+        {
+            "title": "Sección",
+            "field": "seccion",
+            "tipo": "",
+            "formato": "(dato)=> `${ dato.valores.seccion ? dato.valores.seccion :dato.seccion}`",
+            "default": "",
+            "type": ""
         }
-      ]
+      ],
+      "Titulos_PNotas": [
+        {
+            "title": "Periodo",
+            "field": "periodo",
+            "tipo": "",
+            "formato": "(dato)=> `${typeof  dato.valores.periodo==='object' ? dato.valores.periodo.periodo : dato.valores.periodo}`",
+            "default": "",
+            "type": ""
+        },
+        {
+            "title": "1er Momento",
+            "field": "lapso1",
+            "tipo": "",
+            "formato": "(dato)=> {return dato.valores.lapso1 ? 'Activo' : 'Inactivo'}",
+            "default": "",
+            "type": ""
+        },
+        {
+            "title": "2do Momento",
+            "field": "lapso2",
+            "tipo": "",
+            "formato": "(dato)=> {return dato.valores.lapso2 ? 'Activo' : 'Inactivo'}",
+            "default": "",
+            "type": ""
+        },
+        {
+            "title": "3er Momento",
+            "field": "lapso3",
+            "tipo": "",
+            "formato": "(dato)=> {return dato.valores.lapso3 ? 'Activo' : 'Inactivo'}",
+            "default": "",
+            "type": ""
+        }
+    ]
   },
   "Funciones": {},
   "Subtotales": {
