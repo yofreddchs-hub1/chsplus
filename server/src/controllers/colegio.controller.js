@@ -22,6 +22,7 @@ const tabla_inscripcion ='uecla_Inscripcion';
 const tabla_horario = 'uecla_horario';
 const tabla_aula = 'uecla_Aula';
 const tabla_nota = 'uecla_nota';
+const tabla_nnota = 'uecla_nnota';
 const tabla_asignatura= 'uecla_asignatura';
 const tabla_docente = 'uecla_docente';
 const tabla_evaluacion = 'uecla_evaluacion';
@@ -413,11 +414,11 @@ colegioCtrl.Notas = async (req, res) =>{
                 ];
                 titulosn.datos[1]=[...titulosn.datos[1],
                     {...asig, titulo: `1° PROB`,field:`1lapso-${asig._id}`},
-                    {...asig, titulo: `1° PARC`,field:`1lapso-${asig._id}-parc`},
+                    {...asig, titulo: `1° PARC`,field:`1lapso-${asig._id}-consejo`},
                     {...asig, titulo: `2° PROB`,field:`2lapso-${asig._id}`},
-                    {...asig, titulo: `2° PARC`,field:`2lapso-${asig._id}-parc`},
+                    {...asig, titulo: `2° PARC`,field:`2lapso-${asig._id}-consejo`},
                     {...asig, titulo: `3° PROB`,field:`3lapso-${asig._id}`},
-                    {...asig, titulo: `3° PARC`,field:`3lapso-${asig._id}-parc`},
+                    {...asig, titulo: `3° PARC`,field:`3lapso-${asig._id}-consejo`},
                     {...asig, titulo: `NOTA DEF.`,field:`${asig._id}-def`},
                 ];
             }
@@ -578,11 +579,11 @@ colegioCtrl.Notas = async (req, res) =>{
                             const nota3 =  nota[posn][`3lapso-${val}-art112`] ? nota[posn][`3lapso-${val}-art112`] : nota[posn][`3lapso-${val}`] 
                             const nota33 = nota[posn][`3lapso-${val}-consejo`] ? nota[posn][`3lapso-${val}-consejo`] : 0
                             Asigna[`1lapso-${val}`]=nota1;
-                            Asigna[`1lapso-${val}-parc`]=nota11;
+                            Asigna[`1lapso-${val}-consejo`]=nota11;
                             Asigna[`2lapso-${val}`]=nota2;
-                            Asigna[`2lapso-${val}-parc`]=nota22;
+                            Asigna[`2lapso-${val}-consejo`]=nota22;
                             Asigna[`3lapso-${val}`]=nota3;
-                            Asigna[`3lapso-${val}-parc`]=nota33;
+                            Asigna[`3lapso-${val}-consejo`]=nota33;
                             const n1 = nota11!=0 ? nota11 : nota1;
                             const n2 = nota22!=0 ? nota22 : nota2;
                             const n3 = nota33!=0 ? nota33 : nota3;
@@ -649,6 +650,287 @@ colegioCtrl.Notas = async (req, res) =>{
         //     });
         //     // console.log(nota)
         // }
+        console.log('Enviando notas')
+        res.json({Respuesta:'Ok', estudiantes, seccion, asignaturas, nuevanotas, titulos, titulosn});
+    }else{
+        res.json({Respuesta:'Error', mensaje:'hash invalido'});
+    }
+
+}
+
+colegioCtrl.NNotas = async (req, res) =>{
+    let {User, Api, datos, hash} = req.body;
+    User= typeof User==='string' ? JSON.parse(User) : User;
+    const hashn = await Hash_texto(JSON.stringify({User, Api, datos}));
+    const igual= await Verifica_api(Api, true);
+    if (hashn===hash && igual) {
+        console.log('por notas')
+        datos= JSON.parse(datos);
+        const Mensualidad = await Model(Api,tabla_mensualidad);
+        const Notas = await Model(Api,tabla_nnota);
+        const Evaluaciones = await Model(Api,tabla_evaluacion);
+        const Estudiantes = await Model(Api,tabla_estudiante);
+        const Asignatura = await Model(Api,tabla_asignatura);
+        let Mensualidades = await Mensualidad.find({'valores.periodo':datos.periodo});//, 'valores.grado':datos.grado});
+        // let estudiantes = await Buscar(tabla_estudiante, datos.grado, Api, 'grado.titulo');
+        let estudiantes = await Estudiantes.find({'valores.grado.titulo':datos.grado, 'valores.seccion.titulo':datos.seccion});
+        console.log('....',estudiantes.length)
+        
+        console.log('....',Mensualidades.length)
+        // let asignaturas = await Buscar(tabla_asignatura, datos.grado, Api, 'grado.titulo');
+        let asignaturas = await Asignatura.find({'valores.grado.titulo':datos.grado});
+        console.log('Despues de buscar...')
+        let nuevanotas={}
+        let evaluaciones= []
+        // if (datos.tipo==='docente'){
+        evaluaciones= await Evaluaciones.find(
+            {
+                $and:[
+                    {'valores.periodo':datos.periodo},
+                    {'valores.grado':datos.grado},
+                    {'valores.seccion':datos.seccion},
+                    ... datos.tipo==='docente' 
+                    ?   [
+                            {'valores.docente._id':datos.docente._id},
+                            {'valores.asignatura._id':datos.asignatura._id}
+                        ]
+                    :   []
+                ]
+            }
+        );
+        evaluaciones = evaluaciones.map(f=>{
+            return {
+                _id:f._id, ...f.valores, titulo:f.valores.nombre, field:`nota-${f._id}`, createdAt: f.createdAt
+            }
+        }).sort((a,b) => a.lapso._id> b.lapso._id ? 1 : -1);
+        // }
+        asignaturas = asignaturas.map(f=>{
+            return {_id:f._id, ...f.valores, titulo:f.valores.abreviacion ? f.valores.abreviacion : f.valores.asignatura  , field:`nota-${f._id}`}
+        }).sort((a,b)=> Number(a.item ? a.item : 100) < Number(b.item ? b.item : 100) ? -1 : 1);
+        let lapso=null;
+        let titulos=[];
+        let titulosn = {filas:1,datos:[[],[]]}
+        let titulosa=[];
+        // Utilizado para la creacion de los titulos a mostrar en tabla
+        if (datos.tipo==='seccion'){
+            // titulos = asignaturas
+            for (var i=0; i<asignaturas.length; i++){
+                const asig= asignaturas[i];
+                titulos=[...titulos,
+                    {...asig, titulo: `${asig.titulo} 1er LAPSO`,field:`1lapso-${asig._id}`, title:'hola'},
+                    {...asig, titulo: `${asig.titulo} 2do LAPSO`,field:`2lapso-${asig._id}`, title:'hola'},
+                    {...asig, titulo: `${asig.titulo} 3er LAPSO`,field:`3lapso-${asig._id}`, title:'hola'}
+                ];
+                titulosn.datos[0]=[...titulosn.datos[0],
+                    {...asig, titulo: `${asig.asignatura}`,field:`${asig._id}`},
+                ];
+                titulosn.datos[1]=[...titulosn.datos[1],
+                    {...asig, titulo: `1° PROB ${asig.sigla? asig.sigla : asig.asignatura.slice(0,3)}`,field:`1lapso-${asig._id}`},
+                    {...asig, titulo: `1° PARC ${asig.sigla? asig.sigla : asig.asignatura.slice(0,3)}`,field:`1lapso-${asig._id}-consejo`},
+                    {...asig, titulo: `2° PROB ${asig.sigla? asig.sigla : asig.asignatura.slice(0,3)}`,field:`2lapso-${asig._id}`},
+                    {...asig, titulo: `2° PARC ${asig.sigla? asig.sigla : asig.asignatura.slice(0,3)}`,field:`2lapso-${asig._id}-consejo`},
+                    {...asig, titulo: `3° PROB ${asig.sigla? asig.sigla : asig.asignatura.slice(0,3)}`,field:`3lapso-${asig._id}`},
+                    {...asig, titulo: `3° PARC ${asig.sigla? asig.sigla : asig.asignatura.slice(0,3)}`,field:`3lapso-${asig._id}-consejo`},
+                    {...asig, titulo: `NOTA DEF. ${asig.sigla? asig.sigla : asig.asignatura.slice(0,3)}`,field:`${asig._id}-def`},
+                ];
+            }
+        }else{
+            evaluaciones.map((val, i)=>{
+                if (lapso===null){
+                    lapso=val.lapso;
+                }
+                if (lapso.value===val.lapso.value){
+                    titulosa=[...titulosa,val] 
+                }
+                if (lapso.value!==val.lapso.value || i===evaluaciones.length-1){
+                    do{
+                        titulos=[...titulos, ...titulosa.sort((a,b) => a.createdAt> b.createdAt ? 1 : -1),
+                            {
+                                _id:`Error-${lapso.value}-rasgos`,
+                                titulo:`Rasgos`,
+                                field:`${lapso.value}-${datos.asignatura._id}-rasgos`,
+                                lapso
+                            },
+                            {
+                                _id:`Error-${lapso.value}`,
+                                titulo:`${lapso.titulo}`,
+                                field:`${lapso.value}-${datos.asignatura._id}`,
+                                lapso
+                            },
+                            {
+                                _id:`Error-${lapso.value}-art112`,
+                                titulo:'Art. 112',//`Aplicación de Art. 112`,
+                                field:`${lapso.value}-${datos.asignatura._id}-art112`,
+                                lapso
+                            },
+                            {
+                                _id:`Error-${lapso.value}-consejo`,
+                                titulo:'Consejo de Sección',//`Modificación de Consejo de Sección`,
+                                field:`${lapso.value}-${datos.asignatura._id}-consejo`,
+                                lapso
+                            },
+
+                        ];  
+                        titulosn.datos[1]=[...titulosn.datos[1],  ...titulosa.sort((a,b) => a.createdAt> b.createdAt ? 1 : -1),
+                            {
+                                _id:`Error-${lapso.value}-rasgos`,
+                                titulo:`Rasgo`,
+                                field:`${lapso.value}-${datos.asignatura._id}-rasgos`,
+                                lapso
+                            },
+                            {
+                                _id:`Error-${lapso.value}`,
+                                titulo:`${lapso.titulo}`,
+                                field:`${lapso.value}-${datos.asignatura._id}`
+                            },
+                            {
+                                _id:`Error-${lapso.value}-art112`,
+                                titulo:'Art. 112',//`Aplicación de Art. 112`,
+                                field:`${lapso.value}-${datos.asignatura._id}-art112`,
+                                lapso
+                            },
+                            {
+                                _id:`Error-${lapso.value}-consejo`,
+                                titulo:`Consejo de Sección`,//`Modificación de Consejo de Sección`,
+                                field:`${lapso.value}-${datos.asignatura._id}-consejo`,
+                                lapso
+                            },
+
+                        ];  
+                        titulosa=[val];
+                        lapso= lapso.value!==val.lapso.value ? val.lapso : {value:'salir'};
+                    }while(lapso.value===val.lapso.value && i===evaluaciones.length-1)
+                }
+                
+            });
+        }
+        
+        titulos.map(f=>{
+            nuevanotas[f._id]={
+                titulo:f.titulo, 
+                nota:null,
+                nombre: f.nombre ? f.nombre: undefined,
+                asignatura: f.asignatura ? f.asignatura._id : undefined,
+                "asignatura-nombre": f.asignatura ? f.asignatura.asignatura : undefined,
+                lapso: f.lapso ? f.lapso.titulo : undefined
+            };
+        })
+        console.log(nuevanotas);
+        let nuevo=[];
+        let seccion=[];
+        let notas = await Notas.find({
+            $and:[
+                //{"valores._id_estudiante":estu._id},
+                {'valores.periodo':datos.periodo},
+                {'valores.grado':datos.grado},
+                {'valores.seccion':datos.seccion},
+                // {'valores.asignatura._id':datos.asignatura._id},
+                // {'valores.docente._id':datos.docente._id},
+            ]
+        });
+        console.log('Notas',notas.length)
+        for (var i=0;i<estudiantes.length; i++){
+            let f = estudiantes[i];
+            //verifica si los estudiantes estan inscrito
+            if (datos.seccion && f.valores.seccion && f.valores.seccion.titulo===datos.seccion 
+                && f.valores.estatus && f.valores.estatus.value==='inscrito'
+                || datos.seccion===undefined && f.valores.estatus && f.valores.estatus.value==='inscrito'
+            ){
+                nuevo=[...nuevo, f.valores]
+                const estu= {_id:f._id, ...f.valores};
+                const pos = Mensualidades.findIndex(f=>f.valores._id_estudiante===estu._id || f.valores.cedula===estu.cedula );
+                // se procesa si el estudiante esta inscrito
+                if (pos!==-1){
+                    let Asigna ={} 
+                    const posnota = notas.findIndex(item=> item.valores._id_estudiante===estu._id);
+                    // let nota = notas.filter(f=>f.valores._id_estudiante===estu._id) 
+                    let nota = posnota!==-1 ? {_id : notas[posnota]._id , ...notas[posnota].valores} : {} 
+                    Asigna = posnota!==-1 ? nota : {};
+                    // nota = nota.map(val=>{
+                    //     return {_id:val._id, ...val.valores}
+                    // })
+                    if (datos.tipo==='seccion'){
+                        // console.log(nota)
+                        Object.keys(nuevanotas).map(val=>{
+                            const materia = nuevanotas[val];
+                            
+                            //const posn= nota.findIndex(item=> item[`asignatura_${val}`]===val);
+                            //if (posn!==-1){
+                            if (nota[`asignatura_${val}`]!==undefined){    
+                                const nota1 =  nota[`1lapso-${val}-art112`] ? nota[`1lapso-${val}-art112`] : nota[`1lapso-${val}`]
+                                const nota11 = nota[`1lapso-${val}-consejo`] ? nota[`1lapso-${val}-consejo`] : 0;
+                                const nota2 =  nota[`2lapso-${val}-art112`] ? nota[`2lapso-${val}-art112`] : nota[`2lapso-${val}`] 
+                                const nota22 = nota[`2lapso-${val}-consejo`] ? nota[`2lapso-${val}-consejo`] : 0;
+                                const nota3 =  nota[`3lapso-${val}-art112`] ? nota[`3lapso-${val}-art112`] : nota[`3lapso-${val}`] 
+                                const nota33 = nota[`3lapso-${val}-consejo`] ? nota[`3lapso-${val}-consejo`] : 0
+                                Asigna[`1lapso-${val}`]=nota1;
+                                Asigna[`1lapso-${val}-consejo`]=nota11;
+                                Asigna[`2lapso-${val}`]=nota2;
+                                Asigna[`2lapso-${val}-consejo`]=nota22;
+                                Asigna[`3lapso-${val}`]=nota3;
+                                Asigna[`3lapso-${val}-consejo`]=nota33;
+                                const n1 = nota11!=0 ? nota11 : nota1;
+                                const n2 = nota22!=0 ? nota22 : nota2;
+                                const n3 = nota33!=0 ? nota33 : nota3;
+                                Asigna[`${val}-def`]=(n1+n2+n3)/3;
+                            }else{
+                                Asigna[`1lapso-${val}`]= materia.nota;
+                                Asigna[`2lapso-${val}`]= materia.nota;
+                                Asigna[`3lapso-${val}`]= materia.nota;
+                            }
+                            
+                        })
+                        
+                    }else{
+                        Object.keys(nuevanotas).map(val=>{
+                            const materia = nuevanotas[val];
+                            const lapso = materia.lapso==='1er Lapso' ? '1lapso' : materia.lapso==='2do Lapso' ? '2lapso' : '3lapso';
+                            //const posn= nota.findIndex(item=> item[`nota-${val}`]);
+                            //if (posn!==-1){
+                            if (nota[`nota-${val}`]!==undefined){
+                                Asigna[`nota-${val}`]=nota[`nota-${val}`];
+                                
+                            }else{
+                                Asigna[`nota-${val}`]= materia.nota;
+                            }
+                            Asigna[`nota-${val}-nombre`]=materia.nombre;
+                            Asigna[`nota-${val}-lapso`]=materia.lapso;
+                            Asigna[`nota-${val}-asignatura`]=materia.asignatura;
+                            if (materia.asignatura){
+                                Asigna[`${lapso}-${materia.asignatura}`]= Asigna[`${lapso}-${materia.asignatura}`] ? Asigna[`${lapso}-${materia.asignatura}`] : null;
+                                Asigna[`asignatura_${materia.asignatura}`]= Asigna[`asignatura_${materia.asignatura}`] ? Asigna[`asignatura_${materia.asignatura}`] : materia.asignatura;
+                                Asigna[`asignatura_${materia.asignatura}_nombre`]= Asigna[`asignatura_${materia.asignatura}_nombre`] ? Asigna[`asignatura_${materia.asignatura}_nombre`] :materia['asignatura-nombre'];  
+                                Asigna[`asignatura_${materia.asignatura}_id_docente`]= Asigna[`asignatura_${materia.asignatura}_id_docente`] ? Asigna[`asignatura_${materia.asignatura}_id_docente`] : datos.docente._id;
+                                Asigna[`asignatura_${materia.asignatura}_docente`]=`${datos.docente.apellidos} ${datos.docente.nombres}` 
+                            }
+                                
+                            //Asigna[`nota-${val}-asignatura-nombre`]=materia['asignatura-nombre'];
+                        })
+                    }
+                    // if (posnota!==-1){
+                    //     Asigna={...Asigna, ...[nota]}
+                    // }
+
+                    seccion=[...seccion, 
+                        {
+                            
+                            _id: posnota!==-1 ? nota._id : undefined,
+                            _id_estudiante: estu._id, periodo:datos.periodo,
+                            foto:estu.foto,
+                            cedula:estu.cedula,
+                            nombres:estu.nombres, apellidos:estu.apellidos,
+                            grado:estu.grado ? estu.grado.titulo : '', seccion:estu.seccion ? estu.seccion.titulo : '',
+                            fecha_nacimiento:estu.fecha_nacimiento,
+                            lugar_nacimiento:estu.lugar_nacimiento,
+                            
+                            ...Asigna
+                        }
+                    ];
+                }
+
+            }
+        }
+        
         console.log('Enviando notas')
         res.json({Respuesta:'Ok', estudiantes, seccion, asignaturas, nuevanotas, titulos, titulosn});
     }else{
@@ -779,8 +1061,7 @@ colegioCtrl.Resumen = async (req, res)=>{
         }).sort((a,b)=> a.periodo>b.periodo ? -1 : 1);
         let recibos = datos.representante && datos.representante._id  ? await Buscar(tabla_recibo, datos.representante._id, Api, 'representante._id'): [];
         let recibos1 = datos.representante && datos.representante._id  ? await Buscar(tabla_recibo, datos.representante.cedula, Api, 'representante.cedula'): [];
-        console.log(recibos)
-        console.log(recibos1)
+        
         recibos1.map(val=>{
             const pos = recibos.findIndex(f=>String(f._id)===String(val._id))
             if(pos===-1){
