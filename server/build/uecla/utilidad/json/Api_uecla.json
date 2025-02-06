@@ -76,6 +76,10 @@
           "backgroundImage": "linear-gradient(0deg, rgba(0,0,0,1) 2%, rgba(2,57,80,1) 97%)",
           "color": "#ffffff"
       },
+      "Tabla_columna": {
+          "backgroundColor": "#9dfc74"
+          
+      },
       "Tabla_titulos": {
           "backgroundColor": "rgba(0, 0, 0,1)",
           "color": "#ffffff"
@@ -246,6 +250,11 @@
                 "value": "Notas",
                 "primary": "Notas",
                 "icon": "description"
+            },
+            {
+                "value": "ControlEstudio",
+                "primary": "Control de Estudio",
+                "icon": "supervised_user_circle"
             }
         ]
       },
@@ -3782,7 +3791,7 @@
                 "tipo": "lista_multiuso",
                 "lista": "uecla_Inscripcion",
                 "multiple": false,
-                "agregar": true,
+                "agregar": false,
                 "getOptionLabel": [
                     "periodo"
                 ],
@@ -7013,6 +7022,84 @@
               "field": "seccion",
               "tipo": "",
               "formato": "(dato)=> `${dato.valores.seccion ?  dato.valores.seccion : null}`",
+              "default": "",
+              "type": ""
+          }
+          
+      ],
+      "Titulos_NotasP": [
+          {
+              "title": "Cedula",
+              "field": "cedula",
+              "tipo": "",
+              "formato": "(dato)=> `${dato.cedula ?  dato.cedula : null}`",
+              "default": "",
+              "type": "",
+              "orden":"true"
+          },
+          {
+              "title": "Apellidos",
+              "field": "apellidos",
+              "tipo": "",
+              "formato": "(dato)=> `${dato.apellidos ?  dato.apellidos : null}`",
+              "default": "",
+              "type": "",
+              "orden":"true"
+          },
+          {
+              "title": "Nombres",
+              "field": "nombres",
+              "tipo": "",
+              "formato": "(dato)=> `${dato.nombres ?  dato.nombres : null}`",
+              "default": "",
+              "type": "",
+              "orden":"true"
+          },
+          {
+              "title": "Grado",
+              "field": "grado",
+              "tipo": "",
+              "formato": "(dato)=> `${dato.grado ?  dato.grado : null}`",
+              "default": "",
+              "type": ""
+          },
+          {
+              "title": "Seccion",
+              "field": "seccion",
+              "tipo": "",
+              "formato": "(dato)=> `${dato.seccion ?  dato.seccion : null}`",
+              "default": "",
+              "type": ""
+          },
+          {
+              "title": "1er Momento",
+              "field": "lapso1",
+              "tipo": "",
+              "formato": "(dato)=> `${dato.lapso1 ?  Number(dato.lapso1).toFixed(2) : null}`",
+              "default": "",
+              "type": ""
+          },
+          {
+              "title": "2do MOMENTO",
+              "field": "lapso2",
+              "tipo": "",
+              "formato": "(dato)=> `${dato.lapso2 ?  Number(dato.lapso2).toFixed(2) : null}`",
+              "default": "",
+              "type": ""
+          },
+          {
+              "title": "3er Momento",
+              "field": "lapso3",
+              "tipo": "",
+              "formato": "(dato)=> `${dato.lapso3 ?  Number(dato.lapso3).toFixed(2) : null}`",
+              "default": "",
+              "type": ""
+          },
+          {
+              "title": "Promedio",
+              "field": "promediol",
+              "tipo": "",
+              "formato": "(dato)=> `${dato.promediol ?  Number(dato.promediol).toFixed(2) : null}`",
               "default": "",
               "type": ""
           }

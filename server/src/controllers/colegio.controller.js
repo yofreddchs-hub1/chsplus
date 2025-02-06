@@ -675,7 +675,6 @@ colegioCtrl.NNotas = async (req, res) =>{
         // let estudiantes = await Buscar(tabla_estudiante, datos.grado, Api, 'grado.titulo');
         let estudiantes = await Estudiantes.find({'valores.grado.titulo':datos.grado, 'valores.seccion.titulo':datos.seccion});
         console.log('....',estudiantes.length)
-        
         console.log('....',Mensualidades.length)
         // let asignaturas = await Buscar(tabla_asignatura, datos.grado, Api, 'grado.titulo');
         let asignaturas = await Asignatura.find({'valores.grado.titulo':datos.grado});
@@ -745,12 +744,12 @@ colegioCtrl.NNotas = async (req, res) =>{
                 if (lapso.value!==val.lapso.value || i===evaluaciones.length-1){
                     do{
                         titulos=[...titulos, ...titulosa.sort((a,b) => a.createdAt> b.createdAt ? 1 : -1),
-                            {
-                                _id:`Error-${lapso.value}-rasgos`,
-                                titulo:`Rasgos`,
-                                field:`${lapso.value}-${datos.asignatura._id}-rasgos`,
-                                lapso
-                            },
+                            // {
+                            //     _id:`Error-${lapso.value}-rasgos`,
+                            //     titulo:`Rasgos`,
+                            //     field:`${lapso.value}-${datos.asignatura._id}-rasgos`,
+                            //     lapso
+                            // },
                             {
                                 _id:`Error-${lapso.value}`,
                                 titulo:`${lapso.titulo}`,
@@ -772,12 +771,12 @@ colegioCtrl.NNotas = async (req, res) =>{
 
                         ];  
                         titulosn.datos[1]=[...titulosn.datos[1],  ...titulosa.sort((a,b) => a.createdAt> b.createdAt ? 1 : -1),
-                            {
-                                _id:`Error-${lapso.value}-rasgos`,
-                                titulo:`Rasgo`,
-                                field:`${lapso.value}-${datos.asignatura._id}-rasgos`,
-                                lapso
-                            },
+                            // {
+                            //     _id:`Error-${lapso.value}-rasgos`,
+                            //     titulo:`Rasgo`,
+                            //     field:`${lapso.value}-${datos.asignatura._id}-rasgos`,
+                            //     lapso
+                            // },
                             {
                                 _id:`Error-${lapso.value}`,
                                 titulo:`${lapso.titulo}`,
@@ -815,7 +814,7 @@ colegioCtrl.NNotas = async (req, res) =>{
                 lapso: f.lapso ? f.lapso.titulo : undefined
             };
         })
-        console.log(nuevanotas);
+        
         let nuevo=[];
         let seccion=[];
         let notas = await Notas.find({
@@ -930,7 +929,6 @@ colegioCtrl.NNotas = async (req, res) =>{
 
             }
         }
-        
         console.log('Enviando notas')
         res.json({Respuesta:'Ok', estudiantes, seccion, asignaturas, nuevanotas, titulos, titulosn});
     }else{
