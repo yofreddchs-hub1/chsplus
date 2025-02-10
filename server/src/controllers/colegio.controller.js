@@ -658,6 +658,137 @@ colegioCtrl.Notas = async (req, res) =>{
 
 }
 
+colegioCtrl.Titulos = async(Api,datos)=>{
+    const Asignatura = await Model(Api,tabla_asignatura);
+    const Evaluaciones = await Model(Api,tabla_evaluacion);
+    let evaluaciones= []
+    evaluaciones= await Evaluaciones.find(
+        {
+            $and:[
+                {'valores.periodo':datos.periodo},
+                {'valores.grado':datos.grado},
+                {'valores.seccion':datos.seccion},
+                ... datos.tipo==='docente' 
+                ?   [
+                        {'valores.docente._id':datos.docente._id},
+                        {'valores.asignatura._id':datos.asignatura._id}
+                    ]
+                :   []
+            ]
+        }
+    );
+    evaluaciones = evaluaciones.map(f=>{
+        return {
+            _id:f._id, ...f.valores, titulo:f.valores.nombre, field:`nota-${f._id}`, createdAt: f.createdAt
+        }
+    }).sort((a,b) => a.lapso._id> b.lapso._id ? 1 : -1);
+
+    let asignaturas = await Asignatura.find({'valores.grado.titulo':datos.grado});
+    asignaturas = asignaturas.map(f=>{
+        return {_id:f._id, ...f.valores, titulo:f.valores.abreviacion ? f.valores.abreviacion : f.valores.asignatura  , field:`nota-${f._id}`}
+    }).sort((a,b)=> Number(a.item ? a.item : 100) < Number(b.item ? b.item : 100) ? -1 : 1);
+
+    let titulos=[];
+    let titulosn = {filas:1,datos:[[],[]]}
+    let titulosa=[];
+    // Utilizado para la creacion de los titulos a mostrar en tabla
+    //==================================================
+    if (datos.tipo==='seccion'){
+        // titulos = asignaturas
+        for (var i=0; i<asignaturas.length; i++){
+            const asig= asignaturas[i];
+            titulos=[...titulos,
+                {...asig, titulo: `${asig.titulo} 1er LAPSO`,field:`1lapso-${asig._id}`, title:'hola'},
+                {...asig, titulo: `${asig.titulo} 2do LAPSO`,field:`2lapso-${asig._id}`, title:'hola'},
+                {...asig, titulo: `${asig.titulo} 3er LAPSO`,field:`3lapso-${asig._id}`, title:'hola'}
+            ];
+            titulosn.datos[0]=[...titulosn.datos[0],
+                {...asig, titulo: `${asig.asignatura}`,field:`${asig._id}`},
+            ];
+            titulosn.datos[1]=[...titulosn.datos[1],
+                {...asig, titulo: `1° PROB ${asig.sigla? asig.sigla : asig.asignatura.slice(0,3)}`,field:`1lapso-${asig._id}`},
+                {...asig, titulo: `1° PARC ${asig.sigla? asig.sigla : asig.asignatura.slice(0,3)}`,field:`1lapso-${asig._id}-consejo`},
+                {...asig, titulo: `2° PROB ${asig.sigla? asig.sigla : asig.asignatura.slice(0,3)}`,field:`2lapso-${asig._id}`},
+                {...asig, titulo: `2° PARC ${asig.sigla? asig.sigla : asig.asignatura.slice(0,3)}`,field:`2lapso-${asig._id}-consejo`},
+                {...asig, titulo: `3° PROB ${asig.sigla? asig.sigla : asig.asignatura.slice(0,3)}`,field:`3lapso-${asig._id}`},
+                {...asig, titulo: `3° PARC ${asig.sigla? asig.sigla : asig.asignatura.slice(0,3)}`,field:`3lapso-${asig._id}-consejo`},
+                {...asig, titulo: `NOTA DEF. ${asig.sigla? asig.sigla : asig.asignatura.slice(0,3)}`,field:`${asig._id}-def`},
+            ];
+        }
+    }else{
+        evaluaciones.map((val, i)=>{
+            if (lapso===null){
+                lapso=val.lapso;
+            }
+            if (lapso.value===val.lapso.value){
+                titulosa=[...titulosa,val] 
+            }
+            if (lapso.value!==val.lapso.value || i===evaluaciones.length-1){
+                do{
+                    titulos=[...titulos, ...titulosa.sort((a,b) => a.createdAt> b.createdAt ? 1 : -1),
+                        // {
+                        //     _id:`Error-${lapso.value}-rasgos`,
+                        //     titulo:`Rasgos`,
+                        //     field:`${lapso.value}-${datos.asignatura._id}-rasgos`,
+                        //     lapso
+                        // },
+                        {
+                            _id:`Error-${lapso.value}`,
+                            titulo:`${lapso.titulo}`,
+                            field:`${lapso.value}-${datos.asignatura._id}`,
+                            lapso
+                        },
+                        {
+                            _id:`Error-${lapso.value}-art112`,
+                            titulo:'Art. 112',//`Aplicación de Art. 112`,
+                            field:`${lapso.value}-${datos.asignatura._id}-art112`,
+                            lapso
+                        },
+                        {
+                            _id:`Error-${lapso.value}-consejo`,
+                            titulo:'Consejo de Sección',//`Modificación de Consejo de Sección`,
+                            field:`${lapso.value}-${datos.asignatura._id}-consejo`,
+                            lapso
+                        },
+
+                    ];  
+                    titulosn.datos[1]=[...titulosn.datos[1],  ...titulosa.sort((a,b) => a.createdAt> b.createdAt ? 1 : -1),
+                        // {
+                        //     _id:`Error-${lapso.value}-rasgos`,
+                        //     titulo:`Rasgo`,
+                        //     field:`${lapso.value}-${datos.asignatura._id}-rasgos`,
+                        //     lapso
+                        // },
+                        {
+                            _id:`Error-${lapso.value}`,
+                            titulo:`${lapso.titulo}`,
+                            field:`${lapso.value}-${datos.asignatura._id}`
+                        },
+                        {
+                            _id:`Error-${lapso.value}-art112`,
+                            titulo:'Art. 112',//`Aplicación de Art. 112`,
+                            field:`${lapso.value}-${datos.asignatura._id}-art112`,
+                            lapso
+                        },
+                        {
+                            _id:`Error-${lapso.value}-consejo`,
+                            titulo:`Consejo de Sección`,//`Modificación de Consejo de Sección`,
+                            field:`${lapso.value}-${datos.asignatura._id}-consejo`,
+                            lapso
+                        },
+
+                    ];  
+                    titulosa=[val];
+                    lapso= lapso.value!==val.lapso.value ? val.lapso : {value:'salir'};
+                }while(lapso.value===val.lapso.value && i===evaluaciones.length-1)
+            }
+            
+        });
+    }
+    
+    //===============================================
+    return {asignaturas, evaluaciones, titulos, titulosn}
+}
 colegioCtrl.NNotas = async (req, res) =>{
     let {User, Api, datos, hash} = req.body;
     User= typeof User==='string' ? JSON.parse(User) : User;
@@ -668,142 +799,45 @@ colegioCtrl.NNotas = async (req, res) =>{
         datos= JSON.parse(datos);
         const Mensualidad = await Model(Api,tabla_mensualidad);
         const Notas = await Model(Api,tabla_nnota);
-        const Evaluaciones = await Model(Api,tabla_evaluacion);
+        // const Evaluaciones = await Model(Api,tabla_evaluacion);
         const Estudiantes = await Model(Api,tabla_estudiante);
-        const Asignatura = await Model(Api,tabla_asignatura);
+        // const Asignatura = await Model(Api,tabla_asignatura);
         let Mensualidades = await Mensualidad.find({'valores.periodo':datos.periodo});//, 'valores.grado':datos.grado});
         // let estudiantes = await Buscar(tabla_estudiante, datos.grado, Api, 'grado.titulo');
         let estudiantes = await Estudiantes.find({'valores.grado.titulo':datos.grado, 'valores.seccion.titulo':datos.seccion});
         console.log('....',estudiantes.length)
         console.log('....',Mensualidades.length)
         // let asignaturas = await Buscar(tabla_asignatura, datos.grado, Api, 'grado.titulo');
-        let asignaturas = await Asignatura.find({'valores.grado.titulo':datos.grado});
+        // let asignaturas = await Asignatura.find({'valores.grado.titulo':datos.grado});
         console.log('Despues de buscar...')
         let nuevanotas={}
-        let evaluaciones= []
-        // if (datos.tipo==='docente'){
-        evaluaciones= await Evaluaciones.find(
-            {
-                $and:[
-                    {'valores.periodo':datos.periodo},
-                    {'valores.grado':datos.grado},
-                    {'valores.seccion':datos.seccion},
-                    ... datos.tipo==='docente' 
-                    ?   [
-                            {'valores.docente._id':datos.docente._id},
-                            {'valores.asignatura._id':datos.asignatura._id}
-                        ]
-                    :   []
-                ]
-            }
-        );
-        evaluaciones = evaluaciones.map(f=>{
-            return {
-                _id:f._id, ...f.valores, titulo:f.valores.nombre, field:`nota-${f._id}`, createdAt: f.createdAt
-            }
-        }).sort((a,b) => a.lapso._id> b.lapso._id ? 1 : -1);
+        // let evaluaciones= []
+        // // if (datos.tipo==='docente'){
+        // evaluaciones= await Evaluaciones.find(
+        //     {
+        //         $and:[
+        //             {'valores.periodo':datos.periodo},
+        //             {'valores.grado':datos.grado},
+        //             {'valores.seccion':datos.seccion},
+        //             ... datos.tipo==='docente' 
+        //             ?   [
+        //                     {'valores.docente._id':datos.docente._id},
+        //                     {'valores.asignatura._id':datos.asignatura._id}
+        //                 ]
+        //             :   []
+        //         ]
+        //     }
+        // );
+        // evaluaciones = evaluaciones.map(f=>{
+        //     return {
+        //         _id:f._id, ...f.valores, titulo:f.valores.nombre, field:`nota-${f._id}`, createdAt: f.createdAt
+        //     }
+        // }).sort((a,b) => a.lapso._id> b.lapso._id ? 1 : -1);
         // }
-        asignaturas = asignaturas.map(f=>{
-            return {_id:f._id, ...f.valores, titulo:f.valores.abreviacion ? f.valores.abreviacion : f.valores.asignatura  , field:`nota-${f._id}`}
-        }).sort((a,b)=> Number(a.item ? a.item : 100) < Number(b.item ? b.item : 100) ? -1 : 1);
-        let lapso=null;
-        let titulos=[];
-        let titulosn = {filas:1,datos:[[],[]]}
-        let titulosa=[];
-        // Utilizado para la creacion de los titulos a mostrar en tabla
-        if (datos.tipo==='seccion'){
-            // titulos = asignaturas
-            for (var i=0; i<asignaturas.length; i++){
-                const asig= asignaturas[i];
-                titulos=[...titulos,
-                    {...asig, titulo: `${asig.titulo} 1er LAPSO`,field:`1lapso-${asig._id}`, title:'hola'},
-                    {...asig, titulo: `${asig.titulo} 2do LAPSO`,field:`2lapso-${asig._id}`, title:'hola'},
-                    {...asig, titulo: `${asig.titulo} 3er LAPSO`,field:`3lapso-${asig._id}`, title:'hola'}
-                ];
-                titulosn.datos[0]=[...titulosn.datos[0],
-                    {...asig, titulo: `${asig.asignatura}`,field:`${asig._id}`},
-                ];
-                titulosn.datos[1]=[...titulosn.datos[1],
-                    {...asig, titulo: `1° PROB ${asig.sigla? asig.sigla : asig.asignatura.slice(0,3)}`,field:`1lapso-${asig._id}`},
-                    {...asig, titulo: `1° PARC ${asig.sigla? asig.sigla : asig.asignatura.slice(0,3)}`,field:`1lapso-${asig._id}-consejo`},
-                    {...asig, titulo: `2° PROB ${asig.sigla? asig.sigla : asig.asignatura.slice(0,3)}`,field:`2lapso-${asig._id}`},
-                    {...asig, titulo: `2° PARC ${asig.sigla? asig.sigla : asig.asignatura.slice(0,3)}`,field:`2lapso-${asig._id}-consejo`},
-                    {...asig, titulo: `3° PROB ${asig.sigla? asig.sigla : asig.asignatura.slice(0,3)}`,field:`3lapso-${asig._id}`},
-                    {...asig, titulo: `3° PARC ${asig.sigla? asig.sigla : asig.asignatura.slice(0,3)}`,field:`3lapso-${asig._id}-consejo`},
-                    {...asig, titulo: `NOTA DEF. ${asig.sigla? asig.sigla : asig.asignatura.slice(0,3)}`,field:`${asig._id}-def`},
-                ];
-            }
-        }else{
-            evaluaciones.map((val, i)=>{
-                if (lapso===null){
-                    lapso=val.lapso;
-                }
-                if (lapso.value===val.lapso.value){
-                    titulosa=[...titulosa,val] 
-                }
-                if (lapso.value!==val.lapso.value || i===evaluaciones.length-1){
-                    do{
-                        titulos=[...titulos, ...titulosa.sort((a,b) => a.createdAt> b.createdAt ? 1 : -1),
-                            // {
-                            //     _id:`Error-${lapso.value}-rasgos`,
-                            //     titulo:`Rasgos`,
-                            //     field:`${lapso.value}-${datos.asignatura._id}-rasgos`,
-                            //     lapso
-                            // },
-                            {
-                                _id:`Error-${lapso.value}`,
-                                titulo:`${lapso.titulo}`,
-                                field:`${lapso.value}-${datos.asignatura._id}`,
-                                lapso
-                            },
-                            {
-                                _id:`Error-${lapso.value}-art112`,
-                                titulo:'Art. 112',//`Aplicación de Art. 112`,
-                                field:`${lapso.value}-${datos.asignatura._id}-art112`,
-                                lapso
-                            },
-                            {
-                                _id:`Error-${lapso.value}-consejo`,
-                                titulo:'Consejo de Sección',//`Modificación de Consejo de Sección`,
-                                field:`${lapso.value}-${datos.asignatura._id}-consejo`,
-                                lapso
-                            },
-
-                        ];  
-                        titulosn.datos[1]=[...titulosn.datos[1],  ...titulosa.sort((a,b) => a.createdAt> b.createdAt ? 1 : -1),
-                            // {
-                            //     _id:`Error-${lapso.value}-rasgos`,
-                            //     titulo:`Rasgo`,
-                            //     field:`${lapso.value}-${datos.asignatura._id}-rasgos`,
-                            //     lapso
-                            // },
-                            {
-                                _id:`Error-${lapso.value}`,
-                                titulo:`${lapso.titulo}`,
-                                field:`${lapso.value}-${datos.asignatura._id}`
-                            },
-                            {
-                                _id:`Error-${lapso.value}-art112`,
-                                titulo:'Art. 112',//`Aplicación de Art. 112`,
-                                field:`${lapso.value}-${datos.asignatura._id}-art112`,
-                                lapso
-                            },
-                            {
-                                _id:`Error-${lapso.value}-consejo`,
-                                titulo:`Consejo de Sección`,//`Modificación de Consejo de Sección`,
-                                field:`${lapso.value}-${datos.asignatura._id}-consejo`,
-                                lapso
-                            },
-
-                        ];  
-                        titulosa=[val];
-                        lapso= lapso.value!==val.lapso.value ? val.lapso : {value:'salir'};
-                    }while(lapso.value===val.lapso.value && i===evaluaciones.length-1)
-                }
-                
-            });
-        }
-        
+        // asignaturas = asignaturas.map(f=>{
+        //     return {_id:f._id, ...f.valores, titulo:f.valores.abreviacion ? f.valores.abreviacion : f.valores.asignatura  , field:`nota-${f._id}`}
+        // }).sort((a,b)=> Number(a.item ? a.item : 100) < Number(b.item ? b.item : 100) ? -1 : 1);
+        let{asignaturas, titulos, titulosn} = await colegioCtrl.Titulos(Api, datos);
         titulos.map(f=>{
             nuevanotas[f._id]={
                 titulo:f.titulo, 
@@ -814,7 +848,116 @@ colegioCtrl.NNotas = async (req, res) =>{
                 lapso: f.lapso ? f.lapso.titulo : undefined
             };
         })
+        // let lapso=null;
+        // let titulos=[];
+        // let titulosn = {filas:1,datos:[[],[]]}
+        // let titulosa=[];
+        // // Utilizado para la creacion de los titulos a mostrar en tabla
+        // //==================================================
+        // if (datos.tipo==='seccion'){
+        //     // titulos = asignaturas
+        //     for (var i=0; i<asignaturas.length; i++){
+        //         const asig= asignaturas[i];
+        //         titulos=[...titulos,
+        //             {...asig, titulo: `${asig.titulo} 1er LAPSO`,field:`1lapso-${asig._id}`, title:'hola'},
+        //             {...asig, titulo: `${asig.titulo} 2do LAPSO`,field:`2lapso-${asig._id}`, title:'hola'},
+        //             {...asig, titulo: `${asig.titulo} 3er LAPSO`,field:`3lapso-${asig._id}`, title:'hola'}
+        //         ];
+        //         titulosn.datos[0]=[...titulosn.datos[0],
+        //             {...asig, titulo: `${asig.asignatura}`,field:`${asig._id}`},
+        //         ];
+        //         titulosn.datos[1]=[...titulosn.datos[1],
+        //             {...asig, titulo: `1° PROB ${asig.sigla? asig.sigla : asig.asignatura.slice(0,3)}`,field:`1lapso-${asig._id}`},
+        //             {...asig, titulo: `1° PARC ${asig.sigla? asig.sigla : asig.asignatura.slice(0,3)}`,field:`1lapso-${asig._id}-consejo`},
+        //             {...asig, titulo: `2° PROB ${asig.sigla? asig.sigla : asig.asignatura.slice(0,3)}`,field:`2lapso-${asig._id}`},
+        //             {...asig, titulo: `2° PARC ${asig.sigla? asig.sigla : asig.asignatura.slice(0,3)}`,field:`2lapso-${asig._id}-consejo`},
+        //             {...asig, titulo: `3° PROB ${asig.sigla? asig.sigla : asig.asignatura.slice(0,3)}`,field:`3lapso-${asig._id}`},
+        //             {...asig, titulo: `3° PARC ${asig.sigla? asig.sigla : asig.asignatura.slice(0,3)}`,field:`3lapso-${asig._id}-consejo`},
+        //             {...asig, titulo: `NOTA DEF. ${asig.sigla? asig.sigla : asig.asignatura.slice(0,3)}`,field:`${asig._id}-def`},
+        //         ];
+        //     }
+        // }else{
+        //     evaluaciones.map((val, i)=>{
+        //         if (lapso===null){
+        //             lapso=val.lapso;
+        //         }
+        //         if (lapso.value===val.lapso.value){
+        //             titulosa=[...titulosa,val] 
+        //         }
+        //         if (lapso.value!==val.lapso.value || i===evaluaciones.length-1){
+        //             do{
+        //                 titulos=[...titulos, ...titulosa.sort((a,b) => a.createdAt> b.createdAt ? 1 : -1),
+        //                     // {
+        //                     //     _id:`Error-${lapso.value}-rasgos`,
+        //                     //     titulo:`Rasgos`,
+        //                     //     field:`${lapso.value}-${datos.asignatura._id}-rasgos`,
+        //                     //     lapso
+        //                     // },
+        //                     {
+        //                         _id:`Error-${lapso.value}`,
+        //                         titulo:`${lapso.titulo}`,
+        //                         field:`${lapso.value}-${datos.asignatura._id}`,
+        //                         lapso
+        //                     },
+        //                     {
+        //                         _id:`Error-${lapso.value}-art112`,
+        //                         titulo:'Art. 112',//`Aplicación de Art. 112`,
+        //                         field:`${lapso.value}-${datos.asignatura._id}-art112`,
+        //                         lapso
+        //                     },
+        //                     {
+        //                         _id:`Error-${lapso.value}-consejo`,
+        //                         titulo:'Consejo de Sección',//`Modificación de Consejo de Sección`,
+        //                         field:`${lapso.value}-${datos.asignatura._id}-consejo`,
+        //                         lapso
+        //                     },
+
+        //                 ];  
+        //                 titulosn.datos[1]=[...titulosn.datos[1],  ...titulosa.sort((a,b) => a.createdAt> b.createdAt ? 1 : -1),
+        //                     // {
+        //                     //     _id:`Error-${lapso.value}-rasgos`,
+        //                     //     titulo:`Rasgo`,
+        //                     //     field:`${lapso.value}-${datos.asignatura._id}-rasgos`,
+        //                     //     lapso
+        //                     // },
+        //                     {
+        //                         _id:`Error-${lapso.value}`,
+        //                         titulo:`${lapso.titulo}`,
+        //                         field:`${lapso.value}-${datos.asignatura._id}`
+        //                     },
+        //                     {
+        //                         _id:`Error-${lapso.value}-art112`,
+        //                         titulo:'Art. 112',//`Aplicación de Art. 112`,
+        //                         field:`${lapso.value}-${datos.asignatura._id}-art112`,
+        //                         lapso
+        //                     },
+        //                     {
+        //                         _id:`Error-${lapso.value}-consejo`,
+        //                         titulo:`Consejo de Sección`,//`Modificación de Consejo de Sección`,
+        //                         field:`${lapso.value}-${datos.asignatura._id}-consejo`,
+        //                         lapso
+        //                     },
+
+        //                 ];  
+        //                 titulosa=[val];
+        //                 lapso= lapso.value!==val.lapso.value ? val.lapso : {value:'salir'};
+        //             }while(lapso.value===val.lapso.value && i===evaluaciones.length-1)
+        //         }
+                
+        //     });
+        // }
         
+        // titulos.map(f=>{
+        //     nuevanotas[f._id]={
+        //         titulo:f.titulo, 
+        //         nota:null,
+        //         nombre: f.nombre ? f.nombre: undefined,
+        //         asignatura: f.asignatura ? f.asignatura._id : undefined,
+        //         "asignatura-nombre": f.asignatura ? f.asignatura.asignatura : undefined,
+        //         lapso: f.lapso ? f.lapso.titulo : undefined
+        //     };
+        // })
+        // //===============================================
         let nuevo=[];
         let seccion=[];
         let notas = await Notas.find({
