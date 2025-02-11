@@ -687,7 +687,7 @@ colegioCtrl.Titulos = async(Api,datos)=>{
     asignaturas = asignaturas.map(f=>{
         return {_id:f._id, ...f.valores, titulo:f.valores.abreviacion ? f.valores.abreviacion : f.valores.asignatura  , field:`nota-${f._id}`}
     }).sort((a,b)=> Number(a.item ? a.item : 100) < Number(b.item ? b.item : 100) ? -1 : 1);
-
+    let lapso=null;
     let titulos=[];
     let titulosn = {filas:1,datos:[[],[]]}
     let titulosa=[];
@@ -1079,7 +1079,20 @@ colegioCtrl.NNotas = async (req, res) =>{
     }
 
 }
-
+colegioCtrl.TitulosNotas= async (req, res) =>{
+    let {User, Api, datos, hash} = req.body;
+    User= typeof User==='string' ? JSON.parse(User) : User;
+    const hashn = await Hash_texto(JSON.stringify({User, Api, datos}));
+    const igual= await Verifica_api(Api, true);
+    
+    if (hashn===hash && igual) {
+        datos= JSON.parse(datos);
+        let{titulos, titulosn} = await colegioCtrl.Titulos(Api, datos);
+        res.json({Respuesta:'Ok', titulos, titulosn});
+    }else{
+        res.json({Respuesta:'Error', mensaje:'hash invalido'});
+    }
+}
 colegioCtrl.EnviarPago = async (req, res) =>{
     let {User, Api, datos, hash} = req.body;
     User= typeof User==='string' ? JSON.parse(User) : User;

@@ -46,7 +46,8 @@ const { Guardar_produccion, Ingresar_material, Ingresar_empaque, Ingreso_Egreso,
       } = require('../controllers/sistemachs.controller');
 const { Mensualidades, EnviarPago, Solvencias, Resumen, Sincronizar_uecla, Recibos, Verificar_Inscripcion, Actualizar_Referencia, 
         Promover, LeerHorarioU, DisponibilidadHorarioU, GuardarHorarioU, Notas,NNotas,
-        NominaDocente
+        NominaDocente,
+        TitulosNotas
       } = require('../controllers/colegio.controller');
 const { LeerHorario, GuardarHorario, DisponibilidadHorario, MisDatos 
 
@@ -124,6 +125,7 @@ router.post('/colegio/disponibilidadhorario',DisponibilidadHorarioU);
 router.post('/colegio/guardarhorario',GuardarHorarioU);
 router.post('/colegio/notas',Notas);
 router.post('/colegio/nnotas',NNotas);
+router.post('/colegio/ntitulos',TitulosNotas);
 router.post('/colegio/nominadocente',NominaDocente);
 // router.get('/imagen/:filename',Ver_Imagen);
 

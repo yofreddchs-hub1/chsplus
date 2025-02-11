@@ -392,7 +392,7 @@ Buscar_usuario = async(socketE, valores)=>{
     return users
 }
 global.chat = io.of('/chat').on('connection', (socket)=> {
-    console.log('cliente:',socket.id, socket.handshake.auth);
+    console.log('cliente chafand:',socket.id, socket.handshake.auth);
     socket.emit('conectado',{id: socket.id})
     
     socket.on('disconnect',  async()=> {
@@ -405,7 +405,8 @@ global.chat = io.of('/chat').on('connection', (socket)=> {
         // socket.emit('Registrado', respuesta);
     })
     socket.on('Contactos',async(valores)=>{
-        const contactos = await VerContactos({valores, User:socket.handshake.auth});
+        const contactos = await VerContactos({valores:valores.data, User:valores.User})//socket.handshake.auth});
+        // console.log(contactos)
         global.chat.to(socket.id).emit('Miscontactos', contactos);
     })
     socket.on('Mensajes',async(valores)=>{
