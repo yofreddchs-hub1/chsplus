@@ -54,8 +54,114 @@ Noleidos = async(DB, Usuario1, Usuario2)=>{
     }
     return noleidos
 }
-
 chatCtrl.VerContactos=async(props)=>{
+    let {valores, User}= props;
+    //await Model(User.api,'databasechs', true);
+    const DB = await Model('ChatFanb','chatfanb_usuario');
+    let usuarios = await DB.find();
+    usuarios = usuarios.map(f=>{return {...f.valores, _id:f._id}})
+    let models = await global.DataBase[User.api].db.listCollections().toArray();
+    models = models.map(v=> v.name).sort((a,b)=> a>b ? 1 : -1).filter(f=>f.indexOf(User.username)!==-1 && f.indexOf('nulls')===-1 );
+    const database = models;
+    let nuevof=[];
+    let nuevosf=[];
+    let mensajes={};
+    for (var men=0; men<database.length;men++){
+        let chat = database[men];
+        const dat = chat.split('_');
+        const usuario2= dat[dat.length-1].replace('s','');
+        const usuario1= dat[dat.length-2];
+        const usuario = usuario1===User.username ? usuario2 : usuario1;
+        const pos = usuarios.findIndex(f=> usuario.indexOf(f.telefono.replace('+58','0'))!==-1 || usuario.indexOf(f.telefono)!==-1)//valores.findIndex(f=> f.telefonos.indexOf(usuario.telefono.replace('+58','0'))!==-1);
+        
+        if (pos!==-1){
+            const MDB = await tabla_mensajes({Usuario1:{username:User.username},Usuario2:{username:usuarios[pos].username}});
+            const count = await MDB.estimatedDocumentCount();
+            let ultimo = await MDB.find().sort({$natural:-1}).limit(1);
+            const fecha = ultimo.length===0 ? '' : ultimo[0].valores.createdAt 
+            ultimo = ultimo.length===0 ? '' : ultimo[0].valores;
+            let noleidos = await Noleidos(MDB, User, usuarios[pos]);
+            noleidos = await CambiarRecibido(MDB, noleidos);
+            mensajes[chat]=noleidos;
+            nuevof=[...nuevof,{
+                //...usuario, 
+                _id:usuarios[pos]._id, 
+                foto:usuarios[pos].foto, 
+                token:usuarios[pos].token, 
+                username: usuarios[pos].username, 
+                telefono:usuarios[pos].telefono, 
+                chatfanb:true,
+                nombres:usuarios[pos].nombres,
+                mensajes:count,
+                ultimomensaje:ultimo,
+                mensajespendientes:noleidos.length,
+                fecha,
+            }]
+        }else{
+            nuevosf=[...nuevosf, usuario];
+        }
+    }
+    nuevof = nuevof.sort((a,b)=> a.name>b.name ? 1 : -1);
+    nuevosf = nuevosf.sort((a,b)=> a.name>b.name ? 1 : -1);
+    
+    // valores = valores.map(val=>{
+    //     let telefonos = val.phoneNumbers 
+    //         ?   val.phoneNumbers.map(tel=> {
+    //                 let numero = tel.number.replace('+58 ','+58').replace('+58','0').replace('-','');
+    //                 return numero
+    //             }) 
+    //         :   []
+    //     return {...val, telefonos}
+    // })
+    
+    
+    // for (var i=0; i<valores.length; i++){
+    //     // const usuario = {...usuarios[i].valores, _id: usuarios[i]._id};
+    //     const usuario = valores[i];
+    //     const pos = usuarios.findIndex(f=> usuario.telefonos.indexOf(f.telefono.replace('+58','0'))!==-1)//valores.findIndex(f=> f.telefonos.indexOf(usuario.telefono.replace('+58','0'))!==-1);
+    //     if (pos!==-1){
+    //         let chat =[User.username, usuarios[pos].username].sort();
+    //         chat = `${api}_mensajes_${chat[0]}_${chat[1]}`;
+    //         const MDB = await tabla_mensajes({Usuario1:{username:User.username},Usuario2:{username:usuarios[pos].username}});
+    //         const count = await MDB.estimatedDocumentCount();
+    //         let ultimo = await MDB.find().sort({$natural:-1}).limit(1);
+    //         const fecha = ultimo.length===0 ? '' : ultimo[0].valores.createdAt 
+    //         ultimo = ultimo.length===0 ? '' : ultimo[0].valores;
+    //         let noleidos = await Noleidos(MDB, User, usuarios[pos]);
+    //         // if (User.username===usuarios[pos].username){
+    //         //     noleidos = await MDB.find({$and:[{'valores.leido':{$ne:true}}]});
+    //         // }else{
+    //         //     noleidos = await MDB.find({$and:[{'valores.user._id':{$ne:User._id}},{'valores.leido':{$ne:true}}]});
+                
+    //         // }
+    //         noleidos = await CambiarRecibido(MDB, noleidos);
+    //         mensajes[chat]=noleidos;
+            
+    //         nuevof=[...nuevof,{
+    //             ...usuario, 
+    //             _id:usuarios[pos]._id, 
+    //             foto:usuarios[pos].foto, 
+    //             token:usuarios[pos].token, 
+    //             username: usuarios[pos].username, 
+    //             telefono:usuarios[pos].telefono, 
+    //             chatfanb:true,
+    //             nombres:usuarios[pos].nombres,
+    //             mensajes:count,
+    //             ultimomensaje:ultimo,
+    //             mensajespendientes:noleidos.length,
+    //             fecha,
+    //         }]
+    //     }else{
+    //         nuevosf=[...nuevosf, usuario];
+    //     }
+    // }
+    // nuevof = nuevof.sort((a,b)=> a.name>b.name ? 1 : -1);
+    // nuevosf = nuevosf.sort((a,b)=> a.name>b.name ? 1 : -1);
+
+    return {contactos:[...nuevof, ...nuevosf], mensajes}
+}
+//anteriror
+chatCtrl.VerContactosA=async(props)=>{
     let {valores, User}= props;
       
     valores = valores.map(val=>{
