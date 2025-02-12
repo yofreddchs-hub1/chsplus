@@ -406,7 +406,7 @@ global.chat = io.of('/chat').on('connection', (socket)=> {
     })
     socket.on('Contactos',async(valores)=>{
         const contactos = await VerContactos({valores:valores.data, User:valores.User})//socket.handshake.auth});
-        // console.log(contactos)
+        console.log(contactos.length, valores.User)
         global.chat.to(socket.id).emit('Miscontactos', contactos);
     })
     socket.on('Mensajes',async(valores)=>{
