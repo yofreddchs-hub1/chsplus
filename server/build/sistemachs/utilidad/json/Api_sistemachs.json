@@ -1958,6 +1958,41 @@
                 "multiline": false
             },
             {
+                "nombre": "alinear",
+                "tipo": "input",
+                "label": "Alinear",
+                "placeholder": "Alinear",
+                "title": "Alinear",
+                "required": false,
+                "mensaje_error": "Alinear",
+                "disabled": false,
+                "numberOfLines": "",
+                "default":"left",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "alinear",
+                "name": "alinear",
+                "multiline": false
+            },
+            {
+                "nombre": "ancho",
+                "tipo": "number",
+                "label": "Ancho",
+                "placeholder": "Ancho",
+                "title": "Ancho",
+                "required": false,
+                "mensaje_error": "Ancho",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "ancho",
+                "name": "ancho",
+                "multiline": false
+            },
+            {
                 "nombre": "field",
                 "tipo": "input",
                 "label": "Campo",
@@ -2334,6 +2369,27 @@
             "_id": 6,
             "titulo": "Factura",
             "value": "factura",
+            "permisos": "",
+            "tipo":"VENTA"
+        },
+        {
+            "_id": 7,
+            "titulo": "Guia Traslado Formato (Nuevo)",
+            "value": "guiatrasladoformaton",
+            "permisos": "",
+            "tipo":"GUIA DE TRASLADO"
+        },
+        {
+            "_id": 8,
+            "titulo": "Factura Guia Traslado (Nuevo)",
+            "value": "facturatrasladoformaton",
+            "permisos": "",
+            "tipo":"GUIA DE TRASLADO"
+        },
+        {
+            "_id": 9,
+            "titulo": "Factura Fiscal (Nuevo)",
+            "value": "facturafiscal",
             "permisos": "",
             "tipo":"VENTA"
         }
@@ -2739,7 +2795,7 @@
               "editable": true,
               "flex": 1
           }
-      ],
+      ], 
       "Titulos_venta": [
           {
               "title": "Código",
