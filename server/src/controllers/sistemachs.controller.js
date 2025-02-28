@@ -564,7 +564,8 @@ sistemachsCtrl.Ventas = async (req, res)=>{
     if (hashn===hash){ // && igual) {
         datos = datos ? JSON.parse(datos) : {};
         // let tabla = ConSede('sistemachs_Venta',sede);
-        const VENTA = await AgregarSede(Api,'sistemachs_Venta',sede)//await Model(Api,tabla)//require(`../models/sistemachs_Venta`);
+        const tabla = datos.fiscal ? 'sistemachs_VentaFiscal' : 'sistemachs_Venta' 
+        const VENTA = await AgregarSede(Api,tabla,sede)//await Model(Api,tabla)//require(`../models/sistemachs_Venta`);
         console.log('Ventas....', datos.estado, datos.tipo, datos.fecha, datos && datos.fecha!==undefined)
         let ventas = datos && datos.estado 
             ? await VENTA.find({$and:[{"valores.estado":datos.estado},{"valores.tipo":'Venta'}]})//find({$text: {$search: datos.estado, $caseSensitive: false}})
@@ -606,6 +607,7 @@ sistemachsCtrl.Ventas = async (req, res)=>{
         res.json({Respuesta:'Error', mensaje:'hash invalido'});
     }
 }
+
 sistemachsCtrl.Traslados = async (req, res)=>{
     let {User, Api, datos, hash, sede} = req.body;
     User= typeof User==='string' ? JSON.parse(User) : User;
@@ -668,8 +670,8 @@ sistemachsCtrl.Egreso_Venta = async (req, res)=>{
         datos = JSON.parse(datos);
         const tablaT = ConSede('sistemachs_Traslado',sede);
         const tablaV = ConSede('sistemachs_Venta',sede);
-        const VENTA = await Model(Api, datos.tipo ==='Traslado' ? tablaT :tablaV);//require(`../models/sistemachs_Venta`);
-        
+        const tablaVF = ConSede('sistemachs_VentaFiscal',sede);
+        const VENTA = await Model(Api, datos.tipo ==='Traslado' ? tablaT : datos.tipo ==='Fiscal' ? tablaVF :tablaV);//require(`../models/sistemachs_Venta`);
         
         let anterior = null;
         if (datos._id){
@@ -677,7 +679,7 @@ sistemachsCtrl.Egreso_Venta = async (req, res)=>{
             anterior = anterior ? anterior.valores : anterior;
         }
         
-        let Recibo = await Serie({
+        let Recibo = datos.tipo==="Fiscal" ? datos.orden_venta.recibo : await Serie({
             tabla:datos.tipo ==='Traslado' ? 'sistemachs_Traslado' : 'sistemachs_Venta', 
             cantidad:6, 
             id:datos.tipo ==='Traslado' ? 'T' :'V'

@@ -1524,8 +1524,9 @@
                   "label": "Referencia",
                   "placeholder": "Referencia",
                   "title": "Recibo",
-                  "mensaje_error": "",
+                  "mensaje_error": "Debe indicar el numero de factura",
                   "disabled": false,
+                  "required": true,
                   "numberOfLines": "",
                   "getOptionLabel": [
                       "titulo"
@@ -2391,7 +2392,7 @@
             "titulo": "Factura Fiscal (Nuevo)",
             "value": "facturafiscal",
             "permisos": "",
-            "tipo":"VENTA"
+            "tipo":"VENTA FISCAL"
         }
     ],
     "lista_reporte_componentes": [
