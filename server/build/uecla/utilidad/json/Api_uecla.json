@@ -252,11 +252,28 @@
                 "icon": "description"
             },
             {
+                "value": "DNotas",
+                "primary": "Discusión de Notas",
+                "icon": "gavel"
+            },
+            {
                 "value": "ControlEstudio",
                 "primary": "Control de Estudio",
                 "icon": "supervised_user_circle"
             }
         ]
+      },
+      {
+          "value": "Documentos",
+          "primary": "Documentos",
+          "icon": "folder",
+          "childen":[
+                {
+                    "value": "DEstudiante",
+                    "primary": "Estudiantes",
+                    "icon": "assignment_ind"
+                }
+          ]
       },
       {
           "value": "Registros",
@@ -879,7 +896,7 @@
                 "label": "Activo/No activo",
                 "placeholder": "Activo/No activo",
                 "title": "",
-                "required": "false",
+                "required": false,
                 "disabled": false,
                 "lista": "",
                 "getOptionLabel": [
@@ -898,7 +915,7 @@
                 "label": "Publicar/No Publicar",
                 "placeholder": "Publicar/No Publicar",
                 "title": "",
-                "required": "false",
+                "required": false,
                 "disabled": false,
                 "lista": "",
                 "getOptionLabel": [
@@ -1202,6 +1219,42 @@
                   "name": "lugar_nacimiento"
               },
               {
+                "nombre": "municipio",
+                "tipo": "input",
+                "label": "Municipio",
+                "placeholder": "Municipio",
+                "title": "Municipio",
+                "disabled": false,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "name": "municipio"
+            },
+            {
+                "nombre": "parroquia",
+                "tipo": "input",
+                "label": "Parroquia",
+                "placeholder": "Parroquia",
+                "title": "Parroquia",
+                "disabled": false,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "name": "parroquia"
+            },
+            {
+                "nombre": "estado",
+                "tipo": "input",
+                "label": "Estado",
+                "placeholder": "Estado",
+                "title": "Estado",
+                "disabled": false,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "name": "estado"
+            },
+              {
                   "nombre": "fecha_nacimiento",
                   "tipo": "Fecha",
                   "label": "Fecha de Nacimiento",
@@ -1500,6 +1553,18 @@
                   "name": "afinidad_persona_autorizada"
               },
               {
+                "nombre": "telefono_persona_autorizada",
+                "tipo": "input",
+                "label": "Telefono Persona Autorizada",
+                "placeholder": "Telefono Persona Autorizada",
+                "title": "Telefono Persona Autorizada para el traslado",
+                "disabled": false,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "name": "telefono_persona_autorizada"
+            },
+              {
                   "nombre": "grado",
                   "tipo": "lista_multiuso",
                   "label": "Grado",
@@ -1587,6 +1652,72 @@
               }
           ]
       },
+      "Form_Estudiante_Documento": {
+          "columna": 5,
+          "value": [
+            {
+                "nombre": "cedula",
+                "tipo": "input",
+                "label": "Cedula",
+                "placeholder": "Cedula",
+                "title": "Cedula de identidad",
+                "required": true,
+                "mensaje_error": "Indique cedula de identidad",
+                "disabled": true,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "name": "cedula"
+            },
+            {
+                "nombre": "nombres",
+                "tipo": "input",
+                "label": "Nombres",
+                "placeholder": "Nombres",
+                "title": "Nombres del estudiante",
+                "required": true,
+                "mensaje_error": "indique nombre del estudiante",
+                "disabled": true,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "name": "nombres"
+            },
+            {
+                "nombre": "apellidos",
+                "tipo": "input",
+                "label": "Apellidos",
+                "placeholder": "Apellidos",
+                "title": "Apellidos del estudiante",
+                "required": true,
+                "disabled": true,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "name": "apellidos"
+            },
+            {
+                "nombre": "fotocedula",
+                "tipo": "Imagen",
+                "label": "Imagen de Cedula",
+                "placeholder": "Imagen de Cedula",
+                "title": "Imagen de Cedula",
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "fotocedula",
+                "name": "fotocedula",
+                "multiline": false,
+                "solo":true
+            }
+          ]
+      },
       "Form_Asignatura": {
           "columna": 2,
           "value": [
@@ -1625,7 +1756,7 @@
                   "required": true
               },
               {
-                "nombre": "abreviacion",
+                "nombre": "sigla",
                 "tipo": "input",
                 "label": "Siglas",
                 "placeholder": "Siglas",
@@ -1636,8 +1767,8 @@
                 "getOptionLabel": [
                     "titulo"
                 ],
-                "key": "abreviacion",
-                "name": "abreviacion",
+                "key": "sigla",
+                "name": "sigla",
                 "required": false
             },
             {
@@ -1663,24 +1794,6 @@
           "columna": 2,
           "value": [
               {
-                  "nombre": "nombre",
-                  "tipo": "input",
-                  "label": "Nombre",
-                  "placeholder": "Nombre",
-                  "title": "Nombre",
-                  "mensaje_error": "Debe indicar nombre de evaluación",
-                  "disabled": false,
-                  "numberOfLines": "",
-                  "lista": "",
-                  "getOptionLabel": [
-                      "titulo"
-                  ],
-                  "key": "nombre",
-                  "name": "nombre",
-                  "multiline": false,
-                  "required": true
-              },
-              {
                 "nombre": "lapso",
                 "tipo": "lista_multiuso",
                 "label": "Lapso",
@@ -1696,8 +1809,28 @@
                 "key": "lapso",
                 "name": "lapso",
                 "multiline": false,
-                "required": true
+                "required": true,
+                "no_modificar": true,
+                "modificar": "Nombre_evaluacion"
               },
+              {
+                "nombre": "nombre",
+                "tipo": "input",
+                "label": "Nombre",
+                "placeholder": "Nombre",
+                "title": "Nombre",
+                "mensaje_error": "Debe indicar nombre de evaluación",
+                "disabled": false,
+                "numberOfLines": "",
+                "lista": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "key": "nombre",
+                "name": "nombre",
+                "multiline": false,
+                "required": true
+            },
               {
                   "nombre": "descripcion",
                   "tipo": "input",
@@ -3739,6 +3872,67 @@
                 "cargar":true
             }
         ]
+      },
+      "Form_Notas_anterior": {
+          "columna": 3,
+          "value": [
+              {
+                  "nombre": "periodo",
+                  "tipo": "lista_multiuso",
+                  "label": "Periodo",
+                  "placeholder": "Periodo",
+                  "title": "Periodo",
+                  "mensaje_error": "",
+                  "disabled": false,
+                  "numberOfLines": "",
+                  "lista": "uecla_Inscripcion",
+                  "getOptionLabel": [
+                      "periodo"
+                  ],
+                  "key": "periodo",
+                  "name": "periodo",
+                  "multiline": false,
+                  "cargar":true
+              },
+              {
+                "nombre": "grado",
+                "tipo": "lista_multiuso",
+                "label": "Grado",
+                "placeholder": "Grado",
+                "title": "Grado",
+                "required": false,
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "lista": "lista_colegio_grado",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "key": "grado",
+                "name": "grado",
+                "cargar":true
+            },
+            {
+                "nombre": "seccion",
+                "tipo": "lista_multiuso",
+                "label": "Sección",
+                "placeholder": "Sección",
+                "title": "Sección",
+                "required": false,
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "lista": "lista_colegio_seccion",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "key": "seccion",
+                "name": "seccion",
+                "cargar":true
+            }
+          ]
       },
       "Form_Aula": {
           "columna": 2,
@@ -7103,6 +7297,132 @@
               "default": "",
               "type": ""
           }
+          
+      ],
+      "Titulos_Notas_resumen": [
+        {
+            "title": "N°",
+            "field": "posicion",
+            "tipo": "",
+            "formato": "(dato)=> {return`${dato.posicion ?  dato.posicion : null}`}",
+            "default": "",
+            "type": ""
+        },  
+        {
+              "title": "Cedula",
+              "field": "cedula",
+              "tipo": "",
+              "formato": "(dato)=> `${dato.cedula ?  dato.cedula : null}`",
+              "default": "",
+              "type": ""
+          },
+          {
+              "title": "Apellidos",
+              "field": "apellidos",
+              "tipo": "",
+              "formato": "(dato)=> `${dato.apellidos ?  dato.apellidos : null}`",
+              "default": "",
+              "type": ""
+          },
+          {
+              "title": "Nombres",
+              "field": "nombres",
+              "tipo": "",
+              "formato": "(dato)=> `${dato.nombres ?  dato.nombres : null}`",
+              "default": "",
+              "type": ""
+          },
+          {
+            "title": "Lugar de Nacimiento",
+            "field": "lugar",
+            "tipo": "",
+            "formato": "(dato)=> `${dato.municipio ?  dato.municipio : ''}`",
+            "default": "",
+            "type": ""
+        },
+        {
+            "title": "EF",
+            "field": "ef",
+            "tipo": "",
+            "formato": "(dato)=> `${dato.estado ?  dato.estado : ''}`",
+            "default": "",
+            "type": ""
+        },
+        {
+            "title": "Sexo",
+            "field": "sexo",
+            "tipo": "",
+            "formato": "(dato)=> `${dato.sexo ?  dato.sexo.titulo[0] : ''}`",
+            "default": "",
+            "type": ""
+        },
+        {
+            "title": "DIA",
+            "field": "dia",
+            "tipo": "",
+            "formato": "(dato)=> `${dato.dia ?  dato.dia : ''}`",
+            "default": "",
+            "type": ""
+        },
+        {
+            "title": "MES",
+            "field": "mes",
+            "tipo": "",
+            "formato": "(dato)=> `${dato.mes ?  dato.mes : ''}`",
+            "default": "",
+            "type": ""
+        },
+        {
+            "title": "AÑO",
+            "field": "ano",
+            "tipo": "",
+            "formato": "(dato)=> `${dato.ano ?  dato.ano : ''}`",
+            "default": "",
+            "type": ""
+        }
+          
+      ],
+      "Titulos_Notas_resumen_docentes": [
+        {
+            "title": "N°",
+            "field": "posicion",
+            "tipo": "",
+            "formato": "(dato)=> {return`${dato.posicion ?  dato.posicion : null}`}",
+            "default": "",
+            "type": ""
+        },  
+        {
+              "title": "Sigla",
+              "field": "sigla",
+              "tipo": "",
+              "formato": "(dato)=> `${dato.sigla ?  dato.sigla : null}`",
+              "default": "",
+              "type": ""
+          },
+          {
+              "title": "Área de Formación",
+              "field": "asignatura",
+              "tipo": "",
+              "formato": "(dato)=> `${dato.asignatura ?  dato.asignatura : null}`",
+              "default": "",
+              "type": ""
+          },
+          {
+              "title": "Apellidos y Nombres del Profesos",
+              "field": "nombres",
+              "tipo": "",
+              "formato": "(dato)=> `${dato.docente ?  dato.docente : null}`",
+              "default": "",
+              "type": ""
+          },
+          {
+            "title": "Cédula de Identidad",
+            "field": "cedula",
+            "tipo": "",
+            "formato": "(dato)=> `${dato.cedula ?  dato.cedula : ''}`",
+            "default": "",
+            "type": ""
+        }
           
       ],
       "Titulos_Portada": [

@@ -957,6 +957,7 @@ colegioCtrl.NNotas = async (req, res) =>{
                             lugar_nacimiento:estu.lugar_nacimiento,
                             municipio:estu.municipio,
                             sexo:estu.sexo,
+                            estado:estu.estado,
                             
                             ...Asigna
                         }
