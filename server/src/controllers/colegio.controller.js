@@ -875,7 +875,7 @@ colegioCtrl.NNotas = async (req, res) =>{
                 // se procesa si el estudiante esta inscrito
                 if (pos!==-1){
                     let Asigna ={} 
-                    const posnota = notas.findIndex(item=> item.valores._id_estudiante===estu._id);
+                    const posnota = notas.findIndex(item=> item.valores._id_estudiante===String(estu._id));
                     // let nota = notas.filter(f=>f.valores._id_estudiante===estu._id) 
                     let nota = posnota!==-1 ? {_id : notas[posnota]._id , ...notas[posnota].valores} : {} 
                     Asigna = posnota!==-1 ? nota : {};
