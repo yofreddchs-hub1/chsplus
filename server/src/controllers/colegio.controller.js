@@ -668,12 +668,12 @@ colegioCtrl.Titulos = async(Api,datos)=>{
                 {'valores.periodo':datos.periodo},
                 {'valores.grado':datos.grado},
                 {'valores.seccion':datos.seccion},
-                // ... datos.tipo==='docente' 
-                // ?   [
-                //         {'valores.docente._id':datos.docente._id},
-                //         {'valores.asignatura._id':datos.asignatura._id}
-                //     ]
-                // :   []
+                ... datos.tipo==='docente' 
+                ?   [
+                        //{'valores.docente._id':datos.docente._id},
+                        {'valores.asignatura._id':datos.asignatura._id}
+                    ]
+                :   []
             ]
         }
     );
