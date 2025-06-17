@@ -76,7 +76,7 @@ clientCHS.on('message_create', message =>{
     // }
 });
 global.clientCHS = clientCHS;
-clientCHS.initialize()
+// clientCHS.initialize()
 
 /////>>>>>>>>>>>>>>>>>>>>>>>>Whatsapp para SistemaCHS<<<<<<<<<<<<<<<<<<
 
