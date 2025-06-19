@@ -1127,7 +1127,8 @@
                 ],
                 "key": "foto",
                 "name": "foto",
-                "multiline": false
+                "multiline": false,
+                "solo":true
             },
             {
                 "nombre": "cedula",
@@ -1221,9 +1222,9 @@
               {
                 "nombre": "municipio",
                 "tipo": "input",
-                "label": "Municipio",
-                "placeholder": "Municipio",
-                "title": "Municipio",
+                "label": "Municipio de Nacimiento",
+                "placeholder": "Municipio de Nacimiento",
+                "title": "Municipio de Nacimiento",
                 "disabled": false,
                 "getOptionLabel": [
                     "titulo"
@@ -1233,9 +1234,9 @@
             {
                 "nombre": "parroquia",
                 "tipo": "input",
-                "label": "Parroquia",
-                "placeholder": "Parroquia",
-                "title": "Parroquia",
+                "label": "Parroquia de Nacimiento",
+                "placeholder": "Parroquia de Nacimiento",
+                "title": "Parroquia de Nacimiento",
                 "disabled": false,
                 "getOptionLabel": [
                     "titulo"
@@ -1245,9 +1246,9 @@
             {
                 "nombre": "estado",
                 "tipo": "input",
-                "label": "Estado",
-                "placeholder": "Estado",
-                "title": "Estado",
+                "label": "Estado de Nacimiento",
+                "placeholder": "Estado de Nacimiento",
+                "title": "Estado de Nacimiento",
                 "disabled": false,
                 "getOptionLabel": [
                     "titulo"
@@ -1308,35 +1309,11 @@
                   "name": "telefono_fijo"
               },
               {
-                  "nombre": "municipio",
-                  "tipo": "input",
-                  "label": "Municipio",
-                  "placeholder": "Municipio",
-                  "title": "Municipio",
-                  "disabled": false,
-                  "getOptionLabel": [
-                      "titulo"
-                  ],
-                  "name": "municipio"
-              },
-              {
-                  "nombre": "parroquia",
-                  "tipo": "input",
-                  "label": "Parroquia",
-                  "placeholder": "Parroquia",
-                  "title": "Parroquia",
-                  "disabled": false,
-                  "getOptionLabel": [
-                      "titulo"
-                  ],
-                  "name": "parroquia"
-              },
-              {
                   "nombre": "direccion",
                   "tipo": "multiline",
-                  "label": "Dirección",
-                  "placeholder": "Dirección",
-                  "title": "Dirección",
+                  "label": "Dirección de Habitación, Municipio y Parroquia",
+                  "placeholder": "Dirección de Habitación, Municipio y Parroquia",
+                  "title": "Dirección de Habitación, Municipio y Parroquia",
                   "disabled": false,
                   "getOptionLabel": [
                       "titulo"
@@ -1631,6 +1608,24 @@
                   "key": "estatus",
                   "name": "estatus"
               },
+              {
+                "nombre": "tipoestudiante",
+                "tipo": "lista_multiuso",
+                "label": "Tipo de Estudiante",
+                "placeholder": "Tipo de Estudiante",
+                "title": "Tipo de Estudiante",
+                "required": false,
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "lista": "lista_colegio_tipo_estudiante",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "key": "tipoestudiante",
+                "name": "tipoestudiante"
+            },
               {
                   "nombre": "representante",
                   "tipo": "lista_multiuso",
@@ -2278,6 +2273,148 @@
                 "comparar": "true",
                 "con": "passwordn",
                 "mensaje_error": "Contraseñas no son iguales"
+            },
+            {
+                "nombre": "titulo1",
+                "tipo": "subtitulo",
+                "label": "DATOS DEL RESPONSABLE DE PAGO",
+                "title": "DATOS DEL RESPONSABLE DE PAGO",
+                "name": "titulo1"
+            },
+            {
+                "nombre": "representante_pago",
+                "tipo": "lista_multiuso",
+                "label": "¿Es el Responsable de Pago?",
+                "placeholder": "¿Es el Esponsable de pago?",
+                "title": "¿Responsable de pago?",
+                "required": false,
+                "mensaje_error": "",
+                "disabled": false,
+                "numberOfLines": "",
+                "lista": "lista_colegio_sino",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "multiple": false,
+                "key": "representante_pago",
+                "name": "representante_pago",
+                "modificar": "Cambio_Representante_Pago"
+                
+            },
+            {
+                "nombre": "rp_cedula",
+                "tipo": "input",
+                "label": "Rif/Cedula",
+                "placeholder": "Rif/Cedula",
+                "title": "Rif o Cedula del Representante de Pago",
+                "required": false,
+                "mensaje_error": "Debe indicar Rif o Cedula del Representante de Pago",
+                "disabled": true,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "name": "rp_cedula"
+            },
+            {
+                "nombre": "rp_nombres",
+                "tipo": "input",
+                "label": "Nombres",
+                "placeholder": "Nombres",
+                "title": "Nombres del Representante de Pago",
+                "required": false,
+                "mensaje_error": "Debe indicar nombres del Representante de Pago",
+                "disabled": true,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "name": "rp_nombres"
+            },
+            {
+                "nombre": "rp_apellidos",
+                "tipo": "input",
+                "label": "Apellidos",
+                "placeholder": "Apellidos",
+                "title": "Apellidos del Representante de Pago",
+                "required": false,
+                "mensaje_error": "Debe indicar apellidos del Representante de Pago",
+                "disabled": true,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "name": "rp_apellidos"
+            },
+            {
+                "nombre": "rp_telefono",
+                "tipo": "input",
+                "label": "Teléfono(s)",
+                "placeholder": "Telefono(s)",
+                "title": "Teléfono(s) del Representante de Pago",
+                "required": false,
+                "mensaje_error": "Debe indicar teléfono(s) del Representante de Pago",
+                "disabled": true,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "name": "rp_telefono"
+            },
+            {
+                "nombre": "rp_correo",
+                "tipo": "input",
+                "label": "Correo",
+                "placeholder": "Correo",
+                "title": "Correo del Representante de Pago",
+                "required": false,
+                "mensaje_error": "Debe indicar correo del Representante de Pago",
+                "disabled": true,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "name": "rp_correo"
+            },
+            {
+                "nombre": "rp_lugartrabajo",
+                "tipo": "input",
+                "label": "Lugar de Trabajo",
+                "placeholder": "Lugar de Trabajo",
+                "title": "Nombres del Representante de Pago",
+                "required": false,
+                "mensaje_error": "Debe indicar nombres del Representante de Pago",
+                "disabled": true,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "name": "rp_lugartrabajo"
+            },
+            {
+                "nombre": "rp_telefonot",
+                "tipo": "input",
+                "label": "Teléfono(s) de Trabajo",
+                "placeholder": "Telefono(s) de Trabajo",
+                "title": "Teléfono(s) de Trabajo del Representante de Pago",
+                "required": false,
+                "mensaje_error": "Debe indicar teléfono(s) de trabajo del Representante de Pago",
+                "disabled": true,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "name": "rp_telefonot"
+            },
+            {
+                "nombre": "rp_direccion",
+                "tipo": "multiline",
+                "label": "Dirección",
+                "placeholder": "Dirección",
+                "title": "Dirección",
+                "disabled": true,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "name": "rp_direccion",
+                "multiline": true,
+                "maxRows": "3",
+                "mensaje_error": "Debe indicar dirección de trabajo del Representante de Pago"
             }
           ]
       },
@@ -3515,7 +3652,7 @@
               },
               {
                   "nombre": "monto",
-                  "tipo": "number",
+                  "tipo": "",
                   "label": "Monto",
                   "placeholder": "Monto",
                   "title": "Monto",
@@ -5204,7 +5341,7 @@
     {
         "_id": 4,
         "titulo": "Representante",
-        "permisos": ["Representante","/representante","Pagar", "RecibosR", "MisDatos"]
+        "permisos": ["Representante","/representante","Pagar", "RecibosR", "MisDatos","notasr"]
     },
     {
         "_id": 5,
@@ -5219,7 +5356,7 @@
     {
         "_id": 7,
         "titulo": "Control de Estudio",
-        "permisos": ["Academico","/academico","Aulas", "Docentes","Asignaturas","Horarios","Notas"]
+        "permisos": ["Administrativo", "/administrativo","Estudiantes","Academico","/academico","Aulas", "Asignaturas","Docentes","Asignaturas","Horario","procesosnotas","Procesos de notas","Notas","DNotas","Discusión de Notas","ControlEstudio","Control de Estudio"]
     }
     ],
     "lista_tipo_horario": [
@@ -5370,6 +5507,34 @@
             "_id": 4,
             "titulo": "Otro caso",
             "value": "otro",
+            "permisos": ""
+        }
+    ],
+    "lista_colegio_tipo_estudiante": [
+        {
+            "_id": 0,
+            "titulo": "REGULAR",
+            "value": "regular",
+            "permisos": "",
+            "id": 1,
+            "otro": ""
+        },
+        {
+            "_id": 1,
+            "titulo": "NUEVO INGRESO",
+            "value": "nuevo",
+            "permisos": ""
+        },
+        {
+            "_id": 2,
+            "titulo": "REINGRESO",
+            "value": "reingreso",
+            "permisos": ""
+        },
+        {
+            "_id": 3,
+            "titulo": "REPITIENTE",
+            "value": "repitiente",
             "permisos": ""
         }
     ],

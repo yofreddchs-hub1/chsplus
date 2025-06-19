@@ -903,12 +903,12 @@ colegioCtrl.NNotas = async (req, res) =>{
                                 Asigna[`2lapso-${val}-consejo`]=nota22;
                                 Asigna[`3lapso-${val}`]=nota3;
                                 Asigna[`3lapso-${val}-consejo`]=nota33;
-                                const n1 = Number(nota11)!=0 ? Number(nota11) : Number(nota1);
-                                const n2 = Number(nota22)!=0 ? Number(nota22) : Number(nota2);
-                                const n3 = Number(nota33)!=0 ? Number(nota33) : Number(nota3);
-                                if (nota[`asignatura_${val}_nombre`]==="MATEMÁTICAS")
-                                    console.log(n1, n2, n3, nota[`asignatura_${val}_nombre`], (n1+n2+n3)/3);
+                                const n1 = Number(nota11)!=0 ? Math.trunc(Number(nota11)+0.5) : Math.trunc(Number(nota1)+0.5);
+                                const n2 = Number(nota22)!=0 ? Math.trunc(Number(nota22)+0.5) : Math.trunc(Number(nota2)+0.5);
+                                const n3 = Number(nota33)!=0 ? Math.trunc(Number(nota33)+0.5) : Math.trunc(Number(nota3)+0.5);
+                                
                                 Asigna[`${val}-def`]=(n1+n2+n3)/3;
+                                //Asigna[`${val}-def`]=Math.trunc(Number((n1+n2+n3)/3)+0.5);
                             }else{
                                 Asigna[`1lapso-${val}`]= materia.nota;
                                 Asigna[`2lapso-${val}`]= materia.nota;
