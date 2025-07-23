@@ -808,36 +808,10 @@ colegioCtrl.NNotas = async (req, res) =>{
         let estudiantes = await Estudiantes.find({'valores.grado.titulo':datos.grado, 'valores.seccion.titulo':datos.seccion});
         console.log('....',estudiantes.length)
         console.log('....',Mensualidades.length)
-        // let asignaturas = await Buscar(tabla_asignatura, datos.grado, Api, 'grado.titulo');
-        // let asignaturas = await Asignatura.find({'valores.grado.titulo':datos.grado});
+        
         console.log('Despues de buscar...')
         let nuevanotas={}
-        // let evaluaciones= []
-        // // if (datos.tipo==='docente'){
-        // evaluaciones= await Evaluaciones.find(
-        //     {
-        //         $and:[
-        //             {'valores.periodo':datos.periodo},
-        //             {'valores.grado':datos.grado},
-        //             {'valores.seccion':datos.seccion},
-        //             ... datos.tipo==='docente' 
-        //             ?   [
-        //                     {'valores.docente._id':datos.docente._id},
-        //                     {'valores.asignatura._id':datos.asignatura._id}
-        //                 ]
-        //             :   []
-        //         ]
-        //     }
-        // );
-        // evaluaciones = evaluaciones.map(f=>{
-        //     return {
-        //         _id:f._id, ...f.valores, titulo:f.valores.nombre, field:`nota-${f._id}`, createdAt: f.createdAt
-        //     }
-        // }).sort((a,b) => a.lapso._id> b.lapso._id ? 1 : -1);
-        // }
-        // asignaturas = asignaturas.map(f=>{
-        //     return {_id:f._id, ...f.valores, titulo:f.valores.abreviacion ? f.valores.abreviacion : f.valores.asignatura  , field:`nota-${f._id}`}
-        // }).sort((a,b)=> Number(a.item ? a.item : 100) < Number(b.item ? b.item : 100) ? -1 : 1);
+        
         let{asignaturas, titulos, titulosn} = await colegioCtrl.Titulos(Api, datos);
         titulos.map(f=>{
             nuevanotas[f._id]={
@@ -862,7 +836,87 @@ colegioCtrl.NNotas = async (req, res) =>{
                 // {'valores.docente._id':datos.docente._id},
             ]
         });
-        console.log('Notas',notas.length)
+        /////////////////////Procedimiento nuevo agreagdo por los periodos nuevos ///////////
+        let mensualidadesf = Mensualidades.filter(f=>f.valores.grado===datos.grado && f.valores.seccion===datos.seccion);
+
+        console.log('Notas',estudiantes.length, notas.length, mensualidadesf.length);
+        estudiantes=[];
+        let lista_colegio_grado = [
+            {
+                "_id": 0,
+                "titulo": "1er año",
+                "value": "1er",
+                "permisos": ""
+            },
+            {
+                "_id": 1,
+                "titulo": "2do año",
+                "value": "2do",
+                "permisos": ""
+            },
+            {
+                "_id": 2,
+                "titulo": "3er año",
+                "value": "3er",
+                "permisos": ""
+            },
+            {
+                "_id": 3,
+                "titulo": "4to año",
+                "value": "4to",
+                "permisos": ""
+            },
+            {
+                "_id": 4,
+                "titulo": "5to año",
+                "value": "5to",
+                "permisos": ""
+            }
+        ];
+        let lista_colegio_seccion= [
+            {
+                "_id": 0,
+                "titulo": "A",
+                "value": "A",
+                "permisos": ""
+            },
+            {
+                "_id": 1,
+                "titulo": "B",
+                "value": "B",
+                "permisos": ""
+            },
+            {
+                "_id": 2,
+                "titulo": "C",
+                "value": "C",
+                "permisos": ""
+            }
+        ];
+        for (var j=0;j<mensualidadesf.length;j++){
+            let men = mensualidadesf[j];
+            let est = await Estudiantes.findOne({_id:men.valores._id_estudiante});
+            let pos = lista_colegio_grado.findIndex(f=> f.titulo===datos.grado);
+            est.valores.grado=pos!==-1 ? lista_colegio_grado[pos] : lista_colegio_grado[0];
+            pos = lista_colegio_seccion.findIndex(f=> f.titulo===datos.seccion);
+            est.valores.seccion = pos!==-1 ? lista_colegio_seccion[pos] : lista_colegio_seccion[0];
+            estudiantes=[...estudiantes,est];
+        }
+        console.log('Notas......',estudiantes.length, notas.length, mensualidadesf.length);
+        for (var j=0;j<notas.length;j++){
+            let no= notas[j];
+            const posn = estudiantes.findIndex(f=>f._id===no.valores._id_estudiante || f.valores.cedula===no.valores.cedula);
+            if (posn===-1){
+                let est = await Estudiantes.findOne({_id:no.valores._id_estudiante});
+                let pos = lista_colegio_grado.findIndex(f=> f.titulo===datos.grado);
+                est.valores.grado=pos!==-1 ? lista_colegio_grado[pos] : lista_colegio_grado[0];
+                pos = lista_colegio_seccion.findIndex(f=> f.titulo===datos.seccion);
+                est.valores.seccion = pos!==-1 ? lista_colegio_seccion[pos] : lista_colegio_seccion[0];
+                estudiantes=[...estudiantes,est];
+            }
+        }
+        console.log('Notas......11',estudiantes.length, notas.length, mensualidadesf.length);
+        /////////////////////////////////////
         for (var i=0;i<estudiantes.length; i++){
             let f = estudiantes[i];
             //verifica si los estudiantes estan inscrito

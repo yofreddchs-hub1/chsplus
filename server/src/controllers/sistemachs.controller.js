@@ -692,6 +692,9 @@ sistemachsCtrl.Egreso_Venta = async (req, res)=>{
                 let producto = anterior.orden_venta.producto[j];
                 const cantidad= producto.cantidad ? Number(producto.cantidad) : 1;
                 let Prod = await PT.findOne({_id:producto._id});
+                if (Prod===null){
+                    Prod = await PT.findOne({"valores.codigo":producto.codigo});
+                }
                 Prod.valores.actual+= cantidad;
                 await PT.updateOne({_id:Prod._id},{valores:Prod.valores, actualizado},{ upsert: true });
             }
@@ -829,6 +832,9 @@ sistemachsCtrl.Egreso_Venta = async (req, res)=>{
                         Movimiento({...producto, cantidad})
                     ];
                     let Prod = await PT.findOne({_id:producto._id});
+                    if (Prod===null){
+                        Prod = await PT.findOne({"valores.codigo":producto.codigo});
+                    }
                     Prod.valores.actual-= cantidad;
                     await PT.updateOne({_id:Prod._id},{valores:Prod.valores, actualizado},{ upsert: true });
                     // datos.orden_venta.producto[i].entregado=true;
