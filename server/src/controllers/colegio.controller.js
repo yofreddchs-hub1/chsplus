@@ -313,8 +313,7 @@ colegioCtrl.Solvencias = async (req, res) =>{
         let mensualidades=[];
         for (var i=0; i<estudiantes.length; i++){
             const estu= estudiantes[i];
-            
-            const pos = Mensualidades.findIndex(f=>f.valores._id_estudiante===estu._id || f.valores.cedula===estu.cedula );
+            const pos = Mensualidades.findIndex(f=>(f.valores._id_estudiante===estu._id || f.valores.cedula===estu.cedula) && estu.grado && estu.grado.titulo===f.valores.grado );
             let mensualidad = {}
             if (pos!==-1){
                 mensualidad = {_id:Mensualidades[pos]._id, ...Mensualidades[pos].valores,
