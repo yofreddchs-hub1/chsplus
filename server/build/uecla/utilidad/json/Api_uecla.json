@@ -188,6 +188,11 @@
                   "icon": "fact_check"
               },
               {
+                  "value": "Estadistica",
+                  "primary": "Estadistica Inscripción",
+                  "icon": "bar_chart"
+              },
+              {
                 "value": "EnviarWHATSAPP",
                 "primary": "Enviar Mensaje",
                 "icon": "send"
@@ -1453,7 +1458,7 @@
                     "titulo"
                 ],
                 "agregar": false,
-                "multiple": false,
+                "multiple": true,
                 "key": "condicione",
                 "name": "condicione"
             },
@@ -1483,7 +1488,7 @@
               },
               {
                   "nombre": "traslado",
-                  "tipo": "input",
+                  "tipo": "lista_multiuso",
                   "label": "Traslado",
                   "placeholder": "Traslado",
                   "title": "",
@@ -1491,7 +1496,9 @@
                   "getOptionLabel": [
                       "titulo"
                   ],
-                  "name": "traslado"
+                  "name": "traslado",
+                  "lista": "lista_colegio_traslado"
+                
               },
               {
                   "nombre": "persona_autorizada",
@@ -4501,7 +4508,7 @@
                     "titulo"
                 ],
                 "agregar": false,
-                "multiple": false,
+                "multiple": true,
                 "key": "condicione",
                 "name": "condicione"
             },
@@ -4860,7 +4867,7 @@
                     "titulo"
                 ],
                 "agregar": false,
-                "multiple": false,
+                "multiple": true,
                 "key": "condicione",
                 "name": "condicione"
             },
@@ -5510,6 +5517,34 @@
             "permisos": ""
         }
     ],
+    "lista_colegio_traslado": [
+        {
+            "_id": 0,
+            "titulo": "REPRESENTANTE",
+            "value": "representante",
+            "permisos": "",
+            "id": 1,
+            "otro": ""
+        },
+        {
+            "_id": 1,
+            "titulo": "TRANSPORTE ESCOLAR",
+            "value": "transporteescolar",
+            "permisos": ""
+        },
+        {
+            "_id": 2,
+            "titulo": "TRANSPORTE PUBLICO",
+            "value": "transportepublico",
+            "permisos": ""
+        },
+        {
+            "_id": 3,
+            "titulo": "SOLO",
+            "value": "solo",
+            "permisos": ""
+        }
+    ],
     "lista_colegio_tipo_estudiante": [
         {
             "_id": 0,
@@ -5683,6 +5718,12 @@
             "_id": 2,
             "titulo": "C",
             "value": "C",
+            "permisos": ""
+        },
+        {
+            "_id": 3,
+            "titulo": "D",
+            "value": "d",
             "permisos": ""
         }
     ],
@@ -6002,8 +6043,14 @@
         },
         {
             "_id": 2,
-            "titulo": "Espectro Autismo",
+            "titulo": "Autismo",
             "value": "espectro",
+            "permisos": ""
+        },
+        {
+            "_id": 3,
+            "titulo": "Epilepsia",
+            "value": "epilexia",
             "permisos": ""
         }
     ],
@@ -6142,7 +6189,81 @@
             "default": "",
             "type": ""
         }
-    ],
+      ],
+      "Titulos_Inscritos": [
+          {
+              "title": "Cedula",
+              "field": "cedula",
+              "tipo": "",
+              "formato": "(dato)=> `${dato.cedula}`",
+              "default": "",
+              "type": ""
+          },
+          {
+              "title": "Nombres",
+              "field": "nombres",
+              "tipo": "",
+              "formato": "(dato)=> `${dato.nombres}`",
+              "default": "",
+              "type": ""
+          },
+          {
+              "title": "Apellidos",
+              "field": "apellidos",
+              "tipo": "",
+              "formato": "(dato)=> `${dato.apellidos}`",
+              "default": "",
+              "type": ""
+          },
+          {
+              "title": "Grado",
+              "field": "grado",
+              "tipo": "",
+              "formato": "(dato)=> `${dato.grado}`",
+              "default": "",
+              "type": ""
+          },
+          {
+              "title": "Sección",
+              "field": "seccion",
+              "tipo": "",
+              "formato": "(dato)=> `${dato.seccion}`",
+              "default": "",
+              "type": ""
+          },
+          {
+              "title": "Periodo",
+              "field": "periodo",
+              "tipo": "",
+              "formato": "(dato)=> `${ dato.periodo}`",
+              "default": "",
+              "type": ""
+          },
+          {
+              "title": "Recibo",
+              "field": "recibo",
+              "tipo": "",
+              "formato": "(dato)=> `${dato.recibo}`",
+              "default": "",
+              "type": ""
+          },
+          {
+              "title": "Fecha",
+              "field": "fecha",
+              "tipo": "",
+              "formato": "(dato)=> `${ dato.fechainscripcion}`",
+              "default": "",
+              "type": ""
+          },
+          {
+              "title": "Tipo de Estudiante",
+              "field": "tipoestudiante",
+              "tipo": "",
+              "formato": "(dato)=> `${ dato.tipoestudiante ? dato.tipoestudiante.titulo : ''}`",
+              "default": "",
+              "type": ""
+          }
+      ],
       "Titulos_Arancel": [
           {
               "title": "Periodo",
