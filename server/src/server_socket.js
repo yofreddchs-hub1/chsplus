@@ -5,6 +5,7 @@ const { Hash_texto, Hash_password } = require('./servicios/encriptado');
 const {Tablas} = require('./controllers/api.controller');
 const {Model} = require('./database/model');
 const { RegistroChat, VerContactos, Mensajes, NuevoMensaje } = require('./controllers/chat.controller');
+const { InscritosF } = require('./controllers/colegio.controller');
 
 const io = require("socket.io")(global.global_http,
     {
@@ -335,7 +336,10 @@ global.io = io.of('/').on('connection', (socket) =>{
         global.io.to(socket.id).emit('Actualizando_Cliente', {codigo_navegador, tabla, pagina, cantidadP, datos})
         
     })
-
+    socket.on('Inscritos', (data)=>{
+        console.log('Inscritos',data);
+        InscritosF(data, socket);
+    })
 });
 //Para buscar un grupo de datos
 const porpagina = (datos, paginaA, cantidad, condicion)=>{

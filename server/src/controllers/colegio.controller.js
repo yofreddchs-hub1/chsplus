@@ -319,8 +319,8 @@ colegioCtrl.Solvencias = async (req, res) =>{
                 mensualidad = {_id:Mensualidades[pos]._id, ...Mensualidades[pos].valores,
                     cedula:estu.cedula, nombres:estu.nombres, apellidos:estu.apellidos,
                     grado:estu.grado ? estu.grado.titulo : '',
-                    seccion:estu.seccion ? estu.seccion.titulo : ''
-
+                    seccion:estu.seccion ? estu.seccion.titulo : '',
+                    tipoestudiante: estu.tipoestudiante
                 }
                 mensualidades=[...mensualidades, mensualidad];
             }
@@ -1177,6 +1177,167 @@ colegioCtrl.Resumen = async (req, res)=>{
         // recibos= recibos.filter(f=> f.valores.mensualidades.meses.filter(fi=> fi._id===datos._id));
 
         res.json({Respuesta:'Ok', datos, mensualidad, recibos});
+    }else{
+        res.json({Respuesta:'Error', mensaje:'hash invalido'});
+    }
+}
+
+colegioCtrl.InscritosF = async(datos, socket)=>{
+    const Api = "uecla";
+    const Estudiantes = await Model(Api,tabla_estudiante);
+    let mensualidades = await Buscar(tabla_mensualidad, datos.periodo, Api, 'periodo');
+    mensualidades= mensualidades.map(val=>val.valores).filter(f=>f._id_estudiante.indexOf("Abono")===-1).sort((a,b) => Number(a.recibo)> Number(b.recibo) ?  1 : -1);
+    
+    socket.emit("Progreso",{total:mensualidades.length, progreso:0})
+    let datosE=[
+        { id: 0, value: 0, label: 'REGULARES' },
+        { id: 1, value: 0, label: 'NUEVO INGRESO' },
+        { id: 2, value: 0, label: 'REINGRESO' },
+        { id: 3, value: 0, label: 'REPITIENTE' },
+        { id: 4, value: 0, label: 'OTRO' },
+    ];
+    for (var i=0; i<mensualidades.length;i++){
+        
+        if (mensualidades[i]._id_estudiante.indexOf('Abono')===-1){
+            mensualidades[i]={
+                _id_estudiante:mensualidades[i]._id_estudiante,
+                cedula:mensualidades[i].cedula,
+                nombres:mensualidades[i].nombres,
+                apellidos:mensualidades[i].apellidos,
+                periodo:mensualidades[i].periodo,
+                grado:mensualidades[i].grado,
+                seccion:mensualidades[i].seccion,
+            }
+            
+            const estu = await Estudiantes.findOne({_id:mensualidades[i]._id_estudiante});
+            
+            if (estu!==null){
+                mensualidades[i].tipoestudiante=estu.valores.tipoestudiante;
+                if (mensualidades[i].tipoestudiante && mensualidades[i].tipoestudiante._id===0){
+                    datosE[0].value+=1;// regulares++;
+                }else if (mensualidades[i].tipoestudiante && mensualidades[i].tipoestudiante._id===1){
+                    datosE[1].value+=1;//nuevo++;
+                }else if (mensualidades[i].tipoestudiante && mensualidades[i].tipoestudiante._id===2){
+                    datosE[2].value+=1;//reingreso++;
+                }else if (mensualidades[i].tipoestudiante && mensualidades[i].tipoestudiante._id===3){
+                    datosE[3].value+=1;//repitiente++;
+                }else{
+                    datosE[4].value+=1;//otro++;
+                }
+                
+                let recibos = estu.valores.representante && estu.valores.representante._id  ? await Buscar(tabla_recibo, estu.valores.representante._id, Api, 'representante._id'): [];
+                let recibos1 = estu.valores.representante && estu.valores.representante._id  ? await Buscar(tabla_recibo, estu.valores.representante.cedula, Api, 'representante.cedula'): [];
+                
+                recibos1.map(val=>{
+                    const pos = recibos.findIndex(f=>String(f._id)===String(val._id))
+                    if(pos===-1){
+                        recibos = [...recibos, val]
+                    }
+                    return val
+                });
+                let pos=-1;
+                recibos= recibos.sort((a,b)=> Number(a.valores.recibo)>Number(b.valores.recibo) ? -1 : 1).map((val,i)=>{
+                    const p = val.valores.mensualidades.meses.findIndex(f=> f.periodo===datos.periodo && f.value==='inscripcion')
+                    if (p!==-1){
+                        pos=i;
+                    }
+                    return val
+                });
+                    
+                if (pos!==-1){
+                    mensualidades[i].recibo = recibos[pos].valores.recibo;
+                    mensualidades[i].fechainscripcion = moment(recibos[pos].createdAt).format('DD/MM/YYYY');
+                }
+                
+            }
+            socket.emit("Progreso",{total:mensualidades.length, progreso:i*100/mensualidades.length})
+            
+        }
+    }
+    datos=mensualidades;
+        
+    socket.emit("Inscritos",{datos, datosE});
+}
+colegioCtrl.Inscritos = async (req, res)=>{
+    let {User, Api, datos, hash} = req.body;
+    User= typeof User==='string' ? JSON.parse(User) : User;
+    const hashn = await Hash_texto(JSON.stringify({User, Api, datos}));
+    // const igual= await Verifica_api(Api, true);
+    if (hashn===hash) {// && igual) {
+        const Estudiantes = await Model(Api,tabla_estudiante);
+        datos= JSON.parse(datos);
+        console.log(datos);
+        let mensualidades = await Buscar(tabla_mensualidad, datos.periodo, Api, 'periodo');
+        mensualidades= mensualidades.map(val=>val.valores).filter(f=>f._id_estudiante.indexOf("Abono")===-1).sort((a,b) => Number(a.recibo)> Number(b.recibo) ?  1 : -1);
+        console.log(mensualidades.length)
+        let datosE=[
+            { id: 0, value: 0, label: 'REGULARES' },
+            { id: 1, value: 0, label: 'NUEVO INGRESO' },
+            { id: 2, value: 0, label: 'REINGRESO' },
+            { id: 3, value: 0, label: 'REPITIENTE' },
+            { id: 4, value: 0, label: 'OTRO' },
+        ];
+        for (var i=0; i<mensualidades.length;i++){
+            console.log(i);
+            if (mensualidades[i]._id_estudiante.indexOf('Abono')===-1){
+                mensualidades[i]={
+                    _id_estudiante:mensualidades[i]._id_estudiante,
+                    cedula:mensualidades[i].cedula,
+                    nombres:mensualidades[i].nombres,
+                    apellidos:mensualidades[i].apellidos,
+                    periodo:mensualidades[i].periodo,
+                    grado:mensualidades[i].grado,
+                    seccion:mensualidades[i].seccion,
+                }
+                
+                const estu = await Estudiantes.findOne({_id:mensualidades[i]._id_estudiante});
+                
+                if (estu!==null){
+                    mensualidades[i].tipoestudiante=estu.valores.tipoestudiante;
+                    if (mensualidades[i].tipoestudiante && mensualidades[i].tipoestudiante._id===0){
+                        datosE[0].value+=1;// regulares++;
+                    }else if (mensualidades[i].tipoestudiante && mensualidades[i].tipoestudiante._id===1){
+                        datosE[1].value+=1;//nuevo++;
+                    }else if (mensualidades[i].tipoestudiante && mensualidades[i].tipoestudiante._id===2){
+                        datosE[2].value+=1;//reingreso++;
+                    }else if (mensualidades[i].tipoestudiante && mensualidades[i].tipoestudiante._id===3){
+                        datosE[3].value+=1;//repitiente++;
+                    }else{
+                        datosE[4].value+=1;//otro++;
+                    }
+                    
+                    let recibos = estu.valores.representante && estu.valores.representante._id  ? await Buscar(tabla_recibo, estu.valores.representante._id, Api, 'representante._id'): [];
+                    let recibos1 = estu.valores.representante && estu.valores.representante._id  ? await Buscar(tabla_recibo, estu.valores.representante.cedula, Api, 'representante.cedula'): [];
+                    
+                    recibos1.map(val=>{
+                        const pos = recibos.findIndex(f=>String(f._id)===String(val._id))
+                        if(pos===-1){
+                            recibos = [...recibos, val]
+                        }
+                        return val
+                    });
+                    let pos=-1;
+                    recibos= recibos.sort((a,b)=> Number(a.valores.recibo)>Number(b.valores.recibo) ? -1 : 1).map((val,i)=>{
+                        const p = val.valores.mensualidades.meses.findIndex(f=> f.periodo===datos.periodo && f.value==='inscripcion')
+                        if (p!==-1){
+                            pos=i;
+                        }
+                        return val
+                    });
+                        
+                    if (pos!==-1){
+                        mensualidades[i].recibo = recibos[pos].valores.recibo;
+                        mensualidades[i].fechainscripcion = moment(recibos[pos].createdAt).format('DD/MM/YYYY');
+                    }
+                    
+                }
+                
+            }
+            // console.log(datos[i]._id_estudiante);
+        }
+        datos=mensualidades;
+        
+        res.json({Respuesta:'Ok', datos, datosE});
     }else{
         res.json({Respuesta:'Error', mensaje:'hash invalido'});
     }

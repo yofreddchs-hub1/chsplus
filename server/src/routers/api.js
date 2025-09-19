@@ -47,7 +47,8 @@ const { Guardar_produccion, Ingresar_material, Ingresar_empaque, Ingreso_Egreso,
 const { Mensualidades, EnviarPago, Solvencias, Resumen, Sincronizar_uecla, Recibos, Verificar_Inscripcion, Actualizar_Referencia, 
         Promover, LeerHorarioU, DisponibilidadHorarioU, GuardarHorarioU, Notas,NNotas,
         NominaDocente,
-        TitulosNotas
+        TitulosNotas,
+        Inscritos
       } = require('../controllers/colegio.controller');
 const { LeerHorario, GuardarHorario, DisponibilidadHorario, MisDatos 
 
@@ -116,6 +117,7 @@ router.post('/colegio/verificarinscripcion',Verificar_Inscripcion);
 router.post('/colegio/solvencias',Solvencias);
 router.post('/colegio/enviarpago',EnviarPago);
 router.post('/colegio/resumen',Resumen);
+router.post('/colegio/inscritos',Inscritos);
 router.post('/colegio/recibo',Recibos);
 router.post('/colegio/sincronizar',Sincronizar_uecla);
 router.post('/colegio/actualizarreferencia',Actualizar_Referencia);
