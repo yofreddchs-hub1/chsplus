@@ -288,6 +288,64 @@ colegioCtrl.Solvencias = async (req, res) =>{
         datos= JSON.parse(datos);
         const Mensualidad = await Model(Api,tabla_mensualidad);
         const Representante = await Model(Api,tabla_representante);
+        const Estudiante = await Model(Api,tabla_estudiante);
+        let Mensualidades = await Mensualidad.find({'valores.periodo':datos.periodo});
+        
+        // let estudiantes = await Buscar(tabla_estudiante, datos.grado, Api, 'grado.titulo');
+        let estudiantes = [];
+        let nuevo=[];
+        let representantes=[];
+        let mensualidades=[];
+        for (var i=0;i<Mensualidades.length; i++){
+            let f = {...Mensualidades[i].valores, _id:Mensualidades[i]._id};
+            if ((datos.grado && f.grado && datos.grado===f.grado)
+                &&
+                (datos.seccion && f.seccion && f.seccion===datos.seccion 
+                // && f.valores.estatus && f.valores.estatus.value==='inscrito'
+                || datos.seccion===undefined )){
+                
+                let est = await Estudiante.findOne({_id:f._id_estudiante})
+                nuevo=[...nuevo, {...est.valores,_id:est._id}]
+                const posR = representantes.findIndex(val=> est.valores.representante && val._id===est.valores.representante._id);
+                if (posR===-1 && est.valores.representante){
+                    let repres= await Representante.findOne({_id:est.valores.representante._id});
+                    if (repres===null) 
+                        repres= await Representante.findOne({cedula:est.valores.representante.cedula});
+                    if (repres!==null) 
+                        representantes=[...representantes, repres.valores]
+                }
+
+                let mensualidad = {}
+                const estu = {...est.valores,_id:est._id};
+                mensualidad = {...f,//_id:f._id, ...f.valores,
+                    cedula:estu.cedula, nombres:estu.nombres, apellidos:estu.apellidos,
+                    // grado:estu.grado ? estu.grado.titulo : '',
+                    // seccion:estu.seccion ? estu.seccion.titulo : '',
+                    tipoestudiante: estu.tipoestudiante
+                }
+                mensualidades=[...mensualidades, mensualidad];
+            
+            }
+        }
+
+        estudiantes= [...nuevo];
+       
+        res.json({Respuesta:'Ok', estudiantes, mensualidades, representantes});
+    }else{
+        res.json({Respuesta:'Error', mensaje:'hash invalido'});
+    }
+
+}
+//Solvencia anterior
+colegioCtrl.SolvenciasA = async (req, res) =>{
+    let {User, Api, datos, hash} = req.body;
+    User= typeof User==='string' ? JSON.parse(User) : User;
+    const hashn = await Hash_texto(JSON.stringify({User, Api, datos}));
+    const igual= await Verifica_api(Api, true);
+    if (hashn===hash && igual) {
+        datos= JSON.parse(datos);
+        const Mensualidad = await Model(Api,tabla_mensualidad);
+        const Representante = await Model(Api,tabla_representante);
         let Mensualidades = await Mensualidad.find({'valores.periodo':datos.periodo});
         let estudiantes = await Buscar(tabla_estudiante, datos.grado, Api, 'grado.titulo');
         let nuevo=[];
