@@ -5727,6 +5727,21 @@
           "columna": 3,
           "value": [
             {
+                "nombre": "referencia",
+                "tipo": "input",
+                "label": "",
+                "placeholder": "Referencia",
+                "title": "Referencia",
+                "required": false,
+                "mensaje_error": "",
+                "disabled": false,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "name": "referencia"
+            },
+            {
                 "nombre": "nombre",
                 "tipo": "input",
                 "label": "",
@@ -7047,7 +7062,7 @@
             "default": "",
             "type": ""
         }
-    ],
+      ],
       "Titulos_Asignatura": [
           {
               "title": "Grado",
@@ -7897,6 +7912,32 @@
               "default": "",
               "type": ""
           }
+      ],
+      "Titulos_Proveedor": [
+        {
+            "title": "Referencia",
+            "field": "referencia",
+            "tipo": "",
+            "formato": "(dato)=> `${dato.valores.referencia}`",
+            "default": "",
+            "type": ""
+        },
+        {
+            "title": "Nombre",
+            "field": "nombre",
+            "tipo": "",
+            "formato": "(dato)=> `${dato.valores.nombre}`",
+            "default": "",
+            "type": ""
+        },
+        {
+            "title": "Rif",
+            "field": "rif",
+            "tipo": "",
+            "formato": "(dato)=> `${dato.valores.rif}`",
+            "default": "",
+            "type": ""
+        }
       ],
       "Titulos_Solvencias": [
           {

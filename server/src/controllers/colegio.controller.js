@@ -498,7 +498,17 @@ colegioCtrl.Notas = async (req, res) =>{
         //         Mensualidades=[...Mensualidades, encontrado]
         //     }
         // }
-        console.log('....',Mensualidades.length)
+        console.log('....>>',Mensualidades.length)
+        //nuevo metodo para agregar seccion a quien no tiene o cambio de seccion
+        for (est=0;mes<estudiantes.length;est++){
+            const estudiante= estudiantes[est];
+            let pos = Mensualidades.findIndex(f=> f.valores._id_estudiante=== String(estudiante._id))
+            console.log(pos, estudiante._id)
+            if (pos!==-1 && estudiante.valores.seccion 
+                    && Mensualidades[pos].valores.seccion !== estudiante.valores.seccion.titulo ){
+                Mensualidades[pos].valores.seccion=estudiante.valores.seccion.titulo;
+            }
+        }
         // let asignaturas = await Buscar(tabla_asignatura, datos.grado, Api, 'grado.titulo');
         let asignaturas = await Asignatura.find({'valores.grado.titulo':datos.grado});
         console.log('Despues de buscar...')
@@ -938,7 +948,16 @@ colegioCtrl.NNotas = async (req, res) =>{
         let estudiantes = await Estudiantes.find({'valores.grado.titulo':datos.grado, 'valores.seccion.titulo':datos.seccion});
         console.log('....',estudiantes.length)
         console.log('....',Mensualidades.length)
-        
+        //nuevo metodo para agregar seccion a quien no tiene o cambio de seccion
+        for (est=0;est<estudiantes.length;est++){
+            const estudiante= estudiantes[est];
+            let pos = Mensualidades.findIndex(f=> f.valores._id_estudiante=== String(estudiante._id))
+            
+            if (pos!==-1 && estudiante.valores.seccion 
+                    && Mensualidades[pos].valores.seccion !== estudiante.valores.seccion.titulo ){
+                Mensualidades[pos].valores.seccion=estudiante.valores.seccion.titulo;
+            }
+        }
         console.log('Despues de buscar...')
         let nuevanotas={}
         
