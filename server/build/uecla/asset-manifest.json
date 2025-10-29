@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "./static/css/main.82648e9d.css",
-    "main.js": "./static/js/main.eecb633b.js",
+    "main.js": "./static/js/main.8c1cedd9.js",
     "static/js/498.260bb6ea.chunk.js": "./static/js/498.260bb6ea.chunk.js",
     "static/js/703.9a244083.chunk.js": "./static/js/703.9a244083.chunk.js",
     "static/js/513.a72e5335.chunk.js": "./static/js/513.a72e5335.chunk.js",
@@ -13,6 +13,7 @@
     "static/media/excelmock3.jpg": "./static/media/excelmock3.f05feccef5b1cf5f27f4.jpg",
     "static/media/sindatos.png": "./static/media/sindatos.c8d69ce9593767599a7a.png",
     "static/media/sello.png": "./static/media/sello.eea2b11c91afe46513c7.png",
+    "static/media/logofirma.png": "./static/media/logofirma.33b3e46fac476f685ba4.png",
     "static/media/pie1.png": "./static/media/pie1.3bb6c82a490762348756.png",
     "static/media/banesco.png": "./static/media/banesco.acda8306cf2be1c214e4.png",
     "static/media/excel.png": "./static/media/excel.6a794f2f02495f3ced77.png",
@@ -21,7 +22,7 @@
     "static/media/bv.png": "./static/media/bv.ee026bff9c786efa1204.png",
     "index.html": "./index.html",
     "main.82648e9d.css.map": "./static/css/main.82648e9d.css.map",
-    "main.eecb633b.js.map": "./static/js/main.eecb633b.js.map",
+    "main.8c1cedd9.js.map": "./static/js/main.8c1cedd9.js.map",
     "498.260bb6ea.chunk.js.map": "./static/js/498.260bb6ea.chunk.js.map",
     "703.9a244083.chunk.js.map": "./static/js/703.9a244083.chunk.js.map",
     "513.a72e5335.chunk.js.map": "./static/js/513.a72e5335.chunk.js.map",
@@ -29,6 +30,6 @@
   },
   "entrypoints": [
     "static/css/main.82648e9d.css",
-    "static/js/main.eecb633b.js"
+    "static/js/main.8c1cedd9.js"
   ]
 }

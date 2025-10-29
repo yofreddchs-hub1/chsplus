@@ -27,6 +27,65 @@ const tabla_asignatura= 'uecla_asignatura';
 const tabla_docente = 'uecla_docente';
 const tabla_evaluacion = 'uecla_evaluacion';
 
+let lista_colegio_grado = [
+    {
+        "_id": 0,
+        "titulo": "1er año",
+        "value": "1er",
+        "permisos": ""
+    },
+    {
+        "_id": 1,
+        "titulo": "2do año",
+        "value": "2do",
+        "permisos": ""
+    },
+    {
+        "_id": 2,
+        "titulo": "3er año",
+        "value": "3er",
+        "permisos": ""
+    },
+    {
+        "_id": 3,
+        "titulo": "4to año",
+        "value": "4to",
+        "permisos": ""
+    },
+    {
+        "_id": 4,
+        "titulo": "5to año",
+        "value": "5to",
+        "permisos": ""
+    }
+];
+let lista_colegio_seccion= [
+    {
+        "_id": 0,
+        "titulo": "A",
+        "value": "A",
+        "permisos": ""
+    },
+    {
+        "_id": 1,
+        "titulo": "B",
+        "value": "B",
+        "permisos": ""
+    },
+    {
+        "_id": 2,
+        "titulo": "C",
+        "value": "C",
+        "permisos": ""
+    },
+    {
+        "_id": 3,
+        "titulo": "D",
+        "value": "D",
+        "permisos": ""
+    }
+];
+
 Buscar = async(tabla, dato, Api, campo='_id') =>{
     const BD = await Model(Api, tabla);//require(`../models/${tabla}`);
     let resultado = dato===undefined ? await BD.find() : await BD.find({[`valores.${campo}`]:dato})//BD.find({[`${campo}`]:dato})//await BD.find({$text: {$search: dato, $caseSensitive: true}})
@@ -296,8 +355,22 @@ colegioCtrl.Solvencias = async (req, res) =>{
         let nuevo=[];
         let representantes=[];
         let mensualidades=[];
+        
         for (var i=0;i<Mensualidades.length; i++){
             let f = {...Mensualidades[i].valores, _id:Mensualidades[i]._id};
+            // Agregado para la seccion
+            if ((f.seccion==='' || f.seccion===undefined) && (datos.grado && f.grado && datos.grado===f.grado)){
+                let est = await Estudiante.findOne({_id:f._id_estudiante})
+                f.seccion=est.valores.seccion ? est.valores.seccion.titulo:''
+            }
+            
+            if (f.grado===undefined){
+                let est = await Estudiante.findOne({_id:f._id_estudiante})
+                if (est && est.valores.grado==="GRADUADO"){
+                    
+                }
+                console.log('===> Grado',f.grado, est ? est.valores.grado : '');
+            }
             if ((datos.grado && f.grado && datos.grado===f.grado)
                 &&
                 (datos.seccion && f.seccion && f.seccion===datos.seccion 
@@ -898,58 +971,7 @@ colegioCtrl.NNotas = async (req, res) =>{
 
         console.log('Notas',estudiantes.length, notas.length, mensualidadesf.length);
         estudiantes=[];
-        let lista_colegio_grado = [
-            {
-                "_id": 0,
-                "titulo": "1er año",
-                "value": "1er",
-                "permisos": ""
-            },
-            {
-                "_id": 1,
-                "titulo": "2do año",
-                "value": "2do",
-                "permisos": ""
-            },
-            {
-                "_id": 2,
-                "titulo": "3er año",
-                "value": "3er",
-                "permisos": ""
-            },
-            {
-                "_id": 3,
-                "titulo": "4to año",
-                "value": "4to",
-                "permisos": ""
-            },
-            {
-                "_id": 4,
-                "titulo": "5to año",
-                "value": "5to",
-                "permisos": ""
-            }
-        ];
-        let lista_colegio_seccion= [
-            {
-                "_id": 0,
-                "titulo": "A",
-                "value": "A",
-                "permisos": ""
-            },
-            {
-                "_id": 1,
-                "titulo": "B",
-                "value": "B",
-                "permisos": ""
-            },
-            {
-                "_id": 2,
-                "titulo": "C",
-                "value": "C",
-                "permisos": ""
-            }
-        ];
+       
         for (var j=0;j<mensualidadesf.length;j++){
             let men = mensualidadesf[j];
             let est = await Estudiantes.findOne({_id:men.valores._id_estudiante});

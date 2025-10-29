@@ -193,6 +193,11 @@
                   "icon": "bar_chart"
               },
               {
+                  "value": "Retencion",
+                  "primary": "Retención",
+                  "icon": "point_of_sale"
+              },
+              {
                 "value": "EnviarWHATSAPP",
                 "primary": "Enviar Mensaje",
                 "icon": "send"
@@ -5315,7 +5320,474 @@
                 "name": "fecha"
             }
         ]
-    }
+    },
+    "Form_Retencion": {
+        "columna": 8,
+        "value": [
+            {
+                "nombre": "titulo1",
+                "tipo": "subtitulo",
+                "label": "COMPROBANTE DE RETENCIÓN DEL IMPUESTO AL VALOR AGREGADO",
+                "title": "COMPROBANTE DE RETENCIÓN DEL IMPUESTO AL VALOR AGREGADO",
+                "name": "titulo1"
+            },
+            {
+                "nombre": "fecha",
+                "tipo": "Fecha",
+                "label": "Fecha",
+                "placeholder": "Fecha",
+                "title": "Fecha",
+                "disabled": false,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "name": "fecha",
+                "type": "date",
+                "modificar": "Secuencia_retencion"
+            },
+            {
+                "nombre": "numero",
+                "tipo": "input",
+                "label": "N°",
+                "placeholder": "N°",
+                "title": "N°",
+                "required": true,
+                "disabled": false,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "name": "numero"
+            },                   
+            {
+                "nombre": "periodo",
+                "tipo": "input",
+                "label": "Periodo",
+                "placeholder": "Periodo",
+                "title": "Periodo",
+                "required": false,
+                "mensaje_error": "",
+                "disabled": true,
+                "numberOfLines": "",
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "multiple": true,
+                "key": "periodo",
+                "name": "periodo"
+            },
+            {
+                "nombre": "titulo2",
+                "tipo": "label",
+                "label": "AGENTE DE RETENCIÓN",
+                "title": "AGENTE DE RETENCIÓN",
+                "name": "titulo2",
+                "solo":true,
+                "style" : {"padding": ""}
+            },
+            {
+                "nombre": "titulo3",
+                "tipo": "label",
+                "label": "Nombre o razón social: Colegio Libertadores de América C.A.",
+                "title": "Nombre o razón social: Colegio Libertadores de América C.A.",
+                "name": "titulo3",
+                "style" : {"padding": "","paddingLeft":"50px"},
+                "solo":true
+            },
+            {
+                "nombre": "titulo4",
+                "tipo": "label",
+                "label": "Rif: J-08534771-2",
+                "title": "Rif: J-08534771-2",
+                "name": "titulo4",
+                "style" : {"padding": "","paddingLeft":"50px"},
+                "solo":true
+            },
+            {
+                "nombre": "titulo5",
+                "tipo": "label",
+                "label": "Dirección: Calle Negron Silva entre Av Independencia y Calle Garcés Edif. U.E. Colegio Libertadores de ",
+                "title": "Dirección: Calle Negron Silva entre Av Independencia y Calle Garcés Edif. U.E. Colegio Libertadores de ",
+                "name": "titulo5",
+                "style" : {"padding": "","paddingLeft":"50px"},
+                "solo":true
+            },
+            {
+                "nombre": "titulo6",
+                "tipo": "label",
+                "label": "América  piso PB Local S/N Sector Bobare Santa Ana de Coro Falcón",
+                "title": "América  piso PB Local S/N Sector Bobare Santa Ana de Coro Falcón",
+                "name": "titulo6",
+                "style" : {"padding": "","paddingLeft":"150px"},
+                "solo":true
+            },
+            {
+                "nombre": "titulo7",
+                "tipo": "label",
+                "label": "SUJETO DE RETENCIÓN",
+                "title": "SUJETO DE RETENCIÓN",
+                "name": "titulo7",
+                "solo":true,
+                "style" : {"padding": ""}
+            },
+            {
+                  "nombre": "proveedor",
+                  "name": "proveedor",
+                  "label": "Proveedor",
+                  "placeholder": "Proveedor",
+                  "title": "Proveedor",
+                  "required": "true",
+                  "disabled": false,
+                  "tipo": "lista_multiuso",
+                  "lista": "uecla_Proveedor",
+                  "multiple": false,
+                  "agregar": true,
+                  "getOptionLabel": [
+                      "rif", "nombre"
+                  ],
+                  "form": "Form_Proveedor"
+            },
+            {
+                "nombre": "titulo8",
+                "tipo": "label",
+                "label": "FACTURA",
+                "title": "FACTURA",
+                "name": "titulo8",
+                "solo":true,
+                "style" : {"padding": ""}
+            },
+            {
+                "nombre": "fechaf",
+                "tipo": "Fecha",
+                "label": "Fecha",
+                "placeholder": "Fecha",
+                "title": "Fecha",
+                "disabled": false,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "name": "fechaf",
+                "type": "date",
+                "modificar": "Secuencia_retencion"
+            },
+            {
+                "nombre": "numerof",
+                "tipo": "numero",
+                "label": "Número",
+                "placeholder": "Número",
+                "title": "Número",
+                "disabled": false,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "name": "numerof"
+                
+            },
+            {
+                "nombre": "numerofc",
+                "tipo": "input",
+                "label": "N° Control",
+                "placeholder": "N° Control",
+                "title": "N° Control",
+                "disabled": false,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "name": "numerofc"
+                
+            },
+            {
+                "nombre": "montoft",
+                "tipo": "monto",
+                "label": "Monto Total",
+                "placeholder": "Monto Total",
+                "title": "Monto Total",
+                "disabled": false,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "name": "montoft",
+                "modificar": "Calcular_retencion"
+            },
+            {
+                "nombre": "montofe",
+                "tipo": "monto",
+                "label": "Monto Exento",
+                "placeholder": "Monto Exento",
+                "title": "Monto Exento",
+                "disabled": false,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "name": "montofe",
+                "modificar": "Calcular_retencion"
+                
+            },
+            {
+                "nombre": "baseimponible",
+                "tipo": "monto",
+                "label": "Base Imponible",
+                "placeholder": "Base Imponible",
+                "title": "Base Imponible",
+                "disabled": true,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "name": "baseimponible"
+                
+            },
+            {
+                "nombre": "alicuota",
+                "tipo": "numero",
+                "label": "Alicuota",
+                "placeholder": "Alicuota",
+                "title": "Alicuota",
+                "disabled": false,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "name": "alicuota",
+                "default": 16,
+                "modificar": "Calcular_retencion",
+                "sinicono": true
+                
+            },
+            {
+                "nombre": "montoi",
+                "tipo": "monto",
+                "label": "Monto Iva",
+                "placeholder": "Monto Iva",
+                "title": "Monto Iva",
+                "disabled": true,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "name": "montoi"
+                
+            },
+            {
+                "nombre": "titulo9",
+                "tipo": "label",
+                "label": "",
+                "title": "",
+                "name": "titulo9",
+                "solo":false,
+                "style" : {"padding": ""}
+            },
+            {
+                "nombre": "titulo10",
+                "tipo": "label",
+                "label": "",
+                "title": "",
+                "name": "titulo10",
+                "solo":false,
+                "style" : {"padding": ""}
+            },
+            {
+                "nombre": "titulo11",
+                "tipo": "label",
+                "label": "",
+                "title": "",
+                "name": "titulo11",
+                "solo":false,
+                "style" : {"padding": ""}
+            },
+            {
+                "nombre": "titulo12",
+                "tipo": "label",
+                "label": "",
+                "title": "",
+                "name": "titulo12",
+                "solo":false,
+                "style" : {"padding": ""}
+            },
+            {
+                "nombre": "titulo13",
+                "tipo": "label",
+                "label": "",
+                "title": "",
+                "name": "titulo13",
+                "solo":false,
+                "style" : {"padding": ""}
+            },
+            {
+                "nombre": "titulo14",
+                "tipo": "label",
+                "label": "RETENCIÓN",
+                "title": "RETENCIÓN",
+                "name": "titulo14",
+                "solo":false,
+                "style" : {"padding": ""}
+            },
+            {
+                "nombre": "porcentaje",
+                "tipo": "numero",
+                "label": "Porcentaje",
+                "placeholder": "Porcentaje",
+                "title": "Porcentaje",
+                "disabled": false,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "name": "porcentaje",
+                "default": 75,
+                "modificar": "Calcular_retencion",
+                "sinicono": true
+                
+            },
+            {
+                "nombre": "monto",
+                "tipo": "monto",
+                "label": "Monto",
+                "placeholder": "Monto",
+                "title": "Monto",
+                "disabled": true,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "name": "monto"
+                
+            },
+            {
+                "tipo": "label",
+                "label": "",
+                "title": "",
+                "name": "titulo15",
+                "solo":false,
+                "style" : {"padding": ""}
+            },
+            {
+                "tipo": "label",
+                "label": "",
+                "title": "",
+                "name": "titulo16",
+                "solo":false,
+                "style" : {"padding": ""}
+            },
+            {
+                "tipo": "label",
+                "label": "",
+                "title": "",
+                "name": "titulo17",
+                "solo":false,
+                "style" : {"padding": ""}
+            },
+            {
+                "tipo": "label",
+                "label": "",
+                "title": "",
+                "name": "titulo18",
+                "solo":false,
+                "style" : {"padding": ""}
+            },
+            {
+                "nombre": "montoretenido",
+                "tipo": "monto",
+                "label": "Total monto retenido",
+                "placeholder": "Total monto retenido",
+                "title": "Total monto retenido",
+                "disabled": true,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "name": "montoretenido"
+                
+            },
+            {
+                "nombre": "netoapagar",
+                "tipo": "monto",
+                "label": "Neto a pagar",
+                "placeholder": "Neto a pagar",
+                "title": "Neto a pagar",
+                "disabled": true,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "name": "netoapagar"
+                
+            }
+            
+        ]
+    },
+    "Form_Proveedor": {
+          "columna": 3,
+          "value": [
+            {
+                "nombre": "nombre",
+                "tipo": "input",
+                "label": "",
+                "placeholder": "Razón social",
+                "title": "Razón social",
+                "required": true,
+                "mensaje_error": "indique  la Razón social",
+                "disabled": false,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "name": "nombre"
+            },
+            {
+                "nombre": "rif",
+                "tipo": "input",
+                "label": "Rif",
+                "placeholder": "Rif",
+                "title": "Rif",
+                "required": true,
+                "disabled": false,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "name": "rif"
+            },
+            {
+                "nombre": "telefono",
+                "tipo": "input",
+                "label": "",
+                "placeholder": "Telefono de Contacto",
+                "title": "Telefono de Contacto",
+                "required": false,
+                "mensaje_error": "indique  la Razón social",
+                "disabled": false,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "agregar": false,
+                "name": "telefono"
+            },
+            {
+                "nombre": "direccion",
+                "tipo": "multiline",
+                "label": "Dirección",
+                "placeholder": "Dirección",
+                "title": "Dirección",
+                "disabled": false,
+                "getOptionLabel": [
+                    "titulo"
+                ],
+                "required":"true",
+                "agregar": false,
+                "name": "direccion",
+                "multiline": true,
+                "maxRows": "3"
+            }
+          ]
+      }
   },
   "Listas": {
     "lista_categoria": [
@@ -6387,7 +6859,7 @@
               "title": "Grado",
               "field": "grado",
               "tipo": "",
-              "formato": "(dato)=> `${ typeof dato.valores.grado === 'object' ? dato.valores.grado.titulo : dato.valores.grado ? dato.valores.grado : ''}`",
+              "formato": "(dato)=> `${ dato.valores.grado === null || dato.valores.grado === undefined ? '' :typeof dato.valores.grado === 'object' ? dato.valores.grado.titulo : dato.valores.grado ? dato.valores.grado : ''}`",
               "default": "",
               "type": ""
           },
@@ -6675,7 +7147,7 @@
             "title": "Grado",
             "field": "grado",
             "tipo": "",
-            "formato": "(dato)=> `${ typeof dato.grado === 'object' ? dato.grado.titulo : dato.grado ? dato.grado : ''}`",
+            "formato": "(dato)=> `${ dato.grado === null || dato.grado === undefined ? '' :typeof dato.grado === 'object' ? dato.grado.titulo : dato.grado ? dato.grado : ''}`",
             "default": "",
             "type": ""
         },
@@ -7273,6 +7745,155 @@
               "moneda": "Bs",
               "digitos": 4,
               "formato": "(dato)=> `${Number(dato.valores.valorcambio).toFixed(4)}`",
+              "default": "",
+              "type": ""
+          }
+      ],
+      "Titulos_Retenciont": [
+        
+        {
+            "title": "Fecha",
+            "field": "fecha",
+            "tipo": "Fecha",
+            "formato": "",
+            "default": "actual",
+            "type": "",
+            "editable": true,
+            "modificar":true
+        },
+        {
+            "title": "Número",
+            "field": "numero",
+            "tipo": "",
+            "formato": "",
+            "default": "",
+            "type": "",
+            "editable": true,
+            "modificar":true
+        },
+        {
+            "title": "Monto Total",
+            "field": "montot",
+            "tipo": "moneda",
+            "formato": "",
+            "default": "",
+            "type": "number",
+            "editable": true,
+            "modificar":true
+        },
+        {
+            "title": "Monto Exento",
+            "field": "montoe",
+            "tipo": "moneda",
+            "formato": "",
+            "default": "",
+            "type": "number",
+            "editable": true,
+            "modificar":true
+        },
+        {
+            "title": "Base Imponible",
+            "field": "basei",
+            "tipo": "moneda",
+            "formato": "",
+            "default": "",
+            "type": "number",
+            "editable": false,
+            "modificar":false
+        },
+        {
+            "title": "Alícuota",
+            "field": "alicuota",
+            "tipo": "monto",
+            "formato": "",
+            "default": "16",
+            "type": "number",
+            "editable": true,
+            "modificar":true
+            
+        },
+        {
+            "title": "Monto Iva",
+            "field": "montoi",
+            "tipo": "moneda",
+            "formato": "",
+            "default": "",
+            "type": "number",
+            "editable": false,
+            "modificar":false
+        },
+        {
+            "title": "Porcentaje de Retención",
+            "field": "porcentaje",
+            "tipo": "monto",
+            "formato": "",
+            "default": "75",
+            "type": "number",
+            "editable": true,
+            "modificar":true
+        },
+        {
+            "title": "Monto de Retención",
+            "field": "monto",
+            "tipo": "moneda",
+            "formato": "",
+            "default": "",
+            "type": "number",
+            "editable": false,
+            "modificar":false
+        }
+      ],
+      "Titulos_Retencion": [
+          {
+              "title": "Numero",
+              "field": "numero",
+              "tipo": "",
+              "formato": "(dato)=> `${dato.valores.numero}`",
+              "default": "",
+              "type": ""
+          },
+          {
+              "title": "Fecha",
+              "field": "fecha",
+              "tipo": "fecha",
+              "formato": "(dato)=> `${dato.valores.fecha}`",
+              "default": "",
+              "type": ""
+          },
+          {
+              "title": "Sujeto de Retención",
+              "field": "proveedor",
+              "tipo": "input",
+              "formato": "(dato)=> {return `${dato.valores.proveedor ? dato.valores.proveedor.nombre : ''}`}",
+              "default": "",
+              "type": ""
+          },
+          {
+              "title": "Monto Total",
+              "field": "montoft",
+              "tipo": "monto",
+              "moneda": "Bs",
+              "formato": "(dato)=> `${dato.valores.montoft ? Number(dato.valores.montoft).toFixed(2) : 0}`",
+              "default": "",
+              "type": ""
+          },
+          {
+              "title": "Monto Retenido",
+              "field": "montoretenido",
+              "tipo": "monto",
+              "moneda": "Bs",
+              "digitos": 4,
+              "formato": "(dato)=> `${dato.valores.montoretenido ? Number(dato.valores.montoretenido).toFixed(2) : 0}`",
+              "default": "",
+              "type": ""
+          },
+          {
+              "title": "Neto a Pagar",
+              "field": "netoapagar",
+              "tipo": "monto",
+              "moneda": "Bs",
+              "digitos": 4,
+              "formato": "(dato)=> `${dato.valores.netoapagar ? dato.valores.netoapagar :0}`",
               "default": "",
               "type": ""
           }
