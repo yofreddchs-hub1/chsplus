@@ -1226,7 +1226,14 @@ colegioCtrl.EnviarPago = async (req, res) =>{
         // console.log(chalk.inverse.red(ultimo))
         let recibo={
             recibo:String(ultimo),
-            representante:representante.valores,
+            representante:{
+                _id: representante.valores._id,
+                cedula:representante.valores.cedula,
+                nombres:representante.valores.nombres,
+                apellidos:representante.valores.apellidos,
+                parentesco:representante.valores.parentesco,
+                representados:representante.valores.representados,
+            },//representante.valores, // Modificar
             Formas_pago: datos.Formas_pago,
             mensualidades:datos.Mensualidades,
             subtotalvalor: datos.Subtotalvalor,

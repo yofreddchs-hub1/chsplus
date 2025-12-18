@@ -695,8 +695,11 @@ sistemachsCtrl.Egreso_Venta = async (req, res)=>{
                 if (Prod===null){
                     Prod = await PT.findOne({"valores.codigo":producto.codigo});
                 }
-                Prod.valores.actual+= cantidad;
-                await PT.updateOne({_id:Prod._id},{valores:Prod.valores, actualizado},{ upsert: true });
+                if (Prod!==null){
+                    Prod.valores.actual+= cantidad;
+                    await PT.updateOne({_id:Prod._id},{valores:Prod.valores, actualizado},{ upsert: true });
+                }
+                
             }
             if (anterior.formapago && anterior.formapago.formapago){
                 for (var k=0; k<anterior.formapago.formapago.length; k++){
@@ -835,8 +838,10 @@ sistemachsCtrl.Egreso_Venta = async (req, res)=>{
                     if (Prod===null){
                         Prod = await PT.findOne({"valores.codigo":producto.codigo});
                     }
-                    Prod.valores.actual-= cantidad;
-                    await PT.updateOne({_id:Prod._id},{valores:Prod.valores, actualizado},{ upsert: true });
+                    if(Prod!==null){
+                        Prod.valores.actual-= cantidad;
+                        await PT.updateOne({_id:Prod._id},{valores:Prod.valores, actualizado},{ upsert: true });
+                    }
                     // datos.orden_venta.producto[i].entregado=true;
                     datos.orden_venta.producto[i].cantidad=cantidad;
                 // }

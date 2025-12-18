@@ -340,6 +340,9 @@ global.io = io.of('/').on('connection', (socket) =>{
         console.log('Inscritos',data);
         InscritosF(data, socket);
     })
+    socket.on('mensaje_p',(data)=>{
+        console.log(data)
+    })
 });
 //Para buscar un grupo de datos
 const porpagina = (datos, paginaA, cantidad, condicion)=>{
