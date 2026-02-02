@@ -395,6 +395,7 @@ serverCtrl.Ver_datos_C = async (tablas, Api, condicion, sede=undefined, eliminad
         dbs = await DB.find({$or:[{eliminado:eliminados},{eliminado:undefined}]});
       }else{
         await DB.createIndexes()
+        
         dbs = await DB.find(condicion[data]);
       }
 

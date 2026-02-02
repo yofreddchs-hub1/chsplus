@@ -1794,7 +1794,25 @@
                 "key": "item",
                 "name": "item",
                 "required": false
-            }
+            },
+            {
+                  "nombre": "principal",
+                  "tipo": "lista_multiuso",
+                  "label": "Asignatura Principal",
+                  "placeholder": "Asignatura Principal",
+                  "title": "Asignatura Principal",
+                  "mensaje_error": "",
+                  "disabled": false,
+                  "numberOfLines": "",
+                  "lista": "uecla_Asignatura",
+                  "getOptionLabel": [
+                      "grado.titulo",
+                      "asignatura"
+                  ],
+                  "key": "principal",
+                  "name": "principal",
+                  "multiline": false
+              }
         ]
       },
       "Form_Evaluacion": {
@@ -6309,139 +6327,215 @@
     }
     ],
     "lista_bancos":[
-    {
-        "_id": "0175",
-        "titulo": "BANCO BICENTENARIO",
-        "value": "0175",
-        "permisos": "",
-        "id": 1,
-        "otro": "VED"
-    },
-    {
-        "_id": "0128",
-        "titulo": "BANCO CARONI, C.A. BANCO UNIVERSAL",
-        "value": "0128",
-        "permisos": "",
-        "id": 2,
-        "otro": "VED"
-    },
-    {
-        "_id": "0102",
-        "titulo": "BANCO DE VENEZUELA",
-        "value": "0102",
-        "id": 3,
-        "permisos": "",
-        "otro": "VED"
-    },
-    {
-        "_id": "0114",
-        "titulo": "BANCO DEL CARIBE",
-        "value": "0114",
-        "id": 4,
-        "permisos": "",
-        "otro": "VED"
-    },
-    {
-        "_id": "0163",
-        "titulo": "BANCO DEL TESORO",
-        "value": "0163",
-        "id": 5,
-        "permisos": "",
-        "otro": "VED"
-    },
-    {
-        "_id": "0105",
-        "titulo": "BANCO MERCANTIL",
-        "value": "0105",
-        "id": 6,
-        "permisos": "",
-        "otro": "VED"
-    },
-    {
-        "_id": "0191",
-        "titulo": "BANCO NACIONAL DE CREDITO",
-        "value": "0191",
-        "id": 7,
-        "permisos": "",
-        "otro": "VED"
-    },
-    {
-        "_id": "0116",
-        "titulo": "BANCO OCCIDENTAL DE DESCUENTO.",
-        "value": "0116",
-        "id": 8,
-        "permisos": "",
-        "otro": "VED"
-    },
-    {
-        "_id": "0108",
-        "titulo": "BANCO PROVINCIAL BBVA",
-        "value": "0108",
-        "id": 9,
-        "permisos": "",
-        "otro": "VED"
-    },
-    {
-        "_id": "0134",
-        "titulo": "BANESCO BANCO UNIVERSAL",
-        "value": "0134",
-        "id": 10,
-        "permisos": "",
-        "otro": "VED"
-    },
-    {
-        "_id": "0177",
-        "titulo": "BANFANB",
-        "value": "0177"
-    },
-    {
-        "_id": "0190",
-        "titulo": "CITIBANK.",
-        "value": "0190",
-        "id": 12,
-        "permisos": "",
-        "otro": "VED"
-    },
-    {
-        "_id": "0121",
-        "titulo": "CORP BANCA.",
-        "value": "0121",
-        "id": 13,
-        "permisos": "",
-        "otro": "VED"
-    },
-    {
-        "_id": "0157",
-        "titulo": "DELSUR BANCO UNIVERSAL",
-        "value": "0157",
-        "id": 14,
-        "permisos": "",
-        "otro": "VED"
-    },
-    {
-        "_id": "0151",
-        "titulo": "FONDO COMUN",
-        "value": "0151",
-        "id": 15,
-        "permisos": "",
-        "otro": "VED"
-    },
-    {
-        "_id": "BOA",
-        "titulo": "BANK OF AMERICA",
-        "value": "BOA",
-        "permisos": "",
-        "id": 16,
-        "otro": "USD"
-    },
-    {
-        "_id": "0172",
-        "titulo": "BANCAMIGA BANCO MICROFINANCIERO, C.A.",
-        "value": "0172",
-        "permisos": "",
-        "id": 17,
-        "otro": "VED"
-    }
+        {
+            "_id": "0102",
+            "titulo": "BANCO DE VENEZUELA",
+            "value": "0102",
+            "id": 1,
+            "permisos": "",
+            "otro": "VED"
+        },
+        {
+            "_id": "0104",
+            "titulo": "BANCO VENEZOLANO DE CREDITO",
+            "value": "0104",
+            "id": 2,
+            "permisos": "",
+            "otro": "VED"
+        },
+        {
+            "_id": "0105",
+            "titulo": "BANCO MERCANTIL",
+            "value": "0105",
+            "id": 3,
+            "permisos": "",
+            "otro": "VED"
+        },
+        {
+            "_id": "0108",
+            "titulo": "BBVA PROVINCIAL",
+            "value": "0108",
+            "id": 4,
+            "permisos": "",
+            "otro": "VED"
+        },
+        {
+            "_id": "0114",
+            "titulo": "BANCARIBE",
+            "value": "0114",
+            "id": 5,
+            "permisos": "",
+            "otro": "VED"
+        },
+        {
+            "_id": "0115",
+            "titulo": "BANCO EXTERIOR",
+            "value": "0115",
+            "id": 6,
+            "permisos": "",
+            "otro": "VED"
+        },
+        {
+            "_id": "0128",
+            "titulo": "BANCO CARONI",
+            "value": "0128",
+            "id": 7,
+            "permisos": "",
+            "otro": "VED"
+        },
+        {
+            "_id": "0134",
+            "titulo": "BANESCO",
+            "value": "0134",
+            "id": 8,
+            "permisos": "",
+            "otro": "VED"
+        },
+        {
+            "_id": "0137",
+            "titulo": "BANCO SOFITASA",
+            "value": "0137",
+            "id": 9,
+            "permisos": "",
+            "otro": "VED"
+        },
+        {
+            "_id": "0138",
+            "titulo": "BANCO PLAZA",
+            "value": "0138",
+            "id": 10,
+            "permisos": "",
+            "otro": "VED"
+        },
+        {
+            "_id": "0146",
+            "titulo": "BANGENTE",
+            "value": "0146",
+            "id": 11,
+            "permisos": "",
+            "otro": "VED"
+        },
+        {
+            "_id": "0151",
+            "titulo": "BANCO FONDO COMUN",
+            "value": "0151",
+            "id": 11,
+            "permisos": "",
+            "otro": "VED"
+        },
+        {
+            "_id": "0156",
+            "titulo": "100% BANCO",
+            "value": "0156",
+            "id": 12,
+            "permisos": "",
+            "otro": "VED"
+        },
+        {
+            "_id": "0157",
+            "titulo": "DELSUR BANCO UNIVERSAL",
+            "value": "0157",
+            "id": 13,
+            "permisos": "",
+            "otro": "VED"
+        },
+        {
+            "_id": "0163",
+            "titulo": "BANCO DEL TESORO",
+            "value": "0163",
+            "id": 14,
+            "permisos": "",
+            "otro": "VED"
+        },
+        {
+            "_id": "0168",
+            "titulo": "BANCRECER",
+            "value": "0168",
+            "id": 15,
+            "permisos": "",
+            "otro": "VED"
+        },
+        {
+            "_id": "0169",
+            "titulo": "R4 BANCO MICROFINANCIERO C.A.",
+            "value": "0169",
+            "id": 16,
+            "permisos": "",
+            "otro": "VED"
+        },
+        {
+            "_id": "0171",
+            "titulo": "BANCO ACTIVO",
+            "value": "0171",
+            "id": 17,
+            "permisos": "",
+            "otro": "VED"
+        },
+        {
+            "_id": "0172",
+            "titulo": "BANCAMIGA BANCO UNIVERSAL, C.A.",
+            "value": "0172",
+            "id": 18,
+            "permisos": "",
+            "otro": "VED"
+        },
+        {
+            "_id": "0173",
+            "titulo": "BANCO INTERNACIONAL DE DESARROLLO",
+            "value": "0173",
+            "id": 19,
+            "permisos": "",
+            "otro": "VED"
+        },
+        {
+            "_id": "0174",
+            "titulo": "BANPLUS",
+            "value": "0174",
+            "id": 20,
+            "permisos": "",
+            "otro": "VED"
+        },
+        {
+            "_id": "0175",
+            "titulo": "BANCO DIGITAL DE LOS TRABAJADORES, BANCO UNIVERSAL",
+            "value": "0175",
+            "id": 21,
+            "permisos": "",
+            "otro": "VED"
+        },
+        {
+            "_id": "0177",
+            "titulo": "BANFANB",
+            "value": "0177",
+            "id": 22,
+            "permisos": "",
+            "otro": "VED"
+        },
+        {
+            "_id": "0178",
+            "titulo": "N58 BANCO DIGITAL BANCO MICROFINANCIERO S A",
+            "value": "0178",
+            "id": 23,
+            "permisos": "",
+            "otro": "VED"
+        },
+        {
+            "_id": "0191",
+            "titulo": "BANCO NACIONAL DE CREDITO",
+            "value": "0191",
+            "id": 24,
+            "permisos": "",
+            "otro": "VED"
+        },  
+        {
+            "_id": "BOA",
+            "titulo": "BANK OF AMERICA",
+            "value": "BOA",
+            "permisos": "",
+            "id": 25,
+            "otro": "USD"
+        }
+    
     ],
     "lista_mensaje_meses": [
         {
